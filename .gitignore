@@ -1,5 +1,6 @@
 # Ignore local configuration files.
 /.rspec
+/.rubocop
 /.ruby-version
 Gemfile.lock
 
