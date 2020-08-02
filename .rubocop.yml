@@ -10,3 +10,16 @@ AllCops:
 
 Layout/ArgumentAlignment:
   EnforcedStyle: with_fixed_indentation
+
+Layout/HashAlignment:
+  EnforcedColonStyle: table
+
+Metrics/BlockLength:
+  Exclude:
+    - spec/**/*_spec.rb
+
+RSpec/ExampleWording:
+  Enabled: false
+
+Style/ClassAndModuleChildren:
+  Enabled: false
