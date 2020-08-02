@@ -21,4 +21,8 @@ Gem::Specification.new do |gem|
   gem.files        = Dir['lib/**/*.rb', 'LICENSE', '*.md']
 
   gem.add_runtime_dependency 'cuprum', '0.10.0.rc.0'
+
+  gem.add_development_dependency 'byebug'
+  gem.add_development_dependency 'rspec', '~> 3.9'
+  gem.add_development_dependency 'rspec-sleeping_king_studios', '~> 2.5'
 end

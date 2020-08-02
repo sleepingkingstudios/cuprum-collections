@@ -6,7 +6,7 @@ module Cuprum
   # A data abstraction layer based on the Cuprum library.
   module Collections
     # @return [String] The current version of the gem.
-    def version
+    def self.version
       VERSION
     end
   end
