@@ -1,0 +1,12 @@
+require:
+  - rubocop-rspec
+  - ./spec/support/rubocop_patch
+
+AllCops:
+  TargetRubyVersion: 2.5
+  NewCops: enable
+  Exclude:
+    - vendor/**/*
+
+Layout/ArgumentAlignment:
+  EnforcedStyle: with_fixed_indentation

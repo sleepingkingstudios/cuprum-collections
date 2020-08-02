@@ -1,4 +1,6 @@
 # Ignore local configuration files.
+/.rspec
+/.rubocop
 /.ruby-version
 Gemfile.lock
 
@@ -10,4 +12,5 @@ Gemfile.lock
 # Ignore temporary files.
 *.gem
 /.byebug_history
+/spec/examples.txt
 /tmp
