@@ -20,12 +20,14 @@ Gem::Specification.new do |gem|
   gem.require_path = 'lib'
   gem.files        = Dir['lib/**/*.rb', 'LICENSE', '*.md']
 
+  gem.required_ruby_version = '~> 2.5'
+
   gem.add_runtime_dependency 'cuprum', '0.10.0.rc.0'
 
   gem.add_development_dependency 'byebug'
   gem.add_development_dependency 'rspec', '~> 3.9'
   gem.add_development_dependency 'rspec-sleeping_king_studios', '~> 2.5'
-  gem.add_development_dependency 'rubocop', '~> 0.88.0'
+  gem.add_development_dependency 'rubocop', '~> 0.93.0'
   gem.add_development_dependency 'rubocop-rspec', '~> 1.42.0'
   gem.add_development_dependency 'simplecov', '~> 0.18'
   gem.add_development_dependency 'sleeping_king_studios-tasks', '~> 0.3'
