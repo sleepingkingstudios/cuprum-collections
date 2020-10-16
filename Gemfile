@@ -6,3 +6,5 @@ gemspec
 
 gem 'sleeping_king_studios-tasks',
   git: 'https://github.com/sleepingkingstudios/sleeping_king_studios-tasks'
+
+gem 'stannum', git: 'https://github.com/sleepingkingstudios/stannum'
