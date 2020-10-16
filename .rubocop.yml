@@ -12,7 +12,8 @@ Layout/ArgumentAlignment:
   EnforcedStyle: with_fixed_indentation
 
 Layout/HashAlignment:
-  EnforcedColonStyle: table
+  EnforcedColonStyle:      table
+  EnforcedHashRocketStyle: table
 
 Metrics/BlockLength:
   Exclude:
