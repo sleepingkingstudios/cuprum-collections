@@ -2,6 +2,7 @@
 
 require 'cuprum'
 
+# A Ruby implementation of the command pattern.
 module Cuprum
   # A data abstraction layer based on the Cuprum library.
   module Collections
