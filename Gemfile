@@ -10,3 +10,8 @@ gem 'rspec-sleeping_king_studios',
   git: 'https://github.com/sleepingkingstudios/rspec-sleeping_king_studios'
 
 gem 'stannum', git: 'https://github.com/sleepingkingstudios/stannum'
+
+gem 'database_cleaner-active_record'
+gem 'pg'
+gem 'rails', '~> 6.0'
+gem 'rake'
