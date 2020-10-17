@@ -12,5 +12,6 @@ Gemfile.lock
 # Ignore temporary files.
 *.gem
 /.byebug_history
+/log
 /spec/examples.txt
 /tmp

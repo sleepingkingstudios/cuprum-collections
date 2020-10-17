@@ -6,8 +6,15 @@ unless ENV['COVERAGE'] == 'false'
   SimpleCov.start
 end
 
+ENV['RAILS_ENV'] ||= 'test'
+
+require File.expand_path('../config/application', __dir__)
+
+Rails.application.initialize!
+
 require 'rspec/sleeping_king_studios/all'
 require 'byebug'
+require 'database_cleaner/active_record'
 
 require 'cuprum/rspec/be_a_result'
 require 'stannum/rspec/validate_parameter'
@@ -35,6 +42,17 @@ RSpec.configure do |config|
   config.extend  RSpec::SleepingKingStudios::Concerns::WrapExamples
   config.include RSpec::SleepingKingStudios::Examples::PropertyExamples
   config.extend  Spec::ContractHelpers
+
+  config.before(:suite) do
+    DatabaseCleaner.strategy = :transaction
+    DatabaseCleaner.clean_with(:truncation)
+  end
+
+  config.around(:each) do |example|
+    DatabaseCleaner.cleaning do
+      example.run
+    end
+  end
 
   config.disable_monkey_patching!
 

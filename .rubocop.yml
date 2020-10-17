@@ -6,6 +6,7 @@ AllCops:
   TargetRubyVersion: 2.5
   NewCops: enable
   Exclude:
+    - db/schema.rb
     - vendor/**/*
 
 Layout/ArgumentAlignment:
@@ -26,6 +27,7 @@ Metrics/BlockLength:
     - '*.gemspec'
     - lib/**/*_contract.rb
     - spec/support/**/*_examples.rb
+    - spec/spec_helper.rb
     - spec/**/*_spec.rb
 
 Metrics/ModuleLength:
@@ -54,6 +56,12 @@ Style/AccessorGrouping:
 
 Style/ClassAndModuleChildren:
   Enabled: false
+
+Style/Documentation:
+  Exclude:
+    - config/**/*.rb
+    - db/migrate/*
+    - spec/support/**/*.rb
 
 Style/NestedParenthesizedCalls:
   Exclude:
