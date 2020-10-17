@@ -6,7 +6,8 @@ require 'cuprum'
 module Cuprum
   # A data abstraction layer based on the Cuprum library.
   module Collections
-    autoload :Base, 'cuprum/collections/base'
+    autoload :Base,    'cuprum/collections/base'
+    autoload :Command, 'cuprum/collections/command'
 
     # @return [String] The current version of the gem.
     def self.version
