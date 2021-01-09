@@ -23,6 +23,10 @@ Metrics/BlockLength:
     - lib/**/*_contract.rb
     - spec/**/*_spec.rb
 
+Metrics/ModuleLength:
+  Exclude:
+    - lib/**/*_contract.rb
+
 RSpec/ExampleWording:
   Enabled: false
 
@@ -32,9 +36,13 @@ RSpec/HookArgument:
 RSpec/NestedGroups:
   Max: 5
 
+Style/AccessorGrouping:
+  EnforcedStyle: separated
+
 Style/ClassAndModuleChildren:
   Enabled: false
 
 Style/NestedParenthesizedCalls:
   Exclude:
+    - lib/**/*_contract.rb
     - 'spec/**/*'
