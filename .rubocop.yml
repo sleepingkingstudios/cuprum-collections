@@ -20,6 +20,7 @@ Layout/LineLength:
 
 Metrics/BlockLength:
   Exclude:
+    - lib/**/*_contract.rb
     - spec/**/*_spec.rb
 
 RSpec/ExampleWording:
