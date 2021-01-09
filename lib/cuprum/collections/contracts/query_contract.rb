@@ -32,7 +32,7 @@ module Cuprum::Collections::Contracts
 
     shared_context 'when the query has order: a simple ordering' do
       let(:query)         { super().order(:title) }
-      let(:matching_data) { super().sort_by { |item| item[:title] } }
+      let(:matching_data) { super().sort_by { |item| item['title'] } }
     end
 
     shared_context 'when the query has order: a complex ordering' do
@@ -45,9 +45,9 @@ module Cuprum::Collections::Contracts
       let(:query) { super().order(order) }
       let(:matching_data) do
         super().sort do |u, v|
-          cmp = u[:author] <=> v[:author]
+          cmp = u['author'] <=> v['author']
 
-          cmp.zero? ? (v[:title] <=> u[:title]) : cmp
+          cmp.zero? ? (v['title'] <=> u['title']) : cmp
         end
       end
     end
@@ -59,7 +59,7 @@ module Cuprum::Collections::Contracts
         end
       end
       let(:matching_data) do
-        super().select { |item| item[:author] == 'Ursula K. LeGuin' }
+        super().select { |item| item['author'] == 'Ursula K. LeGuin' }
       end
     end
 
@@ -74,8 +74,8 @@ module Cuprum::Collections::Contracts
       end
       let(:matching_data) do
         super()
-          .select { |item| item[:author] == 'Ursula K. LeGuin' }
-          .reject { |item| item[:series] == 'Earthsea' }
+          .select { |item| item['author'] == 'Ursula K. LeGuin' }
+          .reject { |item| item['series'] == 'Earthsea' }
       end
     end
 
@@ -87,8 +87,8 @@ module Cuprum::Collections::Contracts
       end
       let(:matching_data) do
         super()
-          .select { |item| item[:author] == 'Ursula K. LeGuin' }
-          .reject { |item| item[:series] == 'Earthsea' }
+          .select { |item| item['author'] == 'Ursula K. LeGuin' }
+          .reject { |item| item['series'] == 'Earthsea' }
       end
     end
 
@@ -97,7 +97,7 @@ module Cuprum::Collections::Contracts
         super().where { { author: equals('Ursula K. LeGuin') } }
       end
       let(:matching_data) do
-        super().select { |item| item[:author] == 'Ursula K. LeGuin' }
+        super().select { |item| item['author'] == 'Ursula K. LeGuin' }
       end
     end
 
@@ -106,7 +106,7 @@ module Cuprum::Collections::Contracts
         super().where { { author: not_equal('Ursula K. LeGuin') } }
       end
       let(:matching_data) do
-        super().reject { |item| item[:author] == 'Ursula K. LeGuin' }
+        super().reject { |item| item['author'] == 'Ursula K. LeGuin' }
       end
     end
 
@@ -120,8 +120,8 @@ module Cuprum::Collections::Contracts
       end
       let(:matching_data) do
         super()
-          .select { |item| item[:author] == 'Ursula K. LeGuin' }
-          .sort { |u, v| v[:title] <=> u[:title] }
+          .select { |item| item['author'] == 'Ursula K. LeGuin' }
+          .sort { |u, v| v['title'] <=> u['title'] }
           .slice(1, 2) || []
       end
     end

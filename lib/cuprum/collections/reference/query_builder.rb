@@ -29,11 +29,11 @@ module Cuprum::Collections::Reference
     end
 
     def eq(attribute, value)
-      ->(actual) { actual[attribute] == value }
+      ->(actual) { actual[attribute.to_s] == value }
     end
 
     def ne(attribute, value)
-      ->(actual) { actual[attribute] != value }
+      ->(actual) { actual[attribute.to_s] != value }
     end
   end
 end

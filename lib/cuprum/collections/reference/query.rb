@@ -149,9 +149,9 @@ module Cuprum::Collections::Reference
 
     def filtered_data
       data
-        .yield_self { |hsh| apply_filters(hsh) }
-        .yield_self { |hsh| apply_order(hsh) }
-        .yield_self { |hsh| apply_limit_offset(hsh) }
+        .yield_self { |ary| apply_filters(ary) }
+        .yield_self { |ary| apply_order(ary) }
+        .yield_self { |ary| apply_limit_offset(ary) }
     end
   end
 end
