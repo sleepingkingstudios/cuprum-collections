@@ -5,6 +5,9 @@ require 'cuprum/collections'
 module Cuprum::Collections
   # Abstract base class for collection Query implementations.
   class Query
+    # Exception class for handling invalid order keywords.
+    class InvalidOrderError < ArgumentError; end
+
     ORDER_HASH_VALUES = {
       asc:        :asc,
       ascending:  :asc,
@@ -190,7 +193,7 @@ module Cuprum::Collections
     def normalize_order_hash(hsh)
       hsh.each.with_object({}) do |(key, value), normalized|
         unless valid_order_hash_key?(key)
-          raise ArgumentError, invalid_order_error, caller(2..-1)
+          raise InvalidOrderError, invalid_order_error, caller(2..-1)
         end
 
         normalized[key.intern] = normalize_order_hash_value(value)
@@ -201,7 +204,7 @@ module Cuprum::Collections
       value = value.downcase if value.is_a?(String)
 
       ORDER_HASH_VALUES.fetch(value.is_a?(String) ? value.intern : value) do
-        raise ArgumentError, invalid_order_error, caller(3..-1)
+        raise InvalidOrderError, invalid_order_error, caller(3..-1)
       end
     end
 
@@ -228,11 +231,11 @@ module Cuprum::Collections
         (item.is_a?(String) || item.is_a?(Symbol)) && !item.to_s.empty?
       end
 
-      raise ArgumentError, invalid_order_error, caller(2..-1)
+      raise InvalidOrderError, invalid_order_error, caller(2..-1)
     end
 
     def validate_order_normalized(hsh)
-      raise ArgumentError, invalid_order_error, caller(2..-1) if hsh.empty?
+      raise InvalidOrderError, invalid_order_error, caller(2..-1) if hsh.empty?
     end
   end
 end

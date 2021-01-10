@@ -14,6 +14,12 @@ RSpec.describe Cuprum::Collections::Query do
     klass.define_method(:with_order)    { |*_args| }
   end
 
+  describe '::InvalidOrderError' do
+    include_examples 'should define constant', :InvalidOrderError
+
+    it { expect(described_class::InvalidOrderError).to be < ArgumentError }
+  end
+
   describe '.new' do
     it { expect(described_class).to respond_to(:new).with(0).arguments }
   end
@@ -147,7 +153,7 @@ RSpec.describe Cuprum::Collections::Query do
 
       it 'should raise an exception' do
         expect { query.order nil }
-          .to raise_error ArgumentError, error_message
+          .to raise_error described_class::InvalidOrderError, error_message
       end
     end
 
@@ -159,7 +165,7 @@ RSpec.describe Cuprum::Collections::Query do
 
       it 'should raise an exception' do
         expect { query.order Object.new.freeze }
-          .to raise_error ArgumentError, error_message
+          .to raise_error described_class::InvalidOrderError, error_message
       end
     end
 
@@ -171,7 +177,7 @@ RSpec.describe Cuprum::Collections::Query do
 
       it 'should raise an exception' do
         expect { query.order '' }
-          .to raise_error ArgumentError, error_message
+          .to raise_error described_class::InvalidOrderError, error_message
       end
     end
 
@@ -183,7 +189,7 @@ RSpec.describe Cuprum::Collections::Query do
 
       it 'should raise an exception' do
         expect { query.order :'' }
-          .to raise_error ArgumentError, error_message
+          .to raise_error described_class::InvalidOrderError, error_message
       end
     end
 
@@ -195,7 +201,7 @@ RSpec.describe Cuprum::Collections::Query do
 
       it 'should raise an exception' do
         expect { query.order({}) }
-          .to raise_error ArgumentError, error_message
+          .to raise_error described_class::InvalidOrderError, error_message
       end
     end
 
@@ -207,7 +213,7 @@ RSpec.describe Cuprum::Collections::Query do
 
       it 'should raise an exception' do
         expect { query.order({ nil => :asc }) }
-          .to raise_error ArgumentError, error_message
+          .to raise_error described_class::InvalidOrderError, error_message
       end
     end
 
@@ -219,7 +225,7 @@ RSpec.describe Cuprum::Collections::Query do
 
       it 'should raise an exception' do
         expect { query.order({ '' => :asc }) }
-          .to raise_error ArgumentError, error_message
+          .to raise_error described_class::InvalidOrderError, error_message
       end
     end
 
@@ -231,7 +237,7 @@ RSpec.describe Cuprum::Collections::Query do
 
       it 'should raise an exception' do
         expect { query.order({ '': :asc }) }
-          .to raise_error ArgumentError, error_message
+          .to raise_error described_class::InvalidOrderError, error_message
       end
     end
 
@@ -243,7 +249,7 @@ RSpec.describe Cuprum::Collections::Query do
 
       it 'should raise an exception' do
         expect { query.order({ title: nil }) }
-          .to raise_error ArgumentError, error_message
+          .to raise_error described_class::InvalidOrderError, error_message
       end
     end
 
@@ -255,7 +261,7 @@ RSpec.describe Cuprum::Collections::Query do
 
       it 'should raise an exception' do
         expect { query.order({ title: Object.new.freeze }) }
-          .to raise_error ArgumentError, error_message
+          .to raise_error described_class::InvalidOrderError, error_message
       end
     end
 
@@ -267,7 +273,7 @@ RSpec.describe Cuprum::Collections::Query do
 
       it 'should raise an exception' do
         expect { query.order({ title: '' }) }
-          .to raise_error ArgumentError, error_message
+          .to raise_error described_class::InvalidOrderError, error_message
       end
     end
 
@@ -279,7 +285,7 @@ RSpec.describe Cuprum::Collections::Query do
 
       it 'should raise an exception' do
         expect { query.order({ title: 'wibbly' }) }
-          .to raise_error ArgumentError, error_message
+          .to raise_error described_class::InvalidOrderError, error_message
       end
     end
 
