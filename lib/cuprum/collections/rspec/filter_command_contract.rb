@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/contracts'
+require 'cuprum/collections/rspec'
 
-module Cuprum::Collections::Contracts
+module Cuprum::Collections::RSpec
   # Contract validating the behavior of a Filter command implementation.
   FILTER_COMMAND_CONTRACT = lambda do
     describe '#call' do

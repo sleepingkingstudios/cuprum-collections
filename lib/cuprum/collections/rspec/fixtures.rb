@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/contracts'
+require 'cuprum/collections/rspec'
 
-module Cuprum::Collections::Contracts
+module Cuprum::Collections::RSpec
   # Sample data for validating collection implementations.
   BOOKS_FIXTURES = [
     {

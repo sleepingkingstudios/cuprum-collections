@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/contracts'
+require 'cuprum/collections/rspec'
 
-module Cuprum::Collections::Contracts
+module Cuprum::Collections::RSpec
   # Contract validating the behavior of a QueryBuilder implementation.
   QUERY_BUILDER_CONTRACT = lambda do
     describe '#base_query' do

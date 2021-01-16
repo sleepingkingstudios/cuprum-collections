@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/contracts/fixtures'
 require 'cuprum/collections/reference/command'
+require 'cuprum/collections/rspec/fixtures'
 
 RSpec.describe Cuprum::Collections::Reference::Command do
   shared_context 'when the command has parameter validations' do
@@ -28,7 +28,7 @@ RSpec.describe Cuprum::Collections::Reference::Command do
 
   subject(:command) { described_class.new(data) }
 
-  let(:data) { Cuprum::Collections::Contracts::BOOKS_FIXTURES }
+  let(:data) { Cuprum::Collections::RSpec::BOOKS_FIXTURES }
 
   describe '.new' do
     it { expect(described_class).to respond_to(:new).with(1).argument }

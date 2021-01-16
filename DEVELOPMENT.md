@@ -2,6 +2,22 @@
 
 ## Commands
 
+### FilterCommand
+
+Validate the order parameter: |
+  Union.of(
+    Array.of( # Indifferent key
+      String,
+      Symbol
+    ),
+    IndifferentHash(
+      values: Union.of(
+        IndifferentKey,
+        Enum.of(:asc, :ascending, :desc, :descending)
+      )
+    )
+  )
+
 ### ParameterCoercion
 
 ```ruby
@@ -22,6 +38,10 @@ Preprocess arguments after validation but before #process is called.
 Accessors for @limit, @offset, @order
   - Overload methods? Return current value if no parameters?
   - Namespaced accessors? E.g. #query_limit, #query_offset, ... ?
+
+Accept a Query object as parameter to Query#where.
+  - Merges the criteria from other#criteria.
+  - Applies the limit, offset, order from other if not nil.
 
 ### ParseBlock
 
@@ -90,3 +110,12 @@ Support passing arguments, keywords, strategy: keyword to `#where`.
   - Converts block, `where:` keyword to criteria
 - Pass criteria to `build_query` step
   - Query.where(criteria, strategy: :criteria)
+
+### BlockParser
+
+Refactor to `class ParseBlock < Cuprum::Command`
+  - Define `class InvalidQueryError < ArgumentError`
+  - Define `initialize(failure_strategy: :result)`
+    - If `failure_strategy: :raise`, raises an `InvalidQueryError` on failure
+    - If `failure_strategy: :result`, returns a `Cuprum::Result` on failure
+  - Handle unknown operators (using `method_missing` ?)

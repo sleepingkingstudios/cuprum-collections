@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/contracts'
-require 'cuprum/collections/contracts/fixtures'
+require 'cuprum/collections/rspec'
+require 'cuprum/collections/rspec/fixtures'
 
-module Cuprum::Collections::Contracts
+module Cuprum::Collections::RSpec
   OPERATORS = %i[eq ne].freeze
   private_constant :OPERATORS
 
