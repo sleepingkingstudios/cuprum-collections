@@ -42,6 +42,11 @@ module Cuprum::Collections::RSpec
         type:     Integer,
         optional: true
 
+      include_examples 'should validate the keyword',
+        :order,
+        type:     Cuprum::Collections::Constraints::Ordering.new,
+        optional: true
+
       include_examples 'should return the matching items'
 
       describe 'with an invalid filter block' do
@@ -54,19 +59,6 @@ module Cuprum::Collections::RSpec
           expect { command.call(**options, &filter) }
             .to raise_error ArgumentError, error_message
         end
-      end
-
-      describe 'with order: an invalid order' do
-        let(:order)   { { title: :random } }
-        let(:options) { super().merge(order: order) }
-        let(:expected_error) do
-          Cuprum::Error.new(
-            message: 'order must be a list of attribute names and/or a hash' \
-                     ' of attribute names with values :asc or :desc'
-          )
-        end
-
-        it { expect(result).to be_a_failing_result.with_error(expected_error) }
       end
 
       describe 'with a filter that does not match any items' do

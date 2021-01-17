@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/queries/block_parser'
-
+require 'cuprum/collections/constraints/ordering'
 require 'cuprum/collections/reference/command'
 require 'cuprum/collections/reference/commands'
 require 'cuprum/collections/reference/query'
@@ -70,7 +69,9 @@ module Cuprum::Collections::Reference::Commands
 
     keyword :limit,  Integer, optional: true
     keyword :offset, Integer, optional: true
-    keyword :order,  Object,  optional: true
+    keyword :order,
+      Cuprum::Collections::Constraints::Ordering.new,
+      optional: true
 
     private
 
@@ -82,8 +83,6 @@ module Cuprum::Collections::Reference::Commands
       query = query.where(&block)  if block_given?
 
       success(query)
-    rescue Cuprum::Collections::Query::InvalidOrderError => exception
-      failure(Cuprum::Error.new(message: exception.message))
     end
 
     def process(limit: nil, offset: nil, order: nil, &block)

@@ -74,13 +74,13 @@ module Spec::Support::Examples
           contract_builder.send(:keyword, keyword, type, optional: optional)
         end
 
-        it 'should return a failing result' do # rubocop:disable RSpec/ExampleLength
-          expect(result).to be_a_failing_result.with_error(
-            an_instance_of(Cuprum::Collections::Errors::InvalidParameters)
-            .and(
-              have_attributes(errors: expected_errors)
-            )
-          )
+        it 'should return a failing result', :aggregate_failures do
+          expect(result).to be_a_failing_result
+
+          expect(result.error)
+            .to be_a Cuprum::Collections::Errors::InvalidParameters
+
+          expect(result.error.errors.to_a).to deep_match expected_errors.to_a
         end
       end
     end
