@@ -27,6 +27,7 @@ Metrics/BlockLength:
 Metrics/ModuleLength:
   Exclude:
     - lib/**/*_contract.rb
+    - spec/**/*_examples.rb
 
 Naming/RescuedExceptionsVariableName:
   PreferredName: exception
@@ -50,3 +51,6 @@ Style/NestedParenthesizedCalls:
   Exclude:
     - lib/**/*_contract.rb
     - 'spec/**/*'
+
+Style/TrailingUnderscoreVariable:
+  Enabled: false
