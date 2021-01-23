@@ -4,7 +4,9 @@ source 'https://rubygems.org'
 
 gemspec
 
-gem 'sleeping_king_studios-tasks',
-  git: 'https://github.com/sleepingkingstudios/sleeping_king_studios-tasks'
+gem 'cuprum', git: 'https://github.com/sleepingkingstudios/cuprum'
+
+gem 'rspec-sleeping_king_studios',
+  git: 'https://github.com/sleepingkingstudios/rspec-sleeping_king_studios'
 
 gem 'stannum', git: 'https://github.com/sleepingkingstudios/stannum'

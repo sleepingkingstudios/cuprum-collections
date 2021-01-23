@@ -22,7 +22,7 @@ Gem::Specification.new do |gem|
 
   gem.required_ruby_version = '~> 2.5'
 
-  gem.add_runtime_dependency 'cuprum', '0.10.0.rc.0'
+  gem.add_runtime_dependency 'cuprum', '~> 0.10.0'
   gem.add_runtime_dependency 'stannum'
 
   gem.add_development_dependency 'byebug'
@@ -31,6 +31,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'rubocop', '~> 0.93.0'
   gem.add_development_dependency 'rubocop-rspec', '~> 1.42.0'
   gem.add_development_dependency 'simplecov', '~> 0.18'
-  gem.add_development_dependency 'sleeping_king_studios-tasks', '~> 0.3'
+  gem.add_development_dependency 'sleeping_king_studios-tasks', '>= 0.4.1'
+  gem.add_development_dependency 'sleeping_king_studios-tools', '~> 1.0'
   gem.add_development_dependency 'thor', '~> 1.0'
 end
