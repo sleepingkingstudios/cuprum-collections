@@ -9,6 +9,12 @@ RSpec.describe Cuprum::Collections::QueryBuilder do
 
   let(:base_query) { Cuprum::Collections::Query.new }
 
+  describe '::ParseError' do
+    it { expect(described_class::ParseError).to be_a Class }
+
+    it { expect(described_class::ParseError).to be < RuntimeError }
+  end
+
   describe '.new' do
     it { expect(described_class).to respond_to(:new).with(1).argument }
   end

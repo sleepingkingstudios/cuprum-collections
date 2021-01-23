@@ -258,9 +258,10 @@ module Cuprum::Collections
         # parameters contract.
         @parameters_contract_builder ||=
           Stannum::Contracts::ParametersContract::Builder
-          .new(
-            @parameters_contract ||= Stannum::Contracts::ParametersContract.new
-          )
+            .new(
+              @parameters_contract ||=
+                Stannum::Contracts::ParametersContract.new
+            )
       end
     end
 

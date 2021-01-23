@@ -51,13 +51,16 @@ module Cuprum::Collections::RSpec
 
       describe 'with an invalid filter block' do
         let(:filter) { -> { nil } }
+        let(:error_class) do
+          Cuprum::Collections::QueryBuilder::ParseError
+        end
         let(:error_message) do
-          'block must return a Hash'
+          'query block returned invalid value'
         end
 
         it 'should raise an exception' do
           expect { command.call(**options, &filter) }
-            .to raise_error ArgumentError, error_message
+            .to raise_error error_class, error_message
         end
       end
 

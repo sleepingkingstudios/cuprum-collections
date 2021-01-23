@@ -35,8 +35,8 @@ module Cuprum::Collections::Errors
     def corrections
       @corrections ||=
         DidYouMean::SpellChecker
-        .new(dictionary: Cuprum::Collections::Queries::VALID_OPERATORS.to_a)
-        .correct(operator)
+          .new(dictionary: Cuprum::Collections::Queries::VALID_OPERATORS.to_a)
+          .correct(operator)
     end
 
     # @return [String] short string used to identify the type of error.

@@ -195,8 +195,7 @@ RSpec.describe Cuprum::Collections::Queries::ParseBlock do
     describe 'with a block that returns an object' do
       let(:block) { -> { Object.new.freeze } }
       let(:expected_error) do
-        errors  =
-          Cuprum::Collections::Constraints::QueryHash
+        errors  = Cuprum::Collections::Constraints::QueryHash
           .new
           .errors_for(Object.new.freeze)
         message = 'query block returned invalid value'
@@ -218,8 +217,7 @@ RSpec.describe Cuprum::Collections::Queries::ParseBlock do
     describe 'with a block that returns an invalid hash' do
       let(:block) { -> { { nil => 'value' } } }
       let(:expected_error) do
-        errors  =
-          Cuprum::Collections::Constraints::QueryHash
+        errors  = Cuprum::Collections::Constraints::QueryHash
           .new
           .errors_for({ nil => 'value' })
         message = 'query block returned invalid value'

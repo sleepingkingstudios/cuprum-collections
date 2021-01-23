@@ -18,6 +18,9 @@ Layout/HashAlignment:
 Layout/LineLength:
   Max: 80
 
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
+
 Metrics/BlockLength:
   Exclude:
     - lib/**/*_contract.rb
