@@ -27,5 +27,7 @@ jobs:
       with:
         ruby-version: ${{ matrix.ruby-version }}
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+    - name: Setup RSpec configuration
+      run: cp .rspec.example .rspec
     - name: Run tests
       run: bundle exec thor ci:steps
