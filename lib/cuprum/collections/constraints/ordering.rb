@@ -10,7 +10,18 @@ require 'cuprum/collections/constraints/attribute_name'
 require 'cuprum/collections/constraints/sort_direction'
 
 module Cuprum::Collections::Constraints
-  # @todo Document Ordering.
+  # Asserts that the object is a valid query ordering.
+  #
+  # A valid ordering can be any of the following:
+  # - An attribute name (a non-empty string or symbol).
+  #   e.g. 'name' or :title
+  # - An array of attribute names
+  #   e.g. ['author', 'title']
+  # - A hash with attribute key names, whose values are valid sort directions.
+  #   e.g. { author: :ascending, title: :descending }
+  #
+  # Valid sort directions are :ascending and :descending (or :asc and :desc),
+  # and can be either strings or symbols.
   class Ordering < Stannum::Constraints::Union
     include Stannum::Support::Optional
 
@@ -42,7 +53,11 @@ module Cuprum::Collections::Constraints
     end
     alias match? matches?
 
-    # (see Stannum::Constraints::Base#with_options)
+    # Creates a copy of the constraint and updates the copy's options.
+    #
+    # @param options [Hash] The options to update.
+    #
+    # @return [Stannum::Constraints::Base] the copied constraint.
     def with_options(**options)
       super(**resolve_required_option(**options))
     end
