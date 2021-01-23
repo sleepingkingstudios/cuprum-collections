@@ -19,6 +19,7 @@ module Cuprum::Collections::Errors
     # @return [String, Symbol] the unknown operator.
     attr_reader :operator
 
+    # @return [Hash] a serializable hash representation of the error.
     def as_json
       {
         'data'    => {

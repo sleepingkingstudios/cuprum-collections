@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'stannum/contracts/parameters_contract'
-require 'stannum/errors'
 
 require 'cuprum/collections/constraints/query_hash'
 require 'cuprum/collections/errors/invalid_query'
