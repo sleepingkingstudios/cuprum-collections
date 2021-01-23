@@ -15,7 +15,5 @@ module Cuprum::Collections
 
     # Enumerates the valid operators as a Set for performant lookup.
     VALID_OPERATORS = Set.new(Operators.values).freeze
-
-    autoload :ParseBlock, 'cuprum/collections/queries/parse_block'
   end
 end

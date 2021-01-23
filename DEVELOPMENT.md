@@ -2,22 +2,6 @@
 
 ## Commands
 
-### FilterCommand
-
-Validate the order parameter: |
-  Union.of(
-    Array.of( # Indifferent key
-      String,
-      Symbol
-    ),
-    IndifferentHash(
-      values: Union.of(
-        IndifferentKey,
-        Enum.of(:asc, :ascending, :desc, :descending)
-      )
-    )
-  )
-
 ### ParameterCoercion
 
 ```ruby
@@ -42,31 +26,6 @@ Accessors for @limit, @offset, @order
 Accept a Query object as parameter to Query#where.
   - Merges the criteria from other#criteria.
   - Applies the limit, offset, order from other if not nil.
-
-### ParseBlock
-
-Define `Errors::InvalidQueryBlock` with `errors: Stannum::Errors`
-
-Potential failure points:
-  - The block raises an exception when called
-    - `-> { raise }`
-    - `errors.add(exception_raised, exception_class:, exception_message:)`
-    - invalid query block: exception raised SomeError: some message
-  - The block returns a non-Hash object
-    - `-> { nil }`
-    - `errors.add(block_not_hash, value: actual)`
-    - invalid query block: block should yield a Hash, but yielded actual.inspect
-  - The block returns a Hash with an invalid hash key.
-    - `-> { { '' => nil } }`
-    - `errors.add(invalid_hash_keys, keys: [])`
-    - invalid query block: hash keys must be non-empty strings or symbols, but received keys.map.inspect
-  - The block tries to access an unrecognized operator.
-    - `-> { { title: random() } }`
-    - `errors[attribute].add(unknown_operator, name:)`
-    - invalid query block: unknown operator $name for attribute $attribute
-
-Define `::matches?(arguments:, keywords:, block:)`
-  - true if block present and arguments+keywords empty.
 
 ### ParseCriteria
 
