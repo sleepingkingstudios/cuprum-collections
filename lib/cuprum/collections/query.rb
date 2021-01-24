@@ -158,8 +158,19 @@ module Cuprum::Collections
     #     method call for a valid operation defined for the query.
     #
     # @see #criteria
-    def where(&block)
-      query_builder.call(&block)
+    def where(*arguments, strategy: nil, **keywords, &block)
+      if keywords.empty?
+        query_builder.call(*arguments, strategy: strategy, &block)
+      else
+        # :nocov:
+        query_builder.call(
+          *arguments,
+          strategy: strategy,
+          keywords: keywords,
+          &block
+        )
+      end
+      # :nocov:
     end
 
     protected

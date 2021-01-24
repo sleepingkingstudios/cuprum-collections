@@ -14,7 +14,7 @@ module Cuprum::Collections::Queries
 
     private
 
-    def process
+    def process(arguments: [], block: nil, keywords: {}) # rubocop:disable Lint/UnusedMethodArgument
       []
     end
   end

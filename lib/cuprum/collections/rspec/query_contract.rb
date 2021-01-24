@@ -2,85 +2,17 @@
 
 require 'cuprum/collections/rspec'
 require 'cuprum/collections/rspec/fixtures'
+require 'cuprum/collections/rspec/querying_contract'
 
 module Cuprum::Collections::RSpec
-  OPERATORS = %i[eq ne].freeze
-  private_constant :OPERATORS
-
   # Contract validating the behavior of a Query implementation.
-  QUERY_CONTRACT = lambda do |operators: OPERATORS|
+  QUERY_CONTRACT = lambda do |operators: %i[eq ne].freeze|
     operators = Set.new(operators.map(&:to_sym))
 
-    shared_context 'when the query has limit: value' do
-      let(:limit)         { 3 }
-      let(:query)         { super().limit(limit) }
-      let(:matching_data) { super()[0...limit] }
-    end
-
-    shared_context 'when the query has limit: value and offset: value' do
-      let(:limit)         { 3 }
-      let(:offset)        { 2 }
-      let(:query)         { super().limit(limit).offset(offset) }
-      let(:matching_data) { super()[offset...(offset + limit)] || [] }
-    end
-
-    shared_context 'when the query has offset: value' do
-      let(:offset)        { 2 }
-      let(:query)         { super().offset(offset) }
-      let(:matching_data) { super()[offset..-1] || [] }
-    end
-
-    shared_context 'when the query has order: a simple ordering' do
-      let(:query)         { super().order(:title) }
-      let(:matching_data) { super().sort_by { |item| item['title'] } }
-    end
-
-    shared_context 'when the query has order: a complex ordering' do
-      let(:order) do
-        {
-          author: :asc,
-          title:  :desc
-        }
-      end
-      let(:query) { super().order(order) }
-      let(:matching_data) do
-        super().sort do |u, v|
-          cmp = u['author'] <=> v['author']
-
-          cmp.zero? ? (v['title'] <=> u['title']) : cmp
-        end
-      end
-    end
-
-    shared_context 'when the query has where: a simple filter' do
-      let(:query) do
-        super().where do
-          { author: 'Ursula K. LeGuin' }
-        end
-      end
-      let(:matching_data) do
-        super().select { |item| item['author'] == 'Ursula K. LeGuin' }
-      end
-    end
-
-    shared_context 'when the query has where: a complex filter' do
-      let(:query) do
-        super().where do
-          {
-            author: equals('Ursula K. LeGuin'),
-            series: not_equal('Earthsea')
-          }
-        end
-      end
-      let(:matching_data) do
-        super()
-          .select { |item| item['author'] == 'Ursula K. LeGuin' }
-          .reject { |item| item['series'] == 'Earthsea' }
-      end
-    end
+    include_contract Cuprum::Collections::RSpec::QUERYING_CONTEXTS
 
     shared_context 'when the query has composed filters' do
-      let(:query) do
+      let(:scoped_query) do
         super()
           .where { { author: 'Ursula K. LeGuin' } }
           .where { { series: not_equal('Earthsea') } }
@@ -92,38 +24,20 @@ module Cuprum::Collections::RSpec
       end
     end
 
-    shared_context 'when the query has an equals filter' do
-      let(:query) do
-        super().where { { author: equals('Ursula K. LeGuin') } }
-      end
-      let(:matching_data) do
-        super().select { |item| item['author'] == 'Ursula K. LeGuin' }
-      end
-    end
+    let(:scoped_query) do
+      # :nocov:
+      scoped =
+        if keywords.empty?
+          query.where(*arguments, &block)
+        else
+          query.where(*arguments, **keywords, &block)
+        end
+      # :nocov:
+      scoped = scoped.limit(limit)   if limit
+      scoped = scoped.offset(offset) if offset
+      scoped = scoped.order(order)   if order
 
-    shared_context 'when the query has a not_equal filter' do
-      let(:query) do
-        super().where { { author: not_equal('Ursula K. LeGuin') } }
-      end
-      let(:matching_data) do
-        super().reject { |item| item['author'] == 'Ursula K. LeGuin' }
-      end
-    end
-
-    shared_context 'when the query has multiple chained query methods' do
-      let(:query) do
-        super()
-          .where { { author: 'Ursula K. LeGuin' } }
-          .order(title: :desc)
-          .limit(2)
-          .offset(1)
-      end
-      let(:matching_data) do
-        super()
-          .select { |item| item['author'] == 'Ursula K. LeGuin' }
-          .sort { |u, v| v['title'] <=> u['title'] }
-          .slice(1, 2) || []
-      end
+      scoped
     end
 
     it 'should be enumerable' do
@@ -133,13 +47,13 @@ module Cuprum::Collections::RSpec
     describe '#criteria' do
       include_examples 'should have reader', :criteria, []
 
-      wrap_context 'when the query has where: a simple filter' do
+      wrap_context 'when the query has where: a simple block filter' do
         let(:expected) { [['author', :eq, 'Ursula K. LeGuin']] }
 
-        it { expect(query.criteria).to be == expected }
+        it { expect(scoped_query.criteria).to be == expected }
       end
 
-      wrap_context 'when the query has where: a complex filter' do
+      wrap_context 'when the query has where: a complex block filter' do
         let(:expected) do
           [
             ['author', :eq, 'Ursula K. LeGuin'],
@@ -147,7 +61,14 @@ module Cuprum::Collections::RSpec
           ]
         end
 
-        it { expect(query.criteria).to be == expected }
+        if operators.include?(OPERATORS::EQUAL) &&
+           operators.include?(OPERATORS::NOT_EQUAL)
+          it { expect(scoped_query.criteria).to be == expected }
+        else
+          # :nocov:
+          pending
+          # :nocov:
+        end
       end
 
       wrap_context 'when the query has composed filters' do
@@ -158,22 +79,30 @@ module Cuprum::Collections::RSpec
           ]
         end
 
-        it { expect(query.criteria).to be == expected }
+        it { expect(scoped_query.criteria).to be == expected }
       end
 
-      if operators.include?(:eq)
-        wrap_context 'when the query has an equals filter' do
-          let(:expected) { [['author', :eq, 'Ursula K. LeGuin']] }
+      wrap_context 'when the query has where: an equal block filter' do
+        let(:expected) { [['author', :eq, 'Ursula K. LeGuin']] }
 
-          it { expect(query.criteria).to be == expected }
+        if operators.include?(OPERATORS::EQUAL)
+          it { expect(scoped_query.criteria).to be == expected }
+        else
+          # :nocov:
+          pending
+          # :nocov:
         end
       end
 
-      if operators.include?(:ne)
-        wrap_context 'when the query has a not_equal filter' do
-          let(:expected) { [['author', :ne, 'Ursula K. LeGuin']] }
+      wrap_context 'when the query has where: a not_equal block filter' do
+        let(:expected) { [['author', :ne, 'Ursula K. LeGuin']] }
 
-          it { expect(query.criteria).to be == expected }
+        if operators.include?(OPERATORS::NOT_EQUAL)
+          it { expect(scoped_query.criteria).to be == expected }
+        else
+          # :nocov:
+          pending
+          # :nocov:
         end
       end
     end
@@ -181,16 +110,16 @@ module Cuprum::Collections::RSpec
     describe '#each' do
       shared_examples 'should enumerate the matching data' do
         describe 'with no arguments' do
-          it { expect(query.each).to be_a Enumerator }
+          it { expect(scoped_query.each).to be_a Enumerator }
 
-          it { expect(query.each.count).to be == matching_data.size }
+          it { expect(scoped_query.each.count).to be == matching_data.size }
 
-          it { expect(query.each.to_a).to deep_match expected_data }
+          it { expect(scoped_query.each.to_a).to deep_match expected_data }
         end
 
         describe 'with a block' do
           it 'should yield each matching item' do
-            expect { |block| query.each(&block) }
+            expect { |block| scoped_query.each(&block) }
               .to yield_successive_args(*expected_data)
           end
         end
@@ -206,31 +135,13 @@ module Cuprum::Collections::RSpec
 
       include_examples 'should enumerate the matching data'
 
-      wrap_context 'when the query has limit: value' do
-        include_examples 'should enumerate the matching data'
-      end
+      include_contract Cuprum::Collections::RSpec::QUERYING_CONTRACT,
+        block:     lambda {
+          include_examples 'should enumerate the matching data'
+        },
+        operators: operators
 
-      wrap_context 'when the query has limit: value and offset: value' do
-        include_examples 'should enumerate the matching data'
-      end
-
-      wrap_context 'when the query has offset: value' do
-        include_examples 'should enumerate the matching data'
-      end
-
-      wrap_context 'when the query has order: a simple ordering' do
-        include_examples 'should enumerate the matching data'
-      end
-
-      wrap_context 'when the query has order: a complex ordering' do
-        include_examples 'should enumerate the matching data'
-      end
-
-      wrap_context 'when the query has where: a simple filter' do
-        include_examples 'should enumerate the matching data'
-      end
-
-      wrap_context 'when the query has multiple chained query methods' do
+      wrap_context 'when the query has composed filters' do
         include_examples 'should enumerate the matching data'
       end
 
@@ -239,52 +150,14 @@ module Cuprum::Collections::RSpec
 
         include_examples 'should enumerate the matching data'
 
-        wrap_context 'when the query has limit: value' do
-          include_examples 'should enumerate the matching data'
-        end
-
-        wrap_context 'when the query has limit: value and offset: value' do
-          include_examples 'should enumerate the matching data'
-        end
-
-        wrap_context 'when the query has offset: value' do
-          include_examples 'should enumerate the matching data'
-        end
-
-        wrap_context 'when the query has order: a simple ordering' do
-          include_examples 'should enumerate the matching data'
-        end
-
-        wrap_context 'when the query has order: a complex ordering' do
-          include_examples 'should enumerate the matching data'
-        end
-
-        wrap_context 'when the query has where: a simple filter' do
-          include_examples 'should enumerate the matching data'
-        end
-
-        wrap_context 'when the query has where: a complex filter' do
-          include_examples 'should enumerate the matching data'
-        end
+        include_contract Cuprum::Collections::RSpec::QUERYING_CONTRACT,
+          block:     lambda {
+            include_examples 'should enumerate the matching data'
+          },
+          operators: operators
 
         wrap_context 'when the query has composed filters' do
           include_examples 'should enumerate the matching data'
-        end
-
-        wrap_context 'when the query has an equals filter' do
-          include_examples 'should enumerate the matching data'
-        end
-
-        if operators.include?(:eq)
-          wrap_context 'when the query has a not_equal filter' do
-            include_examples 'should enumerate the matching data'
-          end
-        end
-
-        if operators.include?(:ne)
-          wrap_context 'when the query has multiple chained query methods' do
-            include_examples 'should enumerate the matching data'
-          end
         end
       end
     end
@@ -473,32 +346,14 @@ module Cuprum::Collections::RSpec
 
       it { expect(query.to_a).to deep_match expected_data }
 
-      wrap_context 'when the query has limit: value' do
-        it { expect(query.to_a).to deep_match expected_data }
-      end
+      include_contract Cuprum::Collections::RSpec::QUERYING_CONTRACT,
+        block:     lambda {
+          it { expect(scoped_query.to_a).to deep_match expected_data }
+        },
+        operators: operators
 
-      wrap_context 'when the query has limit: value and offset: value' do
-        it { expect(query.to_a).to deep_match expected_data }
-      end
-
-      wrap_context 'when the query has offset: value' do
-        it { expect(query.to_a).to deep_match expected_data }
-      end
-
-      wrap_context 'when the query has order: a simple ordering' do
-        it { expect(query.to_a).to deep_match expected_data }
-      end
-
-      wrap_context 'when the query has order: a complex ordering' do
-        it { expect(query.to_a).to deep_match expected_data }
-      end
-
-      wrap_context 'when the query has where: a simple filter' do
-        it { expect(query.to_a).to deep_match expected_data }
-      end
-
-      wrap_context 'when the query has multiple chained query methods' do
-        it { expect(query.to_a).to deep_match expected_data }
+      wrap_context 'when the query has composed filters' do
+        it { expect(scoped_query.to_a).to deep_match expected_data }
       end
 
       context 'when the collection has many items' do
@@ -506,52 +361,14 @@ module Cuprum::Collections::RSpec
 
         it { expect(query.to_a).to deep_match expected_data }
 
-        wrap_context 'when the query has limit: value' do
-          it { expect(query.to_a).to deep_match expected_data }
-        end
-
-        wrap_context 'when the query has limit: value and offset: value' do
-          it { expect(query.to_a).to deep_match expected_data }
-        end
-
-        wrap_context 'when the query has offset: value' do
-          it { expect(query.to_a).to deep_match expected_data }
-        end
-
-        wrap_context 'when the query has order: a simple ordering' do
-          it { expect(query.to_a).to deep_match expected_data }
-        end
-
-        wrap_context 'when the query has order: a complex ordering' do
-          it { expect(query.to_a).to deep_match expected_data }
-        end
-
-        wrap_context 'when the query has where: a simple filter' do
-          it { expect(query.to_a).to deep_match expected_data }
-        end
-
-        wrap_context 'when the query has where: a complex filter' do
-          it { expect(query.to_a).to deep_match expected_data }
-        end
+        include_contract Cuprum::Collections::RSpec::QUERYING_CONTRACT,
+          block:     lambda {
+            it { expect(scoped_query.to_a).to deep_match expected_data }
+          },
+          operators: operators
 
         wrap_context 'when the query has composed filters' do
-          it { expect(query.to_a).to deep_match expected_data }
-        end
-
-        if operators.include?(:eq)
-          wrap_context 'when the query has an equals filter' do
-            it { expect(query.to_a).to deep_match expected_data }
-          end
-        end
-
-        if operators.include?(:ne)
-          wrap_context 'when the query has a not_equal filter' do
-            it { expect(query.to_a).to deep_match expected_data }
-          end
-        end
-
-        wrap_context 'when the query has multiple chained query methods' do
-          it { expect(query.to_a).to deep_match expected_data }
+          it { expect(scoped_query.to_a).to deep_match expected_data }
         end
       end
     end
@@ -559,11 +376,64 @@ module Cuprum::Collections::RSpec
     describe '#where' do
       let(:block) { -> { { title: 'The Caves of Steel' } } }
 
-      it { expect(query).to respond_to(:where).with(0).arguments.and_a_block }
+      it 'should define the method' do
+        expect(query)
+          .to respond_to(:where)
+          .with_unlimited_arguments
+          .and_keywords(:strategy)
+          .and_any_keywords
+          .and_a_block
+      end
 
-      it { expect(query.where(&block)).to be_a described_class }
+      describe 'with no arguments' do
+        it { expect(query.where).to be_a described_class }
 
-      it { expect(query.where(&block)).not_to be query }
+        it { expect(query.where).not_to be query }
+      end
+
+      describe 'with a block' do
+        it { expect(query.where(&block)).to be_a described_class }
+
+        it { expect(query.where(&block)).not_to be query }
+      end
+
+      describe 'with a valid strategy' do
+        it { expect(query.where(strategy: :empty)).to be_a described_class }
+
+        it { expect(query.where(strategy: :empty)).not_to be query }
+      end
+
+      describe 'with parameters that do not match a strategy' do
+        let(:arguments)     { %w[ichi ni san] }
+        let(:keywords)      { { one: 1, two: 2, three: 3 } }
+        let(:error_class)   { Cuprum::Collections::QueryBuilder::ParseError }
+        let(:error_message) { 'unable to parse query with strategy nil' }
+
+        it 'should raise an exception' do
+          expect { query.where(*arguments, **keywords) }
+            .to raise_error error_class, error_message
+        end
+      end
+
+      describe 'with an invalid strategy' do
+        let(:error_class)   { Cuprum::Collections::QueryBuilder::ParseError }
+        let(:error_message) { 'unable to parse query with strategy :random' }
+
+        it 'should raise an exception' do
+          expect { query.where(strategy: :random) }
+            .to raise_error error_class, error_message
+        end
+      end
+
+      describe 'with invalid parameters for a strategy' do
+        let(:error_class)   { Cuprum::Collections::QueryBuilder::ParseError }
+        let(:error_message) { 'unable to parse query with strategy :block' }
+
+        it 'should raise an exception' do
+          expect { query.where(strategy: :block) }
+            .to raise_error error_class, error_message
+        end
+      end
     end
   end
 end

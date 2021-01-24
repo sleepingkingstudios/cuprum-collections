@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'cuprum/collections/query'
+require 'cuprum/collections/query_builder'
 
 RSpec.describe Cuprum::Collections::Query do
   subject(:query) { described_class.new }
@@ -573,22 +574,62 @@ RSpec.describe Cuprum::Collections::Query do
   end
 
   describe '#where' do
-    let(:block)   { -> { { title: 'The Caves of Steel' } } }
-    let(:other)   { described_class.new }
-    let(:builder) { -> { other } }
+    let(:other) { described_class.new }
+    let(:builder) do
+      instance_double(Cuprum::Collections::QueryBuilder, call: other)
+    end
 
     before(:example) do
       allow(query).to receive(:query_builder).and_return(builder) # rubocop:disable RSpec/SubjectStub
     end
 
-    it { expect(query).to respond_to(:where).with(0).arguments.and_a_block }
+    it 'should define the method' do # rubocop:disable RSpec/ExampleLength
+      expect(query)
+        .to respond_to(:where)
+        .with_unlimited_arguments
+        .and_keywords(:strategy)
+        .and_any_keywords
+        .and_a_block
+    end
 
-    it { expect(query.where(&block)).to be other }
+    describe 'with no parameters' do
+      it { expect(query.where).to be other }
 
-    it 'should delegate to the query builder' do
-      allow(builder).to receive(:call).and_yield
+      it 'should delegate to the query builder', :aggregate_failures do
+        query.where
 
-      expect { |block| query.where(&block) }.to yield_control
+        expect(builder).to have_received(:call).with(strategy: nil)
+      end
+    end
+
+    describe 'with a specified strategy' do
+      let(:strategy) { :random }
+
+      it { expect(query.where(strategy: strategy)).to be other }
+
+      it 'should delegate to the query builder', :aggregate_failures do
+        query.where(strategy: strategy)
+
+        expect(builder).to have_received(:call).with(strategy: strategy)
+      end
+    end
+
+    describe 'with a block' do
+      let(:block) { -> { { title: 'The Caves of Steel' } } }
+
+      it { expect(query.where(&block)).to be other }
+
+      it 'should delegate to the query builder', :aggregate_failures do
+        query.where(&block)
+
+        expect(builder).to have_received(:call).with(strategy: nil)
+      end
+
+      it 'should evaluate the block' do
+        allow(builder).to receive(:call).and_yield
+
+        expect { |block| query.where(&block) }.to yield_control
+      end
     end
   end
 
