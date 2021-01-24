@@ -158,8 +158,10 @@ module Cuprum::Collections
     #     method call for a valid operation defined for the query.
     #
     # @see #criteria
-    def where(*arguments, strategy: nil, **keywords, &block)
-      if keywords.empty?
+    def where(*arguments, strategy: nil, **keywords, &block) # rubocop:disable Metrics/MethodLength
+      if strategy == :unsafe
+        dup.tap { |copy| copy.with_criteria(arguments.first) }
+      elsif keywords.empty?
         query_builder.call(*arguments, strategy: strategy, &block)
       else
         # :nocov:

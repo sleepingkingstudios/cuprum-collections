@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'cuprum/collections/constraints/ordering'
+require 'cuprum/collections/queries/parse'
 require 'cuprum/collections/reference/command'
 require 'cuprum/collections/reference/commands'
 require 'cuprum/collections/reference/query'
@@ -75,19 +76,47 @@ module Cuprum::Collections::Reference::Commands
 
     private
 
-    def build_query(limit:, offset:, order:, &block)
+    def build_query(criteria:, limit:, offset:, order:)
       query = Cuprum::Collections::Reference::Query.new(data)
       query = query.limit(limit)   if limit
       query = query.offset(offset) if offset
       query = query.order(order)   if order
-      query = query.where(&block)  if block_given?
+      query = query.where(criteria, strategy: :unsafe) unless criteria.empty?
 
       success(query)
     end
 
-    def process(limit: nil, offset: nil, order: nil, &block)
+    def parse_criteria(strategy:, where:, &block)
+      return [] if strategy.nil? && where.nil? && !block_given?
+
+      arguments = where.nil? ? [] : [where]
+
+      Cuprum::Collections::Queries::Parse.new.call(
+        arguments: arguments,
+        block:     block,
+        keywords:  {}
+      )
+    end
+
+    def process( # rubocop:disable Metrics/MethodLength, Metrics/ParameterLists
+      limit:    nil,
+      offset:   nil,
+      order:    nil,
+      strategy: nil,
+      where:    nil,
+      &block
+    )
+      criteria = step do
+        parse_criteria(strategy: strategy, where: where, &block)
+      end
+
       query = step do
-        build_query(limit: limit, offset: offset, order: order, &block)
+        build_query(
+          criteria: criteria,
+          limit:    limit,
+          offset:   offset,
+          order:    order
+        )
       end
 
       success(query.each)

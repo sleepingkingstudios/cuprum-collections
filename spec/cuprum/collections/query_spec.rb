@@ -592,25 +592,25 @@ RSpec.describe Cuprum::Collections::Query do
         .and_a_block
     end
 
-    describe 'with no parameters' do
-      it { expect(query.where).to be other }
-
-      it 'should delegate to the query builder', :aggregate_failures do
-        query.where
-
-        expect(builder).to have_received(:call).with(strategy: nil)
-      end
-    end
-
     describe 'with a specified strategy' do
       let(:strategy) { :random }
 
       it { expect(query.where(strategy: strategy)).to be other }
 
-      it 'should delegate to the query builder', :aggregate_failures do
+      it 'should delegate to the query builder' do
         query.where(strategy: strategy)
 
         expect(builder).to have_received(:call).with(strategy: strategy)
+      end
+    end
+
+    describe 'with no parameters' do
+      it { expect(query.where).to be other }
+
+      it 'should delegate to the query builder' do
+        query.where
+
+        expect(builder).to have_received(:call).with(strategy: nil)
       end
     end
 
@@ -619,7 +619,7 @@ RSpec.describe Cuprum::Collections::Query do
 
       it { expect(query.where(&block)).to be other }
 
-      it 'should delegate to the query builder', :aggregate_failures do
+      it 'should delegate to the query builder' do
         query.where(&block)
 
         expect(builder).to have_received(:call).with(strategy: nil)
@@ -629,6 +629,52 @@ RSpec.describe Cuprum::Collections::Query do
         allow(builder).to receive(:call).and_yield
 
         expect { |block| query.where(&block) }.to yield_control
+      end
+    end
+
+    describe 'with criteria and strategy: :unsafe' do
+      let(:criteria) do
+        [
+          ['title',  :eq, 'The Caves of Steel'],
+          ['author', :eq, 'Isaac Asimov']
+        ]
+      end
+      let(:expected) { criteria }
+      let(:copy)     { described_class.new }
+
+      before(:example) do
+        allow(query).to receive(:dup).and_return(copy) # rubocop:disable RSpec/SubjectStub
+      end
+
+      it { expect(query.where(criteria, strategy: :unsafe)).to be copy }
+
+      it 'should append the criteria' do
+        expect(query.where(criteria, strategy: :unsafe).criteria)
+          .to be == expected
+      end
+
+      it 'should not delegate to the query builder' do
+        query.where(criteria, strategy: :unsafe)
+
+        expect(builder).not_to have_received(:call)
+      end
+
+      context 'when the query has criteria' do
+        let(:old_criteria) do
+          [
+            ['genre', :eg, 'Science Fiction']
+          ]
+        end
+        let(:expected) { old_criteria + criteria }
+
+        before(:example) do
+          copy.send(:with_criteria, old_criteria)
+        end
+
+        it 'should append the criteria' do
+          expect(query.where(criteria, strategy: :unsafe).criteria)
+            .to be == expected
+        end
       end
     end
   end
