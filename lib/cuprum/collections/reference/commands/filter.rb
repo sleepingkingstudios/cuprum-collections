@@ -89,12 +89,9 @@ module Cuprum::Collections::Reference::Commands
     def parse_criteria(strategy:, where:, &block)
       return [] if strategy.nil? && where.nil? && !block_given?
 
-      arguments = where.nil? ? [] : [where]
-
       Cuprum::Collections::Queries::Parse.new.call(
-        arguments: arguments,
-        block:     block,
-        keywords:  {}
+        strategy: strategy,
+        where:    where || block
       )
     end
 

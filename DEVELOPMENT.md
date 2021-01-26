@@ -23,14 +23,23 @@ Accessors for @limit, @offset, @order
   - Overload methods? Return current value if no parameters?
   - Namespaced accessors? E.g. #query_limit, #query_offset, ... ?
 
-Accept a Query object as parameter to Query#where.
+Harmonize #order validation/coercion between Query#order_by and Filter#call
+  - Possible values:
+    - nil
+    - attr_name
+    - [attr_name, ...]
+    - { attr_name: direction, ... }
+    - [attr_name, ..., { attr_name: direction }, ...]
+  - Coerce possible values to { attr_name: direction }
+
+Query#merge ?
   - Merges the criteria from other#criteria.
   - Applies the limit, offset, order from other if not nil.
 
-### Parse
+### ParseCriteria
 
-Simplify parsing logic
-  - Filter.call(where:) accepts a single argument or block.
-  - Restrict Query.where() to accept arg, strategy:, &block
-  - Refactor Parse.call to accept argument:, strategy:, block:.
-    - Refactor ParseStrategy, Parse* commands.
+Validates and returns an Array of criteria.
+
+### ParseQuery
+
+Extends ParseCriteria, passes Query#criteria to super.

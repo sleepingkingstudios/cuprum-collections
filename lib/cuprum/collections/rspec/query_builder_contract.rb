@@ -12,17 +12,8 @@ module Cuprum::Collections::RSpec
     describe '#call' do
       let(:criteria)  { [['title', :eq, 'The Naked Sun']] }
       let(:expected)  { criteria }
-      let(:arguments) { %w[ichi ni san] }
-      let(:keywords)  { { one: 1, two: 2, three: 3 } }
-      let(:block)     { -> {} }
+      let(:filter)    { { title: 'The Naked Sun' } }
       let(:strategy)  { :custom }
-      let(:parameters) do
-        {
-          arguments: arguments,
-          block:     block,
-          keywords:  keywords
-        }
-      end
       let(:parser) do
         instance_double(
           Cuprum::Collections::Queries::Parse,
@@ -30,7 +21,7 @@ module Cuprum::Collections::RSpec
         )
       end
       let(:query) do
-        builder.call(*arguments, strategy: strategy, **keywords, &block)
+        builder.call(strategy: strategy, where: filter)
       end
 
       before(:example) do
@@ -41,18 +32,16 @@ module Cuprum::Collections::RSpec
 
       it 'should define the method' do
         expect(builder).to respond_to(:call)
-          .with_unlimited_arguments
-          .and_keywords(:strategy)
-          .and_any_keywords
-          .and_a_block
+          .with(0).arguments
+          .and_keywords(:strategy, :where)
       end
 
       it 'should parse the criteria' do
-        builder.call(*arguments, strategy: strategy, **keywords, &block)
+        builder.call(strategy: strategy, where: filter)
 
         expect(parser)
           .to have_received(:call)
-          .with(strategy: strategy, **parameters)
+          .with(strategy: strategy, where: filter)
       end
 
       it { expect(query).to be_a base_query.class }
@@ -79,7 +68,7 @@ module Cuprum::Collections::RSpec
 
         it 'should raise an exception' do
           expect do
-            builder.call(*arguments, strategy: strategy, **keywords, &block)
+            builder.call(strategy: strategy, where: filter)
           end
             .to raise_error Cuprum::Collections::QueryBuilder::ParseError,
               error.message

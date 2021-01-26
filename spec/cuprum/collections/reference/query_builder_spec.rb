@@ -33,9 +33,9 @@ RSpec.describe Cuprum::Collections::Reference::QueryBuilder do
       end
     end
 
-    describe 'with a block' do
+    describe 'with where: a block' do
       let(:block)   { -> { { author: 'Nnedi Okorafor', series: 'Binti' } } }
-      let(:query)   { builder.call(&block) }
+      let(:query)   { builder.call(where: block) }
       let(:filters) { query.send(:filters) }
 
       it { expect(filters).to be_a Array }

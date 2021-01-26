@@ -10,16 +10,7 @@ RSpec.describe Cuprum::Collections::Queries::Parse do
   end
 
   describe '#call' do
-    let(:arguments) { %w[ichi ni san] }
-    let(:block)     { -> {} }
-    let(:keywords)  { { one: 1, two: 2, three: 3 } }
-    let(:parameters) do
-      {
-        arguments: arguments,
-        block:     block,
-        keywords:  keywords
-      }
-    end
+    let(:filter)   { { title: 'Binti' } }
     let(:criteria) { [[:title, :eq, 'Binti']] }
     let(:strategy_command) do
       Cuprum::Collections::Queries::ParseStrategy.new
@@ -35,22 +26,22 @@ RSpec.describe Cuprum::Collections::Queries::Parse do
     end
 
     it 'should determine the parsing strategy' do
-      command.call(**parameters)
+      command.call(where: filter)
 
       expect(strategy_command).to have_received(:call).with(
         strategy: nil,
-        **parameters
+        where:    filter
       )
     end
 
     it 'should call the selected strategy command' do
-      command.call(**parameters)
+      command.call(where: filter)
 
-      expect(selected_strategy).to have_received(:call).with(**parameters)
+      expect(selected_strategy).to have_received(:call).with(where: filter)
     end
 
     it 'should return a passing result with the parsed criteria' do
-      expect(command.call(**parameters))
+      expect(command.call(where: filter))
         .to be_a_passing_result
         .with_value(criteria)
     end
@@ -59,44 +50,22 @@ RSpec.describe Cuprum::Collections::Queries::Parse do
       let(:strategy) { :block }
 
       it 'should determine the parsing strategy' do
-        command.call(strategy: strategy, **parameters)
+        command.call(strategy: strategy, where: filter)
 
         expect(strategy_command).to have_received(:call).with(
           strategy: strategy,
-          **parameters
+          where:    filter
         )
       end
 
       it 'should call the selected strategy command' do
-        command.call(strategy: strategy, **parameters)
+        command.call(strategy: strategy, where: filter)
 
-        expect(selected_strategy).to have_received(:call).with(**parameters)
+        expect(selected_strategy).to have_received(:call).with(where: filter)
       end
 
       it 'should return a passing result with the parsed criteria' do
-        expect(command.call(strategy: strategy, **parameters))
-          .to be_a_passing_result
-          .with_value(criteria)
-      end
-    end
-
-    describe 'with strategy: :unsafe' do
-      let(:arguments) { [criteria] }
-
-      it 'should not determine the parsing strategy' do
-        command.call(strategy: :unsafe, **parameters)
-
-        expect(strategy_command).not_to have_received(:call)
-      end
-
-      it 'should not call a strategy command' do
-        command.call(strategy: :unsafe, **parameters)
-
-        expect(selected_strategy).not_to have_received(:call)
-      end
-
-      it 'should return a passing result with the parsed criteria' do
-        expect(command.call(strategy: :unsafe, **parameters))
+        expect(command.call(strategy: strategy, where: filter))
           .to be_a_passing_result
           .with_value(criteria)
       end

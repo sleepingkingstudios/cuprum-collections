@@ -8,9 +8,7 @@ module Cuprum::Collections::RSpec
 
   # Shared contexts for specs that define querying behavior.
   QUERYING_CONTEXTS = lambda do
-    let(:arguments) { [] }
-    let(:block)     { nil }
-    let(:keywords)  { {} }
+    let(:filter)    { nil }
     let(:strategy)  { nil }
     let(:limit)     { nil }
     let(:offset)    { nil }
@@ -48,14 +46,14 @@ module Cuprum::Collections::RSpec
     end
 
     shared_context 'when the query has where: a simple block filter' do
-      let(:block) { -> { { author: 'Ursula K. LeGuin' } } }
+      let(:filter) { -> { { author: 'Ursula K. LeGuin' } } }
       let(:matching_data) do
         super().select { |item| item['author'] == 'Ursula K. LeGuin' }
       end
     end
 
     shared_context 'when the query has where: a complex block filter' do
-      let(:block) do
+      let(:filter) do
         lambda do
           {
             author: equals('Ursula K. LeGuin'),
@@ -71,23 +69,21 @@ module Cuprum::Collections::RSpec
     end
 
     shared_context 'when the query has where: an equal block filter' do
-      let(:block) { -> { { author: equals('Ursula K. LeGuin') } } }
+      let(:filter) { -> { { author: equals('Ursula K. LeGuin') } } }
       let(:matching_data) do
         super().select { |item| item['author'] == 'Ursula K. LeGuin' }
       end
     end
 
     shared_context 'when the query has where: a not_equal block filter' do
-      let(:block) { -> { { author: not_equal('Ursula K. LeGuin') } } }
+      let(:filter) { -> { { author: not_equal('Ursula K. LeGuin') } } }
       let(:matching_data) do
         super().reject { |item| item['author'] == 'Ursula K. LeGuin' }
       end
     end
 
     shared_context 'when the query has multiple query options' do
-      let(:arguments) { [] }
-      let(:block)     { -> { { author: 'Ursula K. LeGuin' } } }
-      let(:keywords)  { {} }
+      let(:filter)    { -> { { author: 'Ursula K. LeGuin' } } }
       let(:strategy)  { nil }
       let(:order)     { { title: :desc } }
       let(:limit)     { 2 }

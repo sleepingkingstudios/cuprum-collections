@@ -2,7 +2,11 @@
 
 require 'cuprum/collections/queries/parse_block'
 
+require 'support/examples/command_examples'
+
 RSpec.describe Cuprum::Collections::Queries::ParseBlock do
+  include Spec::Support::Examples::CommandExamples
+
   subject(:command) { described_class.new }
 
   let(:operators) { Cuprum::Collections::Queries::Operators }
@@ -29,129 +33,22 @@ RSpec.describe Cuprum::Collections::Queries::ParseBlock do
     end
   end
 
-  describe '::CONTRACT' do
-    include_examples 'should define immutable constant',
-      :CONTRACT,
-      -> { be_a Stannum::Contracts::ParametersContract }
-
-    describe 'with no parameters' do
-      let(:parameters) do
-        {
-          arguments: [],
-          keywords:  {},
-          block:     nil
-        }
-      end
-
-      it 'should not match the parameters' do
-        expect(described_class::CONTRACT.matches?(**parameters)).to be false
-      end
-    end
-
-    describe 'with arguments' do
-      let(:parameters) do
-        {
-          arguments: %w[ichi ni san],
-          keywords:  {},
-          block:     nil
-        }
-      end
-
-      it 'should not match the parameters' do
-        expect(described_class::CONTRACT.matches?(**parameters)).to be false
-      end
-    end
-
-    describe 'with keywords' do
-      let(:parameters) do
-        {
-          arguments: [],
-          keywords:  { one: 1, two: 2, three: 3 },
-          block:     nil
-        }
-      end
-
-      it 'should not match the parameters' do
-        expect(described_class::CONTRACT.matches?(**parameters)).to be false
-      end
-    end
-
-    describe 'with arguments and keywords' do
-      let(:parameters) do
-        {
-          arguments: %w[ichi ni san],
-          keywords:  { one: 1, two: 2, three: 3 },
-          block:     nil
-        }
-      end
-
-      it 'should not match the parameters' do
-        expect(described_class::CONTRACT.matches?(**parameters)).to be false
-      end
-    end
-
-    describe 'with a block' do
-      let(:parameters) do
-        {
-          arguments: [],
-          keywords:  {},
-          block:     -> {}
-        }
-      end
-
-      it 'should match the parameters' do
-        expect(described_class::CONTRACT.matches?(**parameters)).to be true
-      end
-    end
-
-    describe 'with arguments and a block' do
-      let(:parameters) do
-        {
-          arguments: %w[ichi ni san],
-          keywords:  {},
-          block:     -> {}
-        }
-      end
-
-      it 'should not match the parameters' do
-        expect(described_class::CONTRACT.matches?(**parameters)).to be false
-      end
-    end
-
-    describe 'with keywords and a block' do
-      let(:parameters) do
-        {
-          arguments: [],
-          keywords:  { one: 1, two: 2, three: 3 },
-          block:     -> {}
-        }
-      end
-
-      it 'should not match the parameters' do
-        expect(described_class::CONTRACT.matches?(**parameters)).to be false
-      end
-    end
-
-    describe 'with arguments, keywords, and a block' do
-      let(:parameters) do
-        {
-          arguments: %w[ichi ni san],
-          keywords:  { one: 1, two: 2, three: 3 },
-          block:     -> {}
-        }
-      end
-
-      it 'should not match the parameters' do
-        expect(described_class::CONTRACT.matches?(**parameters)).to be false
-      end
-    end
-  end
-
   describe '.new' do
     it { expect(described_class).to respond_to(:new).with(0).arguments }
   end
 
+  describe '.parameters_contract' do
+    include_examples 'should define class reader',
+      :parameters_contract,
+      -> { an_instance_of Stannum::Contracts::ParametersContract }
+  end
+
   describe '#call' do
+    include_examples 'should validate the keyword',
+      :where,
+      type:     Proc,
+      optional: false
+
     describe 'with a block that raises an error' do
       let(:exception) do
         RuntimeError.new('Something went wrong.')
@@ -165,7 +62,7 @@ RSpec.describe Cuprum::Collections::Queries::ParseBlock do
       end
 
       it 'should return a failing result' do
-        expect(command.call(block: block))
+        expect(command.call(where: block))
           .to be_a_failing_result
           .with_error(expected_error)
       end
@@ -186,7 +83,7 @@ RSpec.describe Cuprum::Collections::Queries::ParseBlock do
       end
 
       it 'should return a failing result' do
-        expect(command.call(block: block))
+        expect(command.call(where: block))
           .to be_a_failing_result
           .with_error(expected_error)
       end
@@ -208,7 +105,7 @@ RSpec.describe Cuprum::Collections::Queries::ParseBlock do
       end
 
       it 'should return a failing result' do
-        expect(command.call(block: block))
+        expect(command.call(where: block))
           .to be_a_failing_result
           .with_error(expected_error)
       end
@@ -230,7 +127,7 @@ RSpec.describe Cuprum::Collections::Queries::ParseBlock do
       end
 
       it 'should return a failing result' do
-        expect(command.call(block: block))
+        expect(command.call(where: block))
           .to be_a_failing_result
           .with_error(expected_error)
       end
@@ -243,7 +140,7 @@ RSpec.describe Cuprum::Collections::Queries::ParseBlock do
       end
 
       it 'should return a failing result' do
-        expect(command.call(block: block))
+        expect(command.call(where: block))
           .to be_a_failing_result
           .with_error(expected_error)
       end
@@ -254,7 +151,7 @@ RSpec.describe Cuprum::Collections::Queries::ParseBlock do
       let(:expected) { [] }
 
       it 'should return a result with empty criteria' do
-        expect(command.call(block: block))
+        expect(command.call(where: block))
           .to be_a_passing_result
           .with_value(expected)
       end
@@ -271,7 +168,7 @@ RSpec.describe Cuprum::Collections::Queries::ParseBlock do
       end
 
       it 'should return a result with the expected criteria' do
-        expect(command.call(block: block))
+        expect(command.call(where: block))
           .to be_a_passing_result
           .with_value(expected)
       end
@@ -288,7 +185,7 @@ RSpec.describe Cuprum::Collections::Queries::ParseBlock do
       end
 
       it 'should return a result with the expected criteria' do
-        expect(command.call(block: block))
+        expect(command.call(where: block))
           .to be_a_passing_result
           .with_value(expected)
       end
@@ -313,7 +210,7 @@ RSpec.describe Cuprum::Collections::Queries::ParseBlock do
       end
 
       it 'should return a result with the expected criteria' do
-        expect(command.call(block: block))
+        expect(command.call(where: block))
           .to be_a_passing_result
           .with_value(expected)
       end
@@ -328,7 +225,7 @@ RSpec.describe Cuprum::Collections::Queries::ParseBlock do
       end
 
       it 'should return a result with the expected criteria' do
-        expect(command.call(block: block))
+        expect(command.call(where: block))
           .to be_a_passing_result
           .with_value(expected)
       end
@@ -343,7 +240,7 @@ RSpec.describe Cuprum::Collections::Queries::ParseBlock do
       end
 
       it 'should return a result with the expected criteria' do
-        expect(command.call(block: block))
+        expect(command.call(where: block))
           .to be_a_passing_result
           .with_value(expected)
       end

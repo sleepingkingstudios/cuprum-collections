@@ -23,9 +23,11 @@ module Cuprum::Collections::RSpec
         opts[:limit]  = limit  if limit
         opts[:offset] = offset if offset
         opts[:order]  = order  if order
+        opts[:where]  = filter unless filter.nil? || filter.is_a?(Proc)
 
         opts
       end
+      let(:block)         { filter.is_a?(Proc) ? filter : nil }
       let(:result)        { command.call(**options, &block) }
       let(:data)          { [] }
       let(:matching_data) { data }

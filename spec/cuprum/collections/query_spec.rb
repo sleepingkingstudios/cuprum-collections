@@ -583,12 +583,11 @@ RSpec.describe Cuprum::Collections::Query do
       allow(query).to receive(:query_builder).and_return(builder) # rubocop:disable RSpec/SubjectStub
     end
 
-    it 'should define the method' do # rubocop:disable RSpec/ExampleLength
+    it 'should define the method' do
       expect(query)
         .to respond_to(:where)
-        .with_unlimited_arguments
+        .with(0..1).arguments
         .and_keywords(:strategy)
-        .and_any_keywords
         .and_a_block
     end
 
@@ -600,17 +599,21 @@ RSpec.describe Cuprum::Collections::Query do
       it 'should delegate to the query builder' do
         query.where(strategy: strategy)
 
-        expect(builder).to have_received(:call).with(strategy: strategy)
+        expect(builder)
+          .to have_received(:call)
+          .with(strategy: strategy, where: nil)
       end
     end
 
     describe 'with no parameters' do
-      it { expect(query.where).to be other }
+      it { expect(query.where).to be_a described_class }
 
-      it 'should delegate to the query builder' do
+      it { expect(query.where).not_to be query }
+
+      it 'should not delegate to the query builder' do
         query.where
 
-        expect(builder).to have_received(:call).with(strategy: nil)
+        expect(builder).not_to have_received(:call)
       end
     end
 
@@ -622,13 +625,9 @@ RSpec.describe Cuprum::Collections::Query do
       it 'should delegate to the query builder' do
         query.where(&block)
 
-        expect(builder).to have_received(:call).with(strategy: nil)
-      end
-
-      it 'should evaluate the block' do
-        allow(builder).to receive(:call).and_yield
-
-        expect { |block| query.where(&block) }.to yield_control
+        expect(builder)
+          .to have_received(:call)
+          .with(strategy: nil, where: block)
       end
     end
 

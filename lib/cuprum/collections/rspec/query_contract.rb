@@ -27,10 +27,12 @@ module Cuprum::Collections::RSpec
     let(:scoped_query) do
       # :nocov:
       scoped =
-        if keywords.empty?
-          query.where(*arguments, &block)
+        if filter.is_a?(Proc)
+          query.where(&filter)
+        elsif !filter.nil?
+          query.where(filter)
         else
-          query.where(*arguments, **keywords, &block)
+          query
         end
       # :nocov:
       scoped = scoped.limit(limit)   if limit
@@ -379,9 +381,8 @@ module Cuprum::Collections::RSpec
       it 'should define the method' do
         expect(query)
           .to respond_to(:where)
-          .with_unlimited_arguments
+          .with(0..1).arguments
           .and_keywords(:strategy)
-          .and_any_keywords
           .and_a_block
       end
 
@@ -398,19 +399,19 @@ module Cuprum::Collections::RSpec
       end
 
       describe 'with a valid strategy' do
-        it { expect(query.where(strategy: :empty)).to be_a described_class }
+        it 'should return a query instance' do
+          expect(query.where(strategy: :block, &block)).to be_a described_class
+        end
 
-        it { expect(query.where(strategy: :empty)).not_to be query }
+        it { expect(query.where(strategy: :block, &block)).not_to be query }
       end
 
       describe 'with parameters that do not match a strategy' do
-        let(:arguments)     { %w[ichi ni san] }
-        let(:keywords)      { { one: 1, two: 2, three: 3 } }
         let(:error_class)   { Cuprum::Collections::QueryBuilder::ParseError }
         let(:error_message) { 'unable to parse query with strategy nil' }
 
         it 'should raise an exception' do
-          expect { query.where(*arguments, **keywords) }
+          expect { query.where(%w[ichi ni san]) }
             .to raise_error error_class, error_message
         end
       end

@@ -23,14 +23,14 @@ module Cuprum::Collections
     # strategy to parse the parameters into an array of criteria. Then, copies
     # the original query and updates the copy with the parsed criteria.
     #
+    # @param strategy [Symbol, nil] The specified strategy for parsing the given
+    #   filter into criteria. If nil, the builder will attempt to guess the
+    #   strategy based on the given filter.
+    # @param where [Object] The filter used to match items in the collection.
+    #
     # @return [Cuprum::Collections::Query] the copied and updated query.
-    def call(*arguments, strategy: nil, **keywords, &block)
-      criteria = parse_criteria(
-        arguments: arguments,
-        block:     block,
-        keywords:  keywords,
-        strategy:  strategy
-      )
+    def call(where:, strategy: nil)
+      criteria = parse_criteria(strategy: strategy, where: where)
 
       build_query(criteria)
     end
@@ -43,10 +43,10 @@ module Cuprum::Collections
         .send(:with_criteria, criteria)
     end
 
-    def parse_criteria(strategy:, **parameters)
+    def parse_criteria(strategy:, where:)
       result = Cuprum::Collections::Queries::Parse
         .new
-        .call(strategy: strategy, **parameters)
+        .call(strategy: strategy, where: where)
 
       return result.value if result.success?
 

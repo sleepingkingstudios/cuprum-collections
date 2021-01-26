@@ -2,6 +2,7 @@
 
 require 'stannum/contracts/parameters_contract'
 
+require 'cuprum/collections/command'
 require 'cuprum/collections/constraints/query_hash'
 require 'cuprum/collections/errors/invalid_query'
 require 'cuprum/collections/errors/uncaught_exception'
@@ -45,7 +46,7 @@ module Cuprum::Collections::Queries
   #   #   ['author', :eq, 'Nnedi Okorafor'],
   #   #   ['series', :ne, 'Binti']
   #   # ]
-  class ParseBlock < Cuprum::Command
+  class ParseBlock < Cuprum::Collections::Command
     # Evaluation context for query blocks.
     class Builder < BasicObject
       # Generates an equality criterion.
@@ -65,10 +66,11 @@ module Cuprum::Collections::Queries
       alias not_equal ne
     end
 
-    # Contract for validating the Query parameters.
-    CONTRACT = Stannum::Contracts::ParametersContract.new do
-      block true
-    end.freeze
+    class << self
+      public :parameters_contract
+    end
+
+    keyword :where, Proc
 
     private
 
@@ -121,8 +123,8 @@ module Cuprum::Collections::Queries
       Cuprum::Collections::Queries::VALID_OPERATORS.include?(operator)
     end
 
-    def process(block:, arguments: [], keywords: {}) # rubocop:disable Lint/UnusedMethodArgument
-      hsh = step { call_block(&block) }
+    def process(where:)
+      hsh = step { call_block(&where) }
 
       step { validate_hash(hsh) }
 

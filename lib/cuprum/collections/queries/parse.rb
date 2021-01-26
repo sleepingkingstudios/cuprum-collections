@@ -8,19 +8,15 @@ module Cuprum::Collections::Queries
   class Parse < Cuprum::Command
     private
 
-    def process(arguments: [], block: nil, keywords: {}, strategy: nil)
-      return arguments.first if strategy == :unsafe
-
+    def process(where:, strategy: nil)
       command = step do
         Cuprum::Collections::Queries::ParseStrategy.new.call(
-          arguments: arguments,
-          block:     block,
-          keywords:  keywords,
-          strategy:  strategy
+          strategy: strategy,
+          where:    where
         )
       end
 
-      command.call(arguments: arguments, block: block, keywords: keywords)
+      command.call(where: where)
     end
   end
 end
