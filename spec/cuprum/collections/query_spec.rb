@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'cuprum/collections/query'
+require 'cuprum/collections/query_builder'
 
 RSpec.describe Cuprum::Collections::Query do
   subject(:query) { described_class.new }
@@ -12,6 +13,12 @@ RSpec.describe Cuprum::Collections::Query do
     klass.define_method(:with_limit)    { |_count| }
     klass.define_method(:with_offset)   { |_count| }
     klass.define_method(:with_order)    { |*_args| }
+  end
+
+  describe '::InvalidOrderError' do
+    include_examples 'should define constant', :InvalidOrderError
+
+    it { expect(described_class::InvalidOrderError).to be < ArgumentError }
   end
 
   describe '.new' do
@@ -147,7 +154,7 @@ RSpec.describe Cuprum::Collections::Query do
 
       it 'should raise an exception' do
         expect { query.order nil }
-          .to raise_error ArgumentError, error_message
+          .to raise_error described_class::InvalidOrderError, error_message
       end
     end
 
@@ -159,7 +166,7 @@ RSpec.describe Cuprum::Collections::Query do
 
       it 'should raise an exception' do
         expect { query.order Object.new.freeze }
-          .to raise_error ArgumentError, error_message
+          .to raise_error described_class::InvalidOrderError, error_message
       end
     end
 
@@ -171,7 +178,7 @@ RSpec.describe Cuprum::Collections::Query do
 
       it 'should raise an exception' do
         expect { query.order '' }
-          .to raise_error ArgumentError, error_message
+          .to raise_error described_class::InvalidOrderError, error_message
       end
     end
 
@@ -183,7 +190,7 @@ RSpec.describe Cuprum::Collections::Query do
 
       it 'should raise an exception' do
         expect { query.order :'' }
-          .to raise_error ArgumentError, error_message
+          .to raise_error described_class::InvalidOrderError, error_message
       end
     end
 
@@ -195,7 +202,7 @@ RSpec.describe Cuprum::Collections::Query do
 
       it 'should raise an exception' do
         expect { query.order({}) }
-          .to raise_error ArgumentError, error_message
+          .to raise_error described_class::InvalidOrderError, error_message
       end
     end
 
@@ -207,7 +214,7 @@ RSpec.describe Cuprum::Collections::Query do
 
       it 'should raise an exception' do
         expect { query.order({ nil => :asc }) }
-          .to raise_error ArgumentError, error_message
+          .to raise_error described_class::InvalidOrderError, error_message
       end
     end
 
@@ -219,7 +226,7 @@ RSpec.describe Cuprum::Collections::Query do
 
       it 'should raise an exception' do
         expect { query.order({ '' => :asc }) }
-          .to raise_error ArgumentError, error_message
+          .to raise_error described_class::InvalidOrderError, error_message
       end
     end
 
@@ -231,7 +238,7 @@ RSpec.describe Cuprum::Collections::Query do
 
       it 'should raise an exception' do
         expect { query.order({ '': :asc }) }
-          .to raise_error ArgumentError, error_message
+          .to raise_error described_class::InvalidOrderError, error_message
       end
     end
 
@@ -243,7 +250,7 @@ RSpec.describe Cuprum::Collections::Query do
 
       it 'should raise an exception' do
         expect { query.order({ title: nil }) }
-          .to raise_error ArgumentError, error_message
+          .to raise_error described_class::InvalidOrderError, error_message
       end
     end
 
@@ -255,7 +262,7 @@ RSpec.describe Cuprum::Collections::Query do
 
       it 'should raise an exception' do
         expect { query.order({ title: Object.new.freeze }) }
-          .to raise_error ArgumentError, error_message
+          .to raise_error described_class::InvalidOrderError, error_message
       end
     end
 
@@ -267,7 +274,7 @@ RSpec.describe Cuprum::Collections::Query do
 
       it 'should raise an exception' do
         expect { query.order({ title: '' }) }
-          .to raise_error ArgumentError, error_message
+          .to raise_error described_class::InvalidOrderError, error_message
       end
     end
 
@@ -279,7 +286,7 @@ RSpec.describe Cuprum::Collections::Query do
 
       it 'should raise an exception' do
         expect { query.order({ title: 'wibbly' }) }
-          .to raise_error ArgumentError, error_message
+          .to raise_error described_class::InvalidOrderError, error_message
       end
     end
 
@@ -567,22 +574,107 @@ RSpec.describe Cuprum::Collections::Query do
   end
 
   describe '#where' do
-    let(:block)   { -> { { title: 'The Caves of Steel' } } }
-    let(:other)   { described_class.new }
-    let(:builder) { -> { other } }
+    let(:other) { described_class.new }
+    let(:builder) do
+      instance_double(Cuprum::Collections::QueryBuilder, call: other)
+    end
 
     before(:example) do
       allow(query).to receive(:query_builder).and_return(builder) # rubocop:disable RSpec/SubjectStub
     end
 
-    it { expect(query).to respond_to(:where).with(0).arguments.and_a_block }
+    it 'should define the method' do
+      expect(query)
+        .to respond_to(:where)
+        .with(0..1).arguments
+        .and_keywords(:strategy)
+        .and_a_block
+    end
 
-    it { expect(query.where(&block)).to be other }
+    describe 'with a specified strategy' do
+      let(:strategy) { :random }
 
-    it 'should delegate to the query builder' do
-      allow(builder).to receive(:call).and_yield
+      it { expect(query.where(strategy: strategy)).to be other }
 
-      expect { |block| query.where(&block) }.to yield_control
+      it 'should delegate to the query builder' do
+        query.where(strategy: strategy)
+
+        expect(builder)
+          .to have_received(:call)
+          .with(strategy: strategy, where: nil)
+      end
+    end
+
+    describe 'with no parameters' do
+      it { expect(query.where).to be_a described_class }
+
+      it { expect(query.where).not_to be query }
+
+      it 'should not delegate to the query builder' do
+        query.where
+
+        expect(builder).not_to have_received(:call)
+      end
+    end
+
+    describe 'with a block' do
+      let(:block) { -> { { title: 'The Caves of Steel' } } }
+
+      it { expect(query.where(&block)).to be other }
+
+      it 'should delegate to the query builder' do
+        query.where(&block)
+
+        expect(builder)
+          .to have_received(:call)
+          .with(strategy: nil, where: block)
+      end
+    end
+
+    describe 'with criteria and strategy: :unsafe' do
+      let(:criteria) do
+        [
+          ['title',  :eq, 'The Caves of Steel'],
+          ['author', :eq, 'Isaac Asimov']
+        ]
+      end
+      let(:expected) { criteria }
+      let(:copy)     { described_class.new }
+
+      before(:example) do
+        allow(query).to receive(:dup).and_return(copy) # rubocop:disable RSpec/SubjectStub
+      end
+
+      it { expect(query.where(criteria, strategy: :unsafe)).to be copy }
+
+      it 'should append the criteria' do
+        expect(query.where(criteria, strategy: :unsafe).criteria)
+          .to be == expected
+      end
+
+      it 'should not delegate to the query builder' do
+        query.where(criteria, strategy: :unsafe)
+
+        expect(builder).not_to have_received(:call)
+      end
+
+      context 'when the query has criteria' do
+        let(:old_criteria) do
+          [
+            ['genre', :eg, 'Science Fiction']
+          ]
+        end
+        let(:expected) { old_criteria + criteria }
+
+        before(:example) do
+          copy.send(:with_criteria, old_criteria)
+        end
+
+        it 'should append the criteria' do
+          expect(query.where(criteria, strategy: :unsafe).criteria)
+            .to be == expected
+        end
+      end
     end
   end
 

@@ -18,14 +18,22 @@ Layout/HashAlignment:
 Layout/LineLength:
   Max: 80
 
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
+
 Metrics/BlockLength:
   Exclude:
     - lib/**/*_contract.rb
+    - spec/support/**/*_examples.rb
     - spec/**/*_spec.rb
 
 Metrics/ModuleLength:
   Exclude:
     - lib/**/*_contract.rb
+    - spec/**/*_examples.rb
+
+Naming/RescuedExceptionsVariableName:
+  PreferredName: exception
 
 RSpec/ExampleWording:
   Enabled: false
@@ -46,3 +54,6 @@ Style/NestedParenthesizedCalls:
   Exclude:
     - lib/**/*_contract.rb
     - 'spec/**/*'
+
+Style/TrailingUnderscoreVariable:
+  Enabled: false

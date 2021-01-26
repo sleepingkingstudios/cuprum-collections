@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/contracts/query_builder_contract'
 require 'cuprum/collections/reference/query_builder'
+require 'cuprum/collections/rspec/query_builder_contract'
 
 RSpec.describe Cuprum::Collections::Reference::QueryBuilder do
   shared_context 'when the query has criteria' do
@@ -24,7 +24,7 @@ RSpec.describe Cuprum::Collections::Reference::QueryBuilder do
     it { expect(described_class).to respond_to(:new).with(1).argument }
   end
 
-  include_contract Cuprum::Collections::Contracts::QUERY_BUILDER_CONTRACT
+  include_contract Cuprum::Collections::RSpec::QUERY_BUILDER_CONTRACT
 
   describe '#call' do
     def match_item(expected)
@@ -33,9 +33,9 @@ RSpec.describe Cuprum::Collections::Reference::QueryBuilder do
       end
     end
 
-    describe 'with a block' do
+    describe 'with where: a block' do
       let(:block)   { -> { { author: 'Nnedi Okorafor', series: 'Binti' } } }
-      let(:query)   { builder.call(&block) }
+      let(:query)   { builder.call(where: block) }
       let(:filters) { query.send(:filters) }
 
       it { expect(filters).to be_a Array }
