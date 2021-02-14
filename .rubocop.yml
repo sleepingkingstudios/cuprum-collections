@@ -23,6 +23,7 @@ Layout/MultilineMethodCallIndentation:
 
 Metrics/BlockLength:
   Exclude:
+    - '*.gemspec'
     - lib/**/*_contract.rb
     - spec/support/**/*_examples.rb
     - spec/**/*_spec.rb
