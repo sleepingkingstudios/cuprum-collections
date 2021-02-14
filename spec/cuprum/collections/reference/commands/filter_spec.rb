@@ -1,33 +1,37 @@
 # frozen_string_literal: true
 
 require 'cuprum/collections/reference/commands/filter'
+require 'cuprum/collections/reference/rspec/command_contract'
 require 'cuprum/collections/rspec/filter_command_contract'
-require 'cuprum/collections/rspec/fixtures'
 
 require 'support/examples/command_examples'
 
 RSpec.describe Cuprum::Collections::Reference::Commands::Filter do
   include Spec::Support::Examples::CommandExamples
 
-  shared_context 'when the collection has many items' do
-    let(:data) { Cuprum::Collections::RSpec::BOOKS_FIXTURES }
+  subject(:command) do
+    described_class.new(
+      collection_name: collection_name,
+      data:            data,
+      **constructor_options
+    )
   end
 
-  subject(:command) { described_class.new(data) }
-
-  let(:data) { [] }
+  let(:collection_name)     { 'books' }
+  let(:data)                { [] }
+  let(:constructor_options) { {} }
 
   describe '.new' do
-    it { expect(described_class).to respond_to(:new).with(1).argument }
-  end
-
-  include_contract Cuprum::Collections::RSpec::FILTER_COMMAND_CONTRACT
-
-  describe '#data' do
-    include_examples 'should have reader', :data, -> { data }
-
-    wrap_context 'when the collection has many items' do
-      it { expect(command.data).to be == data }
+    it 'should define the constructor' do
+      expect(described_class)
+        .to respond_to(:new)
+        .with(0).arguments
+        .and_keywords(:collection_name, :data, :envelope)
+        .and_any_keywords
     end
   end
+
+  include_contract Cuprum::Collections::Reference::RSpec::COMMAND_CONTRACT
+
+  include_contract Cuprum::Collections::RSpec::FILTER_COMMAND_CONTRACT
 end

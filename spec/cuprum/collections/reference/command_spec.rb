@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'cuprum/collections/reference/command'
+require 'cuprum/collections/reference/rspec/command_contract'
 require 'cuprum/collections/rspec/fixtures'
 
 RSpec.describe Cuprum::Collections::Reference::Command do
@@ -26,13 +27,29 @@ RSpec.describe Cuprum::Collections::Reference::Command do
     # rubocop:enable RSpec/DescribedClass
   end
 
-  subject(:command) { described_class.new(data) }
+  subject(:command) do
+    described_class.new(
+      collection_name: collection_name,
+      data:            data,
+      **constructor_options
+    )
+  end
 
-  let(:data) { Cuprum::Collections::RSpec::BOOKS_FIXTURES }
+  let(:collection_name)     { 'books' }
+  let(:data)                { Cuprum::Collections::RSpec::BOOKS_FIXTURES }
+  let(:constructor_options) { {} }
 
   describe '.new' do
-    it { expect(described_class).to respond_to(:new).with(1).argument }
+    it 'should define the constructor' do
+      expect(described_class)
+        .to respond_to(:new)
+        .with(0).arguments
+        .and_keywords(:collection_name, :data)
+        .and_any_keywords
+    end
   end
+
+  include_contract Cuprum::Collections::Reference::RSpec::COMMAND_CONTRACT
 
   describe '#call' do
     it 'should define the method' do
@@ -82,9 +99,5 @@ RSpec.describe Cuprum::Collections::Reference::Command do
         end
       end
     end
-  end
-
-  describe '#data' do
-    include_examples 'should have reader', :data, -> { data }
   end
 end
