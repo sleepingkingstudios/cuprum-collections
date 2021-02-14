@@ -20,6 +20,7 @@ RSpec.describe Cuprum::Collections::Reference::Commands::Filter do
   let(:collection_name)     { 'books' }
   let(:data)                { [] }
   let(:constructor_options) { {} }
+  let(:expected_options)    { { envelope: false } }
 
   describe '.new' do
     it 'should define the constructor' do

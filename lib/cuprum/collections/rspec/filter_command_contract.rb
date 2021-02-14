@@ -67,6 +67,27 @@ module Cuprum::Collections::RSpec
           expect(result).to be_a_failing_result.with_error(expected_error)
         end
       end
+
+      context 'when initialized with envelope: true' do
+        shared_examples 'should return the wrapped items' do
+          it { expect(result).to be_a_passing_result }
+
+          it { expect(result.value).to be_a Hash }
+
+          it { expect(result.value.keys).to be == [collection_name] }
+
+          it { expect(result.value[collection_name]).to be == expected_data }
+        end
+
+        let(:constructor_options) { super().merge(envelope: true) }
+
+        include_examples 'should return the wrapped items'
+
+        include_contract Cuprum::Collections::RSpec::QUERYING_CONTRACT,
+          block: lambda {
+            include_examples 'should return the wrapped items'
+          }
+      end
     end
   end
 end

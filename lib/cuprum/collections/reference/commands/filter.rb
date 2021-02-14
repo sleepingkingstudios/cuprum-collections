@@ -25,10 +25,8 @@ module Cuprum::Collections::Reference::Commands
     #     values should be either the literal value for that attribute or a
     #     method call for a valid operation defined for the query.
     #
-    #   @return [Cuprum::Result<Enumerator>] the matching items in the specified
-    #     order.
-    #
     #   @example Querying all items in the collection.
+    #     command = Filter.new(collection_name: 'books', data: books)
     #     command.call
     #     #=> an enumerable iterating all items in the collection
     #
@@ -67,6 +65,42 @@ module Cuprum::Collections::Reference::Commands
     #     #=> an enumerable iterating the 51st through 60th items in the
     #     #   collection whose category is 'Science Fiction and Fantasy', sorted
     #     #   by :author in ascending order.
+    #
+    #   @example Wrapping the result in an envelope
+    #     command =
+    #       Filter.new(collection_name: 'books', data: books, envelope: true)
+    #     command.call
+    #     #=> {
+    #       'books' => [] # an array containing the matching items
+    #     }
+    #
+    #   @overload call(limit: nil, offset: nil, order: nil, &block)
+    #     When the :envelope option is false (default), the command returns an
+    #     Enumerator which can be iterated to return the matching items.
+    #
+    #     @return [Cuprum::Result<Enumerator>] the matching items in the
+    #       specified order as an Enumerator.
+    #
+    #   @overload call(limit: nil, offset: nil, order: nil, &block)
+    #     When the :envelope option is true, the command immediately evaluates
+    #     the query and wraps the resulting array in a Hash, using the name of
+    #     the collection as the key.
+    #
+    #     @return [Hash{String, Array}] a hash with the collection name as key
+    #       and the matching items as value.
+
+    # @param collection_name [String, Symbol] The name of the collection.
+    # @param data [Array<Hash>] The current data in the collection.
+    # @param envelope [Boolean] If true, wraps the result in a Hash and
+    # @param options [Hash<Symbol>] Additional options for the command.
+    def initialize(collection_name:, data:, envelope: false, **options)
+      super(
+        collection_name: collection_name,
+        data:            data,
+        envelope:        envelope,
+        **options,
+      )
+    end
 
     keyword :limit,  Integer, optional: true
     keyword :offset, Integer, optional: true
@@ -116,7 +150,13 @@ module Cuprum::Collections::Reference::Commands
         )
       end
 
-      success(query.each)
+      success(wrap_query(query))
+    end
+
+    def wrap_query(query)
+      return query.each unless options[:envelope]
+
+      { collection_name => query.to_a }
     end
   end
 end
