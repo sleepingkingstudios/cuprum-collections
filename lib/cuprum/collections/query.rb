@@ -159,10 +159,6 @@ module Cuprum::Collections
     #
     # @see #criteria
     def where(filter = nil, strategy: nil, &block)
-      if strategy == :unsafe
-        return dup.tap { |copy| copy.with_criteria(filter) }
-      end
-
       filter ||= block
 
       return dup if filter.nil? && strategy.nil?

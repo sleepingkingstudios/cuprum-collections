@@ -50,6 +50,19 @@ module Cuprum::Collections::RSpec
 
       it { expect(query.criteria).to be == expected }
 
+      describe 'with strategy: :unsafe' do
+        let(:strategy) { :unsafe }
+        let(:filter)   { criteria }
+
+        it 'should not parse the criteria' do
+          builder.call(strategy: strategy, where: filter)
+
+          expect(parser).not_to have_received(:call)
+        end
+
+        it { expect(query.criteria).to be == expected }
+      end
+
       context 'when the query has existing criteria' do
         let(:old_criteria) { [['genre', :eq, 'Science Fiction']] }
         let(:expected)     { old_criteria + criteria }

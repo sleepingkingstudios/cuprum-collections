@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
+require 'cuprum/collections/constraints/ordering'
 require 'cuprum/collections/rspec'
+require 'cuprum/collections/rspec/fixtures'
 require 'cuprum/collections/rspec/querying_contract'
 
 module Cuprum::Collections::RSpec
@@ -13,6 +15,16 @@ module Cuprum::Collections::RSpec
         it { expect(result.value).to be_a Enumerator }
 
         it { expect(result.value.to_a).to be == expected_data }
+      end
+
+      shared_examples 'should return the wrapped items' do
+        it { expect(result).to be_a_passing_result }
+
+        it { expect(result.value).to be_a Hash }
+
+        it { expect(result.value.keys).to be == [collection_name] }
+
+        it { expect(result.value[collection_name]).to be == expected_data }
       end
 
       include_contract Cuprum::Collections::RSpec::QUERYING_CONTEXTS
@@ -69,16 +81,6 @@ module Cuprum::Collections::RSpec
       end
 
       context 'when initialized with envelope: true' do
-        shared_examples 'should return the wrapped items' do
-          it { expect(result).to be_a_passing_result }
-
-          it { expect(result.value).to be_a Hash }
-
-          it { expect(result.value.keys).to be == [collection_name] }
-
-          it { expect(result.value[collection_name]).to be == expected_data }
-        end
-
         let(:constructor_options) { super().merge(envelope: true) }
 
         include_examples 'should return the wrapped items'
@@ -87,6 +89,28 @@ module Cuprum::Collections::RSpec
           block: lambda {
             include_examples 'should return the wrapped items'
           }
+      end
+
+      context 'when the collection has many items' do
+        let(:data) { Cuprum::Collections::RSpec::BOOKS_FIXTURES }
+
+        include_examples 'should return the matching items'
+
+        include_contract Cuprum::Collections::RSpec::QUERYING_CONTRACT,
+          block: lambda {
+            include_examples 'should return the matching items'
+          }
+
+        context 'when initialized with envelope: true' do
+          let(:constructor_options) { super().merge(envelope: true) }
+
+          include_examples 'should return the wrapped items'
+
+          include_contract Cuprum::Collections::RSpec::QUERYING_CONTRACT,
+            block: lambda {
+              include_examples 'should return the wrapped items'
+            }
+        end
       end
     end
   end
