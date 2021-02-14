@@ -30,7 +30,12 @@ module Cuprum::Collections
     #
     # @return [Cuprum::Collections::Query] the copied and updated query.
     def call(where:, strategy: nil)
-      criteria = parse_criteria(strategy: strategy, where: where)
+      criteria =
+        if strategy == :unsafe
+          where
+        else
+          parse_criteria(strategy: strategy, where: where)
+        end
 
       build_query(criteria)
     end

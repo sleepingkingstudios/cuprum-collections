@@ -638,42 +638,13 @@ RSpec.describe Cuprum::Collections::Query do
           ['author', :eq, 'Isaac Asimov']
         ]
       end
-      let(:expected) { criteria }
-      let(:copy)     { described_class.new }
 
-      before(:example) do
-        allow(query).to receive(:dup).and_return(copy) # rubocop:disable RSpec/SubjectStub
-      end
-
-      it { expect(query.where(criteria, strategy: :unsafe)).to be copy }
-
-      it 'should append the criteria' do
-        expect(query.where(criteria, strategy: :unsafe).criteria)
-          .to be == expected
-      end
-
-      it 'should not delegate to the query builder' do
+      it 'should delegate to the query builder' do
         query.where(criteria, strategy: :unsafe)
 
-        expect(builder).not_to have_received(:call)
-      end
-
-      context 'when the query has criteria' do
-        let(:old_criteria) do
-          [
-            ['genre', :eg, 'Science Fiction']
-          ]
-        end
-        let(:expected) { old_criteria + criteria }
-
-        before(:example) do
-          copy.send(:with_criteria, old_criteria)
-        end
-
-        it 'should append the criteria' do
-          expect(query.where(criteria, strategy: :unsafe).criteria)
-            .to be == expected
-        end
+        expect(builder)
+          .to have_received(:call)
+          .with(strategy: :unsafe, where: criteria)
       end
     end
   end

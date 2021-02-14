@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
+require 'cuprum/collections/commands/abstract_filter'
 require 'cuprum/collections/constraints/ordering'
-require 'cuprum/collections/queries/parse'
 require 'cuprum/collections/reference/command'
 require 'cuprum/collections/reference/commands'
 require 'cuprum/collections/reference/query'
@@ -9,6 +9,8 @@ require 'cuprum/collections/reference/query'
 module Cuprum::Collections::Reference::Commands
   # Command for querying filtered, ordered data from a reference collection.
   class Filter < Cuprum::Collections::Reference::Command
+    include Cuprum::Collections::Commands::AbstractFilter
+
     # @!method call(limit: nil, offset: nil, order: nil, &block)
     #   Queries the collection for items matching the given conditions.
     #
@@ -25,10 +27,8 @@ module Cuprum::Collections::Reference::Commands
     #     values should be either the literal value for that attribute or a
     #     method call for a valid operation defined for the query.
     #
-    #   @return [Cuprum::Result<Enumerator>] the matching items in the specified
-    #     order.
-    #
     #   @example Querying all items in the collection.
+    #     command = Filter.new(collection_name: 'books', data: books)
     #     command.call
     #     #=> an enumerable iterating all items in the collection
     #
@@ -67,6 +67,43 @@ module Cuprum::Collections::Reference::Commands
     #     #=> an enumerable iterating the 51st through 60th items in the
     #     #   collection whose category is 'Science Fiction and Fantasy', sorted
     #     #   by :author in ascending order.
+    #
+    #   @example Wrapping the result in an envelope
+    #     command =
+    #       Filter.new(collection_name: 'books', data: books, envelope: true)
+    #     command.call
+    #     #=> {
+    #       'books' => [] # an array containing the matching items
+    #     }
+    #
+    #   @overload call(limit: nil, offset: nil, order: nil, &block)
+    #     When the :envelope option is false (default), the command returns an
+    #     Enumerator which can be iterated to return the matching items.
+    #
+    #     @return [Cuprum::Result<Enumerator>] the matching items in the
+    #       specified order as an Enumerator.
+    #
+    #   @overload call(limit: nil, offset: nil, order: nil, &block)
+    #     When the :envelope option is true, the command immediately evaluates
+    #     the query and wraps the resulting array in a Hash, using the name of
+    #     the collection as the key.
+    #
+    #     @return [Cuprum::Result<Hash{String, Array<Hash{String, Object}>}>] a
+    #       hash with the collection name as key and the matching items as
+    #       value.
+
+    # @param collection_name [String, Symbol] The name of the collection.
+    # @param data [Array<Hash>] The current data in the collection.
+    # @param envelope [Boolean] If true, wraps the result in a Hash and
+    # @param options [Hash<Symbol>] Additional options for the command.
+    def initialize(collection_name:, data:, envelope: false, **options)
+      super(
+        collection_name: collection_name,
+        data:            data,
+        envelope:        envelope,
+        **options,
+      )
+    end
 
     keyword :limit,  Integer, optional: true
     keyword :offset, Integer, optional: true
@@ -76,47 +113,8 @@ module Cuprum::Collections::Reference::Commands
 
     private
 
-    def build_query(criteria:, limit:, offset:, order:)
-      query = Cuprum::Collections::Reference::Query.new(data)
-      query = query.limit(limit)   if limit
-      query = query.offset(offset) if offset
-      query = query.order(order)   if order
-      query = query.where(criteria, strategy: :unsafe) unless criteria.empty?
-
-      success(query)
-    end
-
-    def parse_criteria(strategy:, where:, &block)
-      return [] if strategy.nil? && where.nil? && !block_given?
-
-      Cuprum::Collections::Queries::Parse.new.call(
-        strategy: strategy,
-        where:    where || block
-      )
-    end
-
-    def process( # rubocop:disable Metrics/MethodLength, Metrics/ParameterLists
-      limit:    nil,
-      offset:   nil,
-      order:    nil,
-      strategy: nil,
-      where:    nil,
-      &block
-    )
-      criteria = step do
-        parse_criteria(strategy: strategy, where: where, &block)
-      end
-
-      query = step do
-        build_query(
-          criteria: criteria,
-          limit:    limit,
-          offset:   offset,
-          order:    order
-        )
-      end
-
-      success(query.each)
+    def build_query
+      Cuprum::Collections::Reference::Query.new(data)
     end
   end
 end
