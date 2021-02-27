@@ -82,6 +82,28 @@ module Cuprum::Collections::RSpec
       end
     end
 
+    shared_context 'when the query has where: a not_one_of block filter' do
+      let(:filter) do
+        -> { { series: not_one_of(['Earthsea', 'The Lord of the Rings']) } }
+      end
+      let(:matching_data) do
+        super().reject do |item|
+          ['Earthsea', 'The Lord of the Rings'].include?(item['series'])
+        end
+      end
+    end
+
+    shared_context 'when the query has where: a one_of block filter' do
+      let(:filter) do
+        -> { { series: one_of(['Earthsea', 'The Lord of the Rings']) } }
+      end
+      let(:matching_data) do
+        super().select do |item|
+          ['Earthsea', 'The Lord of the Rings'].include?(item['series'])
+        end
+      end
+    end
+
     shared_context 'when the query has multiple query options' do
       let(:filter)    { -> { { author: 'Ursula K. LeGuin' } } }
       let(:strategy)  { nil }
@@ -151,6 +173,30 @@ module Cuprum::Collections::RSpec
         include_context 'when the query has where: a not_equal block filter'
 
         if operators.include?(OPERATORS::NOT_EQUAL)
+          instance_exec(&block)
+        else
+          # :nocov:
+          pending
+          # :nocov:
+        end
+      end
+
+      context 'with a not_one_of filter' do
+        include_context 'when the query has where: a not_one_of block filter'
+
+        if operators.include?(OPERATORS::NOT_ONE_OF)
+          instance_exec(&block)
+        else
+          # :nocov:
+          pending
+          # :nocov:
+        end
+      end
+
+      context 'with a one_of filter' do
+        include_context 'when the query has where: a one_of block filter'
+
+        if operators.include?(OPERATORS::ONE_OF)
           instance_exec(&block)
         else
           # :nocov:

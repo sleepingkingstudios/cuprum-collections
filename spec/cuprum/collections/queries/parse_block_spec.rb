@@ -16,20 +16,36 @@ RSpec.describe Cuprum::Collections::Queries::ParseBlock do
 
     let(:described_class) { super()::Builder }
 
-    describe '#eq' do
+    describe '#equal' do
       let(:expected) { [nil, operators::EQUAL, 'Binti: Home'] }
 
       it { expect(builder.eq 'Binti: Home').to be == expected }
 
+      it { expect(builder.equal 'Binti: Home').to be == expected }
+
       it { expect(builder.equals 'Binti: Home').to be == expected }
     end
 
-    describe '#ne' do
+    describe '#not_equal' do
       let(:expected) { [nil, operators::NOT_EQUAL, 'Binti'] }
 
       it { expect(builder.ne 'Binti').to be == expected }
 
       it { expect(builder.not_equal 'Binti').to be == expected }
+    end
+
+    describe '#not_one_of' do
+      let(:value)    { ['Binti', 'Binti: Home'] }
+      let(:expected) { [nil, operators::NOT_ONE_OF, value] }
+
+      it { expect(builder.not_one_of value).to be == expected }
+    end
+
+    describe '#one_of' do
+      let(:value)    { ['Binti', 'Binti: Home'] }
+      let(:expected) { [nil, operators::ONE_OF, value] }
+
+      it { expect(builder.one_of value).to be == expected }
     end
   end
 

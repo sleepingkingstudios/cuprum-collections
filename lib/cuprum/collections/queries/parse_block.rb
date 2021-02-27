@@ -52,18 +52,33 @@ module Cuprum::Collections::Queries
       # Generates an equality criterion.
       #
       # @return [Array] the equality criterion.
-      def eq(value)
+      def equals(value)
         [nil, Operators::EQUAL, value]
       end
-      alias equals eq
+      alias equal equals
+      alias eq equals
 
       # Generates a negated equality criterion.
       #
       # @return [Array] the negated equality criterion.
-      def ne(value)
+      def not_equal(value)
         [nil, Operators::NOT_EQUAL, value]
       end
-      alias not_equal ne
+      alias ne not_equal
+
+      # Generates a negated inclusion criterion.
+      #
+      # @return [Array] the negated inclusion criterion.
+      def not_one_of(value)
+        [nil, Operators::NOT_ONE_OF, value]
+      end
+
+      # Generates an inclusion criterion.
+      #
+      # @return [Array] the inclusion criterion.
+      def one_of(value)
+        [nil, Operators::ONE_OF, value]
+      end
     end
 
     class << self

@@ -6,8 +6,10 @@ RSpec.describe Cuprum::Collections::Queries do
   describe '::Operators' do
     let(:expected_operators) do
       {
-        EQUAL:     :eq,
-        NOT_EQUAL: :ne
+        EQUAL:      :equal,
+        NOT_EQUAL:  :not_equal,
+        NOT_ONE_OF: :not_one_of,
+        ONE_OF:     :one_of
       }
     end
 
@@ -19,13 +21,25 @@ RSpec.describe Cuprum::Collections::Queries do
 
     describe '::EQUAL' do
       it 'should store the value' do
-        expect(described_class::Operators::EQUAL).to be :eq
+        expect(described_class::Operators::EQUAL).to be :equal
       end
     end
 
     describe '::NOT_EQUAL' do
       it 'should store the value' do
-        expect(described_class::Operators::NOT_EQUAL).to be :ne
+        expect(described_class::Operators::NOT_EQUAL).to be :not_equal
+      end
+    end
+
+    describe '::NOT_ONE_OF' do
+      it 'should store the value' do
+        expect(described_class::Operators::NOT_ONE_OF).to be :not_one_of
+      end
+    end
+
+    describe '::ONE_OF' do
+      it 'should store the value' do
+        expect(described_class::Operators::ONE_OF).to be :one_of
       end
     end
   end
