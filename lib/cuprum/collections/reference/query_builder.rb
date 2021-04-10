@@ -28,12 +28,22 @@ module Cuprum::Collections::Reference
       super.send(:with_filters, build_filters(criteria))
     end
 
-    def eq(attribute, value)
+    def equal(attribute, value)
       ->(actual) { actual[attribute.to_s] == value }
     end
+    alias eq equal
 
-    def ne(attribute, value)
+    def not_equal(attribute, value)
       ->(actual) { actual[attribute.to_s] != value }
+    end
+    alias ne not_equal
+
+    def not_one_of(attribute, value)
+      ->(actual) { !value.include?(actual[attribute.to_s]) }
+    end
+
+    def one_of(attribute, value)
+      ->(actual) { value.include?(actual[attribute.to_s]) }
     end
   end
 end

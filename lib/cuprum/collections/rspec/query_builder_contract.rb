@@ -10,7 +10,7 @@ module Cuprum::Collections::RSpec
     end
 
     describe '#call' do
-      let(:criteria)  { [['title', :eq, 'The Naked Sun']] }
+      let(:criteria)  { [['title', :equal, 'The Naked Sun']] }
       let(:expected)  { criteria }
       let(:filter)    { { title: 'The Naked Sun' } }
       let(:strategy)  { :custom }

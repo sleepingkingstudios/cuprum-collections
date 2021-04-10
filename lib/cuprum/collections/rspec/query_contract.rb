@@ -4,9 +4,11 @@ require 'cuprum/collections/rspec'
 require 'cuprum/collections/rspec/fixtures'
 require 'cuprum/collections/rspec/querying_contract'
 
-module Cuprum::Collections::RSpec
+module Cuprum::Collections::RSpec # rubocop:disable Style/Documentation
+  default_operators = Cuprum::Collections::Queries::Operators.values
+
   # Contract validating the behavior of a Query implementation.
-  QUERY_CONTRACT = lambda do |operators: %i[eq ne].freeze|
+  QUERY_CONTRACT = lambda do |operators: default_operators.freeze|
     operators = Set.new(operators.map(&:to_sym))
 
     include_contract Cuprum::Collections::RSpec::QUERYING_CONTEXTS
@@ -50,7 +52,7 @@ module Cuprum::Collections::RSpec
       include_examples 'should have reader', :criteria, []
 
       wrap_context 'when the query has where: a simple block filter' do
-        let(:expected) { [['author', :eq, 'Ursula K. LeGuin']] }
+        let(:expected) { [['author', :equal, 'Ursula K. LeGuin']] }
 
         it { expect(scoped_query.criteria).to be == expected }
       end
@@ -58,8 +60,8 @@ module Cuprum::Collections::RSpec
       wrap_context 'when the query has where: a complex block filter' do
         let(:expected) do
           [
-            ['author', :eq, 'Ursula K. LeGuin'],
-            ['series', :ne, 'Earthsea']
+            ['author', :equal,     'Ursula K. LeGuin'],
+            ['series', :not_equal, 'Earthsea']
           ]
         end
 
@@ -76,8 +78,8 @@ module Cuprum::Collections::RSpec
       wrap_context 'when the query has composed filters' do
         let(:expected) do
           [
-            ['author', :eq, 'Ursula K. LeGuin'],
-            ['series', :ne, 'Earthsea']
+            ['author', :equal,     'Ursula K. LeGuin'],
+            ['series', :not_equal, 'Earthsea']
           ]
         end
 
@@ -85,7 +87,7 @@ module Cuprum::Collections::RSpec
       end
 
       wrap_context 'when the query has where: an equal block filter' do
-        let(:expected) { [['author', :eq, 'Ursula K. LeGuin']] }
+        let(:expected) { [['author', :equal, 'Ursula K. LeGuin']] }
 
         if operators.include?(OPERATORS::EQUAL)
           it { expect(scoped_query.criteria).to be == expected }
@@ -97,7 +99,7 @@ module Cuprum::Collections::RSpec
       end
 
       wrap_context 'when the query has where: a not_equal block filter' do
-        let(:expected) { [['author', :ne, 'Ursula K. LeGuin']] }
+        let(:expected) { [['author', :not_equal, 'Ursula K. LeGuin']] }
 
         if operators.include?(OPERATORS::NOT_EQUAL)
           it { expect(scoped_query.criteria).to be == expected }
