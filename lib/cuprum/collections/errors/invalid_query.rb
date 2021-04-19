@@ -16,7 +16,11 @@ module Cuprum::Collections::Errors
       @errors   = errors
       @strategy = strategy
 
-      super(message: message || default_message)
+      super(
+        errors:   errors,
+        message:  message || default_message,
+        strategy: strategy
+      )
     end
 
     # @return [Stannum::Errors] the errors returned by the query builder.

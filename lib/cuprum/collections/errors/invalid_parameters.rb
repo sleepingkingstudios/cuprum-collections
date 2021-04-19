@@ -17,7 +17,11 @@ module Cuprum::Collections::Errors
       @command = command
       @errors  = errors
 
-      super(message: "invalid parameters for command #{command.class}")
+      super(
+        command: command,
+        errors:  errors,
+        message: "invalid parameters for command #{command.class}"
+      )
     end
 
     # @return [Hash] a serializable hash representation of the error.

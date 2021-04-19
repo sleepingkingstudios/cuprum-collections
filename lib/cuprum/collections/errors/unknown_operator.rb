@@ -13,7 +13,10 @@ module Cuprum::Collections::Errors
     def initialize(operator:)
       @operator = operator
 
-      super(message: generate_message)
+      super(
+        message:  generate_message,
+        operator: operator
+      )
     end
 
     # @return [String, Symbol] the unknown operator.
