@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'forwardable'
+
 require 'stannum/contracts/parameters_contract'
 
 require 'cuprum/collections/command'
@@ -82,10 +84,23 @@ module Cuprum::Collections::Queries
     end
 
     class << self
-      public :parameters_contract
+      extend Forwardable
+
+      def_delegators :validation_contract,
+        :errors_for,
+        :match,
+        :matches?
+
+      private
+
+      def validation_contract
+        self::MethodValidations.contracts.fetch(:call)
+      end
     end
 
-    keyword :where, Proc
+    validate_parameters :call do
+      keyword :where, Proc
+    end
 
     private
 

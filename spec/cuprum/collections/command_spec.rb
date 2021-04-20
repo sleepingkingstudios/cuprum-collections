@@ -3,32 +3,26 @@
 require 'cuprum/collections/command'
 
 RSpec.describe Cuprum::Collections::Command do
-  shared_context 'when the command has parameter validations' do
-    let(:described_class)     { Spec::ExampleCommand }
-    let(:parameters_contract) { described_class.send(:parameters_contract) }
-
-    # rubocop:disable RSpec/DescribedClass
-    example_class 'Spec::ExampleCommand',
-      Cuprum::Collections::Command \
-    do |klass|
-      klass.argument :resource,   Object
-      klass.argument :attributes, Hash, optional: true
-
-      klass.keyword :color, Integer
-      klass.keyword :shape, String, optional: true
-
-      klass.define_method(:process) \
-      do |resource, attributes = {}, color:, shape: nil| # rubocop:disable Lint/UnusedBlockArgument
-        success(:ok)
-      end
-    end
-    # rubocop:enable RSpec/DescribedClass
-  end
-
   subject(:command) { described_class.new }
 
   describe '.new' do
     it { expect(described_class).to be_constructible.with(0).arguments }
+  end
+
+  describe '.validate_parameters' do
+    it 'should define the class method' do
+      expect(described_class)
+        .to respond_to(:validate_parameters)
+        .with(1).argument
+        .and_a_block
+    end
+
+    it 'should define the singleton class method' do
+      expect(described_class.singleton_class)
+        .to respond_to(:validate_parameters)
+        .with(1).argument
+        .and_a_block
+    end
   end
 
   describe '#call' do
@@ -44,39 +38,51 @@ RSpec.describe Cuprum::Collections::Command do
         .to be_a_failing_result
         .with_error(an_instance_of Cuprum::Errors::CommandNotImplemented)
     end
+  end
 
-    wrap_context 'when the command has parameter validations' do
-      describe 'with invalid parameters with invalid parameters error' do
-        let(:expected_errors) do
-          parameters_contract
-            .errors_for({ arguments: [], keywords: {}, block: nil })
-            .to_a
-        end
+  describe '#handle_invalid_parameters' do
+    let(:errors) { Stannum::Errors.new.add('spec.example_error') }
 
-        it 'should return a failing result' do
-          expect(command.call)
-            .to be_a_failing_result
-            .with_error(
-              an_instance_of(Cuprum::Collections::Errors::InvalidParameters)
-            )
-        end
+    def handle_invalid_parameters
+      command.send(
+        :handle_invalid_parameters,
+        errors:      errors,
+        method_name: method_name
+      )
+    end
 
-        it 'should return the validation errors' do
-          result = command.call
+    it 'should define the private method' do
+      expect(command)
+        .to respond_to(:handle_invalid_parameters, true)
+        .with(0).arguments
+        .and_keywords(:errors, :method_name)
+    end
 
-          expect(result.error.errors).to be == expected_errors
-        end
+    describe 'with method_name: :call' do
+      let(:method_name) { :call }
+      let(:expected_error) do
+        Cuprum::Collections::Errors::InvalidParameters.new(
+          command: command,
+          errors:  errors
+        )
       end
 
-      describe 'with valid parameters' do
-        let(:arguments) { [Struct.new(:name).new, { name: 'Stem Bolt' }] }
-        let(:keywords)  { { color: 0xC0C0C0, shape: 'spiral' } }
+      it 'should return a failing result' do
+        expect(handle_invalid_parameters)
+          .to be_a_failing_result
+          .with_error(expected_error)
+      end
+    end
 
-        it 'should return a failing result with not implemented error' do
-          expect(command.call(*arguments, **keywords))
-            .to be_a_passing_result
-            .with_value(:ok)
-        end
+    describe 'with another method name' do
+      let(:method_name) { :do_something }
+      let(:error_message) do
+        "invalid parameters for ##{method_name}: #{errors.summary}"
+      end
+
+      it 'should raise an exception' do
+        expect { handle_invalid_parameters }
+          .to raise_error ArgumentError, error_message
       end
     end
   end

@@ -2,11 +2,7 @@
 
 require 'cuprum/collections/queries/parse_block'
 
-require 'support/examples/command_examples'
-
 RSpec.describe Cuprum::Collections::Queries::ParseBlock do
-  include Spec::Support::Examples::CommandExamples
-
   subject(:command) { described_class.new }
 
   let(:operators) { Cuprum::Collections::Queries::Operators }
@@ -53,17 +49,70 @@ RSpec.describe Cuprum::Collections::Queries::ParseBlock do
     it { expect(described_class).to respond_to(:new).with(0).arguments }
   end
 
-  describe '.parameters_contract' do
-    include_examples 'should define class reader',
-      :parameters_contract,
-      -> { an_instance_of Stannum::Contracts::ParametersContract }
+  describe '.match' do
+    let(:keywords) { {} }
+    let(:parameters) do
+      {
+        arguments: [],
+        block:     nil,
+        keywords:  keywords
+      }
+    end
+    let(:result) { described_class.match(**parameters).first }
+    let(:errors) { described_class.match(**parameters).last }
+    let(:expected_errors) do
+      contract = Stannum::Contracts::ParametersContract.new do
+        keyword :where, Proc
+      end
+
+      contract.errors_for(parameters)
+    end
+
+    describe 'with no parameters' do
+      it { expect(result).to be false }
+
+      it { expect(errors).to be == expected_errors }
+    end
+
+    describe 'with where: nil' do
+      let(:keywords) { { where: nil } }
+
+      it { expect(result).to be false }
+
+      it { expect(errors).to be == expected_errors }
+    end
+
+    describe 'with where: an Object' do
+      let(:keywords) { { where: Object.new.freeze } }
+
+      it { expect(result).to be false }
+
+      it { expect(errors).to be == expected_errors }
+    end
+
+    describe 'with where: a Hash' do
+      let(:keywords) { { where: { title: 'On Basilisk Station' } } }
+
+      it { expect(result).to be false }
+
+      it { expect(errors).to be == expected_errors }
+    end
+
+    describe 'with where: a Proc' do
+      let(:keywords) { { where: -> { { title: 'On Basilisk Station' } } } }
+
+      it { expect(result).to be true }
+
+      it { expect(errors).to be == Stannum::Errors.new }
+    end
   end
 
   describe '#call' do
-    include_examples 'should validate the keyword',
-      :where,
-      type:     Proc,
-      optional: false
+    it 'should validate the :where keyword' do
+      expect(command)
+        .to validate_parameter(:call, :where)
+        .using_constraint(Proc)
+    end
 
     describe 'with a block that raises an error' do
       let(:exception) do

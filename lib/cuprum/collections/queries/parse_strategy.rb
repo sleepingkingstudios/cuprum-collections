@@ -20,13 +20,15 @@ module Cuprum::Collections::Queries
 
     def find_and_validate_strategy(strategy:, where:)
       command_class = step { find_strategy_by_key(strategy: strategy) }
-      match, errors = command_class.parameters_contract.match(
+      parameters    = {
         arguments: [],
         block:     nil,
         keywords:  { where: where }
-      )
+      }
 
-      return command_class if match
+      return command_class if command_class.matches?(parameters)
+
+      errors = command_class.errors_for(parameters)
 
       failure(invalid_parameters_error(errors: errors, strategy: strategy))
     end
@@ -53,7 +55,7 @@ module Cuprum::Collections::Queries
       STRATEGIES
         .values
         .find do |command_class|
-          command_class.parameters_contract.matches?(
+          command_class.matches?(
             arguments: [],
             block:     nil,
             keywords:  { where: where }

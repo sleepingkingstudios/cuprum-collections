@@ -4,11 +4,7 @@ require 'cuprum/collections/reference/commands/filter'
 require 'cuprum/collections/reference/rspec/command_contract'
 require 'cuprum/collections/rspec/filter_command_contract'
 
-require 'support/examples/command_examples'
-
 RSpec.describe Cuprum::Collections::Reference::Commands::Filter do
-  include Spec::Support::Examples::CommandExamples
-
   subject(:command) do
     described_class.new(
       collection_name: collection_name,

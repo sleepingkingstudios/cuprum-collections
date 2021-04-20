@@ -105,11 +105,13 @@ module Cuprum::Collections::Reference::Commands
       )
     end
 
-    keyword :limit,  Integer, optional: true
-    keyword :offset, Integer, optional: true
-    keyword :order,
-      Cuprum::Collections::Constraints::Ordering.new,
-      optional: true
+    validate_parameters :call do
+      keyword :limit,  Integer, optional: true
+      keyword :offset, Integer, optional: true
+      keyword :order,
+        Cuprum::Collections::Constraints::Ordering.new,
+        optional: true
+    end
 
     private
 
