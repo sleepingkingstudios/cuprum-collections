@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/reference/query_builder'
+require 'cuprum/collections/basic/query_builder'
 require 'cuprum/collections/rspec/query_builder_contract'
 
-RSpec.describe Cuprum::Collections::Reference::QueryBuilder do
+RSpec.describe Cuprum::Collections::Basic::QueryBuilder do
   shared_context 'when the query has criteria' do
     let(:base_query) do
       super().where do
@@ -18,7 +18,7 @@ RSpec.describe Cuprum::Collections::Reference::QueryBuilder do
 
   subject(:builder) { described_class.new(base_query) }
 
-  let(:base_query) { Cuprum::Collections::Reference::Query.new([]) }
+  let(:base_query) { Cuprum::Collections::Basic::Query.new([]) }
 
   describe '.new' do
     it { expect(described_class).to respond_to(:new).with(1).argument }

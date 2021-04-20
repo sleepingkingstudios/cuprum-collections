@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/reference/command'
-require 'cuprum/collections/reference/rspec/command_contract'
+require 'cuprum/collections/basic/command'
+require 'cuprum/collections/basic/rspec/command_contract'
 require 'cuprum/collections/rspec/fixtures'
 
-RSpec.describe Cuprum::Collections::Reference::Command do
+RSpec.describe Cuprum::Collections::Basic::Command do
   subject(:command) do
     described_class.new(
       collection_name: collection_name,
@@ -27,7 +27,7 @@ RSpec.describe Cuprum::Collections::Reference::Command do
     end
   end
 
-  include_contract Cuprum::Collections::Reference::RSpec::COMMAND_CONTRACT
+  include_contract Cuprum::Collections::Basic::RSpec::COMMAND_CONTRACT
 
   describe '#call' do
     it 'should define the method' do

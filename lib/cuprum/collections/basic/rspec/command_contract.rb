@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/reference/rspec'
+require 'cuprum/collections/basic/rspec'
 
-module Cuprum::Collections::Reference::RSpec
-  # Contract validating the behavior of a reference command implementation.
+module Cuprum::Collections::Basic::RSpec
+  # Contract validating the behavior of a basic command implementation.
   COMMAND_CONTRACT = lambda do
     describe '#collection_name' do
       include_examples 'should have reader',

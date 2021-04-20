@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
+require 'cuprum/collections/basic'
+require 'cuprum/collections/basic/query_builder'
 require 'cuprum/collections/query'
-require 'cuprum/collections/reference'
-require 'cuprum/collections/reference/query_builder'
 
-module Cuprum::Collections::Reference
+module Cuprum::Collections::Basic
   # Concrete implementation of a Query for an in-memory collection.
   class Query < Cuprum::Collections::Query
     include Enumerable
@@ -83,7 +83,7 @@ module Cuprum::Collections::Reference
     protected
 
     def query_builder
-      Cuprum::Collections::Reference::QueryBuilder.new(self)
+      Cuprum::Collections::Basic::QueryBuilder.new(self)
     end
 
     def with_filters(filters)

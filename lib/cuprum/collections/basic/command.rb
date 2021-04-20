@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/reference'
+require 'cuprum/collections/basic'
 
-module Cuprum::Collections::Reference
-  # Abstract base class for reference collection commands.
+module Cuprum::Collections::Basic
+  # Abstract base class for basic collection commands.
   class Command < Cuprum::Collections::Command
     # @param collection_name [String, Symbol] The name of the collection.
     # @param data [Array<Hash>] The current data in the collection.

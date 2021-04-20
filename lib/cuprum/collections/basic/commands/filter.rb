@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
+require 'cuprum/collections/basic/command'
+require 'cuprum/collections/basic/commands'
+require 'cuprum/collections/basic/query'
 require 'cuprum/collections/commands/abstract_filter'
 require 'cuprum/collections/constraints/ordering'
-require 'cuprum/collections/reference/command'
-require 'cuprum/collections/reference/commands'
-require 'cuprum/collections/reference/query'
 
-module Cuprum::Collections::Reference::Commands
-  # Command for querying filtered, ordered data from a reference collection.
-  class Filter < Cuprum::Collections::Reference::Command
+module Cuprum::Collections::Basic::Commands
+  # Command for querying filtered, ordered data from a basic collection.
+  class Filter < Cuprum::Collections::Basic::Command
     include Cuprum::Collections::Commands::AbstractFilter
 
     # @!method call(limit: nil, offset: nil, order: nil, &block)
@@ -116,7 +116,7 @@ module Cuprum::Collections::Reference::Commands
     private
 
     def build_query
-      Cuprum::Collections::Reference::Query.new(data)
+      Cuprum::Collections::Basic::Query.new(data)
     end
   end
 end

@@ -46,7 +46,7 @@ Steps to add an operator:
 - Update Queries::ParseBlock::Builder.
 - Define context(s) in RSpec::QUERYING_CONTEXTS.
 - Add test cases in RSpec::QUERYING_CONTRACT.
-- Add implementations to Reference::Query::Builder.
+- Add implementations to Basic::QueryBuilder.
 
 ### ParseCriteria
 
