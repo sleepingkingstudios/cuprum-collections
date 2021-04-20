@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/reference/commands/filter'
-require 'cuprum/collections/reference/rspec/command_contract'
+require 'cuprum/collections/basic/commands/filter'
+require 'cuprum/collections/basic/rspec/command_contract'
 require 'cuprum/collections/rspec/filter_command_contract'
 
-RSpec.describe Cuprum::Collections::Reference::Commands::Filter do
+RSpec.describe Cuprum::Collections::Basic::Commands::Filter do
   subject(:command) do
     described_class.new(
       collection_name: collection_name,
@@ -28,7 +28,7 @@ RSpec.describe Cuprum::Collections::Reference::Commands::Filter do
     end
   end
 
-  include_contract Cuprum::Collections::Reference::RSpec::COMMAND_CONTRACT
+  include_contract Cuprum::Collections::Basic::RSpec::COMMAND_CONTRACT
 
   include_contract Cuprum::Collections::RSpec::FILTER_COMMAND_CONTRACT
 end

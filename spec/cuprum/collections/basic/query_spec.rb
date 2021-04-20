@@ -2,10 +2,10 @@
 
 require 'sleeping_king_studios/tools/string_tools'
 
-require 'cuprum/collections/reference/query'
+require 'cuprum/collections/basic/query'
 require 'cuprum/collections/rspec/query_contract'
 
-RSpec.describe Cuprum::Collections::Reference::Query do
+RSpec.describe Cuprum::Collections::Basic::Query do
   subject(:query) { described_class.new(stringify_data(data)) }
 
   let(:data)          { [] }

@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
+require 'cuprum/collections/basic'
 require 'cuprum/collections/query_builder'
-require 'cuprum/collections/reference'
 
-module Cuprum::Collections::Reference
-  # Concrete implementation of QueryBuilder for a reference query.
+module Cuprum::Collections::Basic
+  # Concrete implementation of QueryBuilder for a basic query.
   class QueryBuilder < Cuprum::Collections::QueryBuilder
-    # @param base_query [Cuprum::Collections::Reference::Query] The original
+    # @param base_query [Cuprum::Collections::Basic::Query] The original
     #   query.
     def initialize(base_query)
       super
