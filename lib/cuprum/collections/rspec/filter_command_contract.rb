@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'stannum/rspec/validate_parameter'
+
 require 'cuprum/collections/constraints/ordering'
 require 'cuprum/collections/rspec'
 require 'cuprum/collections/rspec/fixtures'
@@ -8,6 +10,8 @@ require 'cuprum/collections/rspec/querying_contract'
 module Cuprum::Collections::RSpec
   # Contract validating the behavior of a Filter command implementation.
   FILTER_COMMAND_CONTRACT = lambda do
+    include Stannum::RSpec::Matchers
+
     describe '#call' do
       shared_examples 'should return the matching items' do
         it { expect(result).to be_a_passing_result }
@@ -47,20 +51,28 @@ module Cuprum::Collections::RSpec
         defined?(super()) ? super() : matching_data
       end
 
-      include_examples 'should validate the keyword',
-        :limit,
-        type:     Integer,
-        optional: true
+      it 'should validate the :limit keyword' do
+        expect(command)
+          .to validate_parameter(:call, :limit)
+          .with_value(Object.new)
+          .using_constraint(Integer, required: false)
+      end
 
-      include_examples 'should validate the keyword',
-        :offset,
-        type:     Integer,
-        optional: true
+      it 'should validate the :offset keyword' do
+        expect(command)
+          .to validate_parameter(:call, :offset)
+          .with_value(Object.new)
+          .using_constraint(Integer, required: false)
+      end
 
-      include_examples 'should validate the keyword',
-        :order,
-        type:     Cuprum::Collections::Constraints::Ordering.new,
-        optional: true
+      it 'should validate the :order keyword' do
+        constraint = Cuprum::Collections::Constraints::Ordering.new
+
+        expect(command)
+          .to validate_parameter(:call, :order)
+          .with_value(Object.new)
+          .using_constraint(constraint, required: false)
+      end
 
       include_examples 'should return the matching items'
 
