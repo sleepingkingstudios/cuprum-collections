@@ -37,5 +37,31 @@ module Cuprum::Collections::Basic::RSpec
         it { expect(command.options).to be == expected_options }
       end
     end
+
+    describe '#primary_key_name' do
+      include_examples 'should have reader', :primary_key_name, :id
+
+      context 'when initialized with a primary key name' do
+        let(:primary_key_name) { :uuid }
+        let(:constructor_options) do
+          super().merge({ primary_key_name: primary_key_name })
+        end
+
+        it { expect(command.primary_key_name).to be == primary_key_name }
+      end
+    end
+
+    describe '#primary_key_type' do
+      include_examples 'should have reader', :primary_key_type, Integer
+
+      context 'when initialized with a primary key type' do
+        let(:primary_key_type) { String }
+        let(:constructor_options) do
+          super().merge({ primary_key_type: primary_key_type })
+        end
+
+        it { expect(command.primary_key_type).to be == primary_key_type }
+      end
+    end
   end
 end
