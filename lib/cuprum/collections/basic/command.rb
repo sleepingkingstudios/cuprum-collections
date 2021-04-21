@@ -24,5 +24,11 @@ module Cuprum::Collections::Basic
 
     # @return [Hash<Symbol>] additional options for the command.
     attr_reader :options
+
+    private
+
+    def tools
+      SleepingKingStudios::Tools::Toolbelt.instance
+    end
   end
 end
