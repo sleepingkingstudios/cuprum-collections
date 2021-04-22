@@ -54,6 +54,19 @@ module Cuprum::Collections::Basic
       filtered_data.each(&block)
     end
 
+    # Checks for the presence of collection items matching the query.
+    #
+    # If the query has criteria, then only items matching each criterion will be
+    # processed; these are the matching items. If there is at least one matching
+    # item, #exists will return true; otherwise, it will return false.
+    #
+    # @return [Boolean] true if any items match the query; otherwise false.
+    def exists?
+      data.any? do |item|
+        @filters.all? { |filter| filter.call(item) }
+      end
+    end
+
     # Returns an array containing each collection item matching the query.
     #
     # If the query has criteria, only items matching each criterion will be
@@ -84,6 +97,12 @@ module Cuprum::Collections::Basic
 
     def query_builder
       Cuprum::Collections::Basic::QueryBuilder.new(self)
+    end
+
+    def reset!
+      @filtered_data = nil
+
+      self
     end
 
     def with_filters(filters)
@@ -148,10 +167,12 @@ module Cuprum::Collections::Basic
     end
 
     def filtered_data
-      data
-        .yield_self { |ary| apply_filters(ary) }
-        .yield_self { |ary| apply_order(ary) }
-        .yield_self { |ary| apply_limit_offset(ary) }
+      @filtered_data ||=
+        data
+          .yield_self { |ary| apply_filters(ary) }
+          .yield_self { |ary| apply_order(ary) }
+          .yield_self { |ary| apply_limit_offset(ary) }
+          .map(&:dup)
     end
   end
 end
