@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'stannum/constraints/types/array'
+
 require 'cuprum/collections/basic'
 
 module Cuprum::Collections::Basic
@@ -54,6 +56,15 @@ module Cuprum::Collections::Basic
       end
     end
 
+    def primary_keys_contract
+      type = primary_key_type
+
+      @primary_keys_contract ||= Stannum::Contracts::ParametersContract.new do
+        keyword :primary_keys,
+          Stannum::Constraints::Types::Array.new(item_type: type)
+      end
+    end
+
     def tools
       SleepingKingStudios::Tools::Toolbelt.instance
     end
@@ -62,6 +73,14 @@ module Cuprum::Collections::Basic
       match_parameters_to_contract(
         contract:    primary_key_contract,
         keywords:    { primary_key: primary_key },
+        method_name: :call
+      )
+    end
+
+    def validate_primary_keys(primary_keys)
+      match_parameters_to_contract(
+        contract:    primary_keys_contract,
+        keywords:    { primary_keys: primary_keys },
         method_name: :call
       )
     end
