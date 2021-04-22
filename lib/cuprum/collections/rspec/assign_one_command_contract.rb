@@ -39,7 +39,7 @@ module Cuprum::Collections::RSpec
 
       it 'should validate the :entity keyword' do
         expect(command)
-          .to validate_parameter(:call, :attributes)
+          .to validate_parameter(:call, :entity)
           .using_constraint(entity_type)
       end
 
