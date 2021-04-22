@@ -100,9 +100,10 @@ module Cuprum::Collections::Basic::Commands
       super(
         collection_name: collection_name,
         data:            data,
-        envelope:        envelope,
         **options,
       )
+
+      @envelope = !!envelope
     end
 
     validate_parameters :call do
@@ -111,6 +112,11 @@ module Cuprum::Collections::Basic::Commands
       keyword :order,
         Cuprum::Collections::Constraints::Ordering.new,
         optional: true
+    end
+
+    # @return [Boolean] if true, wraps the result in a Hash.
+    def envelope?
+      @envelope
     end
 
     private

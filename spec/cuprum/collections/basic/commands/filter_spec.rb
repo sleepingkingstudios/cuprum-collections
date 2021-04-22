@@ -16,7 +16,7 @@ RSpec.describe Cuprum::Collections::Basic::Commands::Filter do
   let(:collection_name)     { 'books' }
   let(:data)                { [] }
   let(:constructor_options) { {} }
-  let(:expected_options)    { { envelope: false } }
+  let(:expected_options)    { {} }
 
   describe '.new' do
     it 'should define the constructor' do
@@ -31,4 +31,14 @@ RSpec.describe Cuprum::Collections::Basic::Commands::Filter do
   include_contract Cuprum::Collections::Basic::RSpec::COMMAND_CONTRACT
 
   include_contract Cuprum::Collections::RSpec::FILTER_COMMAND_CONTRACT
+
+  describe '#envelope?' do
+    include_examples 'should define predicate', :envelope?, false
+
+    context 'when initialized with envelope: true' do
+      let(:constructor_options) { super().merge(envelope: true) }
+
+      it { expect(command.envelope?).to be true }
+    end
+  end
 end

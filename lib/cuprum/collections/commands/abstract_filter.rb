@@ -55,7 +55,7 @@ module Cuprum::Collections::Commands
     end
 
     def wrap_query(query)
-      return query.each unless options[:envelope]
+      return query.each unless envelope?
 
       { collection_name => query.to_a }
     end
