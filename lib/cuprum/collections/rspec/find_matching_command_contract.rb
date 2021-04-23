@@ -8,8 +8,8 @@ require 'cuprum/collections/rspec/fixtures'
 require 'cuprum/collections/rspec/querying_contract'
 
 module Cuprum::Collections::RSpec
-  # Contract validating the behavior of a Filter command implementation.
-  FILTER_COMMAND_CONTRACT = lambda do
+  # Contract validating the behavior of a FindMatching command implementation.
+  FIND_MATCHING_COMMAND_CONTRACT = lambda do
     include Stannum::RSpec::Matchers
 
     describe '#call' do
@@ -49,6 +49,12 @@ module Cuprum::Collections::RSpec
       let(:matching_data) { data }
       let(:expected_data) do
         defined?(super()) ? super() : matching_data
+      end
+
+      it 'should validate the :envelope keyword' do
+        expect(command)
+          .to validate_parameter(:call, :envelope)
+          .using_constraint(Stannum::Constraints::Boolean.new)
       end
 
       it 'should validate the :limit keyword' do
@@ -92,8 +98,8 @@ module Cuprum::Collections::RSpec
         end
       end
 
-      context 'when initialized with envelope: true' do
-        let(:constructor_options) { super().merge(envelope: true) }
+      describe 'with envelope: true' do
+        let(:options) { super().merge(envelope: true) }
 
         include_examples 'should return the wrapped items'
 
@@ -114,7 +120,7 @@ module Cuprum::Collections::RSpec
           }
 
         context 'when initialized with envelope: true' do
-          let(:constructor_options) { super().merge(envelope: true) }
+          let(:options) { super().merge(envelope: true) }
 
           include_examples 'should return the wrapped items'
 

@@ -22,6 +22,18 @@ module Cuprum::Collections::RSpec
         defined?(super()) ? super() : [0, 1, 2]
       end
 
+      it 'should validate the :allow_partial keyword' do
+        expect(command)
+          .to validate_parameter(:call, :allow_partial)
+          .using_constraint(Stannum::Constraints::Boolean.new)
+      end
+
+      it 'should validate the :envelope keyword' do
+        expect(command)
+          .to validate_parameter(:call, :envelope)
+          .using_constraint(Stannum::Constraints::Boolean.new)
+      end
+
       it 'should validate the :primary_keys keyword' do
         expect(command)
           .to validate_parameter(:call, :primary_keys)
@@ -121,9 +133,7 @@ module Cuprum::Collections::RSpec
           end
         end
 
-        context 'when initialized with allow_partial: true' do
-          let(:constructor_options) { super().merge(allow_partial: true) }
-
+        describe 'with allow_partial: true' do
           describe 'with an array of invalid primary keys' do
             let(:primary_keys) { invalid_primary_key_values }
             let(:expected_error) do
@@ -147,7 +157,9 @@ module Cuprum::Collections::RSpec
             end
 
             it 'should return a passing result' do
-              expect(command.call(primary_keys: primary_keys))
+              expect(
+                command.call(primary_keys: primary_keys, allow_partial: true)
+              )
                 .to be_a_passing_result
                 .with_value(expected_data)
             end
@@ -157,7 +169,9 @@ module Cuprum::Collections::RSpec
             let(:primary_keys) { valid_primary_key_values }
 
             it 'should return a passing result' do
-              expect(command.call(primary_keys: primary_keys))
+              expect(
+                command.call(primary_keys: primary_keys, allow_partial: true)
+              )
                 .to be_a_passing_result
                 .with_value(expected_data)
             end
@@ -166,7 +180,9 @@ module Cuprum::Collections::RSpec
               let(:primary_keys) { valid_primary_key_values.reverse }
 
               it 'should return a passing result' do
-                expect(command.call(primary_keys: primary_keys))
+                expect(
+                  command.call(primary_keys: primary_keys, allow_partial: true)
+                )
                   .to be_a_passing_result
                   .with_value(expected_data)
               end
@@ -174,14 +190,12 @@ module Cuprum::Collections::RSpec
           end
         end
 
-        context 'when initialized with envelope: true' do
-          let(:constructor_options) { super().merge(envelope: true) }
-
+        describe 'with envelope: true' do
           describe 'with a valid array of primary keys' do
             let(:primary_keys) { valid_primary_key_values }
 
             it 'should return a passing result' do
-              expect(command.call(primary_keys: primary_keys))
+              expect(command.call(primary_keys: primary_keys, envelope: true))
                 .to be_a_passing_result
                 .with_value({ collection_name => expected_data })
             end
@@ -190,7 +204,7 @@ module Cuprum::Collections::RSpec
               let(:primary_keys) { valid_primary_key_values.reverse }
 
               it 'should return a passing result' do
-                expect(command.call(primary_keys: primary_keys))
+                expect(command.call(primary_keys: primary_keys, envelope: true))
                   .to be_a_passing_result
                   .with_value({ collection_name => expected_data })
               end

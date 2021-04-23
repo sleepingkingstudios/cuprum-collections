@@ -28,18 +28,16 @@ module Cuprum::Collections::Commands
       Cuprum::Result.new(error: error)
     end
 
-    def process(primary_key:)
+    def process(envelope:, primary_key:)
       query = apply_query(primary_key: primary_key)
       item  = query.to_a.first
 
       step { handle_missing_item(item: item, primary_key: primary_key) }
 
-      wrap_item(item)
+      envelope ? wrap_item(item) : item
     end
 
     def wrap_item(item)
-      return item unless envelope?
-
       { tools.str.singularize(collection_name.to_s) => item }
     end
   end

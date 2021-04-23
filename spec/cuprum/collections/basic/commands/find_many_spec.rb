@@ -17,15 +17,13 @@ RSpec.describe Cuprum::Collections::Basic::Commands::FindMany do
   let(:data)                { [] }
   let(:mapped_data)         { data }
   let(:constructor_options) { {} }
-  let(:expected_options)    { { envelope: false } }
+  let(:expected_options)    { {} }
 
   describe '.new' do
     let(:keywords) do
       %i[
-        allow_partial
         collection_name
         data
-        envelope
         primary_key_name
         primary_key_type
       ]
@@ -43,26 +41,6 @@ RSpec.describe Cuprum::Collections::Basic::Commands::FindMany do
   include_contract Cuprum::Collections::Basic::RSpec::COMMAND_CONTRACT
 
   include_contract Cuprum::Collections::RSpec::FIND_MANY_COMMAND_CONTRACT
-
-  describe '#allow_partial?' do
-    include_examples 'should define predicate', :allow_partial?, false
-
-    context 'when initialized with allow_partial: true' do
-      let(:constructor_options) { super().merge(allow_partial: true) }
-
-      it { expect(command.allow_partial?).to be true }
-    end
-  end
-
-  describe '#envelope?' do
-    include_examples 'should define predicate', :envelope?, false
-
-    context 'when initialized with envelope: true' do
-      let(:constructor_options) { super().merge(envelope: true) }
-
-      it { expect(command.envelope?).to be true }
-    end
-  end
 
   context 'with a custom primary key' do # rubocop:disable RSpec/EmptyExampleGroup
     let(:primary_key_name) { :uuid }

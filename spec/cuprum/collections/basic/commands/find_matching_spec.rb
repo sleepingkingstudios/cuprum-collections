@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/basic/commands/filter'
+require 'cuprum/collections/basic/commands/find_matching'
 require 'cuprum/collections/basic/rspec/command_contract'
-require 'cuprum/collections/rspec/filter_command_contract'
+require 'cuprum/collections/rspec/find_matching_command_contract'
 
-RSpec.describe Cuprum::Collections::Basic::Commands::Filter do
+RSpec.describe Cuprum::Collections::Basic::Commands::FindMatching do
   subject(:command) do
     described_class.new(
       collection_name: collection_name,
@@ -23,22 +23,12 @@ RSpec.describe Cuprum::Collections::Basic::Commands::Filter do
       expect(described_class)
         .to respond_to(:new)
         .with(0).arguments
-        .and_keywords(:collection_name, :data, :envelope)
+        .and_keywords(:collection_name, :data)
         .and_any_keywords
     end
   end
 
   include_contract Cuprum::Collections::Basic::RSpec::COMMAND_CONTRACT
 
-  include_contract Cuprum::Collections::RSpec::FILTER_COMMAND_CONTRACT
-
-  describe '#envelope?' do
-    include_examples 'should define predicate', :envelope?, false
-
-    context 'when initialized with envelope: true' do
-      let(:constructor_options) { super().merge(envelope: true) }
-
-      it { expect(command.envelope?).to be true }
-    end
-  end
+  include_contract Cuprum::Collections::RSpec::FIND_MATCHING_COMMAND_CONTRACT
 end

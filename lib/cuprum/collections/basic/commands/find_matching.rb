@@ -1,15 +1,17 @@
 # frozen_string_literal: true
 
+require 'stannum/constraints/boolean'
+
 require 'cuprum/collections/basic/command'
 require 'cuprum/collections/basic/commands'
 require 'cuprum/collections/basic/query'
-require 'cuprum/collections/commands/abstract_filter'
+require 'cuprum/collections/commands/abstract_find_matching'
 require 'cuprum/collections/constraints/ordering'
 
 module Cuprum::Collections::Basic::Commands
   # Command for querying filtered, ordered data from a basic collection.
-  class Filter < Cuprum::Collections::Basic::Command
-    include Cuprum::Collections::Commands::AbstractFilter
+  class FindMatching < Cuprum::Collections::Basic::Command
+    include Cuprum::Collections::Commands::AbstractFindMatching
 
     # @!method call(limit: nil, offset: nil, order: nil, &block)
     #   Queries the collection for items matching the given conditions.
@@ -28,7 +30,7 @@ module Cuprum::Collections::Basic::Commands
     #     method call for a valid operation defined for the query.
     #
     #   @example Querying all items in the collection.
-    #     command = Filter.new(collection_name: 'books', data: books)
+    #     command = FindMatching.new(collection_name: 'books', data: books)
     #     command.call
     #     #=> an enumerable iterating all items in the collection
     #
@@ -70,8 +72,11 @@ module Cuprum::Collections::Basic::Commands
     #
     #   @example Wrapping the result in an envelope
     #     command =
-    #       Filter.new(collection_name: 'books', data: books, envelope: true)
-    #     command.call
+    #       FindMatching.new(
+    #         collection_name: 'books',
+    #         data:            books
+    #       )
+    #     command.call(envelope: true)
     #     #=> {
     #       'books' => [] # an array containing the matching items
     #     }
@@ -92,31 +97,15 @@ module Cuprum::Collections::Basic::Commands
     #       hash with the collection name as key and the matching items as
     #       value.
 
-    # @param collection_name [String, Symbol] The name of the collection.
-    # @param data [Array<Hash>] The current data in the collection.
-    # @param envelope [Boolean] If true, wraps the result in a Hash and
-    # @param options [Hash<Symbol>] Additional options for the command.
-    def initialize(collection_name:, data:, envelope: false, **options)
-      super(
-        collection_name: collection_name,
-        data:            data,
-        **options,
-      )
-
-      @envelope = !!envelope
-    end
-
     validate_parameters :call do
-      keyword :limit,  Integer, optional: true
-      keyword :offset, Integer, optional: true
+      keyword :envelope,
+        Stannum::Constraints::Boolean.new,
+        default: true
+      keyword :limit,    Integer, optional: true
+      keyword :offset,   Integer, optional: true
       keyword :order,
         Cuprum::Collections::Constraints::Ordering.new,
         optional: true
-    end
-
-    # @return [Boolean] if true, wraps the result in a Hash.
-    def envelope?
-      @envelope
     end
 
     private

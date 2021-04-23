@@ -23,6 +23,12 @@ module Cuprum::Collections::RSpec
         SleepingKingStudios::Tools::Toolbelt.instance
       end
 
+      it 'should validate the :envelope keyword' do
+        expect(command)
+          .to validate_parameter(:call, :envelope)
+          .using_constraint(Stannum::Constraints::Boolean.new)
+      end
+
       it 'should validate the :primary_key keyword' do
         expect(command)
           .to validate_parameter(:call, :primary_key)
@@ -82,15 +88,14 @@ module Cuprum::Collections::RSpec
           end
         end
 
-        context 'when initialized with envelope: true' do
-          let(:constructor_options) { super().merge(envelope: true) }
-          let(:member_name)         { tools.str.singularize(collection_name) }
+        describe 'with envelope: true' do
+          let(:member_name) { tools.str.singularize(collection_name) }
 
           describe 'with a valid primary key' do
             let(:primary_key) { valid_primary_key_value }
 
             it 'should return a passing result' do
-              expect(command.call(primary_key: primary_key))
+              expect(command.call(primary_key: primary_key, envelope: true))
                 .to be_a_passing_result
                 .with_value({ member_name => expected_data })
             end

@@ -17,11 +17,11 @@ RSpec.describe Cuprum::Collections::Basic::Commands::FindOne do
   let(:data)                { [] }
   let(:mapped_data)         { data }
   let(:constructor_options) { {} }
-  let(:expected_options)    { { envelope: false } }
+  let(:expected_options)    { {} }
 
   describe '.new' do
     let(:keywords) do
-      %i[collection_name data envelope primary_key_name primary_key_type]
+      %i[collection_name data primary_key_name primary_key_type]
     end
 
     it 'should define the constructor' do
@@ -36,16 +36,6 @@ RSpec.describe Cuprum::Collections::Basic::Commands::FindOne do
   include_contract Cuprum::Collections::Basic::RSpec::COMMAND_CONTRACT
 
   include_contract Cuprum::Collections::RSpec::FIND_ONE_COMMAND_CONTRACT
-
-  describe '#envelope?' do
-    include_examples 'should define predicate', :envelope?, false
-
-    context 'when initialized with envelope: true' do
-      let(:constructor_options) { super().merge(envelope: true) }
-
-      it { expect(command.envelope?).to be true }
-    end
-  end
 
   context 'with a custom primary key' do # rubocop:disable RSpec/EmptyExampleGroup
     let(:primary_key_name) { :uuid }

@@ -17,12 +17,12 @@ module Cuprum::Collections::Commands
       build_query.where { { key => one_of(primary_keys) } }
     end
 
-    def handle_missing_items(items:, primary_keys:)
+    def handle_missing_items(allow_partial:, items:, primary_keys:)
       found, missing = match_items(items: items, primary_keys: primary_keys)
 
       return found if missing.empty?
 
-      return found if allow_partial? && !found.empty?
+      return found if allow_partial && !found.empty?
 
       error = Cuprum::Collections::Errors::NotFound.new(
         collection_name:    collection_name,
@@ -52,18 +52,20 @@ module Cuprum::Collections::Commands
       [found, missing]
     end
 
-    def process(primary_keys:)
+    def process(primary_keys:, allow_partial: false, envelope: false)
       query = apply_query(primary_keys: primary_keys)
       items = step do
-        handle_missing_items(items: query.to_a, primary_keys: primary_keys)
+        handle_missing_items(
+          allow_partial: allow_partial,
+          items:         query.to_a,
+          primary_keys:  primary_keys
+        )
       end
 
-      wrap_items(items)
+      envelope ? wrap_items(items) : items
     end
 
     def wrap_items(items)
-      return items unless options[:envelope]
-
       { collection_name => items }
     end
   end
