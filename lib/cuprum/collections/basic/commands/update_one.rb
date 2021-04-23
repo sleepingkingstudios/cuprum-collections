@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'stannum/constraints/types/hash_with_string_keys'
+
 require 'cuprum/collections/basic/command'
 require 'cuprum/collections/basic/commands'
 require 'cuprum/collections/errors/not_found'
