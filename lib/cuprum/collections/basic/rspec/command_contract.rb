@@ -34,6 +34,43 @@ module Cuprum::Collections::Basic::RSpec
       end
     end
 
+    describe '#member_name' do
+      def tools
+        SleepingKingStudios::Tools::Toolbelt.instance
+      end
+
+      include_examples 'should have reader',
+        :member_name,
+        -> { tools.str.singularize(collection_name) }
+
+      context 'when initialized with collection_name: value' do
+        let(:collection_name) { :books }
+
+        it 'should return the singular collection name' do
+          expect(command.member_name)
+            .to be == tools.str.singularize(collection_name.to_s)
+        end
+      end
+
+      context 'when initialized with member_name: string' do
+        let(:member_name)         { 'tome' }
+        let(:constructor_options) { super().merge(member_name: member_name) }
+
+        it 'should return the singular collection name' do
+          expect(command.member_name).to be member_name
+        end
+      end
+
+      context 'when initialized with member_name: symbol' do
+        let(:member_name)         { :tome }
+        let(:constructor_options) { super().merge(member_name: member_name) }
+
+        it 'should return the singular collection name' do
+          expect(command.member_name).to be == member_name.to_s
+        end
+      end
+    end
+
     describe '#options' do
       let(:expected_options) do
         defined?(super()) ? super() : constructor_options

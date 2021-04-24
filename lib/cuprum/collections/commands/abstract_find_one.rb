@@ -38,7 +38,7 @@ module Cuprum::Collections::Commands
     end
 
     def wrap_item(item)
-      { tools.str.singularize(collection_name.to_s) => item }
+      { member_name => item }
     end
   end
 end

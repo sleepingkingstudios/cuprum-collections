@@ -11,6 +11,7 @@ module Cuprum::Collections::Basic
     # @param data [Array<Hash>] The current data in the collection.
     # @param default_contract [Stannum::Constraints::Base, nil] The default
     #   contract for validating items in the collection.
+    # @param member_name [String] The name of a collection entity.
     # @param primary_key_name [Symbol] The name of the primary key attribute.
     #   Defaults to :id.
     # @param primary_key_type [Class, Stannum::Constraint] The type of the
@@ -20,6 +21,7 @@ module Cuprum::Collections::Basic
       collection_name:,
       data:,
       default_contract: nil,
+      member_name:      nil,
       primary_key_name: :id,
       primary_key_type: Integer,
       **options
@@ -29,6 +31,8 @@ module Cuprum::Collections::Basic
       @collection_name  = collection_name.to_s
       @data             = data
       @default_contract = default_contract
+      @member_name      =
+        member_name ? member_name.to_s : tools.str.singularize(@collection_name)
       @options          = options
       @primary_key_name = primary_key_name
       @primary_key_type = primary_key_type
@@ -43,6 +47,9 @@ module Cuprum::Collections::Basic
     # @return [Stannum::Constraints::Base, nil] the default contract for
     #   validating items in the collection.
     attr_reader :default_contract
+
+    # @return [String] the name of a collection entity.
+    attr_reader :member_name
 
     # @return [Hash<Symbol>] additional options for the command.
     attr_reader :options
