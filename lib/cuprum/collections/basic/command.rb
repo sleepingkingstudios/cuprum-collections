@@ -7,6 +7,15 @@ require 'cuprum/collections/basic'
 module Cuprum::Collections::Basic
   # Abstract base class for basic collection commands.
   class Command < Cuprum::Collections::Command
+    # Creates a subclass with the given parameters applied to the constructor.
+    def self.subclass(**default_options)
+      Class.new(self) do
+        define_method(:initialize) do |**options|
+          super(**default_options.merge(options))
+        end
+      end
+    end
+
     # @param collection_name [String, Symbol] The name of the collection.
     # @param data [Array<Hash>] The current data in the collection.
     # @param default_contract [Stannum::Constraints::Base, nil] The default
