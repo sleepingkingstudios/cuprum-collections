@@ -121,6 +121,21 @@ module Cuprum::Collections
     end
     alias order_by order
 
+    # Returns a copy of the query with no cached query results.
+    #
+    # Once the query has been called (e.g. by calling #each or #to_a), the
+    # matching data is cached. If the underlying collection changes, those
+    # changes will not be reflected in the query.
+    #
+    # Calling #reset clears the cached results. The next time the query is
+    # called, the results will be drawn from the current collection state.
+    #
+    # @return [Cuprum::Collections::Query] a copy of the query with a cleared
+    #   results cache.
+    def reset
+      dup.reset!
+    end
+
     # Returns a copy of the query with the specified filters.
     #
     # The given parameters are used to construct query criteria, which define
@@ -167,6 +182,12 @@ module Cuprum::Collections
     end
 
     protected
+
+    def reset!
+      # :nocov:
+      self
+      # :nocov:
+    end
 
     def with_criteria(criteria)
       @criteria += criteria

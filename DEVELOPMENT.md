@@ -1,5 +1,9 @@
 # Development
 
+## Collections
+
+- #member_name - defaults to singularize(collection_name)
+
 ## Commands
 
 ### ParameterCoercion

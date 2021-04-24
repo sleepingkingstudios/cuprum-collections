@@ -4,11 +4,11 @@ require 'cuprum/collections/commands'
 require 'cuprum/collections/queries/parse'
 
 module Cuprum::Collections::Commands
-  # Abstract implementation of the Filter command.
+  # Abstract implementation of the FindMatching command.
   #
   # Subclasses must define the #build_query method, which returns an empty
   # Query instance for that collection.
-  module AbstractFilter
+  module AbstractFindMatching
     private
 
     def apply_query(criteria:, limit:, offset:, order:)
@@ -31,6 +31,7 @@ module Cuprum::Collections::Commands
     end
 
     def process( # rubocop:disable Metrics/MethodLength, Metrics/ParameterLists
+      envelope: false,
       limit:    nil,
       offset:   nil,
       order:    nil,
@@ -51,12 +52,10 @@ module Cuprum::Collections::Commands
         )
       end
 
-      success(wrap_query(query))
+      envelope ? wrap_query(query) : query.each
     end
 
     def wrap_query(query)
-      return query.each unless options[:envelope]
-
       { collection_name => query.to_a }
     end
   end

@@ -48,6 +48,57 @@ module Cuprum::Collections::RSpec # rubocop:disable Style/Documentation
       expect(described_class).to be < Enumerable
     end
 
+    describe '#count' do
+      let(:data)          { [] }
+      let(:matching_data) { data }
+      let(:expected_data) do
+        defined?(super()) ? super() : matching_data
+      end
+
+      it { expect(query).to respond_to(:count).with(0).arguments }
+
+      it { expect(query.count).to be == expected_data.count }
+
+      wrap_context 'when the query has composed filters' do
+        it { expect(scoped_query.count).to be == expected_data.count }
+      end
+
+      context 'when the collection data changes' do
+        let(:item) { BOOKS_FIXTURES.first }
+
+        before(:example) do
+          query.count # Cache query results.
+
+          add_item_to_collection(item)
+        end
+
+        it { expect(query.count).to be == expected_data.count }
+      end
+
+      context 'when the collection has many items' do
+        let(:data) { BOOKS_FIXTURES }
+
+        it { expect(query.count).to be == expected_data.count }
+
+        wrap_context 'when the query has composed filters' do
+          it { expect(scoped_query.count).to be == expected_data.count }
+        end
+
+        context 'when the collection data changes' do
+          let(:data) { BOOKS_FIXTURES[0...-1] }
+          let(:item) { BOOKS_FIXTURES.last }
+
+          before(:example) do
+            query.count # Cache query results.
+
+            add_item_to_collection(item)
+          end
+
+          it { expect(query.count).to be == expected_data.count }
+        end
+      end
+    end
+
     describe '#criteria' do
       include_examples 'should have reader', :criteria, []
 
@@ -149,6 +200,18 @@ module Cuprum::Collections::RSpec # rubocop:disable Style/Documentation
         include_examples 'should enumerate the matching data'
       end
 
+      context 'when the collection data changes' do
+        let(:item) { BOOKS_FIXTURES.first }
+
+        before(:example) do
+          query.each {} # Cache query results.
+
+          add_item_to_collection(item)
+        end
+
+        include_examples 'should enumerate the matching data'
+      end
+
       context 'when the collection has many items' do
         let(:data) { BOOKS_FIXTURES }
 
@@ -162,6 +225,58 @@ module Cuprum::Collections::RSpec # rubocop:disable Style/Documentation
 
         wrap_context 'when the query has composed filters' do
           include_examples 'should enumerate the matching data'
+        end
+
+        context 'when the collection data changes' do
+          let(:data) { BOOKS_FIXTURES[0...-1] }
+          let(:item) { BOOKS_FIXTURES.last }
+
+          before(:example) do
+            query.each {} # Cache query results.
+
+            add_item_to_collection(item)
+          end
+
+          include_examples 'should enumerate the matching data'
+        end
+      end
+    end
+
+    describe '#exists?' do
+      shared_examples 'should check the existence of matching data' do
+        it { expect(query.exists?).to be == !matching_data.empty? }
+      end
+
+      let(:data)          { [] }
+      let(:matching_data) { data }
+
+      include_examples 'should define predicate', :exists?
+
+      include_examples 'should check the existence of matching data'
+
+      include_contract Cuprum::Collections::RSpec::QUERYING_CONTRACT,
+        block:     lambda {
+          include_examples 'should check the existence of matching data'
+        },
+        operators: operators
+
+      wrap_context 'when the query has composed filters' do
+        include_examples 'should check the existence of matching data'
+      end
+
+      context 'when the collection has many items' do
+        let(:data) { BOOKS_FIXTURES }
+
+        include_examples 'should check the existence of matching data'
+
+        include_contract Cuprum::Collections::RSpec::QUERYING_CONTRACT,
+          block:     lambda {
+            include_examples 'should check the existence of matching data'
+          },
+          operators: operators
+
+        wrap_context 'when the query has composed filters' do
+          include_examples 'should check the existence of matching data'
         end
       end
     end
@@ -339,6 +454,63 @@ module Cuprum::Collections::RSpec # rubocop:disable Style/Documentation
       end
     end
 
+    describe '#reset' do
+      let(:data)          { [] }
+      let(:matching_data) { data }
+      let(:expected_data) do
+        defined?(super()) ? super() : matching_data
+      end
+
+      it { expect(query).to respond_to(:reset).with(0).arguments }
+
+      it { expect(query.reset).to be_a query.class }
+
+      it { expect(query.reset).not_to be query }
+
+      it { expect(query.reset.to_a).to be == query.to_a }
+
+      context 'when the collection data changes' do
+        let(:item)          { BOOKS_FIXTURES.first }
+        let(:matching_data) { [item] }
+
+        before(:example) do
+          query.to_a # Cache query results.
+
+          add_item_to_collection(item)
+        end
+
+        it { expect(query.reset.count).to be expected_data.size }
+
+        it { expect(query.reset.to_a).to deep_match expected_data }
+      end
+
+      context 'when the collection has many items' do
+        let(:data) { BOOKS_FIXTURES }
+
+        it { expect(query.reset).to be_a query.class }
+
+        it { expect(query.reset).not_to be query }
+
+        it { expect(query.reset.to_a).to be == query.to_a }
+
+        context 'when the collection data changes' do
+          let(:data)          { BOOKS_FIXTURES[0...-1] }
+          let(:item)          { BOOKS_FIXTURES.last }
+          let(:matching_data) { [*data, item] }
+
+          before(:example) do
+            query.to_a # Cache query results.
+
+            add_item_to_collection(item)
+          end
+
+          it { expect(query.reset.count).to be expected_data.size }
+
+          it { expect(query.reset.to_a).to deep_match expected_data }
+        end
+      end
+    end
+
     describe '#to_a' do
       let(:data)          { [] }
       let(:matching_data) { data }
@@ -360,6 +532,18 @@ module Cuprum::Collections::RSpec # rubocop:disable Style/Documentation
         it { expect(scoped_query.to_a).to deep_match expected_data }
       end
 
+      context 'when the collection data changes' do
+        let(:item) { BOOKS_FIXTURES.first }
+
+        before(:example) do
+          query.to_a # Cache query results.
+
+          add_item_to_collection(item)
+        end
+
+        it { expect(query.to_a).to deep_match expected_data }
+      end
+
       context 'when the collection has many items' do
         let(:data) { BOOKS_FIXTURES }
 
@@ -373,6 +557,19 @@ module Cuprum::Collections::RSpec # rubocop:disable Style/Documentation
 
         wrap_context 'when the query has composed filters' do
           it { expect(scoped_query.to_a).to deep_match expected_data }
+        end
+
+        context 'when the collection data changes' do
+          let(:data) { BOOKS_FIXTURES[0...-1] }
+          let(:item) { BOOKS_FIXTURES.last }
+
+          before(:example) do
+            query.to_a # Cache query results.
+
+            add_item_to_collection(item)
+          end
+
+          it { expect(query.to_a).to deep_match expected_data }
         end
       end
     end

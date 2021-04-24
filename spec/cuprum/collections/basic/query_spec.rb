@@ -11,6 +11,12 @@ RSpec.describe Cuprum::Collections::Basic::Query do
   let(:data)          { [] }
   let(:expected_data) { stringify_data(matching_data) }
 
+  def add_item_to_collection(item)
+    tools = SleepingKingStudios::Tools::HashTools.instance
+
+    query.send(:data) << tools.convert_keys_to_strings(item)
+  end
+
   def stringify_data(data)
     tools = SleepingKingStudios::Tools::HashTools.instance
 
