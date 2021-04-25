@@ -107,6 +107,13 @@ module Cuprum::Collections::Basic
         .subclass(**command_options)
     end
 
+    # A new Query instance, used for querying against the collection data.
+    #
+    # @return [Cuprum::Collections::Basic::Query] the query.
+    def query
+      Cuprum::Collections::Basic::Query.new(data)
+    end
+
     private
 
     def command_options
