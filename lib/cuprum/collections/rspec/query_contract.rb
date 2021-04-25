@@ -282,13 +282,11 @@ module Cuprum::Collections::RSpec # rubocop:disable Style/Documentation
     end
 
     describe '#limit' do
-      let(:count) { 3 }
+      it { expect(query).to respond_to(:limit).with(0..1).arguments }
 
-      it { expect(query).to respond_to(:limit).with(1).argument }
-
-      it { expect(query.limit 3).to be_a described_class }
-
-      it { expect(query.limit 3).not_to be query }
+      describe 'with no arguments' do
+        it { expect(query.limit).to be nil }
+      end
 
       describe 'with nil' do
         let(:error_message) { 'limit must be a non-negative integer' }
@@ -316,16 +314,30 @@ module Cuprum::Collections::RSpec # rubocop:disable Style/Documentation
             .to raise_error ArgumentError, error_message
         end
       end
+
+      describe 'with zero' do
+        it { expect(query.limit 0).to be_a described_class }
+
+        it { expect(query.limit 0).not_to be query }
+
+        it { expect(query.limit(0).limit).to be 0 }
+      end
+
+      describe 'with a positive integer' do
+        it { expect(query.limit 3).to be_a described_class }
+
+        it { expect(query.limit 3).not_to be query }
+
+        it { expect(query.limit(3).limit).to be 3 }
+      end
     end
 
     describe '#offset' do
-      let(:count) { 3 }
+      it { expect(query).to respond_to(:offset).with(0..1).argument }
 
-      it { expect(query).to respond_to(:offset).with(1).argument }
-
-      it { expect(query.offset 3).to be_a described_class }
-
-      it { expect(query.offset 3).not_to be query }
+      describe 'with no arguments' do
+        it { expect(query.offset).to be nil }
+      end
 
       describe 'with nil' do
         let(:error_message) { 'offset must be a non-negative integer' }
@@ -353,21 +365,37 @@ module Cuprum::Collections::RSpec # rubocop:disable Style/Documentation
             .to raise_error ArgumentError, error_message
         end
       end
+
+      describe 'with zero' do
+        it { expect(query.offset 0).to be_a described_class }
+
+        it { expect(query.offset 0).not_to be query }
+
+        it { expect(query.offset(0).offset).to be 0 }
+      end
+
+      describe 'with a positive integer' do
+        it { expect(query.offset 3).to be_a described_class }
+
+        it { expect(query.offset 3).not_to be query }
+
+        it { expect(query.offset(3).offset).to be 3 }
+      end
     end
 
     describe '#order' do
       it 'should define the method' do
         expect(query)
           .to respond_to(:order)
-          .with(1).argument
+          .with(0).arguments
           .and_unlimited_arguments
       end
 
       it { expect(query).to alias_method(:order).as(:order_by) }
 
-      it { expect(query.order :title).to be_a described_class }
-
-      it { expect(query.order :title).not_to be query }
+      describe 'with no arguments' do
+        it { expect(query.order).to be == {} }
+      end
 
       describe 'with a hash with invalid keys' do
         let(:error_message) do
@@ -451,6 +479,18 @@ module Cuprum::Collections::RSpec # rubocop:disable Style/Documentation
           expect { query.order({ title: 'wibbly' }) }
             .to raise_error ArgumentError, error_message
         end
+      end
+
+      describe 'with a valid ordering' do
+        let(:expected) do
+          { title: :asc }
+        end
+
+        it { expect(query.order :title).to be_a described_class }
+
+        it { expect(query.order :title).not_to be query }
+
+        it { expect(query.order(:title).order).to be == expected }
       end
     end
 

@@ -111,24 +111,6 @@ module Cuprum::Collections::Basic
       self
     end
 
-    def with_limit(count)
-      @limit = count
-
-      self
-    end
-
-    def with_offset(count)
-      @offset = count
-
-      self
-    end
-
-    def with_order(order)
-      @order = order
-
-      self
-    end
-
     private
 
     attr_reader :data
