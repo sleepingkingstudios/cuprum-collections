@@ -100,6 +100,10 @@ module Cuprum::Collections::RSpec
       commands_namespace::BuildOne
 
     include_examples 'should define the command',
+      :destroy_one,
+      commands_namespace::DestroyOne
+
+    include_examples 'should define the command',
       :find_many,
       commands_namespace::FindMany
 

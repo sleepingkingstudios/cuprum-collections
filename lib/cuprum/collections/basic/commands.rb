@@ -7,6 +7,7 @@ module Cuprum::Collections::Basic
   module Commands
     autoload :AssignOne,    'cuprum/collections/basic/commands/assign_one'
     autoload :BuildOne,     'cuprum/collections/basic/commands/build_one'
+    autoload :DestroyOne,   'cuprum/collections/basic/commands/destroy_one'
     autoload :FindMany,     'cuprum/collections/basic/commands/find_many'
     autoload :FindMatching, 'cuprum/collections/basic/commands/find_matching'
     autoload :FindOne,      'cuprum/collections/basic/commands/find_one'

@@ -72,6 +72,11 @@ module Cuprum::Collections::Basic
         .subclass(**command_options)
     end
 
+    command_class :destroy_one do
+      Cuprum::Collections::Basic::Commands::DestroyOne
+        .subclass(**command_options)
+    end
+
     command_class :find_many do
       Cuprum::Collections::Basic::Commands::FindMany
         .subclass(**command_options)
