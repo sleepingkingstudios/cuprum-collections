@@ -2,7 +2,7 @@
 
 ## Collections
 
-- #member_name - defaults to singularize(collection_name)
+- #query method - returns a query object for the collection.
 
 ## Commands
 
