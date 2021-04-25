@@ -126,5 +126,21 @@ module Cuprum::Collections::RSpec
     include_examples 'should define the command',
       :validate_one,
       commands_namespace::ValidateOne
+
+    describe '#query' do
+      let(:query) { collection.query }
+
+      it { expect(collection).to respond_to(:query).with(0).arguments }
+
+      it { expect(collection.query).to be_a Cuprum::Collections::Basic::Query }
+
+      it { expect(query.criteria).to be == [] }
+
+      it { expect(query.limit).to be nil }
+
+      it { expect(query.offset).to be nil }
+
+      it { expect(query.order).to be == {} }
+    end
   end
 end

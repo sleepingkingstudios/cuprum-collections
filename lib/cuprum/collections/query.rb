@@ -1,20 +1,13 @@
 # frozen_string_literal: true
 
 require 'cuprum/collections'
+require 'cuprum/collections/queries/ordering'
 
 module Cuprum::Collections
   # Abstract base class for collection Query implementations.
   class Query
-    # Exception class for handling invalid order keywords.
-    class InvalidOrderError < ArgumentError; end
-
-    ORDER_HASH_VALUES = {
-      asc:        :asc,
-      ascending:  :asc,
-      desc:       :desc,
-      descending: :desc
-    }.freeze
-    private_constant :ORDER_HASH_VALUES
+    UNDEFINED = Object.new.freeze
+    private_constant :UNDEFINED
 
     def initialize
       @criteria = []
@@ -43,36 +36,52 @@ module Cuprum::Collections
       @criteria.dup
     end
 
-    # Returns a copy of the query with the specified limit.
+    # Sets or returns the maximum number of items returned by the query.
     #
-    # The query will return at most the specified number of items.
+    # @overload limit
+    #   @return [Integer, nil] the current limit for the query.
     #
-    # When #limit is called on a query that already defines a limit, the old
-    # limit is replaced with the new.
+    # @overload limit(count)
+    #   Returns a copy of the query with the specified limit.
     #
-    # @param count [Integer] the maximum number of items to return.
+    #   The query will return at most the specified number of items.
     #
-    # @return [Query] the copy of the query.
-    def limit(count)
+    #   When #limit is called on a query that already defines a limit, the old
+    #   limit is replaced with the new.
+    #
+    #   @param count [Integer] the maximum number of items to return.
+    #
+    #   @return [Query] the copy of the query.
+    def limit(count = UNDEFINED)
+      return @limit if count == UNDEFINED
+
       validate_limit(count)
 
       dup.tap { |copy| copy.with_limit(count) }
     end
 
-    # Returns a copy of the query with the specified offset.
+    # Sets or returns the number of ordered items skipped by the query.
     #
-    # The query will skip the specified number of matching items, and return
-    # only matching items after the given offset. If the total number of
-    # matching items is less than or equal to the offset, the query will not
-    # return any items.
+    # @overload offset
+    #   @return [Integer, nil] the current offset for the query.
     #
-    # When #offset is called on a query that already defines an offset, the old
-    # offset is replaced with the new.
+    # @overload offset(count)
+    #   Returns a copy of the query with the specified offset.
     #
-    # @param count [Integer] the number of items to skip.
+    #   The query will skip the specified number of matching items, and return
+    #   only matching items after the given offset. If the total number of
+    #   matching items is less than or equal to the offset, the query will not
+    #   return any items.
     #
-    # @return [Query] the copy of the query.
-    def offset(count)
+    #   When #offset is called on a query that already defines an offset, the
+    #   old offset is replaced with the new.
+    #
+    #   @param count [Integer] the number of items to skip.
+    #
+    #   @return [Query] the copy of the query.
+    def offset(count = UNDEFINED)
+      return @offset if count == UNDEFINED
+
       validate_offset(count)
 
       dup.tap { |copy| copy.with_offset(count) }
@@ -99,6 +108,10 @@ module Cuprum::Collections
     #   # publication (descending) within series.
     #   query = query.order({ series: :asc, published_at: :desc })
     #
+    # @overload order
+    #   @return [Hash{String,Symbol=>Symbol}] the current ordering for the
+    #     query.
+    #
     # @overload order(*attributes)
     #   Orders the results by the given attributes, ascending, and in the
     #   specified order, i.e. items with the same value of the first attribute
@@ -114,8 +127,10 @@ module Cuprum::Collections
     #     by. The hash keys should be the names of attributes or columns, and
     #     the corresponding values should be the sort direction for that
     #     attribute, either :asc or :desc.
-    def order(first, *rest)
-      normalized = normalize_order(first, *rest)
+    def order(*attributes)
+      return @order if attributes.empty?
+
+      normalized = Cuprum::Collections::Queries::Ordering.normalize(*attributes)
 
       dup.tap { |copy| copy.with_order(normalized) }
     end
@@ -195,47 +210,25 @@ module Cuprum::Collections
       self
     end
 
+    def with_limit(count)
+      @limit = count
+
+      self
+    end
+
+    def with_offset(count)
+      @offset = count
+
+      self
+    end
+
+    def with_order(order)
+      @order = order
+
+      self
+    end
+
     private
-
-    def invalid_order_error
-      'order must be a list of attribute names and/or a hash of attribute' \
-      ' names with values :asc or :desc'
-    end
-
-    def normalize_order(*attributes)
-      qualified = attributes.last.is_a?(Hash) ? attributes.pop : {}
-      qualified = normalize_order_hash(qualified)
-
-      validate_order_attributes(attributes)
-
-      attributes
-        .each
-        .with_object({}) { |attribute, hsh| hsh[attribute.intern] = :asc }
-        .merge(qualified)
-        .tap { |hsh| validate_order_normalized(hsh) }
-    end
-
-    def normalize_order_hash(hsh)
-      hsh.each.with_object({}) do |(key, value), normalized|
-        unless valid_order_hash_key?(key)
-          raise InvalidOrderError, invalid_order_error, caller(2..-1)
-        end
-
-        normalized[key.intern] = normalize_order_hash_value(value)
-      end
-    end
-
-    def normalize_order_hash_value(value)
-      value = value.downcase if value.is_a?(String)
-
-      ORDER_HASH_VALUES.fetch(value.is_a?(String) ? value.intern : value) do
-        raise InvalidOrderError, invalid_order_error, caller(3..-1)
-      end
-    end
-
-    def valid_order_hash_key?(key)
-      (key.is_a?(String) || key.is_a?(Symbol)) && !key.to_s.empty?
-    end
 
     def validate_limit(count)
       return if count.is_a?(Integer) && !count.negative?
@@ -249,18 +242,6 @@ module Cuprum::Collections
       raise ArgumentError,
         'offset must be a non-negative integer',
         caller(1..-1)
-    end
-
-    def validate_order_attributes(attributes)
-      return if attributes.all? do |item|
-        (item.is_a?(String) || item.is_a?(Symbol)) && !item.to_s.empty?
-      end
-
-      raise InvalidOrderError, invalid_order_error, caller(2..-1)
-    end
-
-    def validate_order_normalized(hsh)
-      raise InvalidOrderError, invalid_order_error, caller(2..-1) if hsh.empty?
     end
   end
 end
