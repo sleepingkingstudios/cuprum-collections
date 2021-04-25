@@ -1,21 +1,13 @@
 # frozen_string_literal: true
 
-require 'stannum/constraints/types/array'
+require 'cuprum/command_factory'
 
 require 'cuprum/collections/basic'
+require 'cuprum/collections/basic/commands'
 
 module Cuprum::Collections::Basic
-  # Abstract base class for basic collection commands.
-  class Command < Cuprum::Collections::Command
-    # Creates a subclass with the given parameters applied to the constructor.
-    def self.subclass(**default_options)
-      Class.new(self) do
-        define_method(:initialize) do |**options|
-          super(**default_options.merge(options))
-        end
-      end
-    end
-
+  # Wraps an in-memory array of hashes data store as a Cuprum collection.
+  class Collection < Cuprum::CommandFactory
     # @param collection_name [String, Symbol] The name of the collection.
     # @param data [Array<Hash>] The current data in the collection.
     # @param default_contract [Stannum::Constraints::Base, nil] The default
@@ -70,43 +62,67 @@ module Cuprum::Collections::Basic
     #   attribute.
     attr_reader :primary_key_type
 
-    private
-
-    def primary_key_contract
-      type = primary_key_type
-
-      @primary_key_contract ||= Stannum::Contracts::ParametersContract.new do
-        keyword :primary_key, type
-      end
+    command_class :assign_one do
+      Cuprum::Collections::Basic::Commands::AssignOne
+        .subclass(**command_options)
     end
 
-    def primary_keys_contract
-      type = primary_key_type
+    command_class :build_one do
+      Cuprum::Collections::Basic::Commands::BuildOne
+        .subclass(**command_options)
+    end
 
-      @primary_keys_contract ||= Stannum::Contracts::ParametersContract.new do
-        keyword :primary_keys,
-          Stannum::Constraints::Types::Array.new(item_type: type)
-      end
+    command_class :destroy_one do
+      Cuprum::Collections::Basic::Commands::DestroyOne
+        .subclass(**command_options)
+    end
+
+    command_class :find_many do
+      Cuprum::Collections::Basic::Commands::FindMany
+        .subclass(**command_options)
+    end
+
+    command_class :find_matching do
+      Cuprum::Collections::Basic::Commands::FindMatching
+        .subclass(**command_options)
+    end
+
+    command_class :find_one do
+      Cuprum::Collections::Basic::Commands::FindOne
+        .subclass(**command_options)
+    end
+
+    command_class :insert_one do
+      Cuprum::Collections::Basic::Commands::InsertOne
+        .subclass(**command_options)
+    end
+
+    command_class :update_one do
+      Cuprum::Collections::Basic::Commands::UpdateOne
+        .subclass(**command_options)
+    end
+
+    command_class :validate_one do
+      Cuprum::Collections::Basic::Commands::ValidateOne
+        .subclass(**command_options)
+    end
+
+    private
+
+    def command_options
+      @command_options ||= {
+        collection_name:  collection_name,
+        data:             data,
+        default_contract: default_contract,
+        member_name:      member_name,
+        primary_key_name: primary_key_name,
+        primary_key_type: primary_key_type,
+        **options
+      }
     end
 
     def tools
       SleepingKingStudios::Tools::Toolbelt.instance
-    end
-
-    def validate_primary_key(primary_key)
-      match_parameters_to_contract(
-        contract:    primary_key_contract,
-        keywords:    { primary_key: primary_key },
-        method_name: :call
-      )
-    end
-
-    def validate_primary_keys(primary_keys)
-      match_parameters_to_contract(
-        contract:    primary_keys_contract,
-        keywords:    { primary_keys: primary_keys },
-        method_name: :call
-      )
     end
   end
 end

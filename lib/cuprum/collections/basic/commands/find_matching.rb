@@ -101,11 +101,12 @@ module Cuprum::Collections::Basic::Commands
       keyword :envelope,
         Stannum::Constraints::Boolean.new,
         default: true
-      keyword :limit,    Integer, optional: true
-      keyword :offset,   Integer, optional: true
+      keyword :limit, Integer, optional: true
+      keyword :offset, Integer, optional: true
       keyword :order,
         Cuprum::Collections::Constraints::Ordering.new,
         optional: true
+      keyword :where, Object, optional: true
     end
 
     private

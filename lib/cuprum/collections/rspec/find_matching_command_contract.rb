@@ -80,6 +80,10 @@ module Cuprum::Collections::RSpec
           .using_constraint(constraint, required: false)
       end
 
+      it 'should validate the :where keyword' do
+        expect(command).to validate_parameter(:call, :where)
+      end
+
       include_examples 'should return the matching items'
 
       include_contract Cuprum::Collections::RSpec::QUERYING_CONTRACT,

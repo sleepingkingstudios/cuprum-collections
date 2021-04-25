@@ -5,6 +5,95 @@ require 'cuprum/collections/basic/rspec'
 module Cuprum::Collections::Basic::RSpec
   # Contract validating the behavior of a basic command implementation.
   COMMAND_CONTRACT = lambda do
+    describe '.subclass' do
+      let(:subclass) { described_class.subclass }
+      let(:constructor_options) do
+        {
+          collection_name: 'books',
+          data:            data,
+          optional_key:    'optional value'
+        }
+      end
+
+      it 'should define the class method' do
+        expect(described_class)
+          .to respond_to(:subclass)
+          .with(0).arguments
+          .and_any_keywords
+      end
+
+      it { expect(subclass).to be_a Class }
+
+      it { expect(subclass).to be < described_class }
+
+      it 'should define the constructor' do
+        expect(subclass)
+          .to respond_to(:new)
+          .with(0).arguments
+          .and_any_keywords
+      end
+
+      it 'should return the collection name' do
+        expect(subclass.new(**constructor_options).collection_name)
+          .to be collection_name
+      end
+
+      it 'should return the data' do
+        expect(subclass.new(**constructor_options).data)
+          .to be data
+      end
+
+      it 'should return the options' do
+        expect(subclass.new(**constructor_options).options)
+          .to be == { optional_key: 'optional value' }
+      end
+
+      describe 'with options' do
+        let(:default_options) do
+          {
+            collection_name: 'books',
+            custom_key:      'custom value'
+          }
+        end
+        let(:constructor_options) do
+          {
+            data:         data,
+            optional_key: 'optional value'
+          }
+        end
+        let(:subclass) { described_class.subclass(**default_options) }
+
+        it { expect(subclass).to be_a Class }
+
+        it { expect(subclass).to be < described_class }
+
+        it 'should define the constructor' do
+          expect(subclass)
+            .to respond_to(:new)
+            .with(0).arguments
+            .and_any_keywords
+        end
+
+        it 'should return the collection name' do
+          expect(subclass.new(**constructor_options).collection_name)
+            .to be collection_name
+        end
+
+        it 'should return the data' do
+          expect(subclass.new(**constructor_options).data)
+            .to be data
+        end
+
+        it 'should return the options' do
+          expect(subclass.new(**constructor_options).options)
+            .to be == {
+              custom_key:   'custom value',
+              optional_key: 'optional value'
+            }
+        end
+      end
+    end
+
     describe '#collection_name' do
       include_examples 'should have reader',
         :collection_name,

@@ -39,6 +39,10 @@ Naming/RescuedExceptionsVariableName:
 RSpec/ExampleWording:
   Enabled: false
 
+RSpec/FilePath:
+  Exclude:
+    - spec/integration/**/*
+
 RSpec/HookArgument:
   Enabled: false
 
