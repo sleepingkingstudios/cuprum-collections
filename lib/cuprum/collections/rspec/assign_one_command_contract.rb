@@ -1,12 +1,10 @@
 # frozen_string_literal: true
 
+require 'stannum/constraints/presence'
 require 'stannum/constraints/types/hash_with_indifferent_keys'
 require 'stannum/rspec/validate_parameter'
 
-require 'stannum/constraints/presence'
-
 require 'cuprum/collections/rspec'
-require 'cuprum/collections/rspec/fixtures'
 
 module Cuprum::Collections::RSpec
   # Contract validating the behavior of an Assign command implementation.
@@ -102,9 +100,9 @@ module Cuprum::Collections::RSpec
         let(:initial_attributes) do
           # :nocov:
           if defined?(super())
-            super().merge(BOOKS_FIXTURES.first)
+            super().merge(fixtures_data.first)
           else
-            BOOKS_FIXTURES.first
+            fixtures_data.first
           end
           # :nocov:
         end
