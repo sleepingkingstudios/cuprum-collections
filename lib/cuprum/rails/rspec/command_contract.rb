@@ -191,6 +191,62 @@ module Cuprum::Rails::RSpec
         -> { record_class }
     end
 
+    describe '#validate_entity' do
+      let(:expected_error) do
+        type     = record_class
+        contract = Stannum::Contracts::ParametersContract.new do
+          keyword :entity, type
+        end
+        errors = contract.errors_for(
+          arguments: [],
+          block:     nil,
+          keywords:  { entity: nil }
+        )
+
+        Cuprum::Collections::Errors::InvalidParameters.new(
+          command: command,
+          errors:  errors
+        )
+      end
+
+      it 'should define the private method' do
+        expect(command)
+          .to respond_to(:validate_entity, true)
+          .with(1).argument
+      end
+
+      describe 'with nil' do
+        it 'should return a failing result' do
+          expect(command.send(:validate_entity, nil))
+            .to be_a_failing_result
+            .with_error(expected_error)
+        end
+      end
+
+      describe 'with an Object' do
+        it 'should return a failing result' do
+          expect(command.send(:validate_entity, Object.new.freeze))
+            .to be_a_failing_result
+            .with_error(expected_error)
+        end
+      end
+
+      describe 'with an invalid record instance' do
+        it 'should return a failing result' do
+          expect(command.send(:validate_entity, Tome.new))
+            .to be_a_failing_result
+            .with_error(expected_error)
+        end
+      end
+
+      describe 'with a valid record instance' do
+        it 'should not return a result' do
+          expect(command.send(:validate_entity, Book.new))
+            .not_to be_a_result
+        end
+      end
+    end
+
     describe '#validate_primary_key' do
       let(:primary_key_type) { Integer }
       let(:expected_error) do

@@ -29,5 +29,35 @@ module Spec::Support::Examples
         data.each { |attributes| Book.create!(attributes) }
       end
     end
+
+    shared_examples 'should validate the :entity keyword' do
+      describe 'with an invalid entity' do
+        let(:entity) { Tome.new }
+        let(:expected_error) do
+          type     = record_class
+          contract = Stannum::Contracts::ParametersContract.new do
+            keyword :entity, type
+          end
+          errors = contract.errors_for(
+            {
+              arguments: [],
+              keywords:  { entity: entity },
+              block:     nil
+            }
+          )
+
+          Cuprum::Collections::Errors::InvalidParameters.new(
+            command: command,
+            errors:  errors
+          )
+        end
+
+        it 'should validate the :entity keyword' do
+          expect(command.call(attributes: {}, entity: entity))
+            .to be_a_failing_result
+            .with_error(expected_error)
+        end
+      end
+    end
   end
 end

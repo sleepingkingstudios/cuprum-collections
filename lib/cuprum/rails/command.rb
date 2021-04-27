@@ -66,6 +66,14 @@ module Cuprum::Rails
 
     private
 
+    def entity_contract
+      type = record_class
+
+      @entity_contract ||= Stannum::Contracts::ParametersContract.new do
+        keyword :entity, type
+      end
+    end
+
     def primary_key_contract
       type = primary_key_type
 
@@ -100,6 +108,14 @@ module Cuprum::Rails
       return member_name.to_s unless member_name.nil?
 
       collection_name.singularize
+    end
+
+    def validate_entity(entity)
+      match_parameters_to_contract(
+        contract:    entity_contract,
+        keywords:    { entity: entity },
+        method_name: :call
+      )
     end
 
     def validate_primary_key(primary_key)
