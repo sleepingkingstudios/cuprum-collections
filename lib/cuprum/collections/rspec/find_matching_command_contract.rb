@@ -4,7 +4,6 @@ require 'stannum/rspec/validate_parameter'
 
 require 'cuprum/collections/constraints/ordering'
 require 'cuprum/collections/rspec'
-require 'cuprum/collections/rspec/fixtures'
 require 'cuprum/collections/rspec/querying_contract'
 
 module Cuprum::Collections::RSpec
@@ -114,7 +113,7 @@ module Cuprum::Collections::RSpec
       end
 
       context 'when the collection has many items' do
-        let(:data) { Cuprum::Collections::RSpec::BOOKS_FIXTURES }
+        let(:data) { fixtures_data }
 
         include_examples 'should return the matching items'
 

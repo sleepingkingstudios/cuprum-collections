@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'cuprum/collections/rspec'
-require 'cuprum/collections/rspec/fixtures'
 
 module Cuprum::Collections::RSpec
   # Contract validating the behavior of an UpdateOne command implementation.
@@ -53,7 +52,7 @@ module Cuprum::Collections::RSpec
       end
 
       context 'when the item exists in the collection' do
-        let(:data) { Cuprum::Collections::RSpec::BOOKS_FIXTURES.dup }
+        let(:data) { fixtures_data }
         let(:matching_data) do
           mapped_data.first.merge(super())
         end

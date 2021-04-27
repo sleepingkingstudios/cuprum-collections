@@ -4,7 +4,13 @@ require 'cuprum/collections/basic/commands/build_one'
 require 'cuprum/collections/basic/rspec/command_contract'
 require 'cuprum/collections/rspec/build_one_command_contract'
 
+require 'support/examples/basic_command_examples'
+
 RSpec.describe Cuprum::Collections::Basic::Commands::BuildOne do
+  include Spec::Support::Examples::BasicCommandExamples
+
+  include_context 'with parameters for a basic contract'
+
   subject(:command) do
     described_class.new(
       collection_name: collection_name,
@@ -13,9 +19,6 @@ RSpec.describe Cuprum::Collections::Basic::Commands::BuildOne do
     )
   end
 
-  let(:collection_name)     { 'books' }
-  let(:data)                { [] }
-  let(:constructor_options) { {} }
   let(:expected_value) do
     SleepingKingStudios::Tools::HashTools
       .instance

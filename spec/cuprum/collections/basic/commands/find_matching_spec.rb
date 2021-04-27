@@ -4,7 +4,13 @@ require 'cuprum/collections/basic/commands/find_matching'
 require 'cuprum/collections/basic/rspec/command_contract'
 require 'cuprum/collections/rspec/find_matching_command_contract'
 
+require 'support/examples/basic_command_examples'
+
 RSpec.describe Cuprum::Collections::Basic::Commands::FindMatching do
+  include Spec::Support::Examples::BasicCommandExamples
+
+  include_context 'with parameters for a basic contract'
+
   subject(:command) do
     described_class.new(
       collection_name: collection_name,
@@ -12,11 +18,6 @@ RSpec.describe Cuprum::Collections::Basic::Commands::FindMatching do
       **constructor_options
     )
   end
-
-  let(:collection_name)     { 'books' }
-  let(:data)                { [] }
-  let(:constructor_options) { {} }
-  let(:expected_options)    { {} }
 
   describe '.new' do
     it 'should define the constructor' do

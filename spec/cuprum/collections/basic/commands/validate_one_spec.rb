@@ -7,7 +7,13 @@ require 'cuprum/collections/basic/commands/validate_one'
 require 'cuprum/collections/basic/rspec/command_contract'
 require 'cuprum/collections/rspec/validate_one_command_contract'
 
+require 'support/examples/basic_command_examples'
+
 RSpec.describe Cuprum::Collections::Basic::Commands::ValidateOne do
+  include Spec::Support::Examples::BasicCommandExamples
+
+  include_context 'with parameters for a basic contract'
+
   subject(:command) do
     described_class.new(
       collection_name: collection_name,
@@ -16,9 +22,6 @@ RSpec.describe Cuprum::Collections::Basic::Commands::ValidateOne do
     )
   end
 
-  let(:collection_name)     { 'books' }
-  let(:data)                { [] }
-  let(:constructor_options) { {} }
   let(:contract) do
     Stannum::Contracts::HashContract.new do
       key 'title', Stannum::Constraints::Presence.new
@@ -28,9 +31,6 @@ RSpec.describe Cuprum::Collections::Basic::Commands::ValidateOne do
   let(:valid_attributes)   { { title: 'Gideon the Ninth' } }
   let(:entity) do
     tools.hash_tools.convert_keys_to_strings(attributes)
-  end
-  let(:entity_type) do
-    Stannum::Constraints::Types::HashWithStringKeys.new
   end
 
   def tools

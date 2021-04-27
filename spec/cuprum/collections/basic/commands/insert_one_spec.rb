@@ -5,7 +5,13 @@ require 'cuprum/collections/basic/query'
 require 'cuprum/collections/basic/rspec/command_contract'
 require 'cuprum/collections/rspec/insert_one_command_contract'
 
+require 'support/examples/basic_command_examples'
+
 RSpec.describe Cuprum::Collections::Basic::Commands::InsertOne do
+  include Spec::Support::Examples::BasicCommandExamples
+
+  include_context 'with parameters for a basic contract'
+
   subject(:command) do
     described_class.new(
       collection_name: collection_name,
@@ -14,12 +20,6 @@ RSpec.describe Cuprum::Collections::Basic::Commands::InsertOne do
     )
   end
 
-  let(:collection_name)     { 'books' }
-  let(:data)                { [] }
-  let(:mapped_data)         { data }
-  let(:constructor_options) { {} }
-  let(:primary_key_name)    { :id }
-  let(:primary_key_type)    { Integer }
   let(:attributes) do
     {
       id:     0,
@@ -29,9 +29,6 @@ RSpec.describe Cuprum::Collections::Basic::Commands::InsertOne do
   end
   let(:entity) do
     tools.hash_tools.convert_keys_to_strings(attributes)
-  end
-  let(:entity_type) do
-    Stannum::Constraints::Types::HashWithStringKeys.new
   end
   let(:query) do
     Cuprum::Collections::Basic::Query.new(mapped_data)
@@ -58,24 +55,7 @@ RSpec.describe Cuprum::Collections::Basic::Commands::InsertOne do
 
   include_contract Cuprum::Collections::RSpec::INSERT_ONE_COMMAND_CONTRACT
 
-  context 'with a custom primary key' do # rubocop:disable RSpec/EmptyExampleGroup
-    let(:primary_key_name) { :uuid }
-    let(:primary_key_type) { String }
-    let(:constructor_options) do
-      super().merge(
-        primary_key_name: primary_key_name,
-        primary_key_type: primary_key_type
-      )
-    end
-    let(:mapped_data) do
-      data.map do |item|
-        item.dup.tap do |hsh|
-          value = hsh.delete('id').to_s.rjust(12, '0')
-
-          hsh['uuid'] = "00000000-0000-0000-0000-#{value}"
-        end
-      end
-    end
+  wrap_context 'with a custom primary key' do # rubocop:disable RSpec/EmptyExampleGroup
     let(:attributes) do
       super()
         .tap { |hsh| hsh.delete(:id) }

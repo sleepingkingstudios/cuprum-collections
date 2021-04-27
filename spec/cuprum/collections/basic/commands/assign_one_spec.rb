@@ -6,7 +6,13 @@ require 'cuprum/collections/basic/commands/assign_one'
 require 'cuprum/collections/basic/rspec/command_contract'
 require 'cuprum/collections/rspec/assign_one_command_contract'
 
+require 'support/examples/basic_command_examples'
+
 RSpec.describe Cuprum::Collections::Basic::Commands::AssignOne do
+  include Spec::Support::Examples::BasicCommandExamples
+
+  include_context 'with parameters for a basic contract'
+
   subject(:command) do
     described_class.new(
       collection_name: collection_name,
@@ -15,14 +21,8 @@ RSpec.describe Cuprum::Collections::Basic::Commands::AssignOne do
     )
   end
 
-  let(:collection_name)     { 'books' }
-  let(:data)                { [] }
-  let(:constructor_options) { {} }
   let(:initial_attributes)  { {} }
   let(:entity)              { initial_attributes }
-  let(:entity_type) do
-    Stannum::Constraints::Types::HashWithStringKeys.new
-  end
   let(:expected_value) do
     SleepingKingStudios::Tools::HashTools
       .instance

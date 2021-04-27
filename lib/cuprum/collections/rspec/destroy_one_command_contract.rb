@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'cuprum/collections/rspec'
-require 'cuprum/collections/rspec/fixtures'
 
 module Cuprum::Collections::RSpec
   # Contract validating the behavior of a FindOne command implementation.
@@ -48,7 +47,7 @@ module Cuprum::Collections::RSpec
       end
 
       context 'when the collection has many items' do
-        let(:data) { Cuprum::Collections::RSpec::BOOKS_FIXTURES.dup }
+        let(:data) { fixtures_data }
         let(:matching_data) do
           mapped_data.find { |item| item[primary_key_name.to_s] == primary_key }
         end
