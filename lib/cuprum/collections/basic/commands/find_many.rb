@@ -11,8 +11,8 @@ module Cuprum::Collections::Basic::Commands
   class FindMany < Cuprum::Collections::Basic::Command
     include Cuprum::Collections::Commands::AbstractFindMany
 
-    # @!method call(primary_keys:, envelope: false)
-    #   Queries the collection for the item(s) with the given primary key(s).
+    # @!method call(primary_keys:, allow_partial: false, envelope: false)
+    #   Queries the collection for the items with the given primary keys.
     #
     #   The command will find and return the entities with the given primary
     #   keys. If any of the items are not found, the command will fail and

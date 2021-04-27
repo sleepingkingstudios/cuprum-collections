@@ -42,7 +42,7 @@ module Cuprum::Collections::RSpec
 
         it 'should not remove an entity from the collection' do
           expect { command.call(primary_key: primary_key) }
-            .not_to change(mapped_data, :count)
+            .not_to(change { query.reset.count })
         end
       end
 
@@ -73,7 +73,7 @@ module Cuprum::Collections::RSpec
 
           it 'should not remove an entity from the collection' do
             expect { command.call(primary_key: primary_key) }
-              .not_to change(mapped_data, :count)
+              .not_to(change { query.reset.count })
           end
         end
 
@@ -88,16 +88,16 @@ module Cuprum::Collections::RSpec
 
           it 'should remove an entity from the collection' do
             expect { command.call(primary_key: primary_key) }
-              .to change(mapped_data, :count)
-              .by(-1)
+              .to(
+                change { query.reset.count }.by(-1)
+              )
           end
 
           it 'should remove the entity from the collection' do
             command.call(primary_key: primary_key)
 
-            expect(mapped_data).not_to include(
-              satisfy { |item| item[primary_key_name.to_s] == primary_key }
-            )
+            expect(query.map { |item| item[primary_key_name.to_s] })
+              .not_to include primary_key
           end
         end
       end

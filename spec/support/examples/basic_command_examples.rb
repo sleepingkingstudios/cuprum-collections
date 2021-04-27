@@ -2,6 +2,7 @@
 
 require 'rspec/sleeping_king_studios/concerns/shared_example_group'
 
+require 'cuprum/collections/basic/query'
 require 'cuprum/collections/rspec/fixtures'
 
 require 'support/examples'
@@ -23,6 +24,9 @@ module Spec::Support::Examples
       end
       let(:fixtures_data) do
         Cuprum::Collections::RSpec::BOOKS_FIXTURES.dup
+      end
+      let(:query) do
+        Cuprum::Collections::Basic::Query.new(mapped_data)
       end
     end
 
