@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'cuprum/collections/queries'
 require 'cuprum/collections/rspec'
 
 module Cuprum::Collections::RSpec
