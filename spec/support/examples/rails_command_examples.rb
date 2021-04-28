@@ -37,6 +37,7 @@ module Spec::Support::Examples
     end
 
     shared_context 'with a custom primary key' do
+      let(:collection_name)  { 'tomes' }
       let(:record_class)     { Tome }
       let(:primary_key_name) { :uuid }
       let(:primary_key_type) { String }
