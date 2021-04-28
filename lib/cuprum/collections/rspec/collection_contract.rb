@@ -132,7 +132,13 @@ module Cuprum::Collections::RSpec
 
       it { expect(collection).to respond_to(:query).with(0).arguments }
 
-      it { expect(collection.query).to be_a Cuprum::Collections::Basic::Query }
+      it { expect(collection.query).to be_a query_class }
+
+      it 'should set the query options' do
+        query_options.each do |option, value|
+          expect(collection.query.send option).to be == value
+        end
+      end
 
       it { expect(query.criteria).to be == [] }
 

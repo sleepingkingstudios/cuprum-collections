@@ -17,6 +17,8 @@ RSpec.describe Cuprum::Collections::Basic::Collection do
   let(:collection_name)     { 'books' }
   let(:data)                { Cuprum::Collections::RSpec::BOOKS_FIXTURES }
   let(:constructor_options) { {} }
+  let(:query_class)         { Cuprum::Collections::Basic::Query }
+  let(:query_options)       { { data: data } }
 
   def self.command_options
     %i[

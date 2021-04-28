@@ -39,6 +39,7 @@ module Cuprum::Collections::RSpec
         expect(command)
           .to validate_parameter(:call, :entity)
           .using_constraint(entity_type)
+          .with_parameters(attributes: {}, entity: nil)
       end
 
       describe 'with an empty attributes hash' do
