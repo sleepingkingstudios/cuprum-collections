@@ -4,6 +4,8 @@ require 'rspec/sleeping_king_studios/concerns/shared_example_group'
 
 require 'cuprum/collections/rspec/fixtures'
 
+require 'cuprum/rails/query'
+
 require 'support/book'
 require 'support/examples'
 require 'support/tome'
@@ -14,6 +16,7 @@ module Spec::Support::Examples
 
     shared_context 'with parameters for a Rails command' do
       let(:data)                { [] }
+      let(:mapped_data)         { defined?(super()) ? super() : data }
       let(:record_class)        { Book }
       let(:collection_name)     { 'books' }
       let(:constructor_options) { {} }
@@ -24,9 +27,43 @@ module Spec::Support::Examples
       let(:fixtures_data) do
         Cuprum::Collections::RSpec::BOOKS_FIXTURES.dup
       end
+      let(:query) do
+        Cuprum::Rails::Query.new(record_class)
+      end
 
       before(:example) do
-        data.each { |attributes| Book.create!(attributes) }
+        mapped_data.each { |attributes| record_class.create!(attributes) }
+      end
+    end
+
+    shared_context 'with a custom primary key' do
+      let(:record_class)     { Tome }
+      let(:primary_key_name) { :uuid }
+      let(:primary_key_type) { String }
+      let(:mapped_data) do
+        data.map do |item|
+          item.dup.tap do |hsh|
+            value = hsh.delete('id').to_s.rjust(12, '0')
+
+            hsh['uuid'] = "00000000-0000-0000-0000-#{value}"
+          end
+        end
+      end
+      let(:invalid_primary_key_value) { '00000000-0000-0000-0000-000000000100' }
+      let(:valid_primary_key_value)   { '00000000-0000-0000-0000-000000000000' }
+      let(:invalid_primary_key_values) do
+        %w[
+          00000000-0000-0000-0000-000000000100
+          00000000-0000-0000-0000-000000000101
+          00000000-0000-0000-0000-000000000102
+        ]
+      end
+      let(:valid_primary_key_values) do
+        %w[
+          00000000-0000-0000-0000-000000000000
+          00000000-0000-0000-0000-000000000001
+          00000000-0000-0000-0000-000000000002
+        ]
       end
     end
 
