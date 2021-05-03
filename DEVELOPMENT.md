@@ -6,6 +6,14 @@
 
 ## Commands
 
+- call(scope:)
+
+  Applies to FindMatching, FindMany, FindOne
+
+  Should be a Query instance. If present, replaces build_query.
+
+  Should call #validate_scope (scope keyword is optional Query).
+
 ### ParameterCoercion
 
 ```ruby
@@ -55,6 +63,10 @@ Steps to add an operator:
 ### ParseCriteria
 
 Validates and returns an Array of criteria.
+
+### ParseHash
+
+All values use :eq operator.
 
 ### ParseQuery
 

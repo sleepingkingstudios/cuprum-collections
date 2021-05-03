@@ -39,6 +39,15 @@ module Cuprum::Collections::RSpec
           .using_constraint(Array)
       end
 
+      it 'should validate the :scope keyword' do
+        expect(command)
+          .to validate_parameter(:call, :scope)
+          .using_constraint(
+            Stannum::Constraints::Type.new(query.class, optional: true)
+          )
+          .with_value(Object.new.freeze)
+      end
+
       it 'should validate the :primary_keys keyword items' do
         expect(command)
           .to validate_parameter(:call, :primary_keys)
@@ -206,6 +215,108 @@ module Cuprum::Collections::RSpec
                 expect(command.call(primary_keys: primary_keys, envelope: true))
                   .to be_a_passing_result
                   .with_value({ collection_name => expected_data })
+              end
+            end
+          end
+        end
+
+        describe 'with scope: query' do
+          let(:scope_filter) { -> { {} } }
+
+          describe 'with an array of invalid primary keys' do
+            let(:primary_keys) { invalid_primary_key_values }
+            let(:expected_error) do
+              Cuprum::Collections::Errors::NotFound.new(
+                collection_name:    command.collection_name,
+                primary_key_name:   primary_key_name,
+                primary_key_values: primary_keys
+              )
+            end
+
+            it 'should return a failing result' do
+              expect(command.call(primary_keys: primary_keys, scope: scope))
+                .to be_a_failing_result
+                .with_error(expected_error)
+            end
+          end
+
+          describe 'with a scope that does not match any keys' do
+            let(:scope_filter) { -> { { author: 'Ursula K. LeGuin' } } }
+
+            describe 'with a valid array of primary keys' do
+              let(:primary_keys) { valid_primary_key_values }
+              let(:expected_error) do
+                Cuprum::Collections::Errors::NotFound.new(
+                  collection_name:    command.collection_name,
+                  primary_key_name:   primary_key_name,
+                  primary_key_values: primary_keys
+                )
+              end
+
+              it 'should return a failing result' do
+                expect(command.call(primary_keys: primary_keys, scope: scope))
+                  .to be_a_failing_result
+                  .with_error(expected_error)
+              end
+            end
+          end
+
+          describe 'with a scope that matches some keys' do
+            let(:scope_filter) { -> { { series: nil } } }
+            let(:matching_data) do
+              super().select { |item| item['series'].nil? }
+            end
+
+            describe 'with a valid array of primary keys' do
+              let(:primary_keys) { valid_primary_key_values }
+              let(:expected_error) do
+                found_keys   =
+                  matching_data.map { |item| item[primary_key_name.to_s] }
+                missing_keys = primary_keys - found_keys
+
+                Cuprum::Collections::Errors::NotFound.new(
+                  collection_name:    command.collection_name,
+                  primary_key_name:   primary_key_name,
+                  primary_key_values: missing_keys
+                )
+              end
+
+              it 'should return a failing result' do
+                expect(command.call(primary_keys: primary_keys, scope: scope))
+                  .to be_a_failing_result
+                  .with_error(expected_error)
+              end
+            end
+
+            describe 'with allow_partial: true' do
+              describe 'with a valid array of primary keys' do
+                let(:primary_keys) { valid_primary_key_values }
+
+                it 'should return a passing result' do
+                  expect(
+                    command.call(
+                      allow_partial: true,
+                      primary_keys:  primary_keys,
+                      scope:         scope
+                    )
+                  )
+                    .to be_a_passing_result
+                    .with_value(expected_data)
+                end
+              end
+            end
+          end
+
+          describe 'with a scope that matches all keys' do
+            let(:scope_filter) { -> { { author: 'J.R.R. Tolkien' } } }
+
+            describe 'with a valid array of primary keys' do
+              let(:primary_keys) { valid_primary_key_values }
+
+              it 'should return a passing result' do
+                expect(command.call(primary_keys: primary_keys))
+                  .to be_a_passing_result
+                  .with_value(expected_data)
               end
             end
           end

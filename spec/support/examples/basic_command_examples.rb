@@ -28,6 +28,9 @@ module Spec::Support::Examples
       let(:query) do
         Cuprum::Collections::Basic::Query.new(mapped_data)
       end
+      let(:scope) do
+        Cuprum::Collections::Basic::Query.new(mapped_data).where(scope_filter)
+      end
     end
 
     shared_context 'with a custom primary key' do
