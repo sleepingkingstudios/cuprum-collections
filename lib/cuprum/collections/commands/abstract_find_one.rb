@@ -11,10 +11,10 @@ module Cuprum::Collections::Commands
   module AbstractFindOne
     private
 
-    def apply_query(primary_key:)
+    def apply_query(primary_key:, scope:)
       key = primary_key_name
 
-      build_query.where { { key => equals(primary_key) } }.limit(1)
+      (scope || build_query).where { { key => equals(primary_key) } }.limit(1)
     end
 
     def handle_missing_item(item:, primary_key:)
@@ -28,8 +28,8 @@ module Cuprum::Collections::Commands
       Cuprum::Result.new(error: error)
     end
 
-    def process(envelope:, primary_key:)
-      query = apply_query(primary_key: primary_key)
+    def process(envelope:, primary_key:, scope:)
+      query = apply_query(primary_key: primary_key, scope: scope)
       item  = query.to_a.first
 
       step { handle_missing_item(item: item, primary_key: primary_key) }

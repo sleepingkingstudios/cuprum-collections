@@ -34,6 +34,15 @@ module Cuprum::Collections::RSpec
           .using_constraint(primary_key_type)
       end
 
+      it 'should validate the :scope keyword' do
+        expect(command)
+          .to validate_parameter(:call, :scope)
+          .using_constraint(
+            Stannum::Constraints::Type.new(query.class, optional: true)
+          )
+          .with_value(Object.new.freeze)
+      end
+
       describe 'with an invalid primary key' do
         let(:primary_key) { invalid_primary_key_value }
         let(:expected_error) do
@@ -97,6 +106,45 @@ module Cuprum::Collections::RSpec
               expect(command.call(primary_key: primary_key, envelope: true))
                 .to be_a_passing_result
                 .with_value({ member_name => expected_data })
+            end
+          end
+        end
+
+        describe 'with scope: query' do
+          let(:scope_filter) { -> { {} } }
+
+          describe 'with a scope that does not match the key' do
+            let(:scope_filter) { -> { { author: 'Ursula K. LeGuin' } } }
+
+            describe 'with an valid primary key' do
+              let(:primary_key) { valid_primary_key_value }
+              let(:expected_error) do
+                Cuprum::Collections::Errors::NotFound.new(
+                  collection_name:    command.collection_name,
+                  primary_key_name:   primary_key_name,
+                  primary_key_values: primary_key
+                )
+              end
+
+              it 'should return a failing result' do
+                expect(command.call(primary_key: primary_key, scope: scope))
+                  .to be_a_failing_result
+                  .with_error(expected_error)
+              end
+            end
+          end
+
+          describe 'with a scope that matches the key' do
+            let(:scope_filter) { -> { { author: 'J.R.R. Tolkien' } } }
+
+            describe 'with a valid primary key' do
+              let(:primary_key) { valid_primary_key_value }
+
+              it 'should return a passing result' do
+                expect(command.call(primary_key: primary_key))
+                  .to be_a_passing_result
+                  .with_value(expected_data)
+              end
             end
           end
         end
