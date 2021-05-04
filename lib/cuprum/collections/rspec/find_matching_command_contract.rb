@@ -79,6 +79,15 @@ module Cuprum::Collections::RSpec
           .using_constraint(constraint, required: false)
       end
 
+      it 'should validate the :scope keyword' do
+        expect(command)
+          .to validate_parameter(:call, :scope)
+          .using_constraint(
+            Stannum::Constraints::Type.new(query.class, optional: true)
+          )
+          .with_value(Object.new.freeze)
+      end
+
       it 'should validate the :where keyword' do
         expect(command).to validate_parameter(:call, :where)
       end
@@ -122,7 +131,7 @@ module Cuprum::Collections::RSpec
             include_examples 'should return the matching items'
           }
 
-        context 'when initialized with envelope: true' do
+        describe 'with envelope: true' do
           let(:options) { super().merge(envelope: true) }
 
           include_examples 'should return the wrapped items'
@@ -131,6 +140,53 @@ module Cuprum::Collections::RSpec
             block: lambda {
               include_examples 'should return the wrapped items'
             }
+        end
+
+        describe 'with scope: query' do
+          let(:scope_filter) { -> { {} } }
+          let(:options)      { super().merge(scope: scope) }
+
+          describe 'with a scope that does not match any values' do
+            let(:scope_filter)  { -> { { series: 'Mistborn' } } }
+            let(:matching_data) { [] }
+
+            include_examples 'should return the matching items'
+          end
+
+          describe 'with a scope that matches some values' do
+            let(:scope_filter) { -> { { series: nil } } }
+            let(:matching_data) do
+              super().select { |item| item['series'].nil? }
+            end
+
+            include_examples 'should return the matching items'
+
+            describe 'with a where filter' do
+              let(:filter)  { -> { { author: 'Ursula K. LeGuin' } } }
+              let(:options) { super().merge(where: filter) }
+              let(:matching_data) do
+                super().select { |item| item['author'] == 'Ursula K. LeGuin' }
+              end
+
+              include_examples 'should return the matching items'
+            end
+          end
+
+          describe 'with a scope that matches all values' do
+            let(:scope_filter) { -> { { id: not_equal(nil) } } }
+
+            include_examples 'should return the matching items'
+
+            describe 'with a where filter' do
+              let(:filter)  { -> { { author: 'Ursula K. LeGuin' } } }
+              let(:options) { super().merge(where: filter) }
+              let(:matching_data) do
+                super().select { |item| item['author'] == 'Ursula K. LeGuin' }
+              end
+
+              include_examples 'should return the matching items'
+            end
+          end
         end
       end
     end

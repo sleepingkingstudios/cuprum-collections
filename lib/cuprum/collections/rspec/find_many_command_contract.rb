@@ -39,6 +39,13 @@ module Cuprum::Collections::RSpec
           .using_constraint(Array)
       end
 
+      it 'should validate the :primary_keys keyword items' do
+        expect(command)
+          .to validate_parameter(:call, :primary_keys)
+          .with_value([nil])
+          .using_constraint(primary_keys_contract)
+      end
+
       it 'should validate the :scope keyword' do
         expect(command)
           .to validate_parameter(:call, :scope)
@@ -46,13 +53,6 @@ module Cuprum::Collections::RSpec
             Stannum::Constraints::Type.new(query.class, optional: true)
           )
           .with_value(Object.new.freeze)
-      end
-
-      it 'should validate the :primary_keys keyword items' do
-        expect(command)
-          .to validate_parameter(:call, :primary_keys)
-          .with_value([nil])
-          .using_constraint(primary_keys_contract)
       end
 
       describe 'with an array of invalid primary keys' do

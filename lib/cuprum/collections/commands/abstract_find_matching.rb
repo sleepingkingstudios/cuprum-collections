@@ -11,8 +11,8 @@ module Cuprum::Collections::Commands
   module AbstractFindMatching
     private
 
-    def apply_query(criteria:, limit:, offset:, order:)
-      query = build_query
+    def apply_query(criteria:, limit:, offset:, order:, scope:)
+      query = scope || build_query
       query = query.limit(limit)   if limit
       query = query.offset(offset) if offset
       query = query.order(order)   if order
@@ -35,6 +35,7 @@ module Cuprum::Collections::Commands
       limit:    nil,
       offset:   nil,
       order:    nil,
+      scope:    nil,
       strategy: nil,
       where:    nil,
       &block
@@ -48,7 +49,8 @@ module Cuprum::Collections::Commands
           criteria: criteria,
           limit:    limit,
           offset:   offset,
-          order:    order
+          order:    order,
+          scope:    scope
         )
       end
 
