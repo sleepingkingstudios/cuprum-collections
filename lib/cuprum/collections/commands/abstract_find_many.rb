@@ -11,10 +11,10 @@ module Cuprum::Collections::Commands
   module AbstractFindMany
     private
 
-    def apply_query(primary_keys:)
+    def apply_query(primary_keys:, scope:)
       key = primary_key_name
 
-      build_query.where { { key => one_of(primary_keys) } }
+      (scope || build_query).where { { key => one_of(primary_keys) } }
     end
 
     def handle_missing_items(allow_partial:, items:, primary_keys:)
@@ -52,8 +52,13 @@ module Cuprum::Collections::Commands
       [found, missing]
     end
 
-    def process(primary_keys:, allow_partial: false, envelope: false)
-      query = apply_query(primary_keys: primary_keys)
+    def process(
+      primary_keys:,
+      allow_partial: false,
+      envelope:      false,
+      scope:         nil
+    )
+      query = apply_query(primary_keys: primary_keys, scope: scope)
       items = step do
         handle_missing_items(
           allow_partial: allow_partial,
