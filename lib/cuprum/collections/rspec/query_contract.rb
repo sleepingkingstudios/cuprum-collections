@@ -384,6 +384,8 @@ module Cuprum::Collections::RSpec # rubocop:disable Style/Documentation
     end
 
     describe '#order' do
+      let(:default_order) { defined?(super()) ? super() : {} }
+
       it 'should define the method' do
         expect(query)
           .to respond_to(:order)
@@ -394,7 +396,7 @@ module Cuprum::Collections::RSpec # rubocop:disable Style/Documentation
       it { expect(query).to alias_method(:order).as(:order_by) }
 
       describe 'with no arguments' do
-        it { expect(query.order).to be == {} }
+        it { expect(query.order).to be == default_order }
       end
 
       describe 'with a hash with invalid keys' do

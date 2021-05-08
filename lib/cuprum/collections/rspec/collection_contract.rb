@@ -128,7 +128,8 @@ module Cuprum::Collections::RSpec
       commands_namespace::ValidateOne
 
     describe '#query' do
-      let(:query) { collection.query }
+      let(:default_order) { defined?(super()) ? super() : {} }
+      let(:query)         { collection.query }
 
       it { expect(collection).to respond_to(:query).with(0).arguments }
 
@@ -146,7 +147,7 @@ module Cuprum::Collections::RSpec
 
       it { expect(query.offset).to be nil }
 
-      it { expect(query.order).to be == {} }
+      it { expect(query.order).to be == default_order }
     end
   end
 end
