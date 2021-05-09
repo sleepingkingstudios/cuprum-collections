@@ -22,7 +22,7 @@ module Cuprum::Collections::RSpec
 
     shared_context 'when the query has offset: value' do
       let(:offset)        { 2 }
-      let(:matching_data) { super()[offset..-1] || [] }
+      let(:matching_data) { super()[offset..] || [] }
     end
 
     shared_context 'when the query has order: a simple ordering' do
