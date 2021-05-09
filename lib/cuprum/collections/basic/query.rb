@@ -127,7 +127,7 @@ module Cuprum::Collections::Basic
       return data[@offset...(@offset + @limit)] || [] if @limit && @offset
       return data[0...@limit] if @limit
 
-      return data[@offset..-1] || [] if @offset
+      return data[@offset..] || [] if @offset
 
       data
     end
