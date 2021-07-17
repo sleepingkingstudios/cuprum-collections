@@ -120,7 +120,7 @@ RSpec.describe Cuprum::Collections::Queries::ParseBlock do
       end
       let(:block) { -> { Kernel.raise 'Something went wrong.' } }
       let(:expected_error) do
-        Cuprum::Collections::Errors::UncaughtException.new(
+        Cuprum::Errors::UncaughtException.new(
           exception: exception,
           message:   'uncaught exception when parsing query block'
         )
