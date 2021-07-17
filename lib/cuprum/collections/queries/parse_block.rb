@@ -2,12 +2,12 @@
 
 require 'forwardable'
 
+require 'cuprum/errors/uncaught_exception'
 require 'stannum/contracts/parameters_contract'
 
 require 'cuprum/collections/command'
 require 'cuprum/collections/constraints/query_hash'
 require 'cuprum/collections/errors/invalid_query'
-require 'cuprum/collections/errors/uncaught_exception'
 require 'cuprum/collections/errors/unknown_operator'
 require 'cuprum/collections/queries'
 
@@ -107,7 +107,7 @@ module Cuprum::Collections::Queries
     def call_block(&block)
       handle_unknown_operator { Builder.new.instance_exec(&block) }
     rescue StandardError => exception
-      error = Cuprum::Collections::Errors::UncaughtException.new(
+      error = Cuprum::Errors::UncaughtException.new(
         exception: exception,
         message:   'uncaught exception when parsing query block'
       )
