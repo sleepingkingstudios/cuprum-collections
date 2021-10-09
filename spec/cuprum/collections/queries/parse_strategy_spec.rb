@@ -61,8 +61,10 @@ RSpec.describe Cuprum::Collections::Queries::ParseStrategy do
             Cuprum::Collections::Queries::ParseBlock::MethodValidations
           contract    = validations.contracts.fetch(:call)
           errors      = contract.errors_for(
-            arguments: [],
-            keywords:  { where: %w[ichi ni san] }
+            {
+              arguments: [],
+              keywords:  { where: %w[ichi ni san] }
+            }
           )
 
           Cuprum::Collections::Errors::InvalidQuery.new(

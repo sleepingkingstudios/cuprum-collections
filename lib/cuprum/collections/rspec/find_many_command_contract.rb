@@ -12,7 +12,7 @@ module Cuprum::Collections::RSpec
       let(:primary_key_name) { defined?(super()) ? super() : :id }
       let(:primary_key_type) { defined?(super()) ? super() : Integer }
       let(:primary_keys_contract) do
-        Stannum::Constraints::Types::Array.new(item_type: primary_key_type)
+        Stannum::Constraints::Types::ArrayType.new(item_type: primary_key_type)
       end
       let(:invalid_primary_key_values) do
         defined?(super()) ? super() : [100, 101, 102]
