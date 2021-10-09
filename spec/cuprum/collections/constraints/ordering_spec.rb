@@ -17,12 +17,12 @@ RSpec.describe Cuprum::Collections::Constraints::Ordering do
     attribute_name_constraint =
       Cuprum::Collections::Constraints::AttributeName.new
     attributes_array_constraint =
-      Stannum::Constraints::Types::Array.new(
+      Stannum::Constraints::Types::ArrayType.new(
         allow_empty: false,
         item_type:   attribute_name_constraint
       )
     attributes_hash_constraint =
-      Stannum::Constraints::Types::Hash.new(
+      Stannum::Constraints::Types::HashType.new(
         allow_empty: false,
         key_type:    attribute_name_constraint,
         value_type:  sort_direction_constraint

@@ -68,8 +68,9 @@ RSpec.describe Cuprum::Collections::Constraints::QueryHash do
       let(:actual) { { nil => 'value' } }
       let(:expected_errors) do
         {
-          data: { keys: [nil] },
-          type: Stannum::Constraints::Types::Hash::INVALID_KEY_TYPE
+          data: {},
+          path: [:keys, 'nil'],
+          type: Stannum::Constraints::Presence::TYPE
         }
       end
 
@@ -80,8 +81,9 @@ RSpec.describe Cuprum::Collections::Constraints::QueryHash do
       let(:actual) { { '' => 'value' } }
       let(:expected_errors) do
         {
-          data: { keys: [''] },
-          type: Stannum::Constraints::Types::Hash::INVALID_KEY_TYPE
+          data: {},
+          path: [:keys, ''],
+          type: Stannum::Constraints::Presence::TYPE
         }
       end
 
@@ -92,8 +94,9 @@ RSpec.describe Cuprum::Collections::Constraints::QueryHash do
       let(:actual) { { '': 'value' } }
       let(:expected_errors) do
         {
-          data: { keys: [:''] },
-          type: Stannum::Constraints::Types::Hash::INVALID_KEY_TYPE
+          data: {},
+          path: [:keys, :''],
+          type: Stannum::Constraints::Presence::TYPE
         }
       end
 

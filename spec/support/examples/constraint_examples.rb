@@ -1,12 +1,14 @@
 # frozen_string_literal: true
 
 require 'rspec/sleeping_king_studios/concerns/shared_example_group'
+require 'stannum/rspec/match_errors'
 
 require 'support/examples'
 
 module Spec::Support::Examples
   module ConstraintExamples
-    extend RSpec::SleepingKingStudios::Concerns::SharedExampleGroup
+    extend  RSpec::SleepingKingStudios::Concerns::SharedExampleGroup
+    include Stannum::RSpec::Matchers
 
     shared_examples 'should implement the Constraint interface' do
       describe '#does_not_match?' do
@@ -16,30 +18,12 @@ module Spec::Support::Examples
       end
 
       describe '#errors_for' do
-        let(:actual) { Object.new.freeze }
-
-        it { expect(subject).to respond_to(:errors_for).with(1).argument }
-
-        # rubocop:disable Lint/RedundantCopDisableDirective
-        # rubocop:disable RSpec/ExampleLength
-        it 'should delegate to #update_errors_for', :aggregate_failures do
-          allow(subject) # rubocop:disable RSpec/SubjectStub
-            .to receive(:update_errors_for) do |keywords|
-              keywords.fetch(:errors).add('spec.example_error')
-            end
-
-          errors = subject.errors_for actual
-
-          expect(errors).to be_a Stannum::Errors
-          expect(errors)
-            .to include(be >= { type: 'spec.example_error' })
-
-          expect(subject) # rubocop:disable RSpec/SubjectStub
-            .to have_received(:update_errors_for)
-            .with(actual: actual, errors: an_instance_of(Stannum::Errors))
+        it 'should define the method' do
+          expect(subject)
+            .to respond_to(:errors_for)
+            .with(1).argument
+            .and_keywords(:errors)
         end
-        # rubocop:enable Lint/RedundantCopDisableDirective
-        # rubocop:enable RSpec/ExampleLength
       end
 
       describe '#match' do
@@ -52,41 +36,29 @@ module Spec::Support::Examples
         it { expect(subject).to alias_method(:matches?).as(:match?) }
       end
 
+      describe '#message' do
+        include_examples 'should have reader', :message
+      end
+
       describe '#negated_errors_for' do
         let(:actual) { Object.new.freeze }
 
         it 'should define the method' do
-          expect(subject).to respond_to(:negated_errors_for).with(1).argument
+          expect(subject)
+            .to respond_to(:negated_errors_for)
+            .with(1).argument
+            .and_keywords(:errors)
         end
-
-        # rubocop:disable Lint/RedundantCopDisableDirective
-        # rubocop:disable RSpec/ExampleLength
-        it 'should delegate to #update_negated_errors_for',
-          :aggregate_failures \
-        do
-          allow(subject) # rubocop:disable RSpec/SubjectStub
-            .to receive(:update_negated_errors_for) do |keywords|
-              keywords.fetch(:errors).add('spec.example_error')
-            end
-
-          errors = subject.negated_errors_for actual
-
-          expect(errors).to be_a Stannum::Errors
-          expect(errors)
-            .to include(be >= { type: 'spec.example_error' })
-
-          expect(subject) # rubocop:disable RSpec/SubjectStub
-            .to have_received(:update_negated_errors_for)
-            .with(actual: actual, errors: an_instance_of(Stannum::Errors))
-        end
-        # rubocop:enable Lint/RedundantCopDisableDirective
-        # rubocop:enable RSpec/ExampleLength
       end
 
       describe '#negated_match' do
         it 'should define the method' do
           expect(subject).to respond_to(:negated_match).with(1).argument
         end
+      end
+
+      describe '#negated_message' do
+        include_examples 'should have reader', :negated_message
       end
 
       describe '#negated_type' do
@@ -135,6 +107,38 @@ module Spec::Support::Examples
           expect { copy.options.update(key: 'value') }
             .not_to change(subject, :options)
         end
+      end
+
+      describe '#errors_for' do
+        it { expect(subject.errors_for nil).to be_a Stannum::Errors }
+      end
+
+      describe '#match' do
+        it 'should return an array with two items' do
+          expect(subject.match(nil))
+            .to be_a(Array)
+            .and(have_attributes(size: 2))
+        end
+
+        it { expect(subject.match(nil).first).to be_boolean }
+
+        it { expect(subject.match(nil).last).to be_a(Stannum::Errors) }
+      end
+
+      describe '#negated_errors_for' do
+        it { expect(subject.negated_errors_for nil).to be_a Stannum::Errors }
+      end
+
+      describe '#negated_match' do
+        it 'should return an array with two items' do
+          expect(subject.negated_match(nil))
+            .to be_a(Array)
+            .and(have_attributes(size: 2))
+        end
+
+        it { expect(subject.negated_match(nil).first).to be_boolean }
+
+        it { expect(subject.negated_match(nil).last).to be_a(Stannum::Errors) }
       end
 
       describe '#negated_type' do
@@ -212,7 +216,7 @@ module Spec::Support::Examples
 
       it { expect(actual_status).to be true }
 
-      it { expect(actual_errors).to be nil }
+      it { expect(actual_errors).to match_errors(Stannum::Errors.new) }
     end
 
     shared_examples 'should not match the constraint' do
@@ -226,8 +230,16 @@ module Spec::Support::Examples
 
         errors
       end
+      # :nocov:
       let(:wrapped_errors) do
-        (expected_errors.is_a?(Array) ? expected_errors : [expected_errors])
+        errors =
+          if expected_errors.is_a?(Array)
+            expected_errors
+          else
+            [expected_errors]
+          end
+
+        errors
           .map do |error|
             {
               data:    {},
@@ -236,10 +248,36 @@ module Spec::Support::Examples
             }.merge(error)
           end
       end
+      let(:wrapped_messages) do
+        errors =
+          if expected_messages.is_a?(Array)
+            expected_messages
+          else
+            [expected_messages]
+          end
+
+        errors
+          .map do |error|
+            {
+              data:    {},
+              message: nil,
+              path:    []
+            }.merge(error)
+          end
+      end
+      # :nocov:
 
       it { expect(actual_status).to be false }
 
-      it { expect(actual_errors.to_a).to deep_match wrapped_errors }
+      it { expect(actual_errors).to match_errors wrapped_errors }
+
+      if instance_methods.include?(:expected_messages)
+        # :nocov:
+        it 'should generate the error messages' do
+          expect(actual_errors.with_messages).to match_errors wrapped_messages
+        end
+        # :nocov:
+      end
     end
   end
 end

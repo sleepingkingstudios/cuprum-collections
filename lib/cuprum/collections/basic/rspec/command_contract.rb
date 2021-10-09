@@ -211,9 +211,11 @@ module Cuprum::Collections::Basic::RSpec
           keyword :primary_key, type
         end
         errors = contract.errors_for(
-          arguments: [],
-          block:     nil,
-          keywords:  { primary_key: nil }
+          {
+            arguments: [],
+            block:     nil,
+            keywords:  { primary_key: nil }
+          }
         )
 
         Cuprum::Collections::Errors::InvalidParameters.new(
@@ -288,12 +290,14 @@ module Cuprum::Collections::Basic::RSpec
         type     = primary_key_type
         contract = Stannum::Contracts::ParametersContract.new do
           keyword :primary_keys,
-            Stannum::Constraints::Types::Array.new(item_type: type)
+            Stannum::Constraints::Types::ArrayType.new(item_type: type)
         end
         errors = contract.errors_for(
-          arguments: [],
-          block:     nil,
-          keywords:  { primary_keys: primary_keys }
+          {
+            arguments: [],
+            block:     nil,
+            keywords:  { primary_keys: primary_keys }
+          }
         )
 
         Cuprum::Collections::Errors::InvalidParameters.new(

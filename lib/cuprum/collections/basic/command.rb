@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'stannum/constraints/types/array'
+require 'stannum/constraints/types/array_type'
 
 require 'cuprum/collections/basic'
 
@@ -85,7 +85,7 @@ module Cuprum::Collections::Basic
 
       @primary_keys_contract ||= Stannum::Contracts::ParametersContract.new do
         keyword :primary_keys,
-          Stannum::Constraints::Types::Array.new(item_type: type)
+          Stannum::Constraints::Types::ArrayType.new(item_type: type)
       end
     end
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'stannum/constraints/types/array'
-require 'stannum/constraints/types/hash'
+require 'stannum/constraints/types/array_type'
+require 'stannum/constraints/types/hash_type'
 require 'stannum/constraints/union'
 require 'stannum/support/optional'
 
@@ -69,14 +69,14 @@ module Cuprum::Collections::Constraints
     end
 
     def attributes_array_constraint
-      Stannum::Constraints::Types::Array.new(
+      Stannum::Constraints::Types::ArrayType.new(
         allow_empty: false,
         item_type:   attribute_name_constraint
       )
     end
 
     def attributes_hash_constraint
-      Stannum::Constraints::Types::Hash.new(
+      Stannum::Constraints::Types::HashType.new(
         allow_empty: false,
         key_type:    attribute_name_constraint,
         value_type:  sort_direction_constraint
