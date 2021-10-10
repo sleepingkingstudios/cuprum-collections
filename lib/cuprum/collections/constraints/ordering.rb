@@ -7,6 +7,7 @@ require 'stannum/support/optional'
 
 require 'cuprum/collections/constraints'
 require 'cuprum/collections/constraints/attribute_name'
+require 'cuprum/collections/constraints/order/attributes_array'
 require 'cuprum/collections/constraints/sort_direction'
 
 module Cuprum::Collections::Constraints
@@ -69,10 +70,8 @@ module Cuprum::Collections::Constraints
     end
 
     def attributes_array_constraint
-      Stannum::Constraints::Types::ArrayType.new(
-        allow_empty: false,
-        item_type:   attribute_name_constraint
-      )
+      Cuprum::Collections::Constraints::Order::AttributesArray
+        .non_empty_instance
     end
 
     def attributes_hash_constraint

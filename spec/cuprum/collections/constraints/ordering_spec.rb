@@ -15,12 +15,10 @@ RSpec.describe Cuprum::Collections::Constraints::Ordering do
     sort_direction_constraint =
       Cuprum::Collections::Constraints::SortDirection.new
     attribute_name_constraint =
-      Cuprum::Collections::Constraints::AttributeName.new
+      Cuprum::Collections::Constraints::AttributeName.instance
     attributes_array_constraint =
-      Stannum::Constraints::Types::ArrayType.new(
-        allow_empty: false,
-        item_type:   attribute_name_constraint
-      )
+      Cuprum::Collections::Constraints::Order::AttributesArray
+        .non_empty_instance
     attributes_hash_constraint =
       Stannum::Constraints::Types::HashType.new(
         allow_empty: false,
