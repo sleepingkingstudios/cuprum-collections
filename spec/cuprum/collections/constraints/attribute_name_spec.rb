@@ -33,6 +33,16 @@ RSpec.describe Cuprum::Collections::Constraints::AttributeName do
     end
   end
 
+  describe '.instance' do
+    let(:cached) { described_class.instance }
+
+    it { expect(described_class).to respond_to(:instance).with(0).arguments }
+
+    it { expect(described_class.instance).to be_a described_class }
+
+    it { expect(described_class.instance).to be cached }
+  end
+
   include_examples 'should implement the Constraint interface'
 
   include_examples 'should implement the Constraint methods'

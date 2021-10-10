@@ -19,7 +19,7 @@ module Cuprum::Collections::Constraints
     private
 
     def attribute_name_constraint
-      Cuprum::Collections::Constraints::AttributeName.new
+      Cuprum::Collections::Constraints::AttributeName.instance
     end
   end
 end
