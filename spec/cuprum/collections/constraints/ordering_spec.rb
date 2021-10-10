@@ -13,7 +13,7 @@ RSpec.describe Cuprum::Collections::Constraints::Ordering do
 
   let(:expected_constraints) do
     sort_direction_constraint =
-      Cuprum::Collections::Constraints::SortDirection.new
+      Cuprum::Collections::Constraints::Order::SortDirection.instance
     attribute_name_constraint =
       Cuprum::Collections::Constraints::AttributeName.instance
     attributes_array_constraint =
@@ -98,7 +98,7 @@ RSpec.describe Cuprum::Collections::Constraints::Ordering do
             ),
             required:      true,
             value_type:    an_instance_of(
-              Cuprum::Collections::Constraints::SortDirection
+              Cuprum::Collections::Constraints::Order::SortDirection
             )
           },
           type:    Stannum::Constraints::Type::TYPE
@@ -269,7 +269,7 @@ RSpec.describe Cuprum::Collections::Constraints::Ordering do
             ),
             required:      true,
             value_type:    an_instance_of(
-              Cuprum::Collections::Constraints::SortDirection
+              Cuprum::Collections::Constraints::Order::SortDirection
             )
           }
         }

@@ -8,7 +8,7 @@ require 'stannum/support/optional'
 require 'cuprum/collections/constraints'
 require 'cuprum/collections/constraints/attribute_name'
 require 'cuprum/collections/constraints/order/attributes_array'
-require 'cuprum/collections/constraints/sort_direction'
+require 'cuprum/collections/constraints/order/sort_direction'
 
 module Cuprum::Collections::Constraints
   # Asserts that the object is a valid query ordering.
@@ -83,7 +83,7 @@ module Cuprum::Collections::Constraints
     end
 
     def sort_direction_constraint
-      Cuprum::Collections::Constraints::SortDirection.new
+      Cuprum::Collections::Constraints::Order::SortDirection.instance
     end
   end
 end
