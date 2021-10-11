@@ -12,19 +12,14 @@ RSpec.describe Cuprum::Collections::Constraints::Ordering do
   subject(:constraint) { described_class.new(**constructor_options) }
 
   let(:expected_constraints) do
-    sort_direction_constraint =
-      Cuprum::Collections::Constraints::Order::SortDirection.instance
     attribute_name_constraint =
       Cuprum::Collections::Constraints::AttributeName.instance
     attributes_array_constraint =
       Cuprum::Collections::Constraints::Order::AttributesArray
         .non_empty_instance
     attributes_hash_constraint =
-      Stannum::Constraints::Types::HashType.new(
-        allow_empty: false,
-        key_type:    attribute_name_constraint,
-        value_type:  sort_direction_constraint
-      )
+      Cuprum::Collections::Constraints::Order::AttributesHash
+        .non_empty_instance
 
     [
       attribute_name_constraint,
@@ -190,7 +185,7 @@ RSpec.describe Cuprum::Collections::Constraints::Ordering do
       include_examples 'should not match the constraint'
     end
 
-    describe 'with a hash with invalid key' do
+    describe 'with a hash with an invalid key' do
       let(:actual) { { Object.new.freeze => :asc } }
 
       include_examples 'should not match the constraint'

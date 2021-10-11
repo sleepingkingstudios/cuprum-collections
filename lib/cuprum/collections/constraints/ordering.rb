@@ -8,6 +8,7 @@ require 'stannum/support/optional'
 require 'cuprum/collections/constraints'
 require 'cuprum/collections/constraints/attribute_name'
 require 'cuprum/collections/constraints/order/attributes_array'
+require 'cuprum/collections/constraints/order/attributes_hash'
 require 'cuprum/collections/constraints/order/sort_direction'
 
 module Cuprum::Collections::Constraints
@@ -75,15 +76,8 @@ module Cuprum::Collections::Constraints
     end
 
     def attributes_hash_constraint
-      Stannum::Constraints::Types::HashType.new(
-        allow_empty: false,
-        key_type:    attribute_name_constraint,
-        value_type:  sort_direction_constraint
-      )
-    end
-
-    def sort_direction_constraint
-      Cuprum::Collections::Constraints::Order::SortDirection.instance
+      Cuprum::Collections::Constraints::Order::AttributesHash
+        .non_empty_instance
     end
   end
 end
