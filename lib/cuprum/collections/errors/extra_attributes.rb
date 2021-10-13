@@ -60,7 +60,7 @@ module Cuprum::Collections::Errors
 
     def default_message
       "invalid attributes for #{entity_class.name}:" \
-      " #{extra_attributes.join(', ')}"
+        " #{extra_attributes.join(', ')}"
     end
   end
 end

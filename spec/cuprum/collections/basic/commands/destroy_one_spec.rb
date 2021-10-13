@@ -37,7 +37,7 @@ RSpec.describe Cuprum::Collections::Basic::Commands::DestroyOne do
 
   include_contract Cuprum::Collections::RSpec::DESTROY_ONE_COMMAND_CONTRACT
 
-  wrap_context 'with a custom primary key' do # rubocop:disable RSpec/EmptyExampleGroup
+  wrap_context 'with a custom primary key' do
     include_contract Cuprum::Collections::RSpec::DESTROY_ONE_COMMAND_CONTRACT
   end
 end

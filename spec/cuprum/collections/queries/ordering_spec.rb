@@ -12,7 +12,7 @@ RSpec.describe Cuprum::Collections::Queries::Ordering do
   describe '.normalize' do
     let(:error_message) do
       'order must be a list of attribute names and/or a hash of attribute' \
-      ' names with values :asc or :desc'
+        ' names with values :asc or :desc'
     end
 
     it 'should define the class method' do

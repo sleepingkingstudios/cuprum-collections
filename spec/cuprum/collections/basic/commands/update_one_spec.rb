@@ -55,7 +55,7 @@ RSpec.describe Cuprum::Collections::Basic::Commands::UpdateOne do
 
   include_contract Cuprum::Collections::RSpec::UPDATE_ONE_COMMAND_CONTRACT
 
-  wrap_context 'with a custom primary key' do # rubocop:disable RSpec/EmptyExampleGroup
+  wrap_context 'with a custom primary key' do
     let(:attributes) do
       super()
         .tap { |hsh| hsh.delete(:id) }

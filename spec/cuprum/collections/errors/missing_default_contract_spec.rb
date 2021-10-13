@@ -45,7 +45,7 @@ RSpec.describe Cuprum::Collections::Errors::MissingDefaultContract do
   describe '#message' do
     let(:expected) do
       "attempted to validate a #{entity_class.name}, but #{entity_class.name}" \
-      ' does not define a default contract'
+        ' does not define a default contract'
     end
 
     include_examples 'should define reader', :message, -> { be == expected }

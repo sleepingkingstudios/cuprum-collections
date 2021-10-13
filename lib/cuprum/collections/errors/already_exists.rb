@@ -61,7 +61,7 @@ module Cuprum::Collections::Errors
       primary_keys = primary_key_values.map(&:inspect).join(', ')
 
       "#{entity_name} already exist#{singular? ? 's' : ''} with" \
-      " #{primary_key_name} #{primary_keys}"
+        " #{primary_key_name} #{primary_keys}"
     end
 
     def entity_name

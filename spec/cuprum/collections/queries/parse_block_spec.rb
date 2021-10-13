@@ -134,7 +134,7 @@ RSpec.describe Cuprum::Collections::Queries::ParseBlock do
     end
 
     describe 'with a block that returns nil' do
-      let(:block) { -> { nil } }
+      let(:block) { -> {} }
       let(:expected_error) do
         errors  =
           Cuprum::Collections::Constraints::QueryHash.new.errors_for(nil)
