@@ -52,7 +52,7 @@ RSpec.describe Cuprum::Collections::Basic::Commands::ValidateOne do
   include_contract Cuprum::Collections::RSpec::VALIDATE_ONE_COMMAND_CONTRACT,
     default_contract: false
 
-  context 'when the collection has a default contract' do # rubocop:disable RSpec/EmptyExampleGroup
+  context 'when the collection has a default contract' do
     let(:expected_contract) do
       Stannum::Contracts::HashContract.new do
         key 'title',  Stannum::Constraints::Presence.new

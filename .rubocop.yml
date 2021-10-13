@@ -1,6 +1,32 @@
 require:
   - rubocop-rspec
-  - ./spec/support/rubocop_patch
+
+RSpec:
+  Language:
+    ExampleGroups:
+      Regular:
+        - context
+        - describe
+        - wrap_context
+      Skipped:
+        - xcontext
+        - xdescribe
+        - xwrap_context
+      Focused:
+        - fcontext
+        - fdescribe
+        - fwrap_context
+    Includes:
+      Examples:
+        - finclude_contract
+        - finclude_examples
+        - fwrap_examples
+        - include_contract
+        - include_examples
+        - wrap_examples
+        - xinclude_contract
+        - xinclude_examples
+        - xwrap_examples
 
 AllCops:
   TargetRubyVersion: 2.6
@@ -44,6 +70,12 @@ RSpec/FilePath:
     - spec/integration/**/*
 
 RSpec/HookArgument:
+  Enabled: false
+
+RSpec/LeadingSubject:
+  Enabled: false
+
+RSpec/MultipleMemoizedHelpers:
   Enabled: false
 
 RSpec/NestedGroups:

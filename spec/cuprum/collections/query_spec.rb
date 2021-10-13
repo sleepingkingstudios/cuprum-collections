@@ -9,10 +9,10 @@ RSpec.describe Cuprum::Collections::Query do
   let(:described_class) { Spec::ExampleQuery }
 
   example_class 'Spec::ExampleQuery', Cuprum::Collections::Query do |klass| # rubocop:disable RSpec/DescribedClass
-    klass.define_method(:query_builder) {}
-    klass.define_method(:with_limit)    { |_count| }
-    klass.define_method(:with_offset)   { |_count| }
-    klass.define_method(:with_order)    { |*_args| }
+    klass.define_method(:query_builder) { nil }
+    klass.define_method(:with_limit)    { |_count| nil }
+    klass.define_method(:with_offset)   { |_count| nil }
+    klass.define_method(:with_order)    { |*_args| nil }
   end
 
   describe '.new' do
@@ -127,6 +127,10 @@ RSpec.describe Cuprum::Collections::Query do
     let(:error_class) do
       Cuprum::Collections::Queries::Ordering::InvalidOrderError
     end
+    let(:error_message) do
+      'order must be a list of attribute names and/or a hash of attribute' \
+        ' names with values :asc or :desc'
+    end
 
     before(:example) do
       allow(query).to receive(:dup).and_return(copy) # rubocop:disable RSpec/SubjectStub
@@ -144,11 +148,6 @@ RSpec.describe Cuprum::Collections::Query do
     it { expect(query).to alias_method(:order).as(:order_by) }
 
     describe 'with nil' do
-      let(:error_message) do
-        'order must be a list of attribute names and/or a hash of attribute' \
-        ' names with values :asc or :desc'
-      end
-
       it 'should raise an exception' do
         expect { query.order nil }
           .to raise_error error_class, error_message
@@ -156,11 +155,6 @@ RSpec.describe Cuprum::Collections::Query do
     end
 
     describe 'with an object' do
-      let(:error_message) do
-        'order must be a list of attribute names and/or a hash of attribute' \
-        ' names with values :asc or :desc'
-      end
-
       it 'should raise an exception' do
         expect { query.order Object.new.freeze }
           .to raise_error error_class, error_message
@@ -168,11 +162,6 @@ RSpec.describe Cuprum::Collections::Query do
     end
 
     describe 'with an empty string' do
-      let(:error_message) do
-        'order must be a list of attribute names and/or a hash of attribute' \
-        ' names with values :asc or :desc'
-      end
-
       it 'should raise an exception' do
         expect { query.order '' }
           .to raise_error error_class, error_message
@@ -180,11 +169,6 @@ RSpec.describe Cuprum::Collections::Query do
     end
 
     describe 'with an empty symbol' do
-      let(:error_message) do
-        'order must be a list of attribute names and/or a hash of attribute' \
-        ' names with values :asc or :desc'
-      end
-
       it 'should raise an exception' do
         expect { query.order :'' }
           .to raise_error error_class, error_message
@@ -205,11 +189,6 @@ RSpec.describe Cuprum::Collections::Query do
     end
 
     describe 'with a hash with invalid keys' do
-      let(:error_message) do
-        'order must be a list of attribute names and/or a hash of attribute' \
-        ' names with values :asc or :desc'
-      end
-
       it 'should raise an exception' do
         expect { query.order({ nil => :asc }) }
           .to raise_error error_class, error_message
@@ -217,11 +196,6 @@ RSpec.describe Cuprum::Collections::Query do
     end
 
     describe 'with a hash with empty string keys' do
-      let(:error_message) do
-        'order must be a list of attribute names and/or a hash of attribute' \
-        ' names with values :asc or :desc'
-      end
-
       it 'should raise an exception' do
         expect { query.order({ '' => :asc }) }
           .to raise_error error_class, error_message
@@ -229,11 +203,6 @@ RSpec.describe Cuprum::Collections::Query do
     end
 
     describe 'with a hash with empty symbol keys' do
-      let(:error_message) do
-        'order must be a list of attribute names and/or a hash of attribute' \
-        ' names with values :asc or :desc'
-      end
-
       it 'should raise an exception' do
         expect { query.order({ '': :asc }) }
           .to raise_error error_class, error_message
@@ -241,11 +210,6 @@ RSpec.describe Cuprum::Collections::Query do
     end
 
     describe 'with a hash with nil value' do
-      let(:error_message) do
-        'order must be a list of attribute names and/or a hash of attribute' \
-        ' names with values :asc or :desc'
-      end
-
       it 'should raise an exception' do
         expect { query.order({ title: nil }) }
           .to raise_error error_class, error_message
@@ -253,11 +217,6 @@ RSpec.describe Cuprum::Collections::Query do
     end
 
     describe 'with a hash with object value' do
-      let(:error_message) do
-        'order must be a list of attribute names and/or a hash of attribute' \
-        ' names with values :asc or :desc'
-      end
-
       it 'should raise an exception' do
         expect { query.order({ title: Object.new.freeze }) }
           .to raise_error error_class, error_message
@@ -265,11 +224,6 @@ RSpec.describe Cuprum::Collections::Query do
     end
 
     describe 'with a hash with empty value' do
-      let(:error_message) do
-        'order must be a list of attribute names and/or a hash of attribute' \
-        ' names with values :asc or :desc'
-      end
-
       it 'should raise an exception' do
         expect { query.order({ title: '' }) }
           .to raise_error error_class, error_message
@@ -277,11 +231,6 @@ RSpec.describe Cuprum::Collections::Query do
     end
 
     describe 'with a hash with invalid value' do
-      let(:error_message) do
-        'order must be a list of attribute names and/or a hash of attribute' \
-        ' names with values :asc or :desc'
-      end
-
       it 'should raise an exception' do
         expect { query.order({ title: 'wibbly' }) }
           .to raise_error error_class, error_message

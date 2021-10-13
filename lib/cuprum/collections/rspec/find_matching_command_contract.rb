@@ -100,7 +100,7 @@ module Cuprum::Collections::RSpec
         }
 
       describe 'with an invalid filter block' do
-        let(:block) { -> { nil } }
+        let(:block) { -> {} }
         let(:expected_error) do
           an_instance_of(Cuprum::Collections::Errors::InvalidQuery)
         end
