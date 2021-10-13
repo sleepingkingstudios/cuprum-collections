@@ -14,12 +14,6 @@ module Cuprum::Collections::Constraints::Order
       @instance ||= new
     end
 
-    # @return [Cuprum::Collections::Constraints::Order::AttributesArray] a
-    #   cached instance of the constraint with allow_empty: false.
-    def self.non_empty_instance
-      @non_empty_instance ||= new(allow_empty: false)
-    end
-
     # @param options [Hash<Symbol, Object>] Configuration options for the
     #   constraint. Defaults to an empty Hash.
     def initialize(**options)

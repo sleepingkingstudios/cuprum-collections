@@ -35,6 +35,12 @@ module Cuprum::Collections::Constraints
     # The :type of the error generated for a non-matching object.
     TYPE = 'cuprum.collections.constraints.is_not_valid_ordering'
 
+    # @return [Cuprum::Collections::Constraints::Order::AttributesArray] a
+    #   cached instance of the constraint with default options.
+    def self.instance
+      @instance ||= new
+    end
+
     # @param options [Hash<Symbol, Object>] Configuration options for the
     #   constraint. Defaults to an empty Hash.
     def initialize(optional: nil, required: nil, **options)

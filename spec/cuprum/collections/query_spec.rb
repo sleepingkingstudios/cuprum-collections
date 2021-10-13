@@ -192,14 +192,15 @@ RSpec.describe Cuprum::Collections::Query do
     end
 
     describe 'with an empty hash' do
-      let(:error_message) do
-        'order must be a list of attribute names and/or a hash of attribute' \
-        ' names with values :asc or :desc'
-      end
+      let(:hash)     { {} }
+      let(:expected) { {} }
 
-      it 'should raise an exception' do
-        expect { query.order({}) }
-          .to raise_error error_class, error_message
+      it { expect(query.order hash).to be copy }
+
+      it 'should delegate to #with_order' do
+        query.order(hash)
+
+        expect(copy).to have_received(:with_order).with(expected)
       end
     end
 
@@ -332,7 +333,7 @@ RSpec.describe Cuprum::Collections::Query do
 
       it { expect(query.order(*attributes)).to be copy }
 
-      it 'should delegate to #with_offset' do
+      it 'should delegate to #with_order' do
         query.order(*attributes)
 
         expect(copy).to have_received(:with_order).with(expected)
@@ -347,7 +348,7 @@ RSpec.describe Cuprum::Collections::Query do
       it { expect(query.order hash).to be copy }
 
       describe 'with key: :asc' do
-        it 'should delegate to #with_offset' do
+        it 'should delegate to #with_order' do
           query.order(hash)
 
           expect(copy).to have_received(:with_order).with(expected)
@@ -357,7 +358,7 @@ RSpec.describe Cuprum::Collections::Query do
       describe 'with key: "asc"' do
         let(:key) { 'asc' }
 
-        it 'should delegate to #with_offset' do
+        it 'should delegate to #with_order' do
           query.order(hash)
 
           expect(copy).to have_received(:with_order).with(expected)
@@ -367,7 +368,7 @@ RSpec.describe Cuprum::Collections::Query do
       describe 'with key: :ascending' do
         let(:key) { :ascending }
 
-        it 'should delegate to #with_offset' do
+        it 'should delegate to #with_order' do
           query.order(hash)
 
           expect(copy).to have_received(:with_order).with(expected)
@@ -377,7 +378,7 @@ RSpec.describe Cuprum::Collections::Query do
       describe 'with key: "ascending"' do
         let(:key) { 'ascending' }
 
-        it 'should delegate to #with_offset' do
+        it 'should delegate to #with_order' do
           query.order(hash)
 
           expect(copy).to have_received(:with_order).with(expected)
@@ -388,7 +389,7 @@ RSpec.describe Cuprum::Collections::Query do
         let(:key)      { :desc }
         let(:expected) { { title: :desc } }
 
-        it 'should delegate to #with_offset' do
+        it 'should delegate to #with_order' do
           query.order(hash)
 
           expect(copy).to have_received(:with_order).with(expected)
@@ -399,7 +400,7 @@ RSpec.describe Cuprum::Collections::Query do
         let(:key)      { 'desc' }
         let(:expected) { { title: :desc } }
 
-        it 'should delegate to #with_offset' do
+        it 'should delegate to #with_order' do
           query.order(hash)
 
           expect(copy).to have_received(:with_order).with(expected)
@@ -410,7 +411,7 @@ RSpec.describe Cuprum::Collections::Query do
         let(:key)      { :descending }
         let(:expected) { { title: :desc } }
 
-        it 'should delegate to #with_offset' do
+        it 'should delegate to #with_order' do
           query.order(hash)
 
           expect(copy).to have_received(:with_order).with(expected)
@@ -421,7 +422,7 @@ RSpec.describe Cuprum::Collections::Query do
         let(:key)      { 'descending' }
         let(:expected) { { title: :desc } }
 
-        it 'should delegate to #with_offset' do
+        it 'should delegate to #with_order' do
           query.order(hash)
 
           expect(copy).to have_received(:with_order).with(expected)
@@ -437,7 +438,7 @@ RSpec.describe Cuprum::Collections::Query do
       it { expect(query.order hash).to be copy }
 
       describe 'with key: :asc' do
-        it 'should delegate to #with_offset' do
+        it 'should delegate to #with_order' do
           query.order(hash)
 
           expect(copy).to have_received(:with_order).with(expected)
@@ -447,7 +448,7 @@ RSpec.describe Cuprum::Collections::Query do
       describe 'with key: "asc"' do
         let(:key) { 'asc' }
 
-        it 'should delegate to #with_offset' do
+        it 'should delegate to #with_order' do
           query.order(hash)
 
           expect(copy).to have_received(:with_order).with(expected)
@@ -457,7 +458,7 @@ RSpec.describe Cuprum::Collections::Query do
       describe 'with key: :ascending' do
         let(:key) { :ascending }
 
-        it 'should delegate to #with_offset' do
+        it 'should delegate to #with_order' do
           query.order(hash)
 
           expect(copy).to have_received(:with_order).with(expected)
@@ -467,7 +468,7 @@ RSpec.describe Cuprum::Collections::Query do
       describe 'with key: "ascending"' do
         let(:key) { 'ascending' }
 
-        it 'should delegate to #with_offset' do
+        it 'should delegate to #with_order' do
           query.order(hash)
 
           expect(copy).to have_received(:with_order).with(expected)
@@ -478,7 +479,7 @@ RSpec.describe Cuprum::Collections::Query do
         let(:key)      { :desc }
         let(:expected) { { title: :desc } }
 
-        it 'should delegate to #with_offset' do
+        it 'should delegate to #with_order' do
           query.order(hash)
 
           expect(copy).to have_received(:with_order).with(expected)
@@ -489,7 +490,7 @@ RSpec.describe Cuprum::Collections::Query do
         let(:key)      { 'desc' }
         let(:expected) { { title: :desc } }
 
-        it 'should delegate to #with_offset' do
+        it 'should delegate to #with_order' do
           query.order(hash)
 
           expect(copy).to have_received(:with_order).with(expected)
@@ -500,7 +501,7 @@ RSpec.describe Cuprum::Collections::Query do
         let(:key)      { :descending }
         let(:expected) { { title: :desc } }
 
-        it 'should delegate to #with_offset' do
+        it 'should delegate to #with_order' do
           query.order(hash)
 
           expect(copy).to have_received(:with_order).with(expected)
@@ -511,7 +512,7 @@ RSpec.describe Cuprum::Collections::Query do
         let(:key)      { 'descending' }
         let(:expected) { { title: :desc } }
 
-        it 'should delegate to #with_offset' do
+        it 'should delegate to #with_order' do
           query.order(hash)
 
           expect(copy).to have_received(:with_order).with(expected)
@@ -527,7 +528,7 @@ RSpec.describe Cuprum::Collections::Query do
 
       it { expect(query.order hash).to be copy }
 
-      it 'should delegate to #with_offset' do
+      it 'should delegate to #with_order' do
         query.order(hash)
 
         expect(copy).to have_received(:with_order).with(expected)
@@ -540,7 +541,7 @@ RSpec.describe Cuprum::Collections::Query do
 
       it { expect(query.order hash).to be copy }
 
-      it 'should delegate to #with_offset' do
+      it 'should delegate to #with_order' do
         query.order(hash)
 
         expect(copy).to have_received(:with_order).with(expected)
@@ -562,7 +563,7 @@ RSpec.describe Cuprum::Collections::Query do
 
       it { expect(query.order hash).to be copy }
 
-      it 'should delegate to #with_offset' do
+      it 'should delegate to #with_order' do
         query.order(*attributes, hash)
 
         expect(copy).to have_received(:with_order).with(expected)

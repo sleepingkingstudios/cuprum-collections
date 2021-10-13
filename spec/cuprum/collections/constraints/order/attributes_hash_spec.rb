@@ -54,26 +54,6 @@ RSpec.describe Cuprum::Collections::Constraints::Order::AttributesHash do
     it { expect(described_class.instance.options).to be == expected_options }
   end
 
-  describe '.non_empty_instance' do
-    let(:cached)           { described_class.non_empty_instance }
-    let(:expected_options) { super().merge(allow_empty: false) }
-
-    it 'should define the class method' do
-      expect(described_class)
-        .to respond_to(:non_empty_instance)
-        .with(0).arguments
-    end
-
-    it { expect(described_class.non_empty_instance).to be_a described_class }
-
-    it { expect(described_class.non_empty_instance).to be cached }
-
-    it 'should set the options' do
-      expect(described_class.non_empty_instance.options)
-        .to be == expected_options
-    end
-  end
-
   include_examples 'should implement the Constraint interface'
 
   include_examples 'should implement the Constraint methods'
