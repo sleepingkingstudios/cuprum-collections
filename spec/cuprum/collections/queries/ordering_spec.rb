@@ -22,6 +22,12 @@ RSpec.describe Cuprum::Collections::Queries::Ordering do
         .and_unlimited_arguments
     end
 
+    describe 'with no arguments' do
+      let(:expected) { {} }
+
+      it { expect(described_class.normalize).to be == expected }
+    end
+
     describe 'with nil' do
       it 'should raise an exception' do
         expect { described_class.normalize nil }
@@ -51,10 +57,10 @@ RSpec.describe Cuprum::Collections::Queries::Ordering do
     end
 
     describe 'with an empty hash' do
-      it 'should raise an exception' do
-        expect { described_class.normalize({}) }
-          .to raise_error described_class::InvalidOrderError, error_message
-      end
+      let(:hash)     { {} }
+      let(:expected) { {} }
+
+      it { expect(described_class.normalize(hash)).to be == expected }
     end
 
     describe 'with a hash with invalid keys' do

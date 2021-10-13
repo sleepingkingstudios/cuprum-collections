@@ -12,5 +12,11 @@ module Cuprum::Collections::Constraints
 
     # The :type of the error generated for a non-matching object.
     TYPE = 'cuprum.collections.constraints.is_not_valid_attribute_name'
+
+    # @return [Cuprum::Collections::Constraints::AttributeName] a cached
+    #   instance of the constraint with default options.
+    def self.instance
+      @instance ||= new
+    end
   end
 end

@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/constraints/sort_direction'
+require 'cuprum/collections/constraints/order/sort_direction'
 
 require 'support/examples/constraint_examples'
 
-RSpec.describe Cuprum::Collections::Constraints::SortDirection do
+RSpec.describe Cuprum::Collections::Constraints::Order::SortDirection do
   include Spec::Support::Examples::ConstraintExamples
 
   subject(:constraint) { described_class.new(**constructor_options) }
@@ -34,6 +34,16 @@ RSpec.describe Cuprum::Collections::Constraints::SortDirection do
         .with(0).arguments
         .and_any_keywords
     end
+  end
+
+  describe '.instance' do
+    let(:cached) { described_class.instance }
+
+    it { expect(described_class).to respond_to(:instance).with(0).arguments }
+
+    it { expect(described_class.instance).to be_a described_class }
+
+    it { expect(described_class.instance).to be cached }
   end
 
   include_examples 'should implement the Constraint interface'
