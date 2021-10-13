@@ -9,7 +9,7 @@ require 'cuprum/collections/constraints'
 require 'cuprum/collections/constraints/attribute_name'
 require 'cuprum/collections/constraints/order/attributes_array'
 require 'cuprum/collections/constraints/order/attributes_hash'
-require 'cuprum/collections/constraints/order/sort_direction'
+require 'cuprum/collections/constraints/order/complex_ordering'
 
 module Cuprum::Collections::Constraints
   # Asserts that the object is a valid query ordering.
@@ -21,6 +21,8 @@ module Cuprum::Collections::Constraints
   #   e.g. ['author', 'title']
   # - A hash with attribute key names, whose values are valid sort directions.
   #   e.g. { author: :ascending, title: :descending }
+  # - An array of attribute names, followed by a valid hash.
+  #   e.g. ['author', { title: :descending }]
   #
   # Valid sort directions are :ascending and :descending (or :asc and :desc),
   # and can be either strings or symbols.
@@ -37,9 +39,7 @@ module Cuprum::Collections::Constraints
     #   constraint. Defaults to an empty Hash.
     def initialize(optional: nil, required: nil, **options)
       super(
-        attribute_name_constraint,
-        attributes_array_constraint,
-        attributes_hash_constraint,
+        *ordering_constraints,
         **resolve_required_option(
           optional: optional,
           required: required,
@@ -48,12 +48,23 @@ module Cuprum::Collections::Constraints
       )
     end
 
+    # @todo
+    def errors_for(_actual, errors: nil)
+      (errors || Stannum::Errors.new).add(type)
+    end
+
+    # @todo
     def matches?(actual)
       return true if optional? && actual.nil?
 
       super
     end
     alias match? matches?
+
+    # @todo
+    def negated_errors_for(_actual, errors: nil)
+      (errors || Stannum::Errors.new).add(negated_type)
+    end
 
     # Creates a copy of the constraint and updates the copy's options.
     #
@@ -66,18 +77,13 @@ module Cuprum::Collections::Constraints
 
     private
 
-    def attribute_name_constraint
-      Cuprum::Collections::Constraints::AttributeName.instance
-    end
-
-    def attributes_array_constraint
-      Cuprum::Collections::Constraints::Order::AttributesArray
-        .non_empty_instance
-    end
-
-    def attributes_hash_constraint
-      Cuprum::Collections::Constraints::Order::AttributesHash
-        .non_empty_instance
+    def ordering_constraints
+      [
+        Cuprum::Collections::Constraints::AttributeName.instance,
+        Cuprum::Collections::Constraints::Order::AttributesArray.instance,
+        Cuprum::Collections::Constraints::Order::AttributesHash.instance,
+        Cuprum::Collections::Constraints::Order::ComplexOrdering.instance
+      ]
     end
   end
 end
