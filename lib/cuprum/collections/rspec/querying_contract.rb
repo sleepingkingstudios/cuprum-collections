@@ -69,6 +69,40 @@ module Cuprum::Collections::RSpec
       end
     end
 
+    shared_context 'when the query has where: a greater_than filter' do
+      let(:filter) { -> { { published_at: greater_than('1970-12-01') } } }
+      let(:matching_data) do
+        super().select { |item| item['published_at'] > '1970-12-01' }
+      end
+    end
+
+    shared_context 'when the query has where: a greater_than_or_equal_to' \
+                   ' filter' \
+    do
+      let(:filter) do
+        -> { { published_at: greater_than_or_equal_to('1970-12-01') } }
+      end
+      let(:matching_data) do
+        super().select { |item| item['published_at'] >= '1970-12-01' }
+      end
+    end
+
+    shared_context 'when the query has where: a less_than filter' do
+      let(:filter) { -> { { published_at: less_than('1970-12-01') } } }
+      let(:matching_data) do
+        super().select { |item| item['published_at'] < '1970-12-01' }
+      end
+    end
+
+    shared_context 'when the query has where: a less_than_or_equal_to filter' do
+      let(:filter) do
+        -> { { published_at: less_than_or_equal_to('1970-12-01') } }
+      end
+      let(:matching_data) do
+        super().select { |item| item['published_at'] <= '1970-12-01' }
+      end
+    end
+
     shared_context 'when the query has where: an equal block filter' do
       let(:filter) { -> { { author: equals('Ursula K. LeGuin') } } }
       let(:matching_data) do
@@ -162,6 +196,56 @@ module Cuprum::Collections::RSpec
         include_context 'when the query has where: an equal block filter'
 
         if operators.include?(OPERATORS::EQUAL)
+          instance_exec(&block)
+        else
+          # :nocov:
+          pending
+          # :nocov:
+        end
+      end
+
+      context 'with a greater_than filter' do
+        include_context 'when the query has where: a greater_than filter'
+
+        if operators.include?(OPERATORS::GREATER_THAN)
+          instance_exec(&block)
+        else
+          # :nocov:
+          pending
+          # :nocov:
+        end
+      end
+
+      context 'with a greater_than_or_equal_to filter' do
+        include_context \
+          'when the query has where: a greater_than_or_equal_to filter'
+
+        if operators.include?(OPERATORS::GREATER_THAN_OR_EQUAL_TO)
+          instance_exec(&block)
+        else
+          # :nocov:
+          pending
+          # :nocov:
+        end
+      end
+
+      context 'with a less_than filter' do
+        include_context 'when the query has where: a less_than filter'
+
+        if operators.include?(OPERATORS::LESS_THAN)
+          instance_exec(&block)
+        else
+          # :nocov:
+          pending
+          # :nocov:
+        end
+      end
+
+      context 'with a less_than_or_equal_to filter' do
+        include_context \
+          'when the query has where: a less_than_or_equal_to filter'
+
+        if operators.include?(OPERATORS::LESS_THAN_OR_EQUAL_TO)
           instance_exec(&block)
         else
           # :nocov:

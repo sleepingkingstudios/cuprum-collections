@@ -2,15 +2,6 @@
 
 ## Queries
 
-Harmonize #order validation/coercion between Query#order_by and Filter#call
-  - Possible values:
-    - nil
-    - attr_name
-    - [attr_name, ...]
-    - { attr_name: direction, ... }
-    - [attr_name, ..., { attr_name: direction }, ...]
-  - Coerce possible values to { attr_name: direction }
-
 ### Operators
 
 Steps to add an operator:

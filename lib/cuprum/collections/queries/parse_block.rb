@@ -60,6 +60,38 @@ module Cuprum::Collections::Queries
       alias equal equals
       alias eq equals
 
+      # Generates a greater than comparison criterion.
+      #
+      # @return [Array] the greater than criterion.
+      def greater_than(value)
+        [nil, Operators::GREATER_THAN, value]
+      end
+      alias gt greater_than
+
+      # Generates a greater than or equal to comparison criterion.
+      #
+      # @return [Array] the greater than or equal to criterion.
+      def greater_than_or_equal_to(value)
+        [nil, Operators::GREATER_THAN_OR_EQUAL_TO, value]
+      end
+      alias gte greater_than_or_equal_to
+
+      # Generates a less than comparison criterion.
+      #
+      # @return [Array] the less than criterion.
+      def less_than(value)
+        [nil, Operators::LESS_THAN, value]
+      end
+      alias lt less_than
+
+      # Generates a less than or equal to comparison criterion.
+      #
+      # @return [Array] the less than or equal to criterion.
+      def less_than_or_equal_to(value)
+        [nil, Operators::LESS_THAN_OR_EQUAL_TO, value]
+      end
+      alias lte less_than_or_equal_to
+
       # Generates a negated equality criterion.
       #
       # @return [Array] the negated equality criterion.

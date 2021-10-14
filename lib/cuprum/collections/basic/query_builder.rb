@@ -33,6 +33,26 @@ module Cuprum::Collections::Basic
     end
     alias eq equal
 
+    def greater_than(attribute, value)
+      ->(actual) { actual[attribute.to_s] > value }
+    end
+    alias gt greater_than
+
+    def greater_than_or_equal_to(attribute, value)
+      ->(actual) { actual[attribute.to_s] >= value }
+    end
+    alias gte greater_than_or_equal_to
+
+    def less_than(attribute, value)
+      ->(actual) { actual[attribute.to_s] < value }
+    end
+    alias lt less_than
+
+    def less_than_or_equal_to(attribute, value)
+      ->(actual) { actual[attribute.to_s] <= value }
+    end
+    alias lte less_than_or_equal_to
+
     def not_equal(attribute, value)
       ->(actual) { actual[attribute.to_s] != value }
     end
