@@ -25,6 +25,7 @@ Stannum::RSpec::ValidateParameterMatcher.add_parameter_mapping(
 module Spec; end
 
 require 'support/contract_helpers'
+require 'support/error_messages'
 
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|

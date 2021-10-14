@@ -64,6 +64,9 @@ RSpec.describe Cuprum::Collections::Constraints::Order::SortDirection do
         type: constraint.type
       }
     end
+    let(:expected_messages) do
+      expected_errors.merge(message: 'is not a valid sort direction')
+    end
 
     describe 'with nil' do
       let(:actual) { nil }
@@ -121,6 +124,9 @@ RSpec.describe Cuprum::Collections::Constraints::Order::SortDirection do
         data: { values: expected_values },
         type: constraint.negated_type
       }
+    end
+    let(:expected_messages) do
+      expected_errors.merge(message: 'is a valid sort direction')
     end
 
     describe 'with an object' do

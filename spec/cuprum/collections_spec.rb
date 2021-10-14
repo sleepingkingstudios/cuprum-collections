@@ -13,6 +13,18 @@ RSpec.describe Cuprum::Collections do
     it { expect(described_class::VERSION).to match(version_pattern) }
   end
 
+  describe '.gem_path' do
+    let(:expected) do
+      sep = File::SEPARATOR
+
+      __dir__.sub(/#{sep}spec#{sep}cuprum#{sep}?\z/, '')
+    end
+
+    include_examples 'should define class reader',
+      :gem_path,
+      -> { be == expected }
+  end
+
   describe '.version' do
     include_examples 'should have class reader',
       :version,
