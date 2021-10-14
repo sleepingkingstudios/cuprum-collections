@@ -22,6 +22,44 @@ RSpec.describe Cuprum::Collections::Queries::ParseBlock do
       it { expect(builder.equals 'Binti: Home').to be == expected }
     end
 
+    describe '#greater_than' do
+      let(:expected) { [nil, operators::GREATER_THAN, '1982-07-11'] }
+
+      it { expect(builder.gt '1982-07-11').to be == expected }
+
+      it { expect(builder.greater_than '1982-07-11').to be == expected }
+    end
+
+    describe '#greater_than_or_equal_to' do
+      let(:expected) do
+        [nil, operators::GREATER_THAN_OR_EQUAL_TO, '1982-07-11']
+      end
+
+      it { expect(builder.gte '1982-07-11').to be == expected }
+
+      it 'should return the criterion' do
+        expect(builder.greater_than_or_equal_to '1982-07-11').to be == expected
+      end
+    end
+
+    describe '#less_than' do
+      let(:expected) { [nil, operators::LESS_THAN, '1982-07-11'] }
+
+      it { expect(builder.lt '1982-07-11').to be == expected }
+
+      it { expect(builder.less_than '1982-07-11').to be == expected }
+    end
+
+    describe '#less_than_or_equal_to' do
+      let(:expected) { [nil, operators::LESS_THAN_OR_EQUAL_TO, '1982-07-11'] }
+
+      it { expect(builder.lte '1982-07-11').to be == expected }
+
+      it 'should return the criterion' do
+        expect(builder.less_than_or_equal_to '1982-07-11').to be == expected
+      end
+    end
+
     describe '#not_equal' do
       let(:expected) { [nil, operators::NOT_EQUAL, 'Binti'] }
 

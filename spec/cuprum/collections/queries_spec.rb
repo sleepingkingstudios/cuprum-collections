@@ -6,17 +6,21 @@ RSpec.describe Cuprum::Collections::Queries do
   describe '::Operators' do
     let(:expected_operators) do
       {
-        EQUAL:      :equal,
-        NOT_EQUAL:  :not_equal,
-        NOT_ONE_OF: :not_one_of,
-        ONE_OF:     :one_of
+        EQUAL:                    :equal,
+        GREATER_THAN:             :greater_than,
+        GREATER_THAN_OR_EQUAL_TO: :greater_than_or_equal_to,
+        LESS_THAN:                :less_than,
+        LESS_THAN_OR_EQUAL_TO:    :less_than_or_equal_to,
+        NOT_EQUAL:                :not_equal,
+        NOT_ONE_OF:               :not_one_of,
+        ONE_OF:                   :one_of
       }
     end
 
     include_examples 'should define immutable constant', :Operators
 
     it 'should enumerate the operators' do
-      expect(described_class::Operators.all).to be == expected_operators
+      expect(described_class::Operators.all).to deep_match expected_operators
     end
 
     describe '::EQUAL' do

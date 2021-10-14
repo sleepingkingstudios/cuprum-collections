@@ -9,10 +9,14 @@ module Cuprum::Collections
   module Queries
     # Defines the supported operators for a Query.
     Operators = SleepingKingStudios::Tools::Toolbox::ConstantMap.new(
-      EQUAL:      :equal,
-      NOT_EQUAL:  :not_equal,
-      NOT_ONE_OF: :not_one_of,
-      ONE_OF:     :one_of
+      EQUAL:                    :equal,
+      GREATER_THAN:             :greater_than,
+      GREATER_THAN_OR_EQUAL_TO: :greater_than_or_equal_to,
+      LESS_THAN:                :less_than,
+      LESS_THAN_OR_EQUAL_TO:    :less_than_or_equal_to,
+      NOT_EQUAL:                :not_equal,
+      NOT_ONE_OF:               :not_one_of,
+      ONE_OF:                   :one_of
     ).freeze
 
     # Enumerates the valid operators as a Set for performant lookup.
