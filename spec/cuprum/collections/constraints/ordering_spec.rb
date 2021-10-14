@@ -77,6 +77,9 @@ RSpec.describe Cuprum::Collections::Constraints::Ordering do
         type: constraint.type
       }
     end
+    let(:expected_messages) do
+      expected_errors.merge(message: 'is not a valid sort order')
+    end
 
     describe 'with nil' do
       let(:actual) { nil }
@@ -264,6 +267,9 @@ RSpec.describe Cuprum::Collections::Constraints::Ordering do
         data: {},
         type: constraint.negated_type
       }
+    end
+    let(:expected_messages) do
+      expected_errors.merge(message: 'is a valid sort order')
     end
 
     describe 'with nil' do

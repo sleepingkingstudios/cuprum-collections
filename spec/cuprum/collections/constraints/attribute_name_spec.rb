@@ -52,6 +52,9 @@ RSpec.describe Cuprum::Collections::Constraints::AttributeName do
   describe '#match' do
     let(:match_method)    { :match }
     let(:expected_errors) { { type: Stannum::Constraints::Presence::TYPE } }
+    let(:expected_messages) do
+      expected_errors.merge(message: 'is nil or empty')
+    end
 
     describe 'with nil' do
       let(:actual) { nil }
@@ -63,6 +66,9 @@ RSpec.describe Cuprum::Collections::Constraints::AttributeName do
       let(:actual) { Object.new.freeze }
       let(:expected_errors) do
         { type: constraint.type }
+      end
+      let(:expected_messages) do
+        expected_errors.merge(message: 'is not a valid attribute name')
       end
 
       include_examples 'should not match the constraint'
@@ -96,6 +102,9 @@ RSpec.describe Cuprum::Collections::Constraints::AttributeName do
   describe '#negated_match' do
     let(:match_method)    { :negated_match }
     let(:expected_errors) { { type: constraint.negated_type } }
+    let(:expected_messages) do
+      expected_errors.merge(message: 'is a valid attribute name')
+    end
 
     describe 'with nil' do
       let(:actual) { nil }
