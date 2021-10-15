@@ -54,12 +54,24 @@ module Cuprum::Collections::Constraints
       )
     end
 
-    # @todo
+    # @overload errors_for(actual, errors: nil)
+    #   Generates an errors object for the given object.
+    #
+    #   @param actual [Object] The object to generate errors for.
+    #   @param errors [Stannum::Errors] The errors object to append errors to.
+    #     If an errors object is not given, a new errors object will be created.
+    #
+    #   @return [Stannum::Errors] the given or generated errors object.
     def errors_for(_actual, errors: nil)
       (errors || Stannum::Errors.new).add(type)
     end
 
-    # @todo
+    # Checks that the given object matches the constraint.
+    #
+    # @param actual [Object] The object to match.
+    #
+    # @return [true, false] true if the object is a valid ordering; otherwise
+    #   false.
     def matches?(actual)
       return true if optional? && actual.nil?
 
@@ -67,7 +79,14 @@ module Cuprum::Collections::Constraints
     end
     alias match? matches?
 
-    # @todo
+    # @overload negated_errors_for(actual, errors: nil)
+    #   Generates an errors object for the given object when negated.
+    #
+    #   @param actual [Object] The object to generate errors for.
+    #   @param errors [Stannum::Errors] The errors object to append errors to.
+    #     If an errors object is not given, a new errors object will be created.
+    #
+    #   @return [Stannum::Errors] the given or generated errors object.
     def negated_errors_for(_actual, errors: nil)
       (errors || Stannum::Errors.new).add(negated_type)
     end
