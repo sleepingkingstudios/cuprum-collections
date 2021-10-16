@@ -392,13 +392,102 @@ You can also specify some optional keywords:
 
 ### Constraints
 
-@todo
+`Cuprum::Collections` defines a small number of `Stannum` constraints for validating command parameters.
+
+**Attribute Name**
+
+A `Cuprum::Collections::Constraints::AttributeName` constraint validates that the object is a valid attribute name. Specifically, that the object either a `String` or a `Symbol` and that it is not `#empty?`.
+
+**Ordering**
+
+A `Cuprum::Collections::Constraints::Ordering` constraint validates that the object is a valid sort ordering. An ordering must be one of the following:
+
+- `nil`
+- A valid attribute name, e.g. `title` or `:author`
+- An array of valid attribute names, e.g. `['title', 'author']` or `[:series, :publisher]`
+- A hash of valid attribute names and sort directions, e.g. `{ title: :descending }`
+- An array of valid attribute names, with the last item of the array a hash of valid attribute names and sort directions, e.g. `[:author, :series, { published_at: :ascending }]`
+
+**Sort Direction**
+
+A `Cuprum::Collections::Constraints::Order::SortDirection` constraint validates that the object is a valid sort direction. Specifically, that the object is either a `String` or a `Symbol` and that is has a value of `'asc'`, `'ascending'`, `'desc'`, or `'descending'`.
 
 <a id="errors"></a>
 
 ### Errors
 
-@todo
+`Cuprum::Collections` defines a set of errors to be used in failed command results.
+
+**AlreadyExists**
+
+A `Cuprum::Collections::Errors::AlreadyExists` error is used when an entity already exists in the collection with the given primary key, e.g. in an `InsertOne` command.
+
+It has the following properties:
+
+- `#collection_name`: The name of the collection used in the command.
+- `#primary_key_name`: The name of the primary key attribute, e.g. `'id'`.
+- `#primary_key_values`: The values of the duplicate primary keys, e.g. `[1]`.
+
+**Extra Attributes**
+
+A `Cuprum::Collections::Errors::ExtraAttributes` error is used when attempting to set attributes on an entity that are not defined for that entity class.
+
+It has the following properties:
+
+- `#entity_class`: The class of the entity used in the command.
+- `#extra_attributes`: The names of the invalid attributes that the command attempted to set, as an `Array` of `String`s.
+- `#valid_attributes`: The names of the valid attributes for the entity class, as an `Array` of `String`s.
+
+**Failed Validation**
+
+A `Cuprum::Collections::Errors::FailedValidation` error is used when an entity fails validation in a command.
+
+It has the following properties:
+
+- `#entity_class`: The class of the entity used in the command.
+- `#errors`: The validation error messages, grouped by the error path.
+
+**Invalid Parameters**
+
+A `Cuprum::Collections::Errors::InvalidParameters` error is used when attempting to call a command with invalid parameters for that command.
+
+It has the following properties:
+
+- `#command`: The command that was called.
+- `#errors`: The validation errors for the parameters, as an `Array` of error `Hash`es.
+
+**Invalid Query**
+
+A `Cuprum::Collections::Errors::InvalidQuery` error is used when attempting to call a `FindMatching` command with invalid parameters for the query filter.
+
+It has the following properties:
+
+- `#errors`: The validation error from the parsing strategy, as an `Array` of error `Hash`es.
+- `#strategy`: The name of the attempted parsing strategy.
+
+**Missing Default Contract**
+
+A `Cuprum::Collections::Errors::MissingDefaultContract`error is used when attempting to call a validation command without a contract and the collection does not define a default contract.
+
+It has the following properties:
+
+- `#entity_class`: The class of the entity used in the command.
+
+**Not Found**
+
+A `Cuprum::Collections::Errors::NotFound` error is used when an entity with the requested primary key does not exist in the collection.
+
+- `#collection_name`: The name of the collection used in the command.
+- `#primary_key_name`: The name of the primary key attribute, e.g. `'id'`.
+- `#primary_key_values`: The values of the missing primary keys, e.g. `[1]`.
+
+**Unknown Operator**
+
+A `Cuprum::Collections::Errors::UnknownOperator` error is used when attempting to perform a filter operation with an operator that is either invalid or not implemented by the collection.
+
+It has the following properties:
+
+- `#operator`: The name of the unrecognized operator.
 
 <a id="queries"></a>
 
