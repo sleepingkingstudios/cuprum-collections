@@ -7,6 +7,7 @@ module Cuprum
   # A data abstraction layer based on the Cuprum library.
   module Collections
     autoload :Base,    'cuprum/collections/base'
+    autoload :Basic,   'cuprum/collections/basic'
     autoload :Command, 'cuprum/collections/command'
 
     # @return [String] the absolute path to the gem directory.
