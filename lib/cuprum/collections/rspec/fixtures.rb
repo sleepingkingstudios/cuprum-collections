@@ -44,7 +44,6 @@ module Cuprum::Collections::RSpec
       'series'       => 'The Lord of the Rings',
       'category'     => 'Science Fiction and Fantasy',
       'published_at' => '1955-10-20'
-
     },
     {
       'id'           => 5,

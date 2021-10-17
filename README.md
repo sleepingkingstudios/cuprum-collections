@@ -22,7 +22,7 @@ The Ruby ecosystem has a wide variety of tools and libraries for managing data a
 
 - **Flexibility:** Using a consistent interface allows an application to be flexible in how it persists and queries data. For example, an application could use the same interface to manage both a relational database and a document-based datastore, or use a fast in-memory data store to back its unit tests.
 - **Command Pattern:** Leverages the [Cuprum](https://github.com/sleepingkingstudios/cuprum) gem and the [Command pattern](https://en.wikipedia.org/wiki/Command_pattern) to define encapsulated, composable, and reusable components for persisting and querying data. In addition, the [Stannum](https://github.com/sleepingkingstudios/stannum/) gem provides data and parameter validation.
-- **Data Mapping:** The `Cuprum::Collections` approach to data is much closer to the [Data Mapper pattern](https://en.wikipedia.org/wiki/Data_mapper_pattern) than the [Active Record pattern](https://en.wikipedia.org/wiki/Active_record_pattern), which allows it to avoid some of the pitfalls of the latter approach.
+- **Data Mapping:** The `Cuprum::Collections` approach to data is much closer to the [Data Mapper pattern](https://en.wikipedia.org/wiki/Data_mapper_pattern) than the [Active Record pattern](https://en.wikipedia.org/wiki/Active_record_pattern). This isolates the persistence and validation logic from how the data is defined and how it is stored.
 
 ### Compatibility
 
@@ -103,7 +103,7 @@ books = step do
 end
 ```
 
-*A Note on Terminology:* Because a collection can represent any sort of data, from a raw Ruby Hash to an ORM record, the term used to indicate "one item in the collection" is an *entity*. Likewise, the class of the items in the collection is the *entity_class*. In our example above, our entities are books, and the entity class is Hash.
+Because a collection can represent any sort of data, from a raw Ruby Hash to an ORM record, the term used to indicate "one item in the collection" is an *entity*. Likewise, the class of the items in the collection is the *entity_class*. In our example above, our entities are books, and the entity class is Hash.
 
 <a id="commands"></a>
 
@@ -493,4 +493,458 @@ It has the following properties:
 
 ### Queries
 
-@todo
+A `Cuprum::Collections::Query` provides a low-level interface for performing query operations on a collection's data.
+
+```ruby
+collection = Cuprum::Collections::Basic.new(
+  collection_name: 'books',
+  data:            book_data,
+)
+query      = collection.query
+
+query.class
+#=> Cuprum::Collections::Basic::Query
+query.count
+#=> 10
+query.limit(3).to_a
+#=> [
+#     {
+#       'id'           => 0,
+#       'title'        => 'The Hobbit',
+#       'author'       => 'J.R.R. Tolkien',
+#       'series'       => nil,
+#       'category'     => 'Science Fiction and Fantasy',
+#       'published_at' => '1937-09-21'
+#     },
+#     {
+#       'id'           => 1,
+#       'title'        => 'The Silmarillion',
+#       'author'       => 'J.R.R. Tolkien',
+#       'series'       => nil,
+#       'category'     => 'Science Fiction and Fantasy',
+#       'published_at' => '1977-09-15'
+#     },
+#     {
+#       'id'           => 2,
+#       'title'        => 'The Fellowship of the Ring',
+#       'author'       => 'J.R.R. Tolkien',
+#       'series'       => 'The Lord of the Rings',
+#       'category'     => 'Science Fiction and Fantasy',
+#       'published_at' => '1954-07-29'
+#     }
+#   ]
+```
+
+Each collection defines its own `Query` implementation, but the interface should be identical except for the class of the yielded or returned entities.
+
+#### Query Methods
+
+Every `Cuprum::Collections::Query` implementation defines the following methods.
+
+**#count**
+
+The `#count` method takes no parameters and returns the number of items in the collection that match the given criteria.
+
+```ruby
+query.count
+#=> 10
+```
+
+**#each**
+
+The `#each` method takes a block and yields to the block each item in the collection that matches the given criteria, in the given order.
+
+```ruby
+query.each do |book|
+  puts book.title if book.series == 'Earthsea'
+end
+#=> prints "A Wizard of Earthsea", "The Tombs of Atuan", "The Farthest Shore"
+```
+
+**#exists**
+
+The `#exists?` method takes no parameters and returns `true` if there are any items in the collection that match the given criteria, or `false` if there are no matching items.
+
+```ruby
+query.exists?
+#=> true
+query.where({ series: 'The Wheel of Time' }).exists?
+#=> false
+```
+
+**#limit**
+
+The `#limit` method takes a count of items and returns a copy of the query. The copied query has a limit constraint, and will yield or return up to the requested number of items when called with `#each` or `#to_a`.
+
+```ruby
+query.limit(3).to_a
+#=> [
+#     {
+#       'id'           => 0,
+#       'title'        => 'The Hobbit',
+#       'author'       => 'J.R.R. Tolkien',
+#       'series'       => nil,
+#       'category'     => 'Science Fiction and Fantasy',
+#       'published_at' => '1937-09-21'
+#     },
+#     {
+#       'id'           => 1,
+#       'title'        => 'The Silmarillion',
+#       'author'       => 'J.R.R. Tolkien',
+#       'series'       => nil,
+#       'category'     => 'Science Fiction and Fantasy',
+#       'published_at' => '1977-09-15'
+#     },
+#     {
+#       'id'           => 2,
+#       'title'        => 'The Fellowship of the Ring',
+#       'author'       => 'J.R.R. Tolkien',
+#       'series'       => 'The Lord of the Rings',
+#       'category'     => 'Science Fiction and Fantasy',
+#       'published_at' => '1954-07-29'
+#     }
+#   ]
+```
+
+*Note:* Not all collections provide a guarantee of a default ordering - for consistent results using `#limit` and `#offset`, specify an explicit order for the query.
+
+**#offset**
+
+The `#offset` method takes a count of items and returns a copy of the query. The copied query has an offset constraint, and will skip the requested number of items when called with `#each` or `#to_a`.
+
+```ruby
+query.offset(7)
+#=> [
+#     {
+#       'id'           => 7,
+#       'title'        => 'A Wizard of Earthsea',
+#       'author'       => 'Ursula K. LeGuin',
+#       'series'       => 'Earthsea',
+#       'category'     => 'Science Fiction and Fantasy',
+#       'published_at' => '1968-11-01'
+#     },
+#     {
+#       'id'           => 8,
+#       'title'        => 'The Tombs of Atuan',
+#       'author'       => 'Ursula K. LeGuin',
+#       'series'       => 'Earthsea',
+#       'category'     => 'Science Fiction and Fantasy',
+#       'published_at' => '1970-12-01'
+#     },
+#     {
+#       'id'           => 9,
+#       'title'        => 'The Farthest Shore',
+#       'author'       => 'Ursula K. LeGuin',
+#       'series'       => 'Earthsea',
+#       'category'     => 'Science Fiction and Fantasy',
+#       'published_at' => '1972-09-01'
+#     }
+#   ]
+```
+
+*Note:* Not all collections provide a guarantee of a default ordering - for consistent results using `#limit` and `#offset`, specify an explicit order for the query.
+
+**#order**
+
+The `#order` method takes a valid sort ordering and returns a copy of the query. The copied query uses the specified order, and will yield or return items in that order when called with `#each` or `#to_a`. For details on specifying a sort order, see [Query Ordering](#queries-ordering), below.
+
+```ruby
+query.where(series: 'The Lord of the Rings').order({ title: 'desc' })
+#=> [
+#     {
+#       'id'           => 3,
+#       'title'        => 'The Two Towers',
+#       'author'       => 'J.R.R. Tolkien',
+#       'series'       => 'The Lord of the Rings',
+#       'category'     => 'Science Fiction and Fantasy',
+#       'published_at' => '1954-11-11'
+#     },
+#     {
+#       'id'           => 4,
+#       'title'        => 'The Return of the King',
+#       'author'       => 'J.R.R. Tolkien',
+#       'series'       => 'The Lord of the Rings',
+#       'category'     => 'Science Fiction and Fantasy',
+#       'published_at' => '1955-10-20'
+#     },
+#     {
+#       'id'           => 2,
+#       'title'        => 'The Fellowship of the Ring',
+#       'author'       => 'J.R.R. Tolkien',
+#       'series'       => 'The Lord of the Rings',
+#       'category'     => 'Science Fiction and Fantasy',
+#       'published_at' => '1954-07-29'
+#     }
+#   ]
+```
+
+**#reset**
+
+The `#reset` method takes no parameters and returns the query. By default, a `Query` will cache the results when calling `#each` or `#to_a`. The `#reset` method clears this cache and forces the query to perform another query on the underlying data.
+
+```ruby
+query.count
+#=> 10
+
+book = { id: 10, title: 'Gideon the Ninth', author: 'Tammsyn Muir' }
+collection.insert_one.call(entity: book)
+
+query.count
+#=> 10
+query.reset.count
+#=> 11
+```
+
+**#to_a**
+
+The `#to_a` method takes no parameters and returns an `Array` containing the itmes in the collection that match the given criteria, in the given order.
+
+```ruby
+query.to_a.map { |book| book['title'] }
+#=> [
+#     'The Hobbit',
+#     'The Silmarillion',
+#     'The Fellowship of the Ring',
+#     'The Two Towers',
+#     'The Return of the King',
+#     'The Word for World is Forest',
+#     'The Ones Who Walk Away From Omelas',
+#     'A Wizard of Earthsea',
+#     'The Tombs of Atuan',
+#     'The Farthest Shore'
+#   ]
+```
+
+**#where**
+
+The `#where` method takes a Hash argument or a block and returns a copy of the query. The copied query applies the given filters, and will yield or return only items that match the given criteria when called with `#each` or `#to_a`.
+
+```ruby
+query.where(series: 'Earthsea').to_a
+#=> [
+#     {
+#       'id'           => 7,
+#       'title'        => 'A Wizard of Earthsea',
+#       'author'       => 'Ursula K. LeGuin',
+#       'series'       => 'Earthsea',
+#       'category'     => 'Science Fiction and Fantasy',
+#       'published_at' => '1968-11-01'
+#     },
+#     {
+#       'id'           => 8,
+#       'title'        => 'The Tombs of Atuan',
+#       'author'       => 'Ursula K. LeGuin',
+#       'series'       => 'Earthsea',
+#       'category'     => 'Science Fiction and Fantasy',
+#       'published_at' => '1970-12-01'
+#     },
+#     {
+#       'id'           => 9,
+#       'title'        => 'The Farthest Shore',
+#       'author'       => 'Ursula K. LeGuin',
+#       'series'       => 'Earthsea',
+#       'category'     => 'Science Fiction and Fantasy',
+#       'published_at' => '1972-09-01'
+#     }
+#   ]
+```
+
+<a id="queries-ordering"></a>
+
+#### Query Ordering
+
+You can set the sort order of returned or yielded query results by passing a valid ordering to the query. For a `FindMatching` command, pass an `:order` keyword to `#call`. When using a query directly, use the `#order` method.
+
+Any of the following is a valid ordering:
+
+- `nil`
+- A valid attribute name, e.g. `title` or `:author`
+- An array of valid attribute names, e.g. `['title', 'author']` or `[:series, :publisher]`
+- A hash of valid attribute names and sort directions, e.g. `{ title: :descending }`
+- An array of valid attribute names, with the last item of the array a hash of valid attribute names and sort directions, e.g. `[:author, :series, { published_at: :ascending }]`
+
+Internally, the sort order is converted to an ordered `Hash` with attribute name keys and sort direction values. The query results will be sorted by the given attributes in the specified order.
+
+For example, a order of `{ author: :asc, title: :descending }` will sort the results by `:author` in ascending order. For each author, the results are then sorted by `:title` in descending order.
+
+<a id="queries-filtering"></a>
+
+#### Query Filtering
+
+You can filter the results returned or yielded by a query by passing a valid criteria object to the query. For a `FindMatching` command, pass a `:where` keyword to `#call`, or use the block form to use the query builder to apply advanced operators. When using a query directly, use the `#where` method.
+
+```ruby
+query = collection.query.where({ author: 'Ursula K. LeGuin' })
+query.count
+#=> 5
+query.each.map(&:author).uniq
+#=> ['Ursula K. LeGuin']
+```
+
+The simplest way to filter results is by passing a `Hash` to `#where`. The keys of the Hash should be the names of the attributes to filter by, and the values the expected value of that attribute. However, passing a Hash directly only supports equality comparisons. To use advanced operators, use the block form:
+
+```ruby
+query = collection.query.where do
+  {
+    author:       'Ursula K. LeGuin',
+    series:       equal('Earthsea'),
+    published_at: greater_than('1970-01-01')
+  }
+end
+query.count
+#=> 2
+query.each.map(&:title)
+#=> [
+#     'The Tombs of Atuan',
+#     'The Farthest Shore'
+#   ]
+```
+
+Instead of passing a `Hash` directly, we pass a block to the `#where` method (or `#call` for a command) that *returns* a `Hash`. This allows us to use a Domain-Specific Language to generate our criteria. In the example above, we are using an exact value for the author - this is automatically converted to an `#equal` criterion, just as it is when passing a Hash. We are also using the `#greater_than` operator to filter our results.
+
+##### Operators
+
+Each query implementation defines the following operators:
+
+**#equal**
+
+The `#equal` operator asserts that the attribute value is equal to the expected value.
+
+```ruby
+query = collection.query.where do
+  { title: equal('The Hobbit') }
+end
+query.count
+#=> 1
+query.each.map(&:title)
+#=> ['The Hobbit']
+```
+
+**#greater_than**
+
+The `#greater_than` operator asserts that the attribute value is strictly greater than the expected value. It is primarily used with numeric or date/time attributes.
+
+```ruby
+query = collection.query.where do
+  {
+    series:       'The Lord of the Rings',
+    published_at: greater_than('1954-11-11')
+  }
+end
+query.count
+#=> 1
+query.each.map(&:title)
+#=> ['The Return of the King']
+```
+
+**#greater_than_or_equal_to**
+
+The `#greater_than_or_equal_to` operator asserts that the attribute value is greater than or equal to the expected value. It is primarily used with numeric or date/time attributes.
+
+```ruby
+query = collection.query.where do
+  {
+    series:       'The Lord of the Rings',
+    published_at: greater_than_or_equal_to('1954-11-11')
+  }
+end
+query.count
+#=> 2
+query.each.map(&:title)
+#=> ['The Two Towers', 'The Return of the King']
+```
+
+**#less_than**
+
+The `#less_than` operator asserts that the attribute value is strictly greater than the expected value. It is primarily used with numeric or date/time attributes.
+
+```ruby
+query = collection.query.where do
+  {
+    series:       'The Lord of the Rings',
+    published_at: less_than('1954-11-11')
+  }
+end
+query.count
+#=> 1
+query.each.map(&:title)
+#=> ['The Fellowship of the Ring']
+```
+
+**#less_than_or_equal_to**
+
+The `#less_than_or_equal_to` operator asserts that the attribute value is strictly greater than the expected value. It is primarily used with numeric or date/time attributes.
+
+```ruby
+query = collection.query.where do
+  {
+    series:       'The Lord of the Rings',
+    published_at: less_than_or_equal_to('1954-11-11')
+  }
+end
+query.count
+#=> 2
+query.each.map(&:title)
+#=> ['The Fellowship of the Ring', 'The Two Towers']
+```
+
+**#not_equal**
+
+The `#not_equal` operator asserts that the attribute value is not equal to the expected value. It is the inverse of the `#equal` operator.
+
+```ruby
+query = collection.query.where do
+  {
+    author: 'J.R.R. Tolkien',
+    series: not_equal('The Lord of the Rings')
+  }
+end
+query.count
+#=> 2
+query.each.map(&:title)
+#=> ['The Hobbit', 'The Silmarillion']
+```
+
+**#not_one_of**
+
+The `#one_of` operator asserts that the attribute value is not equal to any of the expected values. It is the inverse of the `#one_of` operator.
+
+```ruby
+query = collection.query.where do
+  {
+    series: not_one_of(['Earthsea', 'The Lord of the Rings'])
+  }
+end
+query.count
+#=> 4
+query.each.map(&:title)
+#=> [
+#     'The Hobbit',
+#     'The Silmarillion',
+#     'The Word for World is Forest',
+#     'The Ones Who Walk Away From Omelas'
+#   ]
+```
+
+**#one_of**
+
+The `#one_of` operator asserts that the attribute value is equal to one of the expected values.
+
+```ruby
+query = collection.query.where do
+  {
+    series: one_of(['Earthsea', 'The Lord of the Rings'])
+  }
+end
+query.count
+#=> 6
+query.each.map(&:title)
+#=> [
+#     'The Fellowship of the Ring',
+#     'The Two Towers',
+#     'The Return of the King',
+#     'A Wizard of Earthsea',
+#     'The Tombs of Atuan',
+#     'The Farthest Shore'
+#   ]
+```
