@@ -16,6 +16,7 @@ module Cuprum::Collections
 
     autoload :Collection, 'cuprum/collections/basic/collection'
     autoload :Command,    'cuprum/collections/basic/command'
+    autoload :Commands,   'cuprum/collections/basic/commands'
     autoload :Query,      'cuprum/collections/basic/query'
   end
 end

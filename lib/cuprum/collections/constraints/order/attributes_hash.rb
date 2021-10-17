@@ -5,7 +5,7 @@ require 'cuprum/collections/constraints/order'
 require 'cuprum/collections/constraints/order/sort_direction'
 
 module Cuprum::Collections::Constraints::Order
-  # @todo
+  # Asserts that the object is a Hash of attribute names and sort directions.
   class AttributesHash < Stannum::Constraints::Types::HashType
     # @return [Cuprum::Collections::Constraints::Order::AttributesArray] a
     #   cached instance of the constraint with default options.

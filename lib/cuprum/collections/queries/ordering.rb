@@ -4,7 +4,7 @@ require 'cuprum/collections/constraints/ordering'
 require 'cuprum/collections/queries'
 
 module Cuprum::Collections::Queries
-  # Namespace for legacy order validation.
+  # Functionality around validating and normalizing query sort orderings.
   module Ordering
     # Exception class for handling invalid order keywords.
     class InvalidOrderError < ArgumentError; end
@@ -18,6 +18,20 @@ module Cuprum::Collections::Queries
     private_constant :ORDER_HASH_VALUES
 
     class << self
+      # @overload normalize(*attributes, ordering_hash = nil)
+      #   Converts the given sort order into a hash with standard values.
+      #
+      #   @param attributes [Array<String, Symbol>] The attribute names to sort
+      #     by, in ascending direction, and in order of importance.
+      #   @param ordering_hash [Hash] An optional ordering hash, with keys that
+      #     are valid attribute names and values that are valid sort directions.
+      #
+      #   @return [Hash] the normalized sort ordering.
+      #
+      #   @raise InvalidOrderError if any of the attributes are invalid
+      #     attribute names.
+      #   @raise InvalidOrderError if any of the hash keys are invalid attribute
+      #     names, or any of the hash values are invalid sort directions.
       def normalize(*attributes)
         validate_ordering!(attributes)
 
