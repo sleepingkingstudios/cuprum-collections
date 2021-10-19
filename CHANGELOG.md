@@ -8,15 +8,15 @@ Initial version.
 
 Implemented `Basic::Collection` and associated commands:
 
-- `Basic::Comands::AssignOne`
-- `Basic::Comands::BuildOne`
-- `Basic::Comands::DestroyOne`
-- `Basic::Comands::FindMany`
-- `Basic::Comands::FindMatching`
-- `Basic::Comands::FindOne`
-- `Basic::Comands::InsertOne`
-- `Basic::Comands::UpdateOne`
-- `Basic::Comands::ValidateOne`
+- `Basic::Commands::AssignOne`
+- `Basic::Commands::BuildOne`
+- `Basic::Commands::DestroyOne`
+- `Basic::Commands::FindMany`
+- `Basic::Commands::FindMatching`
+- `Basic::Commands::FindOne`
+- `Basic::Commands::InsertOne`
+- `Basic::Commands::UpdateOne`
+- `Basic::Commands::ValidateOne`
 
 Implemented `Basic::Query`
 
