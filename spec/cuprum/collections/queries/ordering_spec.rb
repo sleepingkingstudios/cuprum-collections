@@ -56,6 +56,55 @@ RSpec.describe Cuprum::Collections::Queries::Ordering do
       end
     end
 
+    describe 'with an empty array' do
+      let(:array)    { [] }
+      let(:expected) { {} }
+
+      it { expect(described_class.normalize array).to be == expected }
+    end
+
+    describe 'with an array with a nil item' do
+      it 'should raise an exception' do
+        expect { described_class.normalize [nil] }
+          .to raise_error described_class::InvalidOrderError, error_message
+      end
+    end
+
+    describe 'with an array with an object item' do
+      it 'should raise an exception' do
+        expect { described_class.normalize [Object.new.freeze] }
+          .to raise_error described_class::InvalidOrderError, error_message
+      end
+    end
+
+    describe 'with an array with an empty string item' do
+      it 'should raise an exception' do
+        expect { described_class.normalize [''] }
+          .to raise_error described_class::InvalidOrderError, error_message
+      end
+    end
+
+    describe 'with an array with an empty symbol item' do
+      it 'should raise an exception' do
+        expect { described_class.normalize [:''] }
+          .to raise_error described_class::InvalidOrderError, error_message
+      end
+    end
+
+    describe 'with an array with string items' do
+      let(:attributes) { %w[title author series] }
+      let(:expected)   { { title: :asc, author: :asc, series: :asc } }
+
+      it { expect(described_class.normalize(attributes)).to be == expected }
+    end
+
+    describe 'with an array with symbol items' do
+      let(:attributes) { %i[title author series] }
+      let(:expected)   { { title: :asc, author: :asc, series: :asc } }
+
+      it { expect(described_class.normalize(attributes)).to be == expected }
+    end
+
     describe 'with an empty hash' do
       let(:hash)     { {} }
       let(:expected) { {} }
