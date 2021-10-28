@@ -33,6 +33,8 @@ module Cuprum::Collections::Queries
       #   @raise InvalidOrderError if any of the hash keys are invalid attribute
       #     names, or any of the hash values are invalid sort directions.
       def normalize(*attributes)
+        attributes = attributes.flatten if attributes.first.is_a?(Array)
+
         validate_ordering!(attributes)
 
         qualified = attributes.last.is_a?(Hash) ? attributes.pop : {}
