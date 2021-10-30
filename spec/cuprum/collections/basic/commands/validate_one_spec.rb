@@ -69,7 +69,7 @@ RSpec.describe Cuprum::Collections::Basic::Commands::ValidateOne do
     let(:valid_default_attributes) do
       {
         title:  'Gideon the Ninth',
-        author: 'Tammsyn Muir'
+        author: 'Tamsyn Muir'
       }
     end
 
