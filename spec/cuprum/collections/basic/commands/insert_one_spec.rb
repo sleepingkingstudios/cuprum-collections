@@ -24,7 +24,7 @@ RSpec.describe Cuprum::Collections::Basic::Commands::InsertOne do
     {
       id:     0,
       title:  'Gideon the Ninth',
-      author: 'Tammsyn Muir'
+      author: 'Tamsyn Muir'
     }
   end
   let(:entity) do

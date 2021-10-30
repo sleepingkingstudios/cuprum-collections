@@ -58,7 +58,7 @@ module Cuprum::Collections::RSpec
         let(:attributes) do
           {
             title:    'Gideon the Ninth',
-            author:   'Tammsyn Muir',
+            author:   'Tamsyn Muir',
             series:   'The Locked Tomb',
             category: 'Horror'
           }
@@ -124,7 +124,7 @@ module Cuprum::Collections::RSpec
           let(:attributes) do
             {
               title:    'Gideon the Ninth',
-              author:   'Tammsyn Muir',
+              author:   'Tamsyn Muir',
               series:   'The Locked Tomb',
               category: 'Horror'
             }

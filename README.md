@@ -77,7 +77,7 @@ steps do
   # Build the book from attributes.
   book = step do
     collection.build_one.call(
-      attributes: { id: 10, title: 'Gideon the Ninth', author: 'Tammsyn Muir' }
+      attributes: { id: 10, title: 'Gideon the Ninth', author: 'Tamsyn Muir' }
     )
   end
 
@@ -116,7 +116,7 @@ Structurally, a collection is a set of commands, which are instances of `Cuprum:
 The `AssignOne` command takes an attributes hash and an entity, and returns an instance of the entity class whose attributes are equal to the attributes hash merged into original entities attributes. Depending on the collection, `#assign_one` may or may not modify or return the original entity.
 
 ```ruby
-book       = { 'id' => 10, 'title' => 'Gideon the Ninth', 'author' => 'Tammsyn Muir' }
+book       = { 'id' => 10, 'title' => 'Gideon the Ninth', 'author' => 'Tamsyn Muir' }
 attributes = { 'title' => 'Harrow the Ninth', 'published_at' => '2020-08-04' }
 result     = collection.assign_one.call(attributes: attributes, entity: entity)
 
@@ -124,7 +124,7 @@ result.value
 #=> {
 #     'id'           => 10,
 #     'title'        => 'Harrow the Ninth',
-#     'author'       => 'Tammsyn Muir',
+#     'author'       => 'Tamsyn Muir',
 #     'published_at' => '2020-08-04'
 #   }
 ```
@@ -136,14 +136,14 @@ If the entity class specifies a set of attributes (such as the defined columns i
 The `BuildOne` command takes an attributes hash and returns a new instance of the entity class whose attributes are equal to the given attributes. This does not validate or persist the entity; it is equivalent to calling `entity_class.new` with the attributes.
 
 ```ruby
-attributes = { 'id' => 10, 'title' => 'Gideon the Ninth', 'author' => 'Tammsyn Muir' }
+attributes = { 'id' => 10, 'title' => 'Gideon the Ninth', 'author' => 'Tamsyn Muir' }
 result     = collection.build_one.call(attributes: attributes, entity: entity)
 
 result.value
 #=> {
 #     'id'           => 10,
 #     'title'        => 'Gideon the Ninth',
-#     'author'       => 'Tammsyn Muir'
+#     'author'       => 'Tamsyn Muir'
 #   }
 ```
 
@@ -298,14 +298,14 @@ If the collection does not include an entity with the specified primary key, the
 The `InsertOne` command takes an entity and inserts that entity into the collection.
 
 ```ruby
-book       = { 'id' => 10, 'title' => 'Gideon the Ninth', 'author' => 'Tammsyn Muir' }
+book       = { 'id' => 10, 'title' => 'Gideon the Ninth', 'author' => 'Tamsyn Muir' }
 result     = collection.insert_one.call(entity: entity)
 
 result.value
 #=> {
 #     'id'           => 10,
 #     'title'        => 'Gideon the Ninth',
-#     'author'       => 'Tammsyn Muir'
+#     'author'       => 'Tamsyn Muir'
 #   }
 
 collection.query.where(id: 10).exists?
@@ -351,7 +351,7 @@ contract = Stannum::Contract.new do
   property :title, Stannum::Constraints::Presence.new
 end
 
-book   = { 'id' => 10, 'title' => 'Gideon the Ninth', 'author' => 'Tammsyn Muir' }
+book   = { 'id' => 10, 'title' => 'Gideon the Ninth', 'author' => 'Tamsyn Muir' }
 result = collection.validate_one.call(contract: contract, entity: book)
 result.success?
 #=> true
@@ -361,9 +361,34 @@ If the contract does not match the entity, the `#validate_one` command will retu
 
 If the collection does not specify a default contract and no `:contract` keyword is provided, the `#validate_one` command will return a failing result with a `MissingDefaultContract` error.
 
+<a id="repositories"></a>
+
+#### Repositories
+
+```ruby
+require 'cuprum/collections/repository'
+```
+
+A repository is a group of collections. While a collection might be be a single data set, such as the records in a table, the repository represents all of the data sets in a data source, such as the tables in a database.
+
+```ruby
+repository = Cuprum::Collections::Repository.new
+repository.key?('book')
+#=> false
+
+repository.add(books_collection)
+
+repository.key?('book')
+#=> true
+repository.keys
+#=> ['books']
+repository['books']
+#=> the books collection
+```
+
 #### Basic Collection
 
-```
+```ruby
 require 'cuprum/collections/basic'
 ```
 
@@ -387,6 +412,40 @@ You can also specify some optional keywords:
 - The `:member_name` parameter is used to create an envelope for singular query commands such as the `FindOne` command. If not given, the member name will be generated automatically as a singular form of the collection name.
 - The `:primary_key_name` parameter specifies the attribute that serves as the primary key for the collection entities. The default value is `:id`.
 - The `:primary_key_type` parameter specifies the type of the primary key attribute. The default value is `Integer`.
+
+##### Basic Repositories
+
+```ruby
+require 'cuprum/collections/basic/repository'
+```
+
+A `Basic::Repository` is a collection of `Basic::Collection`s. In addition to implementing the Repository methods (see [Repositories](#repositories), above), a basic repository can be initialized with a data set and used to build new collections directly.
+
+```ruby
+data = {
+  'books' => [
+    {
+      'name'   => 'Gideon the Ninth',
+      'author' => 'Tamsyn Muir'
+    }
+  ]
+}
+repository = Cuprum::Collections::Basic::Repository.new(data: data)
+repository.keys
+#=> []
+
+repository.build(collection_name: 'books')
+#=> an instance of Cuprum::Collections::Basic::Collection
+repository.keys
+#=> ['books']
+repository['books'].query.to_a
+#=> [
+#     {
+#       'name'   => 'Gideon the Ninth',
+#       'author' => 'Tamsyn Muir'
+#     }
+#   ]
+```
 
 <a id="constraints"></a>
 
@@ -686,7 +745,7 @@ The `#reset` method takes no parameters and returns the query. By default, a `Qu
 query.count
 #=> 10
 
-book = { id: 10, title: 'Gideon the Ninth', author: 'Tammsyn Muir' }
+book = { id: 10, title: 'Gideon the Ninth', author: 'Tamsyn Muir' }
 collection.insert_one.call(entity: book)
 
 query.count

@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.2.0
+
+Implemented `Cuprum::Collections::Repository`.
+
+### Collections
+
+Implemented `Cuprum::Collections::Basic::Repository`.
+
+### Queries
+
+Fixed passing an attributes array as a query ordering.
+
 ## 0.1.0
 
 Initial version.
