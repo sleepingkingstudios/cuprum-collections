@@ -1,0 +1,84 @@
+# frozen_string_literal: true
+
+require 'forwardable'
+
+require 'cuprum/collections'
+
+module Cuprum::Collections
+  # A repository represents a group of collections.
+  #
+  # Conceptually, a repository represents one or more underlying data stores. An
+  # application might have one repository for each data store, e.g. one
+  # repository for relational data, a second repository for document-based data,
+  # and so on. The application may instead aggregate all of its collections into
+  # a single repository, relying on the shared interface of all Collection
+  # implementations.
+  class Repository
+    extend Forwardable
+
+    # Error raised when trying to add an invalid collection to the repository.
+    class InvalidCollectionError < StandardError; end
+
+    # Error raised when trying to access a collection that is not defined.
+    class UndefinedCollectionError < StandardError; end
+
+    def initialize
+      @collections = {}
+    end
+
+    # @!method keys
+    #   Returns the names of the collections in the repository.
+    #
+    #   @return [Array<String>] the collection names.
+
+    def_delegators :@collections, :keys
+
+    # Finds and returns the collection with the given name.
+    #
+    # @param collection_name [String, Symbol] The name of the collection to
+    #   return.
+    #
+    # @return [Object] the requested collection.
+    #
+    # @raise [Cuprum::Collection::Repository::UndefinedCOllectionError] if the
+    #   requested collection is not in the repository.
+    def [](collection_name)
+      @collections.fetch(collection_name.to_s) do
+        raise UndefinedCollectionError,
+          "repository does not define collection #{collection_name.inspect}"
+      end
+    end
+
+    # @todo
+    def add(collection)
+      validate_collection!(collection)
+
+      @collections[collection.collection_name.to_s] = collection
+
+      self
+    end
+    alias << add
+
+    # Checks if a collection with the given name exists in the repository.
+    #
+    # @param collection_name [String, Symbol] The name to check for.
+    #
+    # @return [true, false] true if the key exists, otherwise false.
+    def key?(collection_name)
+      @collections.key?(collection_name.to_s)
+    end
+
+    private
+
+    def valid_collection?(collection)
+      collection.respond_to?(:collection_name)
+    end
+
+    def validate_collection!(collection)
+      return if valid_collection?(collection)
+
+      raise InvalidCollectionError,
+        "#{collection.inspect} is not a valid collection"
+    end
+  end
+end
