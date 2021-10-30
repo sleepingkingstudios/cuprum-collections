@@ -49,7 +49,15 @@ module Cuprum::Collections
       end
     end
 
-    # @todo
+    # Adds the collection to the repository.
+    #
+    # The collection must implement the #collection_name property. Repository
+    # subclasses may enforce additional requirements.
+    #
+    # @param collection [#collection_name] The collection to add to the
+    #   repository.
+    #
+    # @return [Cuprum::Rails::Repository] the repository.
     def add(collection)
       validate_collection!(collection)
 
