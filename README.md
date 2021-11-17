@@ -26,7 +26,7 @@ The Ruby ecosystem has a wide variety of tools and libraries for managing data a
 
 ### Compatibility
 
-Cuprum::Collections is tested against Ruby (MRI) 2.6 through 2.7.
+Cuprum::Collections is tested against Ruby (MRI) 2.6 through 3.0.
 
 ### Documentation
 
@@ -214,7 +214,7 @@ If the collection does not include an entity with each of the specified primary 
 
 ##### Find Matching
 
-The `FindMatching` command takes a set of query parameters and queries data from the collection. You can specify filters using the `:where` keyword or by passing a block, sort the results using the `:order` keyword, or return a subset of the results using the `:limit` and `:offset` keywords. For full details on performing queries, see [Queries](#queries), below.
+The `FindMatching` command takes a set of query parameters and queries data from the collection. You can specify filters using the `:where` keyword or by passing a block, sort the results using the `:order` keyword, or return a subset of the results using the `:limit` and `:offset` keywords.
 
 ```ruby
 result =
@@ -260,7 +260,11 @@ The `FindMatching` command has several options:
     #=>  { books: [{ ... }, { ... }, { ... }] }
     ```
 
+- The `:limit` keyword caps the number of results returned.
+- The `:offset` keyword skips the specified number of results.
+- The `:order` keyword specifies the order of results.
 - The `:scope` keyword allows you to pass a query to the command. Only entities that match the given scope will be found and returned by `#find_matching`.
+- The `:where` keyword defines filters for which results are to be returned.
 
 ##### Find One
 
@@ -299,7 +303,7 @@ The `InsertOne` command takes an entity and inserts that entity into the collect
 
 ```ruby
 book       = { 'id' => 10, 'title' => 'Gideon the Ninth', 'author' => 'Tamsyn Muir' }
-result     = collection.insert_one.call(entity: entity)
+result     = collection.insert_one.call(entity: book)
 
 result.value
 #=> {
@@ -373,12 +377,12 @@ A repository is a group of collections. While a collection might be be a single 
 
 ```ruby
 repository = Cuprum::Collections::Repository.new
-repository.key?('book')
+repository.key?('books')
 #=> false
 
 repository.add(books_collection)
 
-repository.key?('book')
+repository.key?('books')
 #=> true
 repository.keys
 #=> ['books']

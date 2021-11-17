@@ -71,15 +71,17 @@ module Cuprum::Collections::RSpec
         end
 
         describe 'with a valid string' do
-          let(:collection_name) { collection_names.first }
+          let(:collection)      { collections.values.first }
+          let(:collection_name) { collections.keys.first }
 
-          it { expect(repository[collection_name]).to be books_collection }
+          it { expect(repository[collection_name]).to be collection }
         end
 
         describe 'with a valid symbol' do
-          let(:collection_name) { collection_names.first.intern }
+          let(:collection)      { collections.values.first }
+          let(:collection_name) { collections.keys.first.intern }
 
-          it { expect(repository[collection_name]).to be books_collection }
+          it { expect(repository[collection_name]).to be collection }
         end
       end
     end
@@ -144,9 +146,9 @@ module Cuprum::Collections::RSpec
 
         it { expect(repository.key? :invalid_name).to be false }
 
-        it { expect(repository.key? collection_names.first).to be true }
+        it { expect(repository.key? collections.keys.first).to be true }
 
-        it { expect(repository.key? collection_names.first.intern).to be true }
+        it { expect(repository.key? collections.keys.first.intern).to be true }
       end
     end
 
@@ -154,7 +156,7 @@ module Cuprum::Collections::RSpec
       include_examples 'should define reader', :keys, []
 
       wrap_context 'when the repository has many collections' do
-        it { expect(repository.keys).to be == collection_names }
+        it { expect(repository.keys).to be == collections.keys }
       end
     end
   end

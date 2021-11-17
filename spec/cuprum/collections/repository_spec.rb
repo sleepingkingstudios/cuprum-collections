@@ -26,7 +26,13 @@ RSpec.describe Cuprum::Collections::Repository do
         collection_name: 'publishers'
       )
     end
-    let(:collection_names) { %w[books authors publishers] }
+    let(:collections) do
+      {
+        'books'      => books_collection,
+        'authors'    => authors_collection,
+        'publishers' => publishers_collection
+      }
+    end
 
     before(:example) do
       repository <<

@@ -17,8 +17,9 @@ Gem::Specification.new do |gem|
   gem.license     = 'MIT'
 
   gem.metadata = {
-    'bug_tracker_uri' => 'https://github.com/sleepingkingstudios/cuprum-collections/issues',
-    'source_code_uri' => 'https://github.com/sleepingkingstudios/cuprum-collections'
+    'bug_tracker_uri'       => 'https://github.com/sleepingkingstudios/cuprum-collections/issues',
+    'source_code_uri'       => 'https://github.com/sleepingkingstudios/cuprum-collections',
+    'rubygems_mfa_required' => 'true'
   }
 
   gem.require_path = 'lib'
