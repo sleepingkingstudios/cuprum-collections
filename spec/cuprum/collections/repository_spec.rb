@@ -49,6 +49,16 @@ RSpec.describe Cuprum::Collections::Repository do
     )
   end
 
+  describe '::DuplicateCollectionError' do
+    include_examples 'should define constant', :DuplicateCollectionError
+
+    it { expect(described_class::DuplicateCollectionError).to be_a Class }
+
+    it 'should inherit from StandardError' do
+      expect(described_class::DuplicateCollectionError).to be < StandardError
+    end
+  end
+
   describe '::InvalidCollectionError' do
     include_examples 'should define constant', :InvalidCollectionError
 

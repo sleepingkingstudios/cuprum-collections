@@ -16,6 +16,9 @@ module Cuprum::Collections
   class Repository
     extend Forwardable
 
+    # Error raised when trying to add an existing collection to the repository.
+    class DuplicateCollectionError < StandardError; end
+
     # Error raised when trying to add an invalid collection to the repository.
     class InvalidCollectionError < StandardError; end
 
@@ -56,10 +59,20 @@ module Cuprum::Collections
     #
     # @param collection [#collection_name] The collection to add to the
     #   repository.
+    # @param force [true, false] If true, override an existing collection with
+    #   the same name.
     #
     # @return [Cuprum::Rails::Repository] the repository.
-    def add(collection)
+    #
+    # @raise [DuplicateCollectionError] if a collection with the same name
+    #   already exists in the repository.
+    def add(collection, force: false)
       validate_collection!(collection)
+
+      if !force && key?(collection.collection_name.to_s)
+        raise DuplicateCollectionError,
+          "collection #{collection.collection_name} already exists"
+      end
 
       @collections[collection.collection_name.to_s] = collection
 
