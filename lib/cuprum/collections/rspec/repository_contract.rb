@@ -94,7 +94,12 @@ module Cuprum::Collections::RSpec
         "#{collection.inspect} is not a valid collection"
       end
 
-      it { expect(repository).to respond_to(:add).with(1).argument }
+      it 'should define the method' do
+        expect(repository)
+          .to respond_to(:add)
+          .with(1).argument
+          .and_keywords(:force)
+      end
 
       it 'should alias #add as #<<' do
         expect(repository.method(:<<)).to be == repository.method(:add)
@@ -126,6 +131,60 @@ module Cuprum::Collections::RSpec
 
           expect(repository[example_collection.collection_name])
             .to be example_collection
+        end
+
+        describe 'with force: true' do
+          it 'should add the collection to the repository' do
+            repository.add(example_collection, force: true)
+
+            expect(repository[example_collection.collection_name])
+              .to be example_collection
+          end
+        end
+
+        context 'when the collection already exists' do
+          let(:error_message) do
+            "collection #{example_collection.collection_name} already exists"
+          end
+
+          before(:example) do
+            allow(repository)
+              .to receive(:key?)
+              .with(example_collection.collection_name)
+              .and_return(true)
+          end
+
+          it 'should raise an exception' do
+            expect { repository.add(example_collection) }
+              .to raise_error(
+                described_class::DuplicateCollectionError,
+                error_message
+              )
+          end
+
+          it 'should not update the repository' do
+            begin
+              repository.add(example_collection)
+            rescue described_class::DuplicateCollectionError
+              # Do nothing.
+            end
+
+            expect { repository[example_collection.collection_name] }
+              .to raise_error(
+                described_class::UndefinedCollectionError,
+                'repository does not define collection' \
+                " #{example_collection.collection_name.inspect}"
+              )
+          end
+
+          describe 'with force: true' do
+            it 'should add the collection to the repository' do
+              repository.add(example_collection, force: true)
+
+              expect(repository[example_collection.collection_name])
+                .to be example_collection
+            end
+          end
         end
       end
     end
