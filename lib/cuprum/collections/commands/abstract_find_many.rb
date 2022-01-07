@@ -34,7 +34,7 @@ module Cuprum::Collections::Commands
 
     def items_with_primary_keys(items:)
       # :nocov:
-      items.map { |item| [item.send(primary_key_name), item] }.to_h
+      items.to_h { |item| [item.send(primary_key_name), item] }
       # :nocov:
     end
 
