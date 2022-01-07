@@ -26,7 +26,7 @@ The Ruby ecosystem has a wide variety of tools and libraries for managing data a
 
 ### Compatibility
 
-Cuprum::Collections is tested against Ruby (MRI) 2.6 through 3.0.
+Cuprum::Collections is tested against Ruby (MRI) 2.7 through 3.1.
 
 ### Documentation
 
