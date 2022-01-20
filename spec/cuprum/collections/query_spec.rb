@@ -145,7 +145,7 @@ RSpec.describe Cuprum::Collections::Query do
         .and_unlimited_arguments
     end
 
-    it { expect(query).to alias_method(:order).as(:order_by) }
+    it { expect(query).to have_aliased_method(:order).as(:order_by) }
 
     describe 'with nil' do
       it 'should raise an exception' do
