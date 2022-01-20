@@ -397,7 +397,7 @@ module Cuprum::Collections::RSpec # rubocop:disable Style/Documentation
           .and_unlimited_arguments
       end
 
-      it { expect(query).to alias_method(:order).as(:order_by) }
+      it { expect(query).to have_aliased_method(:order).as(:order_by) }
 
       describe 'with no arguments' do
         it { expect(query.order).to be == default_order }
