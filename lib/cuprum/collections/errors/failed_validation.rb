@@ -33,24 +33,14 @@ module Cuprum::Collections::Errors
     # @return [Stannum::Errors] The errors generated when validating the entity.
     attr_reader :errors
 
-    # @return [Hash] a serializable hash representation of the error.
-    def as_json
+    private
+
+    def as_json_data
       {
-        'data'    => {
-          'entity_class' => entity_class.name,
-          'errors'       => format_errors
-        },
-        'message' => message,
-        'type'    => type
+        'entity_class' => entity_class.name,
+        'errors'       => format_errors
       }
     end
-
-    # @return [String] short string used to identify the type of error.
-    def type
-      TYPE
-    end
-
-    private
 
     def default_message
       "#{entity_class.name} failed validation"

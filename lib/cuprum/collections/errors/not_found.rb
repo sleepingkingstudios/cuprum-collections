@@ -33,25 +33,15 @@ module Cuprum::Collections::Errors
     # @return [Array] The expected values of the primary key attribute.
     attr_reader :primary_key_values
 
-    # @return [Hash] a serializable hash representation of the error.
-    def as_json
+    private
+
+    def as_json_data
       {
-        'data'    => {
-          'collection_name'    => collection_name,
-          'primary_key_name'   => primary_key_name,
-          'primary_key_values' => primary_key_values
-        },
-        'message' => message,
-        'type'    => type
+        'collection_name'    => collection_name,
+        'primary_key_name'   => primary_key_name,
+        'primary_key_values' => primary_key_values
       }
     end
-
-    # @return [String] short string used to identify the type of error.
-    def type
-      TYPE
-    end
-
-    private
 
     def default_message
       primary_keys = primary_key_values.map(&:inspect).join(', ')
