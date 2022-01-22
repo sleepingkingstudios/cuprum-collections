@@ -24,27 +24,19 @@ module Cuprum::Collections::Errors
       )
     end
 
-    # @return [Hash] a serializable hash representation of the error.
-    def as_json
-      {
-        'data'    => {
-          'command_class' => command.class.name,
-          'errors'        => errors.to_a
-        },
-        'message' => message,
-        'type'    => type
-      }
-    end
-
     # @return [Cuprum::Command] the called command.
     attr_reader :command
 
     # @return [Stannum::Errors] the errors returned by the parameters contract.
     attr_reader :errors
 
-    # @return [String] short string used to identify the type of error.
-    def type
-      TYPE
+    private
+
+    def as_json_data
+      {
+        'command_class' => command.class.name,
+        'errors'        => errors.to_a
+      }
     end
   end
 end

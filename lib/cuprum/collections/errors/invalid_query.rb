@@ -29,24 +29,14 @@ module Cuprum::Collections::Errors
     # @return [Symbol] the strategy used to construct the query.
     attr_reader :strategy
 
-    # @return [Hash] a serializable hash representation of the error.
-    def as_json
+    private
+
+    def as_json_data
       {
-        'data'    => {
-          'errors'   => errors.to_a,
-          'strategy' => strategy
-        },
-        'message' => message,
-        'type'    => type
+        'errors'   => errors.to_a,
+        'strategy' => strategy
       }
     end
-
-    # @return [String] short string used to identify the type of error.
-    def type
-      TYPE
-    end
-
-    private
 
     def default_message
       "unable to parse query with strategy #{strategy.inspect}"

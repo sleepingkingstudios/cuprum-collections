@@ -38,25 +38,15 @@ module Cuprum::Collections::Errors
     # @return [Array<String>] The names of valid attributes for the entity.
     attr_reader :valid_attributes
 
-    # @return [Hash] a serializable hash representation of the error.
-    def as_json
+    private
+
+    def as_json_data
       {
-        'data'    => {
-          'entity_class'     => entity_class.name,
-          'extra_attributes' => extra_attributes,
-          'valid_attributes' => valid_attributes
-        },
-        'message' => message,
-        'type'    => type
+        'entity_class'     => entity_class.name,
+        'extra_attributes' => extra_attributes,
+        'valid_attributes' => valid_attributes
       }
     end
-
-    # @return [String] short string used to identify the type of error.
-    def type
-      TYPE
-    end
-
-    private
 
     def default_message
       "invalid attributes for #{entity_class.name}:" \

@@ -23,23 +23,11 @@ module Cuprum::Collections::Errors
     # @return [Class] the class of the assigned entity.
     attr_reader :entity_class
 
-    # @return [Hash] a serializable hash representation of the error.
-    def as_json
-      {
-        'data'    => {
-          'entity_class' => entity_class.name
-        },
-        'message' => message,
-        'type'    => type
-      }
-    end
-
-    # @return [String] short string used to identify the type of error.
-    def type
-      TYPE
-    end
-
     private
+
+    def as_json_data
+      { 'entity_class' => entity_class.name }
+    end
 
     def default_message
       "attempted to validate a #{entity_class.name}, but #{entity_class.name}" \

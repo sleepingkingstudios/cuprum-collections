@@ -22,18 +22,6 @@ module Cuprum::Collections::Errors
     # @return [String, Symbol] the unknown operator.
     attr_reader :operator
 
-    # @return [Hash] a serializable hash representation of the error.
-    def as_json
-      {
-        'data'    => {
-          'corrections' => corrections,
-          'operator'    => operator
-        },
-        'message' => message,
-        'type'    => type
-      }
-    end
-
     # @return [Array<String>] Suggested possible values for the operator.
     def corrections
       @corrections ||=
@@ -42,12 +30,14 @@ module Cuprum::Collections::Errors
           .correct(operator)
     end
 
-    # @return [String] short string used to identify the type of error.
-    def type
-      TYPE
-    end
-
     private
+
+    def as_json_data
+      {
+        'corrections' => corrections,
+        'operator'    => operator
+      }
+    end
 
     def generate_message
       message = "unknown operator #{operator.inspect}"
