@@ -24,12 +24,7 @@ module Cuprum::Collections::Commands
 
       return found if allow_partial && !found.empty?
 
-      error = Cuprum::Collections::Errors::NotFound.new(
-        collection_name:    collection_name,
-        primary_key_name:   primary_key_name,
-        primary_key_values: missing
-      )
-      Cuprum::Result.new(error: error)
+      not_found_result(missing)
     end
 
     def items_with_primary_keys(items:)
@@ -50,6 +45,20 @@ module Cuprum::Collections::Commands
       end
 
       [found, missing]
+    end
+
+    def not_found_result(missing_keys)
+      results = missing_keys.map do |missing_key|
+        failure(
+          Cuprum::Collections::Errors::NotFound.new(
+            collection_name:    collection_name,
+            primary_key_name:   primary_key_name,
+            primary_key_values: missing_key
+          )
+        )
+      end
+
+      Cuprum::ResultList.new(*results)
     end
 
     def process(
