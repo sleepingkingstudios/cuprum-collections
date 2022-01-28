@@ -34,9 +34,9 @@ Documentation is generated using [YARD](https://yardoc.org/), and can be generat
 
 ### License
 
-Copyright (c) 2020-2021 Rob Smith
+Copyright (c) 2020-2022 Rob Smith
 
-Stannum is released under the [MIT License](https://opensource.org/licenses/MIT).
+Cuprum::Collections is released under the [MIT License](https://opensource.org/licenses/MIT).
 
 ### Contribute
 
