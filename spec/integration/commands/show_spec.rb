@@ -30,7 +30,7 @@ RSpec.describe Spec::Support::Commands::Show do
         Cuprum::Collections::Errors::NotFound.new(
           collection_name:    collection_name,
           primary_key_name:   :id,
-          primary_key_values: [primary_key]
+          primary_key_values: primary_key
         )
       end
 

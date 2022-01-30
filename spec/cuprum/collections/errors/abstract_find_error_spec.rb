@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/errors/already_exists'
+require 'cuprum/collections/errors/abstract_find_error'
 
 require 'support/examples/find_error_examples'
 
-RSpec.describe Cuprum::Collections::Errors::AlreadyExists do
+RSpec.describe Cuprum::Collections::Errors::AbstractFindError do
   include Spec::Support::Examples::FindErrorExamples
 
   subject(:error) { described_class.new(**constructor_options) }
@@ -20,15 +20,5 @@ RSpec.describe Cuprum::Collections::Errors::AlreadyExists do
     }
   end
 
-  describe '::TYPE' do
-    include_examples 'should define immutable constant',
-      :TYPE,
-      'cuprum.collections.errors.already_exists'
-  end
-
-  include_examples 'should implement the FindError methods', 'already exists'
-
-  describe '#type' do
-    include_examples 'should define reader', :type, described_class::TYPE
-  end
+  include_examples 'should implement the FindError methods', 'query failed'
 end
