@@ -3,6 +3,8 @@
 require 'cuprum/collections'
 
 module Cuprum::Collections
-  # Namespace for abstract commands implementing collection functionality.
-  module Commands; end
+  # Namespace for abstract commands and collection-independent commands.
+  module Commands
+    autoload :FindOneMatching, 'cuprum/collections/commands/find_one_matching'
+  end
 end
