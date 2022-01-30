@@ -61,9 +61,10 @@ module Cuprum::Collections::RSpec
         let(:data) { fixtures_data }
         let(:expected_error) do
           Cuprum::Collections::Errors::AlreadyExists.new(
-            collection_name:    collection_name,
-            primary_key_name:   primary_key_name,
-            primary_key_values: attributes[primary_key_name]
+            attribute_name:  primary_key_name,
+            attribute_value: attributes[primary_key_name],
+            collection_name: collection_name,
+            primary_key:     true
           )
         end
 

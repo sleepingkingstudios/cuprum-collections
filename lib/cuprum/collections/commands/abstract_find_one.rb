@@ -21,9 +21,10 @@ module Cuprum::Collections::Commands
       return if item
 
       error = Cuprum::Collections::Errors::NotFound.new(
-        collection_name:    collection_name,
-        primary_key_name:   primary_key_name,
-        primary_key_values: primary_key
+        attribute_name:  primary_key_name,
+        attribute_value: primary_key,
+        collection_name: collection_name,
+        primary_key:     true
       )
       Cuprum::Result.new(error: error)
     end

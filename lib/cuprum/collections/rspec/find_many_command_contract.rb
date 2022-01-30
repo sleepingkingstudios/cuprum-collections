@@ -61,9 +61,10 @@ module Cuprum::Collections::RSpec
           Cuprum::Errors::MultipleErrors.new(
             errors: primary_keys.map do |primary_key|
               Cuprum::Collections::Errors::NotFound.new(
-                collection_name:    command.collection_name,
-                primary_key_name:   primary_key_name,
-                primary_key_values: primary_key
+                attribute_name:  primary_key_name,
+                attribute_value: primary_key,
+                collection_name: command.collection_name,
+                primary_key:     true
               )
             end
           )
@@ -94,9 +95,10 @@ module Cuprum::Collections::RSpec
             Cuprum::Errors::MultipleErrors.new(
               errors: primary_keys.map do |primary_key|
                 Cuprum::Collections::Errors::NotFound.new(
-                  collection_name:    command.collection_name,
-                  primary_key_name:   primary_key_name,
-                  primary_key_values: primary_key
+                  attribute_name:  primary_key_name,
+                  attribute_value: primary_key,
+                  collection_name: command.collection_name,
+                  primary_key:     true
                 )
               end
             )
@@ -119,9 +121,10 @@ module Cuprum::Collections::RSpec
                 next nil unless invalid_primary_key_values.include?(primary_key)
 
                 Cuprum::Collections::Errors::NotFound.new(
-                  collection_name:    command.collection_name,
-                  primary_key_name:   primary_key_name,
-                  primary_key_values: primary_key
+                  attribute_name:  primary_key_name,
+                  attribute_value: primary_key,
+                  collection_name: command.collection_name,
+                  primary_key:     true
                 )
               end
             )
@@ -161,9 +164,10 @@ module Cuprum::Collections::RSpec
               Cuprum::Errors::MultipleErrors.new(
                 errors: invalid_primary_key_values.map do |primary_key|
                   Cuprum::Collections::Errors::NotFound.new(
-                    collection_name:    command.collection_name,
-                    primary_key_name:   primary_key_name,
-                    primary_key_values: primary_key
+                    attribute_name:  primary_key_name,
+                    attribute_value: primary_key,
+                    collection_name: command.collection_name,
+                    primary_key:     true
                   )
                 end
               )
@@ -188,9 +192,10 @@ module Cuprum::Collections::RSpec
                   end
 
                   Cuprum::Collections::Errors::NotFound.new(
-                    collection_name:    command.collection_name,
-                    primary_key_name:   primary_key_name,
-                    primary_key_values: primary_key
+                    attribute_name:  primary_key_name,
+                    attribute_value: primary_key,
+                    collection_name: command.collection_name,
+                    primary_key:     true
                   )
                 end
               )
@@ -262,9 +267,10 @@ module Cuprum::Collections::RSpec
               Cuprum::Errors::MultipleErrors.new(
                 errors: primary_keys.map do |primary_key|
                   Cuprum::Collections::Errors::NotFound.new(
-                    collection_name:    command.collection_name,
-                    primary_key_name:   primary_key_name,
-                    primary_key_values: primary_key
+                    attribute_name:  primary_key_name,
+                    attribute_value: primary_key,
+                    collection_name: command.collection_name,
+                    primary_key:     true
                   )
                 end
               )
@@ -286,9 +292,10 @@ module Cuprum::Collections::RSpec
                 Cuprum::Errors::MultipleErrors.new(
                   errors: primary_keys.map do |primary_key|
                     Cuprum::Collections::Errors::NotFound.new(
-                      collection_name:    command.collection_name,
-                      primary_key_name:   primary_key_name,
-                      primary_key_values: primary_key
+                      attribute_name:  primary_key_name,
+                      attribute_value: primary_key,
+                      collection_name: command.collection_name,
+                      primary_key:     true
                     )
                   end
                 )
@@ -325,9 +332,10 @@ module Cuprum::Collections::RSpec
                     next if found_keys.include?(primary_key)
 
                     Cuprum::Collections::Errors::NotFound.new(
-                      collection_name:    command.collection_name,
-                      primary_key_name:   primary_key_name,
-                      primary_key_values: primary_key
+                      attribute_name:  primary_key_name,
+                      attribute_value: primary_key,
+                      collection_name: command.collection_name,
+                      primary_key:     true
                     )
                   end
                 )
@@ -354,9 +362,10 @@ module Cuprum::Collections::RSpec
                       next if found_keys.include?(primary_key)
 
                       Cuprum::Collections::Errors::NotFound.new(
-                        collection_name:    command.collection_name,
-                        primary_key_name:   primary_key_name,
-                        primary_key_values: primary_key
+                        attribute_name:  primary_key_name,
+                        attribute_value: primary_key,
+                        collection_name: command.collection_name,
+                        primary_key:     true
                       )
                     end
                   )

@@ -32,9 +32,10 @@ module Cuprum::Collections::Basic::Commands
       return if index.nil?
 
       error = Cuprum::Collections::Errors::AlreadyExists.new(
-        collection_name:    collection_name,
-        primary_key_name:   primary_key_name,
-        primary_key_values: value
+        attribute_name:  primary_key_name,
+        attribute_value: value,
+        collection_name: collection_name,
+        primary_key:     true
       )
       failure(error)
     end

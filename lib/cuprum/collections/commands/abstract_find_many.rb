@@ -47,9 +47,10 @@ module Cuprum::Collections::Commands
 
     def not_found_error(primary_key_value)
       Cuprum::Collections::Errors::NotFound.new(
-        collection_name:    collection_name,
-        primary_key_name:   primary_key_name,
-        primary_key_values: primary_key_value
+        attribute_name:  primary_key_name,
+        attribute_value: primary_key_value,
+        collection_name: collection_name,
+        primary_key:     true
       )
     end
 

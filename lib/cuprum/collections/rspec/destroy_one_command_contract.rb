@@ -28,9 +28,10 @@ module Cuprum::Collections::RSpec
         let(:primary_key) { invalid_primary_key_value }
         let(:expected_error) do
           Cuprum::Collections::Errors::NotFound.new(
-            collection_name:    command.collection_name,
-            primary_key_name:   primary_key_name,
-            primary_key_values: primary_key
+            attribute_name:  primary_key_name,
+            attribute_value: primary_key,
+            collection_name: collection_name,
+            primary_key:     true
           )
         end
 
@@ -59,9 +60,10 @@ module Cuprum::Collections::RSpec
           let(:primary_key) { invalid_primary_key_value }
           let(:expected_error) do
             Cuprum::Collections::Errors::NotFound.new(
-              collection_name:    command.collection_name,
-              primary_key_name:   primary_key_name,
-              primary_key_values: primary_key
+              attribute_name:  primary_key_name,
+              attribute_value: primary_key,
+              collection_name: collection_name,
+              primary_key:     true
             )
           end
 
