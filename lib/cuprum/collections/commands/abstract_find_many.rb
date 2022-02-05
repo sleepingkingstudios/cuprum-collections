@@ -17,19 +17,26 @@ module Cuprum::Collections::Commands
       (scope || build_query).where { { key => one_of(primary_keys) } }
     end
 
-    def handle_missing_items(allow_partial:, items:, primary_keys:)
-      found, missing = match_items(items: items, primary_keys: primary_keys)
+    def build_results(items:, primary_keys:)
+      primary_keys.map do |primary_key_value|
+        next success(items[primary_key_value]) if items.key?(primary_key_value)
 
-      return found if missing.empty?
+        failure(not_found_error(primary_key_value))
+      end
+    end
 
-      return found if allow_partial && !found.empty?
+    def build_result_list(results, allow_partial:, envelope:)
+      unless envelope
+        return Cuprum::ResultList.new(*results, allow_partial: allow_partial)
+      end
 
-      error = Cuprum::Collections::Errors::NotFound.new(
-        collection_name:    collection_name,
-        primary_key_name:   primary_key_name,
-        primary_key_values: missing
+      value = envelope ? wrap_items(results.map(&:value)) : nil
+
+      Cuprum::ResultList.new(
+        *results,
+        allow_partial: allow_partial,
+        value:         value
       )
-      Cuprum::Result.new(error: error)
     end
 
     def items_with_primary_keys(items:)
@@ -38,18 +45,13 @@ module Cuprum::Collections::Commands
       # :nocov:
     end
 
-    def match_items(items:, primary_keys:)
-      items   = items_with_primary_keys(items: items)
-      found   = []
-      missing = []
-
-      primary_keys.each do |key|
-        item = items[key]
-
-        item.nil? ? (missing << key) : (found << item)
-      end
-
-      [found, missing]
+    def not_found_error(primary_key_value)
+      Cuprum::Collections::Errors::NotFound.new(
+        attribute_name:  primary_key_name,
+        attribute_value: primary_key_value,
+        collection_name: collection_name,
+        primary_key:     true
+      )
     end
 
     def process(
@@ -58,16 +60,15 @@ module Cuprum::Collections::Commands
       envelope:      false,
       scope:         nil
     )
-      query = apply_query(primary_keys: primary_keys, scope: scope)
-      items = step do
-        handle_missing_items(
-          allow_partial: allow_partial,
-          items:         query.to_a,
-          primary_keys:  primary_keys
-        )
-      end
+      query   = apply_query(primary_keys: primary_keys, scope: scope)
+      items   = items_with_primary_keys(items: query.to_a)
+      results = build_results(items: items, primary_keys: primary_keys)
 
-      envelope ? wrap_items(items) : items
+      build_result_list(
+        results,
+        allow_partial: allow_partial,
+        envelope:      envelope
+      )
     end
 
     def wrap_items(items)

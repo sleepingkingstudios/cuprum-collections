@@ -32,9 +32,10 @@ module Cuprum::Collections::RSpec
       context 'when the item does not exist in the collection' do
         let(:expected_error) do
           Cuprum::Collections::Errors::NotFound.new(
-            collection_name:    collection_name,
-            primary_key_name:   primary_key_name,
-            primary_key_values: attributes[primary_key_name]
+            attribute_name:  primary_key_name,
+            attribute_value: attributes[primary_key_name],
+            collection_name: collection_name,
+            primary_key:     true
           )
         end
         let(:matching_data) { mapped_data.first }

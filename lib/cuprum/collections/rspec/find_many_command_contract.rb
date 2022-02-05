@@ -58,10 +58,15 @@ module Cuprum::Collections::RSpec
       describe 'with an array of invalid primary keys' do
         let(:primary_keys) { invalid_primary_key_values }
         let(:expected_error) do
-          Cuprum::Collections::Errors::NotFound.new(
-            collection_name:    command.collection_name,
-            primary_key_name:   primary_key_name,
-            primary_key_values: primary_keys
+          Cuprum::Errors::MultipleErrors.new(
+            errors: primary_keys.map do |primary_key|
+              Cuprum::Collections::Errors::NotFound.new(
+                attribute_name:  primary_key_name,
+                attribute_value: primary_key,
+                collection_name: command.collection_name,
+                primary_key:     true
+              )
+            end
           )
         end
 
@@ -79,7 +84,6 @@ module Cuprum::Collections::RSpec
             .map do |key|
               mapped_data.find { |item| item[primary_key_name.to_s] == key }
             end
-            .compact
         end
         let(:expected_data) do
           defined?(super()) ? super() : matching_data
@@ -88,10 +92,15 @@ module Cuprum::Collections::RSpec
         describe 'with an array of invalid primary keys' do
           let(:primary_keys) { invalid_primary_key_values }
           let(:expected_error) do
-            Cuprum::Collections::Errors::NotFound.new(
-              collection_name:    command.collection_name,
-              primary_key_name:   primary_key_name,
-              primary_key_values: primary_keys
+            Cuprum::Errors::MultipleErrors.new(
+              errors: primary_keys.map do |primary_key|
+                Cuprum::Collections::Errors::NotFound.new(
+                  attribute_name:  primary_key_name,
+                  attribute_value: primary_key,
+                  collection_name: command.collection_name,
+                  primary_key:     true
+                )
+              end
             )
           end
 
@@ -107,10 +116,17 @@ module Cuprum::Collections::RSpec
             invalid_primary_key_values + valid_primary_key_values
           end
           let(:expected_error) do
-            Cuprum::Collections::Errors::NotFound.new(
-              collection_name:    command.collection_name,
-              primary_key_name:   primary_key_name,
-              primary_key_values: invalid_primary_key_values
+            Cuprum::Errors::MultipleErrors.new(
+              errors: primary_keys.map do |primary_key|
+                next nil unless invalid_primary_key_values.include?(primary_key)
+
+                Cuprum::Collections::Errors::NotFound.new(
+                  attribute_name:  primary_key_name,
+                  attribute_value: primary_key,
+                  collection_name: command.collection_name,
+                  primary_key:     true
+                )
+              end
             )
           end
 
@@ -145,10 +161,15 @@ module Cuprum::Collections::RSpec
           describe 'with an array of invalid primary keys' do
             let(:primary_keys) { invalid_primary_key_values }
             let(:expected_error) do
-              Cuprum::Collections::Errors::NotFound.new(
-                collection_name:    command.collection_name,
-                primary_key_name:   primary_key_name,
-                primary_key_values: primary_keys
+              Cuprum::Errors::MultipleErrors.new(
+                errors: invalid_primary_key_values.map do |primary_key|
+                  Cuprum::Collections::Errors::NotFound.new(
+                    attribute_name:  primary_key_name,
+                    attribute_value: primary_key,
+                    collection_name: command.collection_name,
+                    primary_key:     true
+                  )
+                end
               )
             end
 
@@ -163,6 +184,22 @@ module Cuprum::Collections::RSpec
             let(:primary_keys) do
               invalid_primary_key_values + valid_primary_key_values
             end
+            let(:expected_error) do
+              Cuprum::Errors::MultipleErrors.new(
+                errors: primary_keys.map do |primary_key|
+                  unless invalid_primary_key_values.include?(primary_key)
+                    next nil
+                  end
+
+                  Cuprum::Collections::Errors::NotFound.new(
+                    attribute_name:  primary_key_name,
+                    attribute_value: primary_key,
+                    collection_name: command.collection_name,
+                    primary_key:     true
+                  )
+                end
+              )
+            end
 
             it 'should return a passing result' do
               expect(
@@ -170,6 +207,7 @@ module Cuprum::Collections::RSpec
               )
                 .to be_a_passing_result
                 .with_value(expected_data)
+                .and_error(expected_error)
             end
           end
 
@@ -226,10 +264,15 @@ module Cuprum::Collections::RSpec
           describe 'with an array of invalid primary keys' do
             let(:primary_keys) { invalid_primary_key_values }
             let(:expected_error) do
-              Cuprum::Collections::Errors::NotFound.new(
-                collection_name:    command.collection_name,
-                primary_key_name:   primary_key_name,
-                primary_key_values: primary_keys
+              Cuprum::Errors::MultipleErrors.new(
+                errors: primary_keys.map do |primary_key|
+                  Cuprum::Collections::Errors::NotFound.new(
+                    attribute_name:  primary_key_name,
+                    attribute_value: primary_key,
+                    collection_name: command.collection_name,
+                    primary_key:     true
+                  )
+                end
               )
             end
 
@@ -246,10 +289,15 @@ module Cuprum::Collections::RSpec
             describe 'with a valid array of primary keys' do
               let(:primary_keys) { valid_primary_key_values }
               let(:expected_error) do
-                Cuprum::Collections::Errors::NotFound.new(
-                  collection_name:    command.collection_name,
-                  primary_key_name:   primary_key_name,
-                  primary_key_values: primary_keys
+                Cuprum::Errors::MultipleErrors.new(
+                  errors: primary_keys.map do |primary_key|
+                    Cuprum::Collections::Errors::NotFound.new(
+                      attribute_name:  primary_key_name,
+                      attribute_value: primary_key,
+                      collection_name: command.collection_name,
+                      primary_key:     true
+                    )
+                  end
                 )
               end
 
@@ -264,20 +312,32 @@ module Cuprum::Collections::RSpec
           describe 'with a scope that matches some keys' do
             let(:scope_filter) { -> { { series: nil } } }
             let(:matching_data) do
-              super().select { |item| item['series'].nil? }
+              super().map do |item|
+                next nil unless item['series'].nil?
+
+                item
+              end
             end
 
             describe 'with a valid array of primary keys' do
               let(:primary_keys) { valid_primary_key_values }
               let(:expected_error) do
-                found_keys   =
-                  matching_data.map { |item| item[primary_key_name.to_s] }
-                missing_keys = primary_keys - found_keys
+                found_keys =
+                  matching_data
+                    .compact
+                    .map { |item| item[primary_key_name.to_s] }
 
-                Cuprum::Collections::Errors::NotFound.new(
-                  collection_name:    command.collection_name,
-                  primary_key_name:   primary_key_name,
-                  primary_key_values: missing_keys
+                Cuprum::Errors::MultipleErrors.new(
+                  errors: primary_keys.map do |primary_key|
+                    next if found_keys.include?(primary_key)
+
+                    Cuprum::Collections::Errors::NotFound.new(
+                      attribute_name:  primary_key_name,
+                      attribute_value: primary_key,
+                      collection_name: command.collection_name,
+                      primary_key:     true
+                    )
+                  end
                 )
               end
 
@@ -291,6 +351,25 @@ module Cuprum::Collections::RSpec
             describe 'with allow_partial: true' do
               describe 'with a valid array of primary keys' do
                 let(:primary_keys) { valid_primary_key_values }
+                let(:expected_error) do
+                  found_keys =
+                    matching_data
+                      .compact
+                      .map { |item| item[primary_key_name.to_s] }
+
+                  Cuprum::Errors::MultipleErrors.new(
+                    errors: primary_keys.map do |primary_key|
+                      next if found_keys.include?(primary_key)
+
+                      Cuprum::Collections::Errors::NotFound.new(
+                        attribute_name:  primary_key_name,
+                        attribute_value: primary_key,
+                        collection_name: command.collection_name,
+                        primary_key:     true
+                      )
+                    end
+                  )
+                end
 
                 it 'should return a passing result' do
                   expect(
@@ -302,6 +381,7 @@ module Cuprum::Collections::RSpec
                   )
                     .to be_a_passing_result
                     .with_value(expected_data)
+                    .and_error(expected_error)
                 end
               end
             end

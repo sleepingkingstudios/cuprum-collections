@@ -32,9 +32,10 @@ module Cuprum::Collections::Basic::Commands
       return index unless index.nil?
 
       error = Cuprum::Collections::Errors::NotFound.new(
-        collection_name:    collection_name,
-        primary_key_name:   primary_key_name,
-        primary_key_values: entity[primary_key_name.to_s]
+        attribute_name:  primary_key_name,
+        attribute_value: entity[primary_key_name.to_s],
+        collection_name: collection_name,
+        primary_key:     true
       )
       failure(error)
     end
