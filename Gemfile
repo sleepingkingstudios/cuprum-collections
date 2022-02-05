@@ -10,7 +10,7 @@ end
 
 gem 'cuprum',
   git:    'https://github.com/sleepingkingstudios/cuprum',
-  branch: 'spike/results-list'
+  branch: 'main'
 
 gem 'sleeping_king_studios-tasks', '~> 0.4', '>= 0.4.1'
 
