@@ -18,11 +18,19 @@ RSpec.describe Cuprum::Collections::Commands::Update do
     let(:constructor_options) { super().merge(contract: contract) }
   end
 
-  let(:data) { [] }
+  shared_context 'when the collection defines a default contract' do
+    let(:contract) do
+      Stannum::Contracts::HashContract.new(allow_extra_keys: true) do
+        key 'author', Stannum::Constraints::Presence.new
+      end
+    end
+    let(:collection_options) { super().merge(default_contract: contract) }
+  end
+
   let(:collection) do
     Cuprum::Collections::Basic::Collection.new(
       collection_name: 'books',
-      data:            data,
+      data:            [],
       **collection_options
     )
   end
@@ -125,14 +133,7 @@ RSpec.describe Cuprum::Collections::Commands::Update do
       end
     end
 
-    context 'when the collection defines a default contract' do
-      let(:contract) do
-        Stannum::Contracts::HashContract.new(allow_extra_keys: true) do
-          key 'author', Stannum::Constraints::Presence.new
-        end
-      end
-      let(:collection_options) { super().merge(default_contract: contract) }
-
+    wrap_context 'when the collection defines a default contract' do
       describe 'with an invalid attributes Hash' do
         let(:attributes) { { 'author' => '' } }
         let(:expected_error) do
