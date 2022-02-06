@@ -6,6 +6,78 @@ require 'cuprum/collections/errors/not_unique'
 
 module Cuprum::Collections::Commands
   # Command for finding a unique entity by a query or set of attributes.
+  #
+  # @example Finding An Entity By Attributes
+  #   command =
+  #     Cuprum::Collections::Commands::FindOneMatching
+  #     .new(collection: books_collection)
+  #
+  #   # With an attributes Hash that matches one entity.
+  #   result = command.call(attributes: { 'title' => 'Gideon the Ninth' })
+  #   result.success?
+  #   #=> true
+  #   result.value
+  #   #=> a Book with title 'Gideon the Ninth'
+  #
+  #   # With an attributes Hash that matches multiple entities.
+  #   result = command.call(attributes: { 'author' => 'Tamsyn Muir' })
+  #   result.success?
+  #   #=> false
+  #   result.error
+  #   #=> an instance of Cuprum::Collections::NotUnique
+  #
+  #   # With an attributes Hash that does not match any entities.
+  #   result = command.call(
+  #     attributes: {
+  #       'author' => 'Becky Chambers',
+  #       'series' => 'The Locked Tomb'
+  #     }
+  #   )
+  #   result.success?
+  #   #=> false
+  #   result.error
+  #   #=> an instance of Cuprum::Collections::NotFound
+  #
+  # @example Finding An Entity By Query
+  #   command =
+  #     Cuprum::Collections::Commands::FindOneMatching
+  #     .new(collection: collection)
+  #
+  #   # With a query that matches one entity.
+  #   result = command.call do
+  #     {
+  #       'series'       => 'The Lord of the Rings',
+  #       'published_at' => greater_than('1955-01-01')
+  #     }
+  #   end
+  #   result.success?
+  #   #=> true
+  #   result.value
+  #   #=> a Book matching the query
+  #
+  #   # With a query that matches multiple entities.
+  #   result = command.call do
+  #     {
+  #       'series'       => 'The Lord of the Rings',
+  #       'published_at' => less_than('1955-01-01')
+  #     }
+  #   end
+  #   result.success?
+  #   #=> false
+  #   result.error
+  #   #=> an instance of Cuprum::Collections::NotUnique
+  #
+  #   # With an attributes Hash that does not match any entities.
+  #   result = command.call do
+  #     {
+  #       'series'       => 'The Lord of the Rings',
+  #       'published_at' => less_than('1954-01-01')
+  #     }
+  #   end
+  #   result.success?
+  #   #=> false
+  #   result.error
+  #   #=> an instance of Cuprum::Collections::NotFound
   class FindOneMatching < Cuprum::Command
     # @param collection [#find_matching] The collection to query.
     def initialize(collection:)
