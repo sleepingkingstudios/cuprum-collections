@@ -7,5 +7,6 @@ module Cuprum::Collections
   module Commands
     autoload :Create,          'cuprum/collections/commands/create'
     autoload :FindOneMatching, 'cuprum/collections/commands/find_one_matching'
+    autoload :Update,          'cuprum/collections/commands/update'
   end
 end

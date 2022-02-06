@@ -3,33 +3,45 @@
 require 'cuprum/collections/commands'
 
 module Cuprum::Collections::Commands
-  # Command for building, validating and inserting an entity into a collection.
+  # Command for assigning, validating and updating an entity in a collection.
   #
-  # @example Creating An Entity
+  # @example Updating An Entity
   #   command =
   #     Cuprum::Collections::Commands::Create.new(collection:)
   #     .new(collection: books_collection)
+  #   entity  =
+  #     books_collection
+  #     .find_matching { { 'title' => 'Gideon the Ninth' } }
+  #     .value
+  #     .first
   #
   #   # With Invalid Attributes
-  #   attributes = { 'title' => '' }
+  #   attributes = { 'author' => '' }
   #   result     = command.call(attributes: attributes)
   #   result.success?
   #   #=> false
   #   result.error
   #   #=> an instance of Cuprum::Collections::Errors::FailedValidation
-  #   books_collection.query.count
-  #   #=> 0
+  #   books_collection
+  #     .find_matching { { 'title' => 'Gideon the Ninth' } }
+  #     .value
+  #     .first['author']
+  #   #=> 'Tamsyn Muir'
   #
   #   # With Valid Attributes
-  #   attributes = { 'title' => 'Gideon the Ninth' }
+  #   attributes = { 'series' => 'The Locked Tomb' }
   #   result     = command.call(attributes: attributes)
   #   result.success?
   #   #=> true
   #   result.value
-  #   #=> a Book with title 'Gideon the Ninth'
-  #   books_collection.query.count
-  #   #=> 1
-  class Create < Cuprum::Command
+  #   #=> an instance of Book with title 'Gideon the Ninth' and series
+  #       'The Locked Tomb'
+  #   books_collection
+  #     .find_matching { { 'title' => 'Gideon the Ninth' } }
+  #     .value
+  #     .first['series']
+  #   #=> 'The Locked Tomb'
+  class Update < Cuprum::Command
     # @param collection [Object] The collection used to store the entity.
     # @param contract [Stannum::Constraint] The constraint used to validate the
     #   entity. If not given, defaults to the default contract for the
@@ -49,12 +61,14 @@ module Cuprum::Collections::Commands
 
     private
 
-    def process(attributes:)
-      entity = step { collection.build_one.call(attributes: attributes) }
+    def process(attributes:, entity:)
+      entity = step do
+        collection.assign_one.call(attributes: attributes, entity: entity)
+      end
 
-      step { collection.validate_one.call(contract: contract, entity: entity) }
+      step { collection.validate_one.call(entity: entity, contract: contract) }
 
-      collection.insert_one.call(entity: entity)
+      step { collection.update_one.call(entity: entity) }
     end
   end
 end
