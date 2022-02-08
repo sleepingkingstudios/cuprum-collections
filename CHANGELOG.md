@@ -8,6 +8,15 @@ Implemented `Cuprum::Collections::Repository`.
 
 Implemented `Cuprum::Collections::Basic::Repository`.
 
+### Commands
+
+Implemented built-in Commands, which take a `:collection` parameter:
+
+- `Commands::Create`
+- `Commands::FindOneMatching`
+- `Commands::Update`
+- `Commands::Upsert`
+
 ### Queries
 
 Fixed passing an attributes array as a query ordering.

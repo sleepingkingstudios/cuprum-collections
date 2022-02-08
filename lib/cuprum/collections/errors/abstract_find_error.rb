@@ -148,7 +148,7 @@ module Cuprum::Collections::Errors
     def resolve_options(**options) # rubocop:disable Metrics/MethodLength
       if options[:primary_key_name] && options[:primary_key_values]
         resolve_primary_key_options(**options)
-      elsif options[:attribute_name] && options[:attribute_value]
+      elsif options[:attribute_name] && options.key?(:attribute_value)
         resolve_attribute_options(**options)
       elsif options[:attributes]
         resolve_attributes_options(**options)

@@ -10,6 +10,7 @@ require 'rspec/sleeping_king_studios/all'
 require 'byebug'
 
 require 'cuprum/rspec/be_a_result'
+require 'cuprum/rspec/be_callable'
 require 'stannum/rspec/validate_parameter'
 
 Stannum::RSpec::ValidateParameterMatcher.add_parameter_mapping(

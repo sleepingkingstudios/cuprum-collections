@@ -1011,3 +1011,213 @@ query.each.map(&:title)
 #     'The Farthest Shore'
 #   ]
 ```
+
+<a id="builtin-commands"></a>
+
+### Built In Commands
+
+`Cuprum::Collections` defines some basic commands. Each command takes a `:collection` parameter, which is used for performing the data operations.
+
+#### Create
+
+```ruby
+require 'cuprum/collections/commands/create'
+```
+
+The `Create` command takes an attributes Hash and adds an entity with those attributes to the collection. Internally, it calls the `#build_one`, `#validate_one`, and `#insert_one` commands on the collection.
+
+```ruby
+command = Cuprum::Collections::Commands::Create.new(collection: books_collection)
+
+books_collection.count
+#=> 0
+result = command.call(attributes: { 'title' => 'Gideon the Ninth' })
+result.value
+#=> a Book with title "Gideon the Ninth"
+books_collection.count
+#=> 1
+
+books_collection.find_matching.call { { 'title' => 'Gideon the Ninth' } }.value.first
+#=> a Book with title "Gideon the Ninth"
+```
+
+If the contract does not match the entity, the `Create` command will return a failing result with a `ValidationFailed` error.
+
+If the collection does not specify a default contract and no :contract keyword is provided, the `Create` command will return a failing result with a `MissingDefaultContract` error.
+
+If the collection already includes an entity with the specified primary key, the `Create` command will return a failing result with an `AlreadyExists` error.
+
+#### FindOneMatching
+
+```ruby
+require 'cuprum/collections/commands/find_one_matching'
+```
+
+The `FindOneMatching` command takes either an attributes hash or a [Query](#queries) block, and returns the unique entity from the collection with those entities or matching that query.
+
+```ruby
+command = Cuprum::Collections::Commands::FindOneMatching.new(collection: books_collection)
+
+result = command.call(attributes: { 'title' => 'Gideon the Ninth'})
+result.success?
+#=> true
+result.value
+#=> the unique Book with title "Gideon the Ninth"
+
+result = command.call do
+  {
+    'series'       => 'The Locked Tomb',
+    'published_at' => less_than('2020-01-01')
+  }
+end
+result.success?
+#=> true
+result.value
+#=> the unique Book with the given series and published before the given date
+```
+
+If there are no entities in the collection matching the attributes or query, the `FindOneMatching` command returns a failing result with a `Cuprum::Collections::Errors::NotFound` error.
+
+```ruby
+result = command.call(attributes: { 'title' => 'Gideon the Eleventh'})
+result.success?
+#=> false
+result.error
+#=> an instance of Cuprum::Collections::Errors::NotFound
+```
+
+If there are two or more entities in the collection matching the attributes or query, the `FindOneMatching` command returns a failing result with a `Cuprum::Collections::Errors::NotUnique` error.
+
+```ruby
+result = command.call(attributes: { 'author' => 'Tamsyn Muir'})
+result.success?
+#=> false
+result.error
+#=> an instance of Cuprum::Collections::Errors::NotUnique
+```
+
+#### Update
+
+```ruby
+require 'cuprum/collections/commands/update'
+```
+
+The `Update` command takes an attributes Hash and an entity and updates the corresponding entity in the collection with those attributes. Internally, it calls the `#assign_one`, `#validate_one`, and `#update_one` commands on the collection.
+
+```ruby
+command = Cuprum::Collections::Commands::Update.new(collection: books_collection)
+
+entity = books_collection.find_matching.call { { 'title' => 'Gideon the Ninth' } }.value.first
+#=> a Book with title "Gideon the Ninth" and series "The Locked Tomb"
+
+result = command.call(
+  attributes: { 'series' => 'Space Necromancers' },
+  entity:     entity
+)
+result.value
+#=> a Book with title "Gideon the Ninth" and series "Space Necromancers"
+
+books_collection.find_matching.call { { 'title' => 'Gideon the Ninth' } }.value.first
+#=> a Book with title "Gideon the Ninth" and series "Space Necromancers"
+```
+
+If the contract does not match the entity, the `Update` command will return a failing result with a `ValidationFailed` error.
+
+If the collection does not specify a default contract and no :contract keyword is provided, the `Update` command will return a failing result with a `MissingDefaultContract` error.
+
+If the collection does not include an entity with the specified entity's primary key, the `Update` command will return a failing result with a `NotFound` error.
+
+#### Upsert
+
+```ruby
+require 'cuprum/collections/commands/upsert'
+```
+
+The `Upsert` command takes an attributes Hash and checks the collection for an entity with a matching primary key. If an entity is found, it updates the entity with the given attributes, as per the `Update` command (see above); if an entity is not found, it creates a new entity with the given attributes, as per the `Create` command.
+
+```ruby
+command = Cuprum::Collections::Commands::Upsert.new(collection: books_collection)
+
+# Creating An Entity
+books_collection.count
+#=> 0
+result = command.call(attributes: { 'id' => 0, 'title' => 'Gideon the Ninth' })
+result.value
+#=> a Book with id 0 and title "Gideon the Ninth"
+books_collection.count
+#=> 1
+
+books_collection.find_matching.call { { 'title' => 'Gideon the Ninth' } }.value.first
+#=> a Book with id 0 and title "Gideon the Ninth"
+
+# Updating An Entity
+result = command.call(attributes: { 'id' => 0, 'author' => 'Tamsyn Muir' })
+result.value
+#=> a Book with id 0, title "Gideon the Ninth", and author "Tamsyn Muir"
+
+books_collection.find_matching.call { { 'title' => 'Gideon the Ninth' } }.value.first
+#=> a Book with id 0, title "Gideon the Ninth", and author "Tamsyn Muir"
+```
+
+The `Upsert` command can also be configured with an attribute name or list of attribute names; the command will then search for an entity in the collection matching those attributes, rather than by primary key.
+
+```ruby
+command      =
+  Cuprum::Collections::Commands::Upsert
+  .new(attribute_names: %w[title author], collection: books_collection)
+other_entity = books_collection.build_one.call(
+  attributes: {
+    'id'     => 0,
+    'title'  => 'Gideon the Ninth',
+    'author' => 'T. M.'
+  }
+)
+books_collection.insert_one.call(entity: entity)
+
+# Creating An Entity
+books_collection.count
+#=> 1
+result = command.call(
+  attributes: {
+    'id'     => 1,
+    'title'  => 'Gideon the Ninth',
+    'author' => 'Tamsyn Muir'
+  }
+)
+result.value
+#=> a Book with id 1, title "Gideon the Ninth", and author "Tamsyn Muir"
+books_collection.count
+#=> 1
+
+books_collection.find_matching.call { { 'title' => 'Gideon the Ninth' } }.value.count
+#=> 2
+books_collection.find_matching.call { { 'title' => 'Gideon the Ninth' } }.value.map(&:author)
+#=> ['T. M.', 'Tamsyn Muir']
+
+# Updating An Entity
+result = command.call(
+  attributes: {
+    'title'  => 'Gideon the Ninth',
+    'author' => 'Tamsyn Muir',
+    'series' => 'The Locked Tomb'
+  }
+)
+result.value
+#=> a Book with id 1, title "Gideon the Ninth", author "Tamsyn Muir", and series
+#   "The Locked Tomb"
+
+books_collection.find_matching.call do
+  {
+    'title'  => 'Gideon the Ninth',
+    'author' => 'Tamsyn Muir'
+  }
+end.value.first
+#=> a Book with id 1, title "Gideon the Ninth", author "Tamsyn Muir", and series
+#   "The Locked Tomb"
+```
+
+If there are two or more entities in the collection matching the attributes or query, the `Upsert` command returns a failing result with a `Cuprum::Collections::Errors::NotUnique` error.
+
+If the contract does not match the entity, the `Upsert` command will return a failing result with a `ValidationFailed` error.
+
+If the collection does not specify a default contract and no :contract keyword is provided, the `Upsert` command will return a failing result with a `MissingDefaultContract` error.
