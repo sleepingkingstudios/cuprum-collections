@@ -5,6 +5,8 @@ require 'cuprum/collections/basic/repository'
 require 'cuprum/collections/rspec/repository_contract'
 
 RSpec.describe Cuprum::Collections::Basic::Repository do
+  include Cuprum::Collections::RSpec
+
   subject(:repository) { described_class.new(**constructor_options) }
 
   shared_context 'when the repository has many collections' do
@@ -59,7 +61,7 @@ RSpec.describe Cuprum::Collections::Basic::Repository do
     end
   end
 
-  include_contract Cuprum::Collections::RSpec::REPOSITORY_CONTRACT
+  include_contract Cuprum::Collections::RSpec::RepositoryContract
 
   describe '#add' do
     describe 'with an invalid collection' do
@@ -90,6 +92,10 @@ RSpec.describe Cuprum::Collections::Basic::Repository do
         expect(build_collection.collection_name).to be == collection_name.to_s
       end
 
+      it 'should set the qualified name' do
+        expect(build_collection.qualified_name).to be == collection_name.to_s
+      end
+
       it { expect(build_collection.data).to be == [] }
 
       it 'should add the collection to the repository' do
@@ -103,6 +109,25 @@ RSpec.describe Cuprum::Collections::Basic::Repository do
         let(:options) { super().merge(data: data) }
 
         it { expect(build_collection.data).to be == data }
+      end
+
+      describe 'with qualified_name: value' do
+        let(:qualified_name) { 'scope/widgets' }
+        let(:options)        { super().merge(qualified_name: qualified_name) }
+
+        it 'should set the collection name' do
+          expect(build_collection.collection_name).to be == collection_name.to_s
+        end
+
+        it 'should set the qualified name' do
+          expect(build_collection.qualified_name).to be == qualified_name.to_s
+        end
+
+        it 'should add the collection to the repository' do
+          collection = build_collection
+
+          expect(repository[qualified_name.to_s]).to be collection
+        end
       end
 
       context 'when initialized with data: value' do

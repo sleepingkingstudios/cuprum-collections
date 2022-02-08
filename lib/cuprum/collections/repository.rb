@@ -45,10 +45,10 @@ module Cuprum::Collections
     #
     # @raise [Cuprum::Collection::Repository::UndefinedCOllectionError] if the
     #   requested collection is not in the repository.
-    def [](collection_name)
-      @collections.fetch(collection_name.to_s) do
+    def [](qualified_name)
+      @collections.fetch(qualified_name.to_s) do
         raise UndefinedCollectionError,
-          "repository does not define collection #{collection_name.inspect}"
+          "repository does not define collection #{qualified_name.inspect}"
       end
     end
 
@@ -69,12 +69,12 @@ module Cuprum::Collections
     def add(collection, force: false)
       validate_collection!(collection)
 
-      if !force && key?(collection.collection_name.to_s)
+      if !force && key?(collection.qualified_name.to_s)
         raise DuplicateCollectionError,
-          "collection #{collection.collection_name} already exists"
+          "collection #{collection.qualified_name} already exists"
       end
 
-      @collections[collection.collection_name.to_s] = collection
+      @collections[collection.qualified_name.to_s] = collection
 
       self
     end

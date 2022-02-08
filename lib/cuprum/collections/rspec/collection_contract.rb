@@ -14,6 +14,7 @@ module Cuprum::Collections::RSpec
     #
     #   @param example_group [RSpec::Core::ExampleGroup] The example group to
     #     which the contract is applied.
+
     contract do
       shared_examples 'should define the command' \
       do |command_name, command_class|
