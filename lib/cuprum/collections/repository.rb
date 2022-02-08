@@ -38,8 +38,8 @@ module Cuprum::Collections
 
     # Finds and returns the collection with the given name.
     #
-    # @param collection_name [String, Symbol] The name of the collection to
-    #   return.
+    # @param qualified_name [String, Symbol] The qualified name of the
+    #   collection to return.
     #
     # @return [Object] the requested collection.
     #
@@ -82,11 +82,11 @@ module Cuprum::Collections
 
     # Checks if a collection with the given name exists in the repository.
     #
-    # @param collection_name [String, Symbol] The name to check for.
+    # @param qualified_name [String, Symbol] The name to check for.
     #
     # @return [true, false] true if the key exists, otherwise false.
-    def key?(collection_name)
-      @collections.key?(collection_name.to_s)
+    def key?(qualified_name)
+      @collections.key?(qualified_name.to_s)
     end
 
     private

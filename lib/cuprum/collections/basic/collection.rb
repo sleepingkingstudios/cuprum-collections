@@ -17,7 +17,7 @@ module Cuprum::Collections::Basic
     #   Defaults to :id.
     # @param primary_key_type [Class, Stannum::Constraint] The type of the
     #   primary key attribute. Defaults to Integer.
-    # @param qualfied_name [String] The qualified name of the collection, which
+    # @param qualified_name [String] The qualified name of the collection, which
     #   should be unique. Defaults to the collection name.
     # @param options [Hash<Symbol>] Additional options for the command.
     def initialize( # rubocop:disable Metrics/ParameterLists
