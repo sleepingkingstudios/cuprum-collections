@@ -105,6 +105,13 @@ end
 
 Because a collection can represent any sort of data, from a raw Ruby Hash to an ORM record, the term used to indicate "one item in the collection" is an *entity*. Likewise, the class of the items in the collection is the *entity_class*. In our example above, our entities are books, and the entity class is Hash.
 
+Each collection also defines the following methods:
+
+- `#collection_name`: The collection name is a short description of what the collection contains. For example, a collection of `Book` objects might have a collection name of `'books'`, while a collection of `Authorization::Credentials::ApiKey` objects might have a collection name of `'api_keys'`.
+- `#qualified_name`: The qualified name is a full description of the collection, and should be unique. For example, a collection of `Book` objects might have a qualified name of `'books'`, while a collection of `Authorization::Credentials::ApiKey` objects might have a qualified name of `'authorization/credentials/api_keys'`.
+
+As a general rule, the `#collection_name` is used when displaying information to the user, while the `#qualified_name` is used to uniquely identify the collection (such as when adding to or retrieving from a [Repository](#repositories)).
+
 <a id="commands"></a>
 
 #### Commands
@@ -373,7 +380,7 @@ If the collection does not specify a default contract and no `:contract` keyword
 require 'cuprum/collections/repository'
 ```
 
-A repository is a group of collections. While a collection might be be a single data set, such as the records in a table, the repository represents all of the data sets in a data source, such as the tables in a database.
+A repository is a group of collections. While a collection might be be a single data set, such as the records in a table, the repository represents all of the data sets in a data source, such as the tables in a database. Each repository uses the `#qualified_name` of its collections as a unique key.
 
 ```ruby
 repository = Cuprum::Collections::Repository.new
@@ -388,6 +395,31 @@ repository.keys
 #=> ['books']
 repository['books']
 #=> the books collection
+```
+
+When accessing a collection with a qualified name, you must pass the qualified name to `#[]` or `#key?`, rather than the collection name.
+
+```ruby
+repository = Cuprum::Collections::Repository.new
+repository.key?('api_keys')
+#=> false
+repository.key?('authorization/credentials/api_keys')
+#=> false
+
+api_keys_collection.collection_name
+#=> 'api_keys'
+api_keys_collection.qualified_name
+#=> 'authorization/credentials/api_keys'
+repository.add(api_keys_collection)
+
+repository.key?('api_keys')
+#=> false
+repository.key?('authorization/credentials/api_keys')
+#=> true
+repository.keys
+#=> ['authorization/credentials/api_keys']
+repository['authorization/credentials/api_keys']
+#=> the api keys collection
 ```
 
 #### Basic Collection
@@ -416,6 +448,7 @@ You can also specify some optional keywords:
 - The `:member_name` parameter is used to create an envelope for singular query commands such as the `FindOne` command. If not given, the member name will be generated automatically as a singular form of the collection name.
 - The `:primary_key_name` parameter specifies the attribute that serves as the primary key for the collection entities. The default value is `:id`.
 - The `:primary_key_type` parameter specifies the type of the primary key attribute. The default value is `Integer`.
+- The `:qualified_name` parameter sets the qualified name for the collection. It is used to uniquely identify the collection in a repository.
 
 ##### Basic Repositories
 

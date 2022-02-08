@@ -6,6 +6,8 @@ Implemented `Cuprum::Collections::Repository`.
 
 ### Collections
 
+Implemented `Cuprum::Collections::Basic::Collection#qualified_name`.
+
 Implemented `Cuprum::Collections::Basic::Repository`.
 
 ### Commands

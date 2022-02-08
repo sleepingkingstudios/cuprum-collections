@@ -38,17 +38,17 @@ module Cuprum::Collections
 
     # Finds and returns the collection with the given name.
     #
-    # @param collection_name [String, Symbol] The name of the collection to
-    #   return.
+    # @param qualified_name [String, Symbol] The qualified name of the
+    #   collection to return.
     #
     # @return [Object] the requested collection.
     #
     # @raise [Cuprum::Collection::Repository::UndefinedCOllectionError] if the
     #   requested collection is not in the repository.
-    def [](collection_name)
-      @collections.fetch(collection_name.to_s) do
+    def [](qualified_name)
+      @collections.fetch(qualified_name.to_s) do
         raise UndefinedCollectionError,
-          "repository does not define collection #{collection_name.inspect}"
+          "repository does not define collection #{qualified_name.inspect}"
       end
     end
 
@@ -69,12 +69,12 @@ module Cuprum::Collections
     def add(collection, force: false)
       validate_collection!(collection)
 
-      if !force && key?(collection.collection_name.to_s)
+      if !force && key?(collection.qualified_name.to_s)
         raise DuplicateCollectionError,
-          "collection #{collection.collection_name} already exists"
+          "collection #{collection.qualified_name} already exists"
       end
 
-      @collections[collection.collection_name.to_s] = collection
+      @collections[collection.qualified_name.to_s] = collection
 
       self
     end
@@ -82,11 +82,11 @@ module Cuprum::Collections
 
     # Checks if a collection with the given name exists in the repository.
     #
-    # @param collection_name [String, Symbol] The name to check for.
+    # @param qualified_name [String, Symbol] The name to check for.
     #
     # @return [true, false] true if the key exists, otherwise false.
-    def key?(collection_name)
-      @collections.key?(collection_name.to_s)
+    def key?(qualified_name)
+      @collections.key?(qualified_name.to_s)
     end
 
     private

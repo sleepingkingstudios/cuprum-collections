@@ -50,7 +50,7 @@ RSpec.describe Cuprum::Collections::Basic::Collection do
     end
   end
 
-  include_contract Cuprum::Collections::RSpec::COLLECTION_CONTRACT
+  include_contract Cuprum::Collections::RSpec::CollectionContract
 
   describe '#collection_name' do
     include_examples 'should have reader',
@@ -154,6 +154,36 @@ RSpec.describe Cuprum::Collections::Basic::Collection do
       end
 
       it { expect(collection.primary_key_type).to be == primary_key_type }
+    end
+  end
+
+  describe '#qualified_name' do
+    include_examples 'should define reader',
+      :qualified_name,
+      -> { collection_name }
+
+    context 'when initialized with collection_name: a Symbol' do
+      let(:collection_name) { :books }
+
+      it { expect(collection.qualified_name).to be == collection_name.to_s }
+    end
+
+    context 'when initialized with qualified_name: a String' do
+      let(:qualified_name) { 'sources/books' }
+      let(:constructor_options) do
+        super().merge(qualified_name: qualified_name)
+      end
+
+      it { expect(collection.qualified_name).to be == qualified_name }
+    end
+
+    context 'when initialized with qualified_name: a Symbol' do
+      let(:qualified_name) { 'tomes' }
+      let(:constructor_options) do
+        super().merge(qualified_name: qualified_name)
+      end
+
+      it { expect(collection.qualified_name).to be == qualified_name.to_s }
     end
   end
 end

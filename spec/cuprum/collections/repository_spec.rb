@@ -5,32 +5,37 @@ require 'cuprum/collections/repository'
 require 'cuprum/collections/rspec/repository_contract'
 
 RSpec.describe Cuprum::Collections::Repository do
+  include Cuprum::Collections::RSpec
+
   subject(:repository) { described_class.new }
 
   shared_context 'when the repository has many collections' do
     let(:books_collection) do
       instance_double(
         Cuprum::Collections::Basic::Collection,
-        collection_name: 'books'
+        collection_name: 'books',
+        qualified_name:  'sources/books'
       )
     end
     let(:authors_collection) do
       instance_double(
         Cuprum::Collections::Basic::Collection,
-        collection_name: :authors
+        collection_name: :authors,
+        qualified_name:  'authors'
       )
     end
     let(:publishers_collection) do
       instance_double(
         Cuprum::Collections::Basic::Collection,
-        collection_name: 'publishers'
+        collection_name: 'publishers',
+        qualified_name:  'publishers'
       )
     end
     let(:collections) do
       {
-        'books'      => books_collection,
-        'authors'    => authors_collection,
-        'publishers' => publishers_collection
+        'sources/books' => books_collection,
+        'authors'       => authors_collection,
+        'publishers'    => publishers_collection
       }
     end
 
@@ -45,7 +50,8 @@ RSpec.describe Cuprum::Collections::Repository do
   let(:example_collection) do
     instance_double(
       Cuprum::Collections::Basic::Collection,
-      collection_name: 'widgets'
+      collection_name: 'widgets',
+      qualified_name:  'scope/widgets'
     )
   end
 
@@ -83,5 +89,5 @@ RSpec.describe Cuprum::Collections::Repository do
     it { expect(described_class).to respond_to(:new).with(0).arguments }
   end
 
-  include_contract Cuprum::Collections::RSpec::REPOSITORY_CONTRACT
+  include_contract Cuprum::Collections::RSpec::RepositoryContract
 end
