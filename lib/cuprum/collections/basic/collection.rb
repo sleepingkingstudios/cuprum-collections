@@ -17,6 +17,8 @@ module Cuprum::Collections::Basic
     #   Defaults to :id.
     # @param primary_key_type [Class, Stannum::Constraint] The type of the
     #   primary key attribute. Defaults to Integer.
+    # @param qualfied_name [String] The qualified name of the collection, which
+    #   should be unique. Defaults to the collection name.
     # @param options [Hash<Symbol>] Additional options for the command.
     def initialize( # rubocop:disable Metrics/ParameterLists
       collection_name:,
@@ -25,6 +27,7 @@ module Cuprum::Collections::Basic
       member_name:      nil,
       primary_key_name: :id,
       primary_key_type: Integer,
+      qualified_name:   nil,
       **options
     )
       super()
@@ -37,6 +40,7 @@ module Cuprum::Collections::Basic
       @options          = options
       @primary_key_name = primary_key_name
       @primary_key_type = primary_key_type
+      @qualified_name   = qualified_name || @collection_name
     end
 
     # @return [String] the name of the collection.
@@ -61,6 +65,9 @@ module Cuprum::Collections::Basic
     # @return [Class, Stannum::Constraint] the type of the primary key
     #   attribute.
     attr_reader :primary_key_type
+
+    # @return [String] the qualified name of the collection.
+    attr_reader :qualified_name
 
     command_class :assign_one do
       Cuprum::Collections::Basic::Commands::AssignOne
