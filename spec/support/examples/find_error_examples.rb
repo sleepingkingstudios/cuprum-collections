@@ -390,6 +390,12 @@ module Spec::Support::Examples
           -> { attribute_value }
 
         # rubocop:disable RSpec/RepeatedExampleGroupBody
+        context 'when initialized with attribute_value: nil' do
+          let(:attribute_value) { nil }
+
+          it { expect(error.attribute_value).to be nil }
+        end
+
         wrap_context 'when initialized with attributes: value' do
           it { expect(error.attribute_value).to be nil }
         end
