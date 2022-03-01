@@ -62,6 +62,9 @@ Metrics/ModuleLength:
 Naming/RescuedExceptionsVariableName:
   PreferredName: exception
 
+RSpec/BeNil:
+  Enabled: false
+
 RSpec/ExampleWording:
   Enabled: false
 

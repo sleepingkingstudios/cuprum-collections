@@ -98,7 +98,9 @@ module Cuprum::Collections::Errors
           'primary_key'     => primary_key?
         }
       elsif attributes
-        { 'attributes' => attributes }
+        hsh = tools.hash_tools.convert_keys_to_strings(attributes)
+
+        { 'attributes' => hsh }
       else
         {}
       end
