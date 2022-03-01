@@ -328,6 +328,28 @@ module Spec::Support::Examples
           end
 
           it { expect(error.as_json).to be == expected }
+
+          describe 'with attributes: a Hash with Symbol keys' do
+            let(:attributes) do
+              tools.hash_tools.convert_keys_to_symbols(super())
+            end
+            let(:expected_attributes) do
+              tools.hash_tools.convert_keys_to_strings(attributes)
+            end
+            let(:expected_data) do
+              {
+                'attributes'      => expected_attributes,
+                'collection_name' => collection_name,
+                'details'         => error.details
+              }
+            end
+
+            def tools
+              SleepingKingStudios::Tools::Toolbelt.instance
+            end
+
+            it { expect(error.as_json).to be == expected }
+          end
         end
 
         wrap_context 'when initialized with query: value' do
