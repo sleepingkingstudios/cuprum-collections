@@ -9,6 +9,7 @@ module Cuprum
     autoload :Base,    'cuprum/collections/base'
     autoload :Basic,   'cuprum/collections/basic'
     autoload :Command, 'cuprum/collections/command'
+    autoload :Errors,  'cuprum/collections/errors'
 
     # @return [String] the absolute path to the gem directory.
     def self.gem_path

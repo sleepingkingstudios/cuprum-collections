@@ -7,9 +7,6 @@ require 'cuprum/collections/errors'
 module Cuprum::Collections::Errors
   # Error returned when a collection item fails validation.
   class FailedValidation < Cuprum::Error
-    COMPARABLE_PROPERTIES = %i[entity_class errors message].freeze
-    private_constant :COMPARABLE_PROPERTIES
-
     # Short string used to identify the type of error.
     TYPE = 'cuprum.collections.errors.failed_validation'
 
