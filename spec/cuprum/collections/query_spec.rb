@@ -128,8 +128,8 @@ RSpec.describe Cuprum::Collections::Query do
       Cuprum::Collections::Queries::Ordering::InvalidOrderError
     end
     let(:error_message) do
-      'order must be a list of attribute names and/or a hash of attribute' \
-        ' names with values :asc or :desc'
+      'order must be a list of attribute names and/or a hash of attribute ' \
+        'names with values :asc or :desc'
     end
 
     before(:example) do

@@ -57,7 +57,7 @@ RSpec.describe Cuprum::Collections::Queries do
 
     it 'should contain the expected operators' do
       expect(described_class::VALID_OPERATORS)
-        .to contain_exactly(*expected_operators)
+        .to match_array(expected_operators)
     end
   end
 end

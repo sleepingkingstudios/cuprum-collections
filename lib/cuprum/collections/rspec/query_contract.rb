@@ -386,8 +386,8 @@ module Cuprum::Collections::RSpec # rubocop:disable Style/Documentation
     describe '#order' do
       let(:default_order) { defined?(super()) ? super() : {} }
       let(:error_message) do
-        'order must be a list of attribute names and/or a hash of attribute' \
-          ' names with values :asc or :desc'
+        'order must be a list of attribute names and/or a hash of attribute ' \
+          'names with values :asc or :desc'
       end
 
       it 'should define the method' do

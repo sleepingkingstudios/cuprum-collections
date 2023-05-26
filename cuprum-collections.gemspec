@@ -25,14 +25,8 @@ Gem::Specification.new do |gem|
   gem.require_path = 'lib'
   gem.files        = Dir['lib/**/*.rb', 'LICENSE', '*.md']
 
-  gem.required_ruby_version = '>= 2.6.0'
+  gem.required_ruby_version = '>= 2.7.0'
 
-  gem.add_runtime_dependency 'cuprum', '>= 0.11', '< 2.0'
-  gem.add_runtime_dependency 'stannum', '~> 0.2'
-
-  gem.add_development_dependency 'rspec', '~> 3.9'
-  gem.add_development_dependency 'rspec-sleeping_king_studios', '~> 2.7'
-  gem.add_development_dependency 'rubocop', '~> 1.24'
-  gem.add_development_dependency 'rubocop-rspec', '~> 2.7'
-  gem.add_development_dependency 'simplecov', '~> 0.18'
+  gem.add_runtime_dependency 'cuprum',  '~> 1.1'
+  gem.add_runtime_dependency 'stannum', '~> 0.3'
 end

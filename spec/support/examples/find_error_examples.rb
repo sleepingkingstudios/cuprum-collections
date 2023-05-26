@@ -254,8 +254,8 @@ module Spec::Support::Examples
             }
           end
           let(:error_message) do
-            'deprecated mode does not support empty or multiple attribute' \
-              ' values'
+            'deprecated mode does not support empty or multiple attribute ' \
+              'values'
           end
 
           before(:example) do
@@ -505,8 +505,8 @@ module Spec::Support::Examples
 
         wrap_context 'when initialized with primary key name and values' do
           let(:expected) do
-            "Book #{message_fragment} with #{primary_key_name.inspect}" \
-              " #{primary_key_value.inspect} (primary key)"
+            "Book #{message_fragment} with #{primary_key_name.inspect} " \
+              "#{primary_key_value.inspect} (primary key)"
           end
 
           it { expect(error.message).to be == expected }

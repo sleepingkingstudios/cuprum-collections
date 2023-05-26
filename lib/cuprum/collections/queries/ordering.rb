@@ -68,8 +68,8 @@ module Cuprum::Collections::Queries
         return if ordering_constraint.matches?(attributes)
 
         raise InvalidOrderError,
-          'order must be a list of attribute names and/or a hash of attribute' \
-          ' names with values :asc or :desc'
+          'order must be a list of attribute names and/or a hash of ' \
+          'attribute names with values :asc or :desc'
       end
     end
   end
