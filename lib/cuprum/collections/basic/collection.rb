@@ -114,6 +114,12 @@ module Cuprum::Collections::Basic
         .subclass(**command_options)
     end
 
+    # @return [Integer] the count of items in the collection.
+    def count
+      query.count
+    end
+    alias size count
+
     # A new Query instance, used for querying against the collection data.
     #
     # @return [Cuprum::Collections::Basic::Query] the query.

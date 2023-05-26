@@ -14,8 +14,13 @@ RSpec.describe Cuprum::Collections::Basic::Collection do
     )
   end
 
+  shared_context 'when the collection has many items' do
+    let(:data)  { Cuprum::Collections::RSpec::BOOKS_FIXTURES }
+    let(:items) { data }
+  end
+
   let(:collection_name)     { 'books' }
-  let(:data)                { Cuprum::Collections::RSpec::BOOKS_FIXTURES }
+  let(:data)                { [] }
   let(:constructor_options) { {} }
   let(:query_class)         { Cuprum::Collections::Basic::Query }
   let(:query_options)       { { data: data } }

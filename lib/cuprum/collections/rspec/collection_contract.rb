@@ -145,6 +145,18 @@ module Cuprum::Collections::RSpec
           -> { an_instance_of(String) }
       end
 
+      describe '#count' do
+        it { expect(collection).to respond_to(:count).with(0).arguments }
+
+        it { expect(collection).to have_aliased_method(:count).as(:size) }
+
+        it { expect(collection.count).to be 0 }
+
+        wrap_context 'when the collection has many items' do
+          it { expect(collection.count).to be items.count }
+        end
+      end
+
       describe '#qualified_name' do
         include_examples 'should define reader',
           :qualified_name,
