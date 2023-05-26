@@ -6,7 +6,10 @@ Implemented `Cuprum::Collections::Repository`.
 
 ### Collections
 
-Implemented `Cuprum::Collections::Basic::Collection#qualified_name`.
+Updated `Cuprum::Collections::Basic::Collection`.
+
+- Implemented `#count` method.
+- Implemented `#qualified_name` method.
 
 Implemented `Cuprum::Collections::Basic::Repository`.
 
