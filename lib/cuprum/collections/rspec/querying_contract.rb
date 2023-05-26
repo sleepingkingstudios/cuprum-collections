@@ -76,8 +76,8 @@ module Cuprum::Collections::RSpec
       end
     end
 
-    shared_context 'when the query has where: a greater_than_or_equal_to' \
-                   ' filter' \
+    shared_context 'when the query has where: a greater_than_or_equal_to ' \
+                   'filter' \
     do
       let(:filter) do
         -> { { published_at: greater_than_or_equal_to('1970-12-01') } }

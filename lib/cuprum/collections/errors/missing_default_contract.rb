@@ -30,8 +30,8 @@ module Cuprum::Collections::Errors
     end
 
     def default_message
-      "attempted to validate a #{entity_class.name}, but #{entity_class.name}" \
-        ' does not define a default contract'
+      "attempted to validate a #{entity_class.name}, but " \
+        "#{entity_class.name} does not define a default contract"
     end
   end
 end

@@ -182,8 +182,8 @@ module Cuprum::Collections::RSpec
               expect { repository[example_collection.qualified_name] }
                 .to raise_error(
                   described_class::UndefinedCollectionError,
-                  'repository does not define collection' \
-                  " #{example_collection.qualified_name.inspect}"
+                  'repository does not define collection ' \
+                  "#{example_collection.qualified_name.inspect}"
                 )
             end
 

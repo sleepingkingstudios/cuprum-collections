@@ -151,9 +151,9 @@ module Cuprum::Collections::Basic
     def filtered_data
       @filtered_data ||=
         data
-          .yield_self { |ary| apply_filters(ary) }
-          .yield_self { |ary| apply_order(ary) }
-          .yield_self { |ary| apply_limit_offset(ary) }
+          .then { |ary| apply_filters(ary) }
+          .then { |ary| apply_order(ary) }
+          .then { |ary| apply_limit_offset(ary) }
           .map(&:dup)
     end
   end

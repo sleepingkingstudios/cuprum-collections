@@ -110,8 +110,8 @@ module Cuprum::Collections::Errors
       core_message = "#{entity_name} #{message_fragment}"
 
       if attribute_name
-        "#{core_message} with #{attribute_name.inspect}" \
-          " #{attribute_value.inspect}" \
+        "#{core_message} with #{attribute_name.inspect} " \
+          "#{attribute_value.inspect}" \
           "#{primary_key? ? ' (primary key)' : ''}"
       elsif attributes
         "#{core_message} with attributes #{attributes.inspect}"
@@ -158,8 +158,8 @@ module Cuprum::Collections::Errors
         resolve_query_options(**options)
       else
         raise ArgumentError,
-          'missing keywords :attribute_name, :attribute_value or :attributes' \
-          ' or :query'
+          'missing keywords :attribute_name, :attribute_value or :attributes ' \
+          'or :query'
       end
     end
 
@@ -198,12 +198,12 @@ module Cuprum::Collections::Errors
 
       if ambiguous_keywords.empty?
         raise ArgumentError,
-          "unknown keyword#{extra_keywords.size == 1 ? '' : 's'}" \
-          " #{extra_keywords.map(&:inspect).join(', ')}"
+          "unknown keyword#{extra_keywords.size == 1 ? '' : 's'} " \
+          "#{extra_keywords.map(&:inspect).join(', ')}"
       else
         raise ArgumentError,
-          "ambiguous keyword#{extra_keywords.size == 1 ? '' : 's'}" \
-          " #{ambiguous_keywords.map(&:inspect).join(', ')}"
+          "ambiguous keyword#{extra_keywords.size == 1 ? '' : 's'} " \
+          "#{ambiguous_keywords.map(&:inspect).join(', ')}"
       end
     end
   end
