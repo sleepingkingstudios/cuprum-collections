@@ -4,10 +4,6 @@ source 'https://rubygems.org'
 
 gemspec
 
-gem 'cuprum',
-  git:    'https://github.com/sleepingkingstudios/cuprum',
-  branch: 'main'
-
 group :development do
   gem 'sleeping_king_studios-tasks', '~> 0.4', '>= 0.4.1'
 

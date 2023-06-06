@@ -1,8 +1,6 @@
 # Changelog
 
-## 0.2.0
-
-Implemented `Cuprum::Collections::Repository`.
+## 0.3.0
 
 ### Collections
 
@@ -10,8 +8,6 @@ Updated `Cuprum::Collections::Basic::Collection`.
 
 - Implemented `#count` method.
 - Implemented `#qualified_name` method.
-
-Implemented `Cuprum::Collections::Basic::Repository`.
 
 ### Commands
 
@@ -21,6 +17,14 @@ Implemented built-in Commands, which take a `:collection` parameter:
 - `Commands::FindOneMatching`
 - `Commands::Update`
 - `Commands::Upsert`
+
+## 0.2.0
+
+Implemented `Cuprum::Collections::Repository`.
+
+### Collections
+
+Implemented `Cuprum::Collections::Basic::Repository`.
 
 ### Queries
 
