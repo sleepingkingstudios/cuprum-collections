@@ -8,8 +8,7 @@ require 'cuprum/collections/rspec/fixtures'
 RSpec.describe Cuprum::Collections::Basic::Collection do
   subject(:collection) do
     described_class.new(
-      collection_name: collection_name,
-      data:            data,
+      data: data,
       **constructor_options
     )
   end
@@ -21,29 +20,13 @@ RSpec.describe Cuprum::Collections::Basic::Collection do
 
   let(:collection_name)     { 'books' }
   let(:data)                { [] }
-  let(:constructor_options) { {} }
+  let(:constructor_options) { { collection_name: collection_name } }
   let(:query_class)         { Cuprum::Collections::Basic::Query }
   let(:query_options)       { { data: data } }
 
-  def self.command_options
-    %i[
-      collection_name
-      data
-      default_contract
-      member_name
-      options
-      primary_key_name
-      primary_key_type
-    ].freeze
-  end
-
-  def self.commands_namespace
-    Cuprum::Collections::Basic::Commands
-  end
-
-  def tools
-    SleepingKingStudios::Tools::Toolbelt.instance
-  end
+  example_class 'Book',             'Hash'
+  example_class 'Grimoire',         'Book'
+  example_class 'Spec::ScopedBook', 'Book'
 
   describe '.new' do
     it 'should define the constructor' do
@@ -55,19 +38,10 @@ RSpec.describe Cuprum::Collections::Basic::Collection do
     end
   end
 
-  include_contract Cuprum::Collections::RSpec::CollectionContract
-
-  describe '#collection_name' do
-    include_examples 'should have reader',
-      :collection_name,
-      -> { collection_name }
-
-    context 'when initialized with collection_name: symbol' do
-      let(:collection_name) { :books }
-
-      it { expect(collection.collection_name).to be == collection_name.to_s }
-    end
-  end
+  include_contract Cuprum::Collections::RSpec::CollectionContract,
+    command_options:    %i[data default_contract],
+    commands_namespace: 'Cuprum::Collections::Basic::Commands',
+    entity_class:       Hash
 
   describe '#data' do
     include_examples 'should define reader', :data, -> { data }
@@ -76,119 +50,13 @@ RSpec.describe Cuprum::Collections::Basic::Collection do
   describe '#default_contract' do
     include_examples 'should define reader', :default_contract, nil
 
-    context 'when initialized with a default contract' do
+    context 'when initialized with default_contract: value' do
       let(:default_contract) { Stannum::Contract.new }
       let(:constructor_options) do
         super().merge(default_contract: default_contract)
       end
 
       it { expect(collection.default_contract).to be default_contract }
-    end
-  end
-
-  describe '#member_name' do
-    include_examples 'should have reader',
-      :member_name,
-      -> { tools.str.singularize(collection_name) }
-
-    context 'when initialized with collection_name: value' do
-      let(:collection_name) { :books }
-
-      it 'should return the singular collection name' do
-        expect(collection.member_name)
-          .to be == tools.str.singularize(collection_name.to_s)
-      end
-    end
-
-    context 'when initialized with member_name: string' do
-      let(:member_name)         { 'tome' }
-      let(:constructor_options) { super().merge(member_name: member_name) }
-
-      it 'should return the singular collection name' do
-        expect(collection.member_name).to be member_name
-      end
-    end
-
-    context 'when initialized with member_name: symbol' do
-      let(:member_name)         { :tome }
-      let(:constructor_options) { super().merge(member_name: member_name) }
-
-      it 'should return the singular collection name' do
-        expect(collection.member_name).to be == member_name.to_s
-      end
-    end
-  end
-
-  describe '#options' do
-    let(:expected_options) do
-      defined?(super()) ? super() : constructor_options
-    end
-
-    include_examples 'should define reader',
-      :options,
-      -> { be == expected_options }
-
-    context 'when initialized with options' do
-      let(:constructor_options) { super().merge({ key: 'value' }) }
-      let(:expected_options)    { super().merge({ key: 'value' }) }
-
-      it { expect(collection.options).to be == expected_options }
-    end
-  end
-
-  describe '#primary_key_name' do
-    include_examples 'should define reader', :primary_key_name, :id
-
-    context 'when initialized with a primary key name' do
-      let(:primary_key_name) { :uuid }
-      let(:constructor_options) do
-        super().merge({ primary_key_name: primary_key_name })
-      end
-
-      it { expect(collection.primary_key_name).to be == primary_key_name }
-    end
-  end
-
-  describe '#primary_key_type' do
-    include_examples 'should define reader', :primary_key_type, Integer
-
-    context 'when initialized with a primary key type' do
-      let(:primary_key_type) { String }
-      let(:constructor_options) do
-        super().merge({ primary_key_type: primary_key_type })
-      end
-
-      it { expect(collection.primary_key_type).to be == primary_key_type }
-    end
-  end
-
-  describe '#qualified_name' do
-    include_examples 'should define reader',
-      :qualified_name,
-      -> { collection_name }
-
-    context 'when initialized with collection_name: a Symbol' do
-      let(:collection_name) { :books }
-
-      it { expect(collection.qualified_name).to be == collection_name.to_s }
-    end
-
-    context 'when initialized with qualified_name: a String' do
-      let(:qualified_name) { 'sources/books' }
-      let(:constructor_options) do
-        super().merge(qualified_name: qualified_name)
-      end
-
-      it { expect(collection.qualified_name).to be == qualified_name }
-    end
-
-    context 'when initialized with qualified_name: a Symbol' do
-      let(:qualified_name) { 'tomes' }
-      let(:constructor_options) do
-        super().merge(qualified_name: qualified_name)
-      end
-
-      it { expect(collection.qualified_name).to be == qualified_name.to_s }
     end
   end
 end

@@ -158,12 +158,12 @@ RSpec.describe Cuprum::Collections::Basic::Repository do
       describe 'with options' do
         let(:options) do
           super().merge(
-            primary_key_name: :uuid,
+            primary_key_name: 'uuid',
             primary_key_type: String
           )
         end
 
-        it { expect(build_collection.primary_key_name).to be == :uuid }
+        it { expect(build_collection.primary_key_name).to be == 'uuid' }
 
         it { expect(build_collection.primary_key_type).to be String }
       end
