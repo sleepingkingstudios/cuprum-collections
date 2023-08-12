@@ -68,7 +68,7 @@ module Cuprum::Collections
     def ==(other)
       return false unless self.class == other.class
 
-      command_options == other.command_options
+      comparable_options == other.comparable_options
     end
 
     # @return [Integer] the count of items in the collection.
@@ -76,6 +76,16 @@ module Cuprum::Collections
       query.count
     end
     alias size count
+
+    # Checks if the collection matches the expected options.
+    #
+    # @param expected [Hash] the options to compare.
+    #
+    # @return [Boolean] true if all of the expected options match, otherwise
+    #   false.
+    def matches?(**expected)
+      comparable_options >= expected
+    end
 
     # @return [Symbol] the name of the primary key attribute. Defaults to 'id'.
     def primary_key_name
@@ -102,6 +112,12 @@ module Cuprum::Collections
 
     protected
 
+    def comparable_options
+      command_options
+    end
+
+    private
+
     def command_options
       @command_options ||= {
         collection_name:  collection_name,
@@ -112,8 +128,6 @@ module Cuprum::Collections
         **options
       }
     end
-
-    private
 
     def default_entity_class
       qualified_name

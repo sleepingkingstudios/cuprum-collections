@@ -15,47 +15,19 @@ module Cuprum::Collections::Basic
       @data = data
     end
 
-    # Adds a new collection with the given name to the repository.
-    #
-    # @param collection_name [String] The name of the new collection.
-    # @param data [Hash<String, Object>] The inital data for the collection. If
-    #   not specified, defaults to the data used to initialize the repository.
-    # @param options [Hash] Additional options to pass to Collection.new
-    #
-    # @return [Cuprum::Collections::Basic::Collection] the created collection.
-    #
-    # @see Cuprum::Collections::Basic::Collection#initialize.
-    def build(collection_name:, data: nil, **options)
-      validate_collection_name!(collection_name)
+    private
+
+    def build_collection(data: nil, **options)
       validate_data!(data)
 
-      collection = Cuprum::Collections::Basic.new(
-        collection_name: collection_name,
-        data:            data || @data.fetch(collection_name.to_s, []),
+      Cuprum::Collections::Basic.new(
+        data: data || @data.fetch(resolve_qualified_name(**options), []),
         **options
       )
-
-      add(collection)
-
-      collection
     end
-
-    private
 
     def valid_collection?(collection)
       collection.is_a?(Cuprum::Collections::Basic::Collection)
-    end
-
-    def validate_collection_name!(name)
-      raise ArgumentError, "collection name can't be blank" if name.nil?
-
-      unless name.is_a?(String) || name.is_a?(Symbol)
-        raise ArgumentError, 'collection name must be a String or Symbol'
-      end
-
-      return unless name.empty?
-
-      raise ArgumentError, "collection name can't be blank"
     end
 
     def validate_data!(data)

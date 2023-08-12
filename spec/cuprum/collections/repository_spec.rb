@@ -55,6 +55,18 @@ RSpec.describe Cuprum::Collections::Repository do
     )
   end
 
+  example_class 'Book', 'Hash'
+
+  describe '::AbstractRepositoryError' do
+    include_examples 'should define constant', :AbstractRepositoryError
+
+    it { expect(described_class::AbstractRepositoryError).to be_a Class }
+
+    it 'should inherit from StandardError' do
+      expect(described_class::AbstractRepositoryError).to be < StandardError
+    end
+  end
+
   describe '::DuplicateCollectionError' do
     include_examples 'should define constant', :DuplicateCollectionError
 
@@ -89,5 +101,6 @@ RSpec.describe Cuprum::Collections::Repository do
     it { expect(described_class).to respond_to(:new).with(0).arguments }
   end
 
-  include_contract Cuprum::Collections::RSpec::RepositoryContract
+  include_contract Cuprum::Collections::RSpec::RepositoryContract,
+    abstract: true
 end

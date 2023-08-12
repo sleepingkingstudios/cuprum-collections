@@ -409,6 +409,42 @@ module Cuprum::Collections::RSpec
         end
       end
 
+      describe '#matches?' do
+        it 'should define the method' do
+          expect(collection)
+            .to respond_to(:matches?)
+            .with(0).arguments
+            .and_any_keywords
+        end
+
+        describe 'with no options' do
+          it { expect(collection.matches?).to be true }
+        end
+
+        describe 'with non-matching options' do
+          let(:other_options) { { collection_name: 'spec/scoped_books' } }
+
+          it { expect(collection.matches?(**other_options)).to be false }
+        end
+
+        describe 'with partially-matching options' do
+          let(:other_options) do
+            {
+              collection_name: collection_name,
+              member_name:     'grimoire'
+            }
+          end
+
+          it { expect(collection.matches?(**other_options)).to be false }
+        end
+
+        describe 'with matching options' do
+          let(:other_options) { { collection_name: collection_name } }
+
+          it { expect(collection.matches?(**other_options)).to be true }
+        end
+      end
+
       describe '#member_name' do
         let(:expected_member_name) do
           return super() if defined?(super())

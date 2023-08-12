@@ -9,7 +9,7 @@ module Cuprum::Collections
   module Naming
     private
 
-    def resolve_collection_name(collection_name:, entity_class:)
+    def resolve_collection_name(collection_name: nil, entity_class: nil)
       if collection_name
         tools.assertions.validate_name(collection_name, as: 'collection name')
 
@@ -21,7 +21,7 @@ module Cuprum::Collections
       tools.assertions.validate_name(collection_name, as: 'collection name')
     end
 
-    def resolve_member_name(collection_name:, **options)
+    def resolve_member_name(collection_name: nil, **options)
       if options.key?(:member_name)
         tools.assertions.validate_name(options[:member_name], as: 'member name')
 
@@ -31,7 +31,11 @@ module Cuprum::Collections
       tools.string_tools.singularize(collection_name.to_s)
     end
 
-    def resolve_qualified_name(collection_name:, entity_class:, **options) # rubocop:disable Metrics/MethodLength
+    def resolve_qualified_name( # rubocop:disable Metrics/MethodLength
+      collection_name: nil,
+      entity_class:    nil,
+      **options
+    )
       if options.key?(:qualified_name)
         tools.assertions.validate_name(
           options[:qualified_name],
@@ -45,7 +49,7 @@ module Cuprum::Collections
         return split_entity_class(entity_class: entity_class).join('/')
       end
 
-      collection_name
+      collection_name.to_s
     end
 
     def split_entity_class(entity_class:)  # rubocop:disable Metrics/MethodLength
