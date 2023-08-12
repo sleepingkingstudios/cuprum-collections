@@ -3,10 +3,13 @@
 require 'cuprum/command_factory'
 
 require 'cuprum/collections'
+require 'cuprum/collections/naming'
 
 module Cuprum::Collections
   # Provides a base implementation for collections.
   class Collection < Cuprum::CommandFactory
+    include Cuprum::Collections::Naming
+
     # Error raised when trying to call an abstract collection method.
     class AbstractCollectionError < StandardError; end
 
@@ -22,16 +25,24 @@ module Cuprum::Collections
     #   the primary key attribute. Defaults to Integer.
     # @option options qualified_name [String] the qualified name of the
     #   collection, which should be unique. Defaults to the collection name.
-    def initialize(collection_name: nil, entity_class: nil, **options)
+    def initialize(collection_name: nil, entity_class: nil, **options) # rubocop:disable Metrics/MethodLength
       super()
 
       @collection_name = resolve_collection_name(
         collection_name: collection_name,
+        entity_class:    entity_class
+      )
+      @member_name = resolve_member_name(
+        collection_name: self.collection_name,
+        **options
+      )
+      @qualified_name = resolve_qualified_name(
+        collection_name: self.collection_name,
         entity_class:    entity_class,
         **options
       )
-      @options      = options
       @entity_class = resolve_entity_class(entity_class: entity_class)
+      @options      = options
     end
 
     # @return [String] the name of the collection.
@@ -40,8 +51,15 @@ module Cuprum::Collections
     # @return [Class] the class of entity represented in the collection.
     attr_reader :entity_class
 
+    # @return [String] the name of a collection entity.
+    attr_reader :member_name
+
     # @return [Hash<Symbol>] additional options for the collection.
     attr_reader :options
+
+    # @return [String] the qualified name of the collection, which should be
+    #   unique.
+    attr_reader :qualified_name
 
     # @param other [Object] The object to compare.
     #
@@ -58,14 +76,6 @@ module Cuprum::Collections
       query.count
     end
     alias size count
-
-    # @return [String] the name of a collection entity.
-    def member_name
-      @member_name ||= options.fetch(
-        :member_name,
-        tools.string_tools.singularize(collection_name.to_s)
-      ).to_s
-    end
 
     # @return [Symbol] the name of the primary key attribute. Defaults to 'id'.
     def primary_key_name
@@ -88,12 +98,6 @@ module Cuprum::Collections
       raise AbstractCollectionError,
         "#{self.class.name} is an abstract class. Define a repository " \
         'subclass and implement the #query method.'
-    end
-
-    # @return [String] the qualified name of the collection, which should be
-    #   unique.
-    def qualified_name
-      @qualified_name ||= options.fetch(:qualified_name, collection_name).to_s
     end
 
     protected
@@ -119,50 +123,10 @@ module Cuprum::Collections
         .join('::')
     end
 
-    def entity_class_name_for(entity_class)
-      if entity_class.is_a?(Class)
-        entity_class.name
-      else
-        tools.assertions.validate_name(entity_class, as: 'entity class')
-
-        entity_class
-      end
-    end
-
-    def extract_collection_name(entity_class:, **options)
-      entity_class_name = entity_class_name_for(entity_class)
-      segments          = entity_class_name
-        .split('::')
-        .map { |str| tools.string_tools.underscore(str) }
-        .then { |ary| [*ary[0...-1], tools.string_tools.pluralize(ary[-1])] }
-
-      @qualified_name = segments.join('/') unless options.key?(:qualified_name)
-
-      segments.last
-    end
-
-    def resolve_collection_name(collection_name:, entity_class:, **options)
-      if collection_name
-        tools.assertions.validate_name(collection_name, as: 'collection name')
-
-        return collection_name.to_s
-      end
-
-      if entity_class
-        return extract_collection_name(entity_class: entity_class, **options)
-      end
-
-      tools.assertions.validate_name(collection_name, as: 'collection name')
-    end
-
     def resolve_entity_class(entity_class:)
       value = entity_class || default_entity_class
 
       value.is_a?(String) ? Object.const_get(value) : value
-    end
-
-    def tools
-      SleepingKingStudios::Tools::Toolbelt.instance
     end
   end
 end
