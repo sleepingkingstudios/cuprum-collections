@@ -9,7 +9,7 @@ module Cuprum::Collections::RSpec
       let(:mapped_data) do
         defined?(super()) ? super() : data
       end
-      let(:primary_key_name) { defined?(super()) ? super() : :id }
+      let(:primary_key_name) { defined?(super()) ? super() : 'id' }
       let(:primary_key_type) { defined?(super()) ? super() : Integer }
       let(:invalid_primary_key_value) do
         defined?(super()) ? super() : 100

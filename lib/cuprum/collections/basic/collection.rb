@@ -4,70 +4,38 @@ require 'cuprum/command_factory'
 
 require 'cuprum/collections/basic'
 require 'cuprum/collections/basic/commands'
+require 'cuprum/collections/collection'
 
 module Cuprum::Collections::Basic
   # Wraps an in-memory array of hashes data store as a Cuprum collection.
-  class Collection < Cuprum::CommandFactory
-    # @param collection_name [String, Symbol] The name of the collection.
-    # @param data [Array<Hash>] The current data in the collection.
-    # @param default_contract [Stannum::Constraints::Base, nil] The default
-    #   contract for validating items in the collection.
-    # @param member_name [String] The name of a collection entity.
-    # @param primary_key_name [Symbol] The name of the primary key attribute.
-    #   Defaults to :id.
-    # @param primary_key_type [Class, Stannum::Constraint] The type of the
-    #   primary key attribute. Defaults to Integer.
-    # @param qualified_name [String] The qualified name of the collection, which
-    #   should be unique. Defaults to the collection name.
-    # @param options [Hash<Symbol>] Additional options for the command.
-    def initialize( # rubocop:disable Metrics/ParameterLists
-      collection_name:,
-      data:,
-      default_contract: nil,
-      member_name:      nil,
-      primary_key_name: :id,
-      primary_key_type: Integer,
-      qualified_name:   nil,
-      **options
-    )
-      super()
+  class Collection < Cuprum::Collections::Collection
+    # @param collection_name [String, Symbol] the name of the collection.
+    # @param data [Array<Hash>] the current data in the collection.
+    # @param entity_class [Class, String] the class of entity represented in the
+    #   collection.
+    # @param options [Hash<Symbol>] additional options for the collection.
+    #
+    # @option options default_contract [Stannum::Constraints::Base, nil] the
+    #   default contract for validating items in the collection.
+    # @option options member_name [String] the name of a collection entity.
+    # @option options primary_key_name [String] the name of the primary key
+    #   attribute. Defaults to 'id'.
+    # @option options primary_key_type [Class, Stannum::Constraint] the type of
+    #   the primary key attribute. Defaults to Integer.
+    # @option options qualified_name [String] the qualified name of the
+    #   collection, which should be unique. Defaults to the collection name.
+    def initialize(collection_name: nil, data: [], entity_class: nil, **options)
+      super(
+        collection_name: collection_name,
+        entity_class:    entity_class,
+        **options
+      )
 
-      @collection_name  = collection_name.to_s
-      @data             = data
-      @default_contract = default_contract
-      @member_name      =
-        member_name ? member_name.to_s : tools.str.singularize(@collection_name)
-      @options          = options
-      @primary_key_name = primary_key_name
-      @primary_key_type = primary_key_type
-      @qualified_name   = qualified_name || @collection_name
+      @data = data
     end
-
-    # @return [String] the name of the collection.
-    attr_reader :collection_name
 
     # @return [Array<Hash>] the current data in the collection.
     attr_reader :data
-
-    # @return [Stannum::Constraints::Base, nil] the default contract for
-    #   validating items in the collection.
-    attr_reader :default_contract
-
-    # @return [String] the name of a collection entity.
-    attr_reader :member_name
-
-    # @return [Hash<Symbol>] additional options for the command.
-    attr_reader :options
-
-    # @return [Symbol] the name of the primary key attribute.
-    attr_reader :primary_key_name
-
-    # @return [Class, Stannum::Constraint] the type of the primary key
-    #   attribute.
-    attr_reader :primary_key_type
-
-    # @return [String] the qualified name of the collection.
-    attr_reader :qualified_name
 
     command_class :assign_one do
       Cuprum::Collections::Basic::Commands::AssignOne
@@ -114,11 +82,11 @@ module Cuprum::Collections::Basic
         .subclass(**command_options)
     end
 
-    # @return [Integer] the count of items in the collection.
-    def count
-      query.count
+    # @return [Stannum::Constraints::Base, nil] the #   default contract for
+    #   validating items in the collection.
+    def default_contract
+      @options[:default_contract]
     end
-    alias size count
 
     # A new Query instance, used for querying against the collection data.
     #
@@ -127,22 +95,19 @@ module Cuprum::Collections::Basic
       Cuprum::Collections::Basic::Query.new(data)
     end
 
-    private
+    protected
 
     def command_options
-      @command_options ||= {
-        collection_name:  collection_name,
+      super().merge(
         data:             data,
-        default_contract: default_contract,
-        member_name:      member_name,
-        primary_key_name: primary_key_name,
-        primary_key_type: primary_key_type,
-        **options
-      }
+        default_contract: default_contract
+      )
     end
 
-    def tools
-      SleepingKingStudios::Tools::Toolbelt.instance
+    private
+
+    def default_entity_class
+      Hash
     end
   end
 end

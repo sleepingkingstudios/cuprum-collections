@@ -78,7 +78,7 @@ RSpec.describe Spec::Support::Commands::Create do
           let(:primary_key) { 0 }
           let(:expected_error) do
             Cuprum::Collections::Errors::AlreadyExists.new(
-              attribute_name:  :id,
+              attribute_name:  'id',
               attribute_value: primary_key,
               collection_name: collection_name,
               primary_key:     true
@@ -146,7 +146,7 @@ RSpec.describe Spec::Support::Commands::Create do
         let(:primary_key) { 0 }
         let(:expected_error) do
           Cuprum::Collections::Errors::AlreadyExists.new(
-            attribute_name:  :id,
+            attribute_name:  'id',
             attribute_value: primary_key,
             collection_name: collection_name,
             primary_key:     true

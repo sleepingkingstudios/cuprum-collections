@@ -6,10 +6,12 @@ require 'cuprum'
 module Cuprum
   # A data abstraction layer based on the Cuprum library.
   module Collections
-    autoload :Base,    'cuprum/collections/base'
-    autoload :Basic,   'cuprum/collections/basic'
-    autoload :Command, 'cuprum/collections/command'
-    autoload :Errors,  'cuprum/collections/errors'
+    autoload :Basic,      'cuprum/collections/basic'
+    autoload :Collection, 'cuprum/collections/collection'
+    autoload :Command,    'cuprum/collections/command'
+    autoload :Errors,     'cuprum/collections/errors'
+    autoload :Naming,     'cuprum/collections/naming'
+    autoload :Repository, 'cuprum/collections/repository'
 
     # @return [String] the absolute path to the gem directory.
     def self.gem_path

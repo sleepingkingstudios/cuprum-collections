@@ -28,7 +28,7 @@ RSpec.describe Spec::Support::Commands::Show do
       let(:primary_key) { 100 }
       let(:expected_error) do
         Cuprum::Collections::Errors::NotFound.new(
-          attribute_name:  :id,
+          attribute_name:  'id',
           attribute_value: primary_key,
           collection_name: collection_name,
           primary_key:     true

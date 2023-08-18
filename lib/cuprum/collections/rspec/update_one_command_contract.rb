@@ -14,7 +14,7 @@ module Cuprum::Collections::RSpec
         defined?(super()) ? super() : matching_data
       end
       let(:primary_key_name) do
-        defined?(super()) ? super() : :id
+        defined?(super()) ? super() : 'id'
       end
       let(:scoped) do
         key    = primary_key_name
@@ -33,7 +33,10 @@ module Cuprum::Collections::RSpec
         let(:expected_error) do
           Cuprum::Collections::Errors::NotFound.new(
             attribute_name:  primary_key_name,
-            attribute_value: attributes[primary_key_name],
+            attribute_value: attributes.fetch(
+              primary_key_name.to_s,
+              attributes[primary_key_name.intern]
+            ),
             collection_name: collection_name,
             primary_key:     true
           )

@@ -3,6 +3,7 @@
 require 'forwardable'
 
 require 'cuprum/collections'
+require 'cuprum/collections/naming'
 
 module Cuprum::Collections
   # A repository represents a group of collections.
@@ -14,7 +15,11 @@ module Cuprum::Collections
   # a single repository, relying on the shared interface of all Collection
   # implementations.
   class Repository
-    extend Forwardable
+    extend  Forwardable
+    include Cuprum::Collections::Naming
+
+    # Error raised when trying to call an abstract repository method.
+    class AbstractRepositoryError < StandardError; end
 
     # Error raised when trying to add an existing collection to the repository.
     class DuplicateCollectionError < StandardError; end
@@ -57,12 +62,12 @@ module Cuprum::Collections
     # The collection must implement the #collection_name property. Repository
     # subclasses may enforce additional requirements.
     #
-    # @param collection [#collection_name] The collection to add to the
-    #   repository.
-    # @param force [true, false] If true, override an existing collection with
+    # @param collection [Cuprum::Collections::Collection] the collection to add
+    #   to the repository.
+    # @param force [true, false] if true, override an existing collection with
     #   the same name.
     #
-    # @return [Cuprum::Rails::Repository] the repository.
+    # @return [Cuprum::Collections::Repository] the repository.
     #
     # @raise [DuplicateCollectionError] if a collection with the same name
     #   already exists in the repository.
@@ -80,6 +85,60 @@ module Cuprum::Collections
     end
     alias << add
 
+    # Adds a new collection with the given name to the repository.
+    #
+    # @param collection_name [String] the name of the new collection.
+    # @param entity_class [Class, String] the class of entity represented in the
+    #   collection.
+    # @param force [true, false] if true, override an existing collection with
+    #   the same name.
+    # @param options [Hash] additional options to pass to Collection.new.
+    #
+    #   @return [Cuprum::Collections::Collection] the created collection.
+    #
+    # @raise [DuplicateCollectionError] if a collection with the same name
+    #   already exists in the repository.
+    def create(collection_name: nil, entity_class: nil, force: false, **options)
+      collection = build_collection(
+        collection_name: collection_name,
+        entity_class:    entity_class,
+        **options
+      )
+
+      add(collection, force: force)
+
+      collection
+    end
+
+    # @overload find_or_create(collection_name: nil, entity_class: nil, **options)
+    #   Finds or creates a new collection with the given name.
+    #
+    #   @param collection_name [String] the name of the new collection.
+    #   @param entity_class [Class, String] the class of entity represented in
+    #     the collection.
+    #   @param options [Hash] additional options to pass to Collection.new.
+    #
+    #   @return [Cuprum::Collections::Collection] the created collection.
+    #
+    #   @raise [DuplicateCollectionError] if a collection with the same name
+    #     but different parameters already exists in the repository.
+    def find_or_create(**options)
+      qualified_name = resolve_qualified_name(**options)
+
+      unless key?(qualified_name)
+        create(**options)
+
+        return @collections[qualified_name]
+      end
+
+      collection = @collections[qualified_name]
+
+      return collection if collection.matches?(**options)
+
+      raise DuplicateCollectionError,
+        "collection #{qualified_name} already exists"
+    end
+
     # Checks if a collection with the given name exists in the repository.
     #
     # @param qualified_name [String, Symbol] The name to check for.
@@ -90,6 +149,16 @@ module Cuprum::Collections
     end
 
     private
+
+    def build_collection(**)
+      raise AbstractRepositoryError,
+        "#{self.class.name} is an abstract class. Define a repository " \
+        'subclass and implement the #build_collection method.'
+    end
+
+    def tools
+      SleepingKingStudios::Tools::Toolbelt.instance
+    end
 
     def valid_collection?(collection)
       collection.respond_to?(:collection_name)

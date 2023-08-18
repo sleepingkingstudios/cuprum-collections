@@ -9,7 +9,7 @@ module Cuprum::Collections::RSpec
       let(:mapped_data) do
         defined?(super()) ? super() : data
       end
-      let(:primary_key_name) { defined?(super()) ? super() : :id }
+      let(:primary_key_name) { defined?(super()) ? super() : 'id' }
       let(:primary_key_type) { defined?(super()) ? super() : Integer }
       let(:primary_keys_contract) do
         Stannum::Constraints::Types::ArrayType.new(item_type: primary_key_type)

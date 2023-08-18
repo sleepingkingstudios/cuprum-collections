@@ -14,7 +14,7 @@ module Cuprum::Collections::Errors
     ].freeze
     private_constant :PERMITTED_KEYWORDS
 
-    # @overload initialize(attribute_name:, attribute_value:, collection_name:, primary_key: false) # rubocop:disable Layout/LineLength
+    # @overload initialize(attribute_name:, attribute_value:, collection_name:, primary_key: false)
     #   @param attribute_name [String] The name of the queried attribute.
     #   @param attribute_value [Object] The value of the queried attribute.
     #   @param collection_name [String] The name of the collection.
