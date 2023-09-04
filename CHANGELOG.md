@@ -4,6 +4,11 @@
 
 ### Collections
 
+Defined standard interface for collections.
+
+- Implemented `Cuprum::Collections::Collection`.
+- Collections can now be initialized with any combination of collection name and entity class.
+
 Updated `Cuprum::Collections::Basic::Collection`.
 
 - Implemented `#count` method.
@@ -17,6 +22,13 @@ Implemented built-in Commands, which take a `:collection` parameter:
 - `Commands::FindOneMatching`
 - `Commands::Update`
 - `Commands::Upsert`
+
+### Repositories
+
+Defined standard interface for repositories.
+
+- Implemented `Repository#create`.
+- Implemented `Repository#find_or_create`.
 
 ## 0.2.0
 

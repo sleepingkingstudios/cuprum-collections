@@ -32,6 +32,7 @@ AllCops:
   TargetRubyVersion: 2.7
   NewCops: enable
   Exclude:
+    - tmp/**/*
     - vendor/**/*
 
 Layout/ArgumentAlignment:
@@ -53,12 +54,14 @@ Metrics/BlockLength:
   Exclude:
     - '*.gemspec'
     - lib/**/*_contract.rb
+    - lib/**/*_contracts.rb
     - spec/support/**/*_examples.rb
     - spec/**/*_spec.rb
 
 Metrics/ModuleLength:
   Exclude:
     - lib/**/*_contract.rb
+    - lib/**/*_contracts.rb
     - spec/**/*_examples.rb
 
 Naming/RescuedExceptionsVariableName:
