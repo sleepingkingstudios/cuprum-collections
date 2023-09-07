@@ -17,13 +17,17 @@ module Cuprum::Collections::Basic
 
     private
 
-    def build_collection(data: nil, **options)
+    def build_collection(data: nil, **parameters)
       validate_data!(data)
 
-      Cuprum::Collections::Basic.new(
-        data: data || @data.fetch(resolve_qualified_name(**options), []),
-        **options
-      )
+      qualified_name =
+        Cuprum::Collections::Relation::Disambiguation
+          .resolve_parameters(parameters, name: :collection_name)
+          .fetch(:qualified_name)
+
+      data ||= @data.fetch(qualified_name, [])
+
+      Cuprum::Collections::Basic.new(data: data, **parameters)
     end
 
     def valid_collection?(collection)

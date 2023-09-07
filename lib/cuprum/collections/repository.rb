@@ -3,7 +3,7 @@
 require 'forwardable'
 
 require 'cuprum/collections'
-require 'cuprum/collections/naming'
+require 'cuprum/collections/relation'
 
 module Cuprum::Collections
   # A repository represents a group of collections.
@@ -15,8 +15,7 @@ module Cuprum::Collections
   # a single repository, relying on the shared interface of all Collection
   # implementations.
   class Repository
-    extend  Forwardable
-    include Cuprum::Collections::Naming
+    extend Forwardable
 
     # Error raised when trying to call an abstract repository method.
     class AbstractRepositoryError < StandardError; end
@@ -85,25 +84,22 @@ module Cuprum::Collections
     end
     alias << add
 
-    # Adds a new collection with the given name to the repository.
+    # @overload create(collection_name: nil, entity_class: nil, force: false, **options)
+    #   Adds a new collection with the given name to the repository.
     #
-    # @param collection_name [String] the name of the new collection.
-    # @param entity_class [Class, String] the class of entity represented in the
-    #   collection.
-    # @param force [true, false] if true, override an existing collection with
-    #   the same name.
-    # @param options [Hash] additional options to pass to Collection.new.
+    #   @param collection_name [String] the name of the new collection.
+    #   @param entity_class [Class, String] the class of entity represented in
+    #     the collection.
+    #   @param force [true, false] if true, override an existing collection with
+    #     the same name.
+    #   @param options [Hash] additional options to pass to Collection.new.
     #
     #   @return [Cuprum::Collections::Collection] the created collection.
     #
-    # @raise [DuplicateCollectionError] if a collection with the same name
-    #   already exists in the repository.
-    def create(collection_name: nil, entity_class: nil, force: false, **options)
-      collection = build_collection(
-        collection_name: collection_name,
-        entity_class:    entity_class,
-        **options
-      )
+    #   @raise [DuplicateCollectionError] if a collection with the same name
+    #     already exists in the repository.
+    def create(force: false, **options)
+      collection = build_collection(**options)
 
       add(collection, force: force)
 
@@ -122,18 +118,21 @@ module Cuprum::Collections
     #
     #   @raise [DuplicateCollectionError] if a collection with the same name
     #     but different parameters already exists in the repository.
-    def find_or_create(**options)
-      qualified_name = resolve_qualified_name(**options)
+    def find_or_create(**parameters) # rubocop:disable Metrics/MethodLength
+      qualified_name =
+        Cuprum::Collections::Relation::Disambiguation
+          .resolve_parameters(parameters, name: :collection_name)
+          .fetch(:qualified_name)
 
       unless key?(qualified_name)
-        create(**options)
+        create(**parameters)
 
         return @collections[qualified_name]
       end
 
       collection = @collections[qualified_name]
 
-      return collection if collection.matches?(**options)
+      return collection if collection.matches?(**parameters)
 
       raise DuplicateCollectionError,
         "collection #{qualified_name} already exists"
@@ -154,10 +153,6 @@ module Cuprum::Collections
       raise AbstractRepositoryError,
         "#{self.class.name} is an abstract class. Define a repository " \
         'subclass and implement the #build_collection method.'
-    end
-
-    def tools
-      SleepingKingStudios::Tools::Toolbelt.instance
     end
 
     def valid_collection?(collection)

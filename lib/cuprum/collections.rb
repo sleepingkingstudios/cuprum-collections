@@ -10,7 +10,7 @@ module Cuprum
     autoload :Collection, 'cuprum/collections/collection'
     autoload :Command,    'cuprum/collections/command'
     autoload :Errors,     'cuprum/collections/errors'
-    autoload :Naming,     'cuprum/collections/naming'
+    autoload :Relation,   'cuprum/collections/relation'
     autoload :Repository, 'cuprum/collections/repository'
 
     # @return [String] the absolute path to the gem directory.

@@ -5,6 +5,97 @@ require 'cuprum/collections/rspec/contracts'
 module Cuprum::Collections::RSpec::Contracts
   # Contracts for asserting on Relation objects.
   module RelationContracts
+    # Contract asserting that the Relation resolves the given parameter.
+    module ShouldDisambiguateParameter
+      extend RSpec::SleepingKingStudios::Contract
+
+      # @!method apply(example_group)
+      #   Adds the contract to the example group.
+      #
+      #   @param key [Symbol] the original parameter key.
+      #   @param as [Symbol, Array<Symbol>] the aliased key or keys.
+      #   @param value [Object] the custom value for the property.
+      contract do |key, as:, value: 'custom value'|
+        describe '.new' do
+          Array(as).each do |alt|
+            describe "with #{key}: value and #{alt}: value" do
+              let(:error_message) do
+                "ambiguous parameter #{key}: initialized with parameters " \
+                  "#{key}: #{value.inspect}, #{alt}: #{value.inspect}"
+              end
+
+              it 'should raise an exception' do
+                expect do
+                  described_class.new(
+                    name: 'books',
+                    key => value,
+                    alt => value
+                  )
+                end
+                  .to raise_error ArgumentError, error_message
+              end
+            end
+          end
+        end
+
+        Array(as).each do |alt|
+          describe "##{alt}" do
+            include_examples 'should define reader',
+              alt,
+              -> { subject.send(key) }
+
+            context "when initialized with #{key}: value" do
+              let(:constructor_options) do
+                super().merge(key => value)
+              end
+
+              it { expect(subject.send(alt)).to be == value }
+            end
+
+            Array(as).each do |given|
+              context "when initialized with #{given}: value" do
+                let(:constructor_options) do
+                  super()
+                    .tap { |hsh| hsh.delete(key) }
+                    .merge(given => value)
+                end
+
+                it { expect(subject.send(alt)).to be == value }
+              end
+            end
+          end
+        end
+
+        describe "##{key}" do
+          Array(as).each do |alt|
+            context "when initialized with #{alt}: value" do
+              let(:constructor_options) do
+                super()
+                  .tap { |hsh| hsh.delete(key) }
+                  .merge(alt => value)
+              end
+
+              it { expect(subject.send(key)).to be == value }
+            end
+          end
+        end
+
+        describe '#options' do
+          Array(as).each do |alt|
+            context "when initialized with #{alt}: value" do
+              let(:constructor_options) do
+                super()
+                  .tap { |hsh| hsh.delete(key) }
+                  .merge(alt => value)
+              end
+
+              it { expect(subject.options).not_to have_key alt }
+            end
+          end
+        end
+      end
+    end
+
     # Contract asserting that the method validates the required parameters.
     module ShouldValidateTheParametersContract
       extend RSpec::SleepingKingStudios::Contract
@@ -246,37 +337,44 @@ module Cuprum::Collections::RSpec::Contracts
       #
       #   @option options cardinality [Boolean] true if the relation accepts
       #     cardinality keywords (:plural, :singular); otherwise false.
+      #   @option options constructor [Boolean] if false, does not generate
+      #     constructor specs. Defaults to true.
+      #   @option options default_entity_class [Class] the default entity class
+      #     for the relation, if any.
       #   @option options expected_keywords [Array<Symbol>] additional keywords
       #     for the constructor.
       contract do |**options|
         include Cuprum::Collections::RSpec::Contracts::RelationContracts
 
-        describe '.new' do
-          let(:expected_keywords) do
-            keywords = %i[
-              entity_class
-              singular_name
-              name
-            ]
+        if options.fetch(:constructor, true)
+          describe '.new' do
+            let(:expected_keywords) do
+              keywords = %i[
+                entity_class
+                name
+                qualified_name
+                singular_name
+              ]
 
-            keywords += %i[plural singular] if options[:cardinality]
+              keywords += %i[plural singular] if options[:cardinality]
 
-            keywords + options.fetch(:expected_keywords, [])
+              keywords + options.fetch(:expected_keywords, [])
+            end
+
+            def call_method(**parameters)
+              described_class.new(**parameters)
+            end
+
+            it 'should define the constructor' do
+              expect(described_class)
+                .to be_constructible
+                .with(0).arguments
+                .and_keywords(*expected_keywords)
+                .and_any_keywords
+            end
+
+            include_contract 'should validate the parameters'
           end
-
-          def call_method(**parameters)
-            described_class.new(**parameters)
-          end
-
-          it 'should define the constructor' do
-            expect(described_class)
-              .to be_constructible
-              .with(0).arguments
-              .and_keywords(*expected_keywords)
-              .and_any_keywords
-          end
-
-          include_contract 'should validate the parameters'
         end
 
         describe '#entity_class' do
@@ -331,8 +429,9 @@ module Cuprum::Collections::RSpec::Contracts
             let(:constructor_options) do
               super().merge(name: name)
             end
+            let(:expected) { options[:default_entity_class] || Book }
 
-            it { expect(relation.entity_class).to be Book }
+            it { expect(subject.entity_class).to be expected }
 
             context 'when initialized with entity_class: value' do
               let(:entity_class) { Grimoire }
@@ -350,8 +449,11 @@ module Cuprum::Collections::RSpec::Contracts
               let(:constructor_options) do
                 super().merge(qualified_name: qualified_name)
               end
+              let(:expected) do
+                options[:default_entity_class] || Spec::ScopedBook
+              end
 
-              it { expect(subject.entity_class).to be Spec::ScopedBook }
+              it { expect(subject.entity_class).to be expected }
 
               context 'when initialized with entity_class: value' do
                 let(:entity_class) { Grimoire }
@@ -371,8 +473,9 @@ module Cuprum::Collections::RSpec::Contracts
             let(:constructor_options) do
               super().merge(name: name)
             end
+            let(:expected) { options[:default_entity_class] || Book }
 
-            it { expect(relation.entity_class).to be Book }
+            it { expect(subject.entity_class).to be expected }
 
             context 'when initialized with entity_class: value' do
               let(:entity_class) { Grimoire }
@@ -390,8 +493,11 @@ module Cuprum::Collections::RSpec::Contracts
               let(:constructor_options) do
                 super().merge(qualified_name: qualified_name)
               end
+              let(:expected) do
+                options[:default_entity_class] || Spec::ScopedBook
+              end
 
-              it { expect(subject.entity_class).to be Spec::ScopedBook }
+              it { expect(subject.entity_class).to be expected }
 
               context 'when initialized with entity_class: value' do
                 let(:entity_class) { Grimoire }
@@ -411,8 +517,11 @@ module Cuprum::Collections::RSpec::Contracts
             let(:constructor_options) do
               super().merge(qualified_name: qualified_name)
             end
+            let(:expected) do
+              options[:default_entity_class] || Spec::ScopedBook
+            end
 
-            it { expect(subject.entity_class).to be Spec::ScopedBook }
+            it { expect(subject.entity_class).to be expected }
 
             context 'when initialized with entity_class: value' do
               let(:entity_class) { Grimoire }
@@ -431,8 +540,11 @@ module Cuprum::Collections::RSpec::Contracts
             let(:constructor_options) do
               super().merge(qualified_name: qualified_name)
             end
+            let(:expected) do
+              options[:default_entity_class] || Spec::ScopedBook
+            end
 
-            it { expect(subject.entity_class).to be Spec::ScopedBook }
+            it { expect(subject.entity_class).to be expected }
 
             context 'when initialized with entity_class: value' do
               let(:entity_class) { Grimoire }

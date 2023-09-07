@@ -18,9 +18,9 @@ RSpec.describe Cuprum::Collections::Basic::Collection do
     let(:items) { data }
   end
 
-  let(:collection_name)     { 'books' }
+  let(:name)                { 'books' }
   let(:data)                { [] }
-  let(:constructor_options) { { collection_name: collection_name } }
+  let(:constructor_options) { { name: name } }
   let(:query_class)         { Cuprum::Collections::Basic::Query }
   let(:query_options)       { { data: data } }
 
@@ -39,9 +39,9 @@ RSpec.describe Cuprum::Collections::Basic::Collection do
   end
 
   include_contract Cuprum::Collections::RSpec::CollectionContract,
-    command_options:    %i[data default_contract],
-    commands_namespace: 'Cuprum::Collections::Basic::Commands',
-    entity_class:       Hash
+    command_options:      %i[data default_contract],
+    commands_namespace:   'Cuprum::Collections::Basic::Commands',
+    default_entity_class: Hash
 
   describe '#data' do
     include_examples 'should define reader', :data, -> { data }

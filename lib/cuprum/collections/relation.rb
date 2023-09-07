@@ -7,6 +7,84 @@ require 'cuprum/collections'
 module Cuprum::Collections
   # Abstract class representing a group or view of entities.
   class Relation
+    # Methods for disambiguating parameters with multiple keywords.
+    module Disambiguation
+      class << self
+        # Helper method for resolving an ambiguous keyword.
+        #
+        # @param params [Hash] the original method keywords.
+        # @param key [Symbol] the original key to resolve.
+        # @param alternatives [Symbol, Array<Symbol>] the additional keywords.
+        #
+        # @return [Hash] the disambiguated keywords.
+        def disambiguate_keyword(params, key, *alternatives)
+          params = params.dup
+          values = keyword_values(params, key, *alternatives)
+
+          return params if values.empty?
+
+          if values.size == 1
+            _, value = values.first
+
+            return params.merge(key => value)
+          end
+
+          raise ArgumentError, ambiguous_keywords_error(values)
+        end
+
+        # Helper method for resolving a Relation's required parameters.
+        #
+        # The returned Hash will define the :entity_class, :singular_name,
+        # :name, and :qualified_name keys.
+        #
+        # @param params [Hash] the parameters to resolve.
+        # @param ambiguous [Hash{Symbol => Symbol, Array<Symbol>}] ambiguous
+        #   keywords to resolve. Each key-value pair is passed to
+        #   .disambiguate_keyword before the parameters are resolved.
+        #
+        # @return [Hash] the resolved parameters.
+        #
+        # @see .disambiguate_keyword
+        # @see Cuprum::Collections::Relation::Parameters.resolve_parameters
+        def resolve_parameters(params, **ambiguous)
+          params = ambiguous.reduce(params) do |hsh, (key, alternatives)|
+            disambiguate_keyword(hsh, key, *alternatives)
+          end
+
+          Cuprum::Collections::Relation::Parameters.resolve_parameters(params)
+        end
+
+        private
+
+        def ambiguous_keywords_error(values)
+          expected, _ = values.first
+          formatted   =
+            values
+              .map { |key, value| "#{key}: #{value.inspect}" }
+              .join(', ')
+
+          "ambiguous parameter #{expected}: initialized with parameters " \
+            "#{formatted}"
+        end
+
+        def keyword_values(keywords, *keys)
+          keys
+            .map { |key| [key, keywords.delete(key)] }
+            .reject { |_, value| value.nil? } # rubocop:disable Style/CollectionCompact
+        end
+      end
+
+      # (see Cuprum::Collections::Relation::Disambiguation.disambiguate_keyword)
+      def disambiguate_keyword(params, key, *alternatives)
+        Disambiguation.disambiguate_keyword(params, key, *alternatives)
+      end
+
+      # (see Cuprum::Collections::Relation::Disambiguation.resolve_parameters)
+      def resolve_parameters(parameters, **ambiguous)
+        Disambiguation.resolve_parameters(parameters, **ambiguous)
+      end
+    end
+
     # Methods for resolving a relations's naming and entity class from options.
     module Parameters # rubocop:disable Metrics/ModuleLength
       class << self
@@ -180,7 +258,7 @@ module Cuprum::Collections
 
     include Cuprum::Collections::Relation::Parameters
 
-    # @overload initialize(entity_class: nil, singular_name: nil, name: nil, qualified_name: nil, **options)
+    # @overload initialize(entity_class: nil, name: nil, qualified_name: nil, singular_name: nil, **options)
     #   @param entity_class [Class, String] the class of entity represented by
     #     the relation.
     #   @param singular_name [String] the name of an entity in the relation.

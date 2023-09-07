@@ -9,26 +9,32 @@ require 'cuprum/collections/collection'
 module Cuprum::Collections::Basic
   # Wraps an in-memory array of hashes data store as a Cuprum collection.
   class Collection < Cuprum::Collections::Collection
-    # @param collection_name [String, Symbol] the name of the collection.
-    # @param data [Array<Hash>] the current data in the collection.
-    # @param entity_class [Class, String] the class of entity represented in the
-    #   collection.
-    # @param options [Hash<Symbol>] additional options for the collection.
+    # @overload initialize(data: [], entity_class: nil, name: nil, qualified_name: nil, singular_name: nil, **options)
+    #   @param data [Array<Hash>] the current data in the collection.
+    #   @param entity_class [Class, String] the class of entity represented by
+    #     the relation.
+    #   @param singular_name [String] the name of an entity in the relation.
+    #     Aliased as :member_name.
+    #   @param name [String] the name of the relation. Aliased as
+    #     :collection_name.
+    #   @param qualified_name [String] a scoped name for the relation.
+    #   @param options [Hash] additional options for the relation.
     #
-    # @option options default_contract [Stannum::Constraints::Base, nil] the
-    #   default contract for validating items in the collection.
-    # @option options member_name [String] the name of a collection entity.
-    # @option options primary_key_name [String] the name of the primary key
-    #   attribute. Defaults to 'id'.
-    # @option options primary_key_type [Class, Stannum::Constraint] the type of
-    #   the primary key attribute. Defaults to Integer.
-    # @option options qualified_name [String] the qualified name of the
-    #   collection, which should be unique. Defaults to the collection name.
-    def initialize(collection_name: nil, data: [], entity_class: nil, **options)
+    #   @option options primary_key_name [String] the name of the primary key
+    #     attribute. Defaults to 'id'.
+    #   @option primary_key_type [Class, Stannum::Constraint] the type of
+    #     the primary key attribute. Defaults to Integer.
+    def initialize(data: [], entity_class: Hash, **parameters)
+      qualified_name = parameters.fetch(:qualified_name) do
+        next nil unless entity_class == Hash
+
+        parameters.fetch(:collection_name, parameters[:name])
+      end
+
       super(
-        collection_name: collection_name,
-        entity_class:    entity_class,
-        **options
+        entity_class:   entity_class,
+        qualified_name: qualified_name,
+        **parameters
       )
 
       @data = data
@@ -102,12 +108,6 @@ module Cuprum::Collections::Basic
         data:             data,
         default_contract: default_contract
       )
-    end
-
-    private
-
-    def default_entity_class
-      Hash
     end
   end
 end
