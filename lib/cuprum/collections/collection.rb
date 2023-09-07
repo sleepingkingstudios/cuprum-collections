@@ -9,6 +9,7 @@ module Cuprum::Collections
   # Provides a base implementation for collections.
   class Collection < Cuprum::CommandFactory
     include Cuprum::Collections::Relation::Parameters
+    include Cuprum::Collections::Relation::PrimaryKeys
     include Cuprum::Collections::Relation::Disambiguation
 
     # Error raised when trying to call an abstract collection method.
@@ -85,20 +86,6 @@ module Cuprum::Collections
     #   false.
     def matches?(**expected)
       comparable_options >= expected
-    end
-
-    # @return [Symbol] the name of the primary key attribute. Defaults to 'id'.
-    def primary_key_name
-      @primary_key_name ||= options.fetch(:primary_key_name, 'id').to_s
-    end
-
-    # @return [Class, Stannum::Constraint] the type of the primary key
-    #   attribute. Defaults to Integer.
-    def primary_key_type
-      @primary_key_type ||=
-        options
-          .fetch(:primary_key_type, Integer)
-          .then { |obj| obj.is_a?(String) ? Object.const_get(obj) : obj }
     end
 
     # A new Query instance, used for querying against the collection data.

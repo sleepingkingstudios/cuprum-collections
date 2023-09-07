@@ -989,5 +989,67 @@ module Cuprum::Collections::RSpec::Contracts
         end
       end
     end
+
+    # Contract validating a Relation's primary key properties.
+    module ShouldDefinePrimaryKeys
+      extend RSpec::SleepingKingStudios::Contract
+
+      # @!method apply(example_group)
+      #   Adds the contract to the example group.
+      contract do
+        describe '#primary_key_name' do
+          let(:expected_primary_key_name) do
+            return super() if defined?(super())
+
+            constructor_options.fetch(:primary_key_name, 'id')
+          end
+
+          include_examples 'should define reader',
+            :primary_key_name,
+            -> { expected_primary_key_name }
+
+          context 'when initialized with primary_key_name: a String' do
+            let(:primary_key_name) { 'uuid' }
+            let(:constructor_options) do
+              super().merge(primary_key_name: primary_key_name)
+            end
+
+            it { expect(subject.primary_key_name).to be == primary_key_name }
+          end
+
+          context 'when initialized with primary_key_name: a Symbol' do
+            let(:primary_key_name) { :uuid }
+            let(:constructor_options) do
+              super().merge(primary_key_name: primary_key_name)
+            end
+
+            it 'should set the primary key name' do
+              expect(subject.primary_key_name).to be == primary_key_name.to_s
+            end
+          end
+        end
+
+        describe '#primary_key_type' do
+          let(:expected_primary_key_type) do
+            return super() if defined?(super())
+
+            constructor_options.fetch(:primary_key_type, Integer)
+          end
+
+          include_examples 'should define reader',
+            :primary_key_type,
+            -> { expected_primary_key_type }
+
+          context 'when initialized with primary_key_type: value' do
+            let(:primary_key_type) { String }
+            let(:constructor_options) do
+              super().merge(primary_key_type: primary_key_type)
+            end
+
+            it { expect(subject.primary_key_type).to be == primary_key_type }
+          end
+        end
+      end
+    end
   end
 end

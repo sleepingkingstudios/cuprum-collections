@@ -894,5 +894,22 @@ RSpec.describe Cuprum::Collections::Relation do
     end
   end
 
+  describe '::PrimaryKeys' do
+    subject(:relation) { described_class.new(**constructor_options) }
+
+    let(:described_class)     { Spec::ExampleRelation }
+    let(:constructor_options) { {} }
+
+    example_class 'Spec::ExampleRelation' do |klass|
+      klass.include Cuprum::Collections::Relation::PrimaryKeys
+
+      klass.define_method(:initialize) { |**options| @options = options }
+
+      klass.attr_reader :options
+    end
+
+    include_contract 'should define primary keys'
+  end
+
   include_contract 'should be a relation'
 end

@@ -143,6 +143,8 @@ module Cuprum::Collections::RSpec
         :singular_name,
         as: :member_name
 
+      include_contract 'should define primary keys'
+
       include_examples 'should define the command', :assign_one
 
       include_examples 'should define the command', :build_one
@@ -265,59 +267,6 @@ module Cuprum::Collections::RSpec
           let(:other_options) { { collection_name: name } }
 
           it { expect(collection.matches?(**other_options)).to be true }
-        end
-      end
-
-      describe '#primary_key_name' do
-        let(:expected_primary_key_name) do
-          return super() if defined?(super())
-
-          options.fetch(:primary_key_name, 'id')
-        end
-
-        include_examples 'should define reader',
-          :primary_key_name,
-          -> { expected_primary_key_name }
-
-        context 'when initialized with primary_key_name: a String' do
-          let(:primary_key_name) { 'uuid' }
-          let(:constructor_options) do
-            super().merge(primary_key_name: primary_key_name)
-          end
-
-          it { expect(collection.primary_key_name).to be == primary_key_name }
-        end
-
-        context 'when initialized with primary_key_name: a Symbol' do
-          let(:primary_key_name) { :uuid }
-          let(:constructor_options) do
-            super().merge(primary_key_name: primary_key_name)
-          end
-
-          it 'should set the primary key name' do
-            expect(collection.primary_key_name).to be == primary_key_name.to_s
-          end
-        end
-      end
-
-      describe '#primary_key_type' do
-        let(:expected_primary_key_type) do
-          return super() if defined?(super())
-
-          options.fetch(:primary_key_type, Integer)
-        end
-
-        include_examples 'should define reader',
-          :primary_key_type,
-          -> { expected_primary_key_type }
-
-        context 'when initialized with primary_key_type: value' do
-          let(:primary_key_type) { String }
-          let(:constructor_options) do
-            super().merge(primary_key_type: primary_key_type)
-          end
-
-          it { expect(collection.primary_key_type).to be == primary_key_type }
         end
       end
 
