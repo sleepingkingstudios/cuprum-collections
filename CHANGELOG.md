@@ -23,12 +23,20 @@ Implemented built-in Commands, which take a `:collection` parameter:
 - `Commands::Update`
 - `Commands::Upsert`
 
+### Relations
+
+Defined `Cuprum::Collections::Relation`, an abstract class representing a group or view of entities.
+
 ### Repositories
 
 Defined standard interface for repositories.
 
 - Implemented `Repository#create`.
 - Implemented `Repository#find_or_create`.
+
+### Resources
+
+Defined `Cuprum::Collections::Resource`, representing a singular or plural resource of entities.
 
 ## 0.2.0
 
