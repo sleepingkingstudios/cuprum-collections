@@ -296,7 +296,8 @@ module Cuprum::Collections
 
     # Methods for specifying a relation's primary key.
     module PrimaryKeys
-      # @return [Symbol] the name of the primary key attribute. Defaults to 'id'.
+      # @return [String] the name of the primary key attribute. Defaults to
+      #   'id'.
       def primary_key_name
         @primary_key_name ||= options.fetch(:primary_key_name, 'id').to_s
       end

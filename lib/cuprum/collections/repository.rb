@@ -118,11 +118,8 @@ module Cuprum::Collections
     #
     #   @raise [DuplicateCollectionError] if a collection with the same name
     #     but different parameters already exists in the repository.
-    def find_or_create(**parameters) # rubocop:disable Metrics/MethodLength
-      qualified_name =
-        Cuprum::Collections::Relation::Disambiguation
-          .resolve_parameters(parameters, name: :collection_name)
-          .fetch(:qualified_name)
+    def find_or_create(**parameters)
+      qualified_name = qualified_name_for(**parameters)
 
       unless key?(qualified_name)
         create(**parameters)
@@ -153,6 +150,12 @@ module Cuprum::Collections
       raise AbstractRepositoryError,
         "#{self.class.name} is an abstract class. Define a repository " \
         'subclass and implement the #build_collection method.'
+    end
+
+    def qualified_name_for(**parameters)
+      Cuprum::Collections::Relation::Disambiguation
+        .resolve_parameters(parameters, name: :collection_name)
+        .fetch(:qualified_name)
     end
 
     def valid_collection?(collection)
