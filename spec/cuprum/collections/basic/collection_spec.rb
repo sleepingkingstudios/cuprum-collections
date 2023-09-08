@@ -5,6 +5,10 @@ require 'cuprum/collections/basic/commands'
 require 'cuprum/collections/rspec/collection_contract'
 require 'cuprum/collections/rspec/fixtures'
 
+require 'support/book'
+require 'support/grimoire'
+require 'support/scoped_book'
+
 RSpec.describe Cuprum::Collections::Basic::Collection do
   subject(:collection) do
     described_class.new(
@@ -18,15 +22,11 @@ RSpec.describe Cuprum::Collections::Basic::Collection do
     let(:items) { data }
   end
 
-  let(:collection_name)     { 'books' }
+  let(:name)                { 'books' }
   let(:data)                { [] }
-  let(:constructor_options) { { collection_name: collection_name } }
+  let(:constructor_options) { { name: name } }
   let(:query_class)         { Cuprum::Collections::Basic::Query }
   let(:query_options)       { { data: data } }
-
-  example_class 'Book',             'Hash'
-  example_class 'Grimoire',         'Book'
-  example_class 'Spec::ScopedBook', 'Book'
 
   describe '.new' do
     it 'should define the constructor' do
@@ -39,9 +39,9 @@ RSpec.describe Cuprum::Collections::Basic::Collection do
   end
 
   include_contract Cuprum::Collections::RSpec::CollectionContract,
-    command_options:    %i[data default_contract],
-    commands_namespace: 'Cuprum::Collections::Basic::Commands',
-    entity_class:       Hash
+    command_options:      %i[data default_contract],
+    commands_namespace:   'Cuprum::Collections::Basic::Commands',
+    default_entity_class: Hash
 
   describe '#data' do
     include_examples 'should define reader', :data, -> { data }

@@ -3,6 +3,7 @@
 require 'rspec/sleeping_king_studios/contract'
 
 require 'cuprum/collections/rspec'
+require 'cuprum/collections/rspec/contracts/relation_contracts'
 
 module Cuprum::Collections::RSpec
   # Contract validating the behavior of a Collection.
@@ -18,9 +19,12 @@ module Cuprum::Collections::RSpec
     #
     #   @option options abstract [Boolean] if true, the collection is an
     #     abstract base class and does not define a query or commands.
-    #   @option options entity_class [Class, String] the expected entity class.
+    #   @option options default_entity_class [Class] the default entity class
+    #     for the collection, if any.
 
     contract do |**options|
+      include Cuprum::Collections::RSpec::Contracts::RelationContracts
+
       shared_examples 'should define the command' \
       do |command_name, command_class_name = nil|
         next if options[:abstract]
@@ -127,68 +131,19 @@ module Cuprum::Collections::RSpec
         end
       end
 
-      describe '.new' do
-        it 'should define the constructor' do
-          expect(described_class)
-            .to respond_to(:new)
-            .with(0).arguments
-            .and_any_keywords
-        end
+      include_contract 'should be a relation',
+        constructor:          false,
+        default_entity_class: options[:default_entity_class]
 
-        describe 'with no keywords' do
-          let(:error_message) { "collection name can't be blank" }
+      include_contract 'should disambiguate parameter',
+        :name,
+        as: :collection_name
 
-          it 'should raise an exception' do
-            expect { described_class.new }
-              .to raise_error(ArgumentError, error_message)
-          end
-        end
+      include_contract 'should disambiguate parameter',
+        :singular_name,
+        as: :member_name
 
-        describe 'with collection name: nil' do
-          let(:error_message) { "collection name can't be blank" }
-
-          it 'should raise an exception' do
-            expect { described_class.new(collection_name: nil) }
-              .to raise_error(ArgumentError, error_message)
-          end
-        end
-
-        describe 'with collection name: an Object' do
-          let(:error_message) { 'collection name is not a String or a Symbol' }
-
-          it 'should raise an exception' do
-            expect { described_class.new(collection_name: Object.new.freeze) }
-              .to raise_error(ArgumentError, error_message)
-          end
-        end
-
-        describe 'with collection name: an empty String' do
-          let(:error_message) { "collection name can't be blank" }
-
-          it 'should raise an exception' do
-            expect { described_class.new(collection_name: '') }
-              .to raise_error(ArgumentError, error_message)
-          end
-        end
-
-        describe 'with collection name: an empty Symbol' do
-          let(:error_message) { "collection name can't be blank" }
-
-          it 'should raise an exception' do
-            expect { described_class.new(collection_name: :'') }
-              .to raise_error(ArgumentError, error_message)
-          end
-        end
-
-        describe 'with entity class: an empty String' do
-          let(:error_message) { "entity class can't be blank" }
-
-          it 'should raise an exception' do
-            expect { described_class.new(entity_class: '') }
-              .to raise_error(ArgumentError, error_message)
-          end
-        end
-      end
+      include_contract 'should define primary keys'
 
       include_examples 'should define the command', :assign_one
 
@@ -209,7 +164,7 @@ module Cuprum::Collections::RSpec
       include_examples 'should define the command', :validate_one
 
       describe '#==' do
-        let(:other_options)    { { collection_name: collection_name } }
+        let(:other_options)    { { collection_name: name } }
         let(:other_collection) { described_class.new(**other_options) }
 
         describe 'with nil' do
@@ -265,56 +220,6 @@ module Cuprum::Collections::RSpec
         end
       end
 
-      describe '#collection_name' do
-        include_examples 'should define reader',
-          :collection_name,
-          -> { an_instance_of(String) }
-
-        context 'when initialized with entity_class: a Class' do
-          let(:entity_class) { Book }
-          let(:constructor_options) do
-            super()
-              .tap { |hsh| hsh.delete(:collection_name) }
-              .merge(entity_class: entity_class)
-          end
-
-          it { expect(collection.collection_name).to be == 'books' }
-        end
-
-        context 'when initialized with entity_class: a String' do
-          let(:entity_class) { 'Book' }
-          let(:constructor_options) do
-            super()
-              .tap { |hsh| hsh.delete(:collection_name) }
-              .merge(entity_class: entity_class)
-          end
-
-          it { expect(collection.collection_name).to be == 'books' }
-        end
-
-        context 'when initialized with entity_class: a scoped Class' do
-          let(:entity_class) { Spec::ScopedBook }
-          let(:constructor_options) do
-            super()
-              .tap { |hsh| hsh.delete(:collection_name) }
-              .merge(entity_class: entity_class)
-          end
-
-          it { expect(collection.collection_name).to be == 'scoped_books' }
-        end
-
-        context 'when initialized with entity_class: a scoped String' do
-          let(:entity_class) { 'Spec::ScopedBook' }
-          let(:constructor_options) do
-            super()
-              .tap { |hsh| hsh.delete(:collection_name) }
-              .merge(entity_class: entity_class)
-          end
-
-          it { expect(collection.collection_name).to be == 'scoped_books' }
-        end
-      end
-
       describe '#count' do
         it { expect(collection).to respond_to(:count).with(0).arguments }
 
@@ -326,86 +231,6 @@ module Cuprum::Collections::RSpec
 
         wrap_context 'when the collection has many items' do
           it { expect(collection.count).to be items.count }
-        end
-      end
-
-      describe '#entity_class' do
-        let(:default_entity_class) do
-          options.fetch(:entity_class) do
-            tools.str.chain(collection_name, :singularize, :camelize)
-          end
-        end
-        let(:expected_entity_class) do
-          return super() if defined?(super())
-
-          value = default_entity_class
-          value = Object.const_get(value) if value.is_a?(String)
-          value
-        end
-
-        def tools
-          SleepingKingStudios::Tools::Toolbelt.instance
-        end
-
-        include_examples 'should define reader',
-          :entity_class,
-          -> { expected_entity_class }
-
-        context 'when initialized with collection_name: a scoped String' do
-          let(:default_entity_class) do
-            options.fetch(:entity_class, Spec::ScopedBook)
-          end
-          let(:collection_name) { 'spec/scoped_books' }
-
-          it { expect(collection.entity_class).to be == expected_entity_class }
-
-          context 'when initialized with entity_class: value' do
-            let(:entity_class) { 'Grimoire' }
-            let(:constructor_options) do
-              super().merge(entity_class: entity_class)
-            end
-
-            it { expect(collection.entity_class).to be Grimoire }
-          end
-        end
-
-        context 'when initialized with entity_class: a Class' do
-          let(:entity_class) { Grimoire }
-          let(:constructor_options) do
-            super().merge(entity_class: entity_class)
-          end
-
-          it { expect(collection.entity_class).to be Grimoire }
-        end
-
-        context 'when initialized with entity_class: a String' do
-          let(:entity_class) { 'Grimoire' }
-          let(:constructor_options) do
-            super().merge(entity_class: entity_class)
-          end
-
-          it { expect(collection.entity_class).to be Grimoire }
-        end
-
-        context 'when initialized with qualified_name: a String' do
-          let(:default_entity_class) do
-            options.fetch(:entity_class, Spec::ScopedBook)
-          end
-          let(:qualified_name) { 'spec/scoped_books' }
-          let(:constructor_options) do
-            super().merge(qualified_name: qualified_name)
-          end
-
-          it { expect(collection.entity_class).to be == expected_entity_class }
-
-          context 'when initialized with entity_class: value' do
-            let(:entity_class) { 'Grimoire' }
-            let(:constructor_options) do
-              super().merge(entity_class: entity_class)
-            end
-
-            it { expect(collection.entity_class).to be Grimoire }
-          end
         end
       end
 
@@ -430,7 +255,7 @@ module Cuprum::Collections::RSpec
         describe 'with partially-matching options' do
           let(:other_options) do
             {
-              collection_name: collection_name,
+              collection_name: name,
               member_name:     'grimoire'
             }
           end
@@ -439,230 +264,9 @@ module Cuprum::Collections::RSpec
         end
 
         describe 'with matching options' do
-          let(:other_options) { { collection_name: collection_name } }
+          let(:other_options) { { collection_name: name } }
 
           it { expect(collection.matches?(**other_options)).to be true }
-        end
-      end
-
-      describe '#member_name' do
-        let(:expected_member_name) do
-          return super() if defined?(super())
-
-          options.fetch(:member_name, tools.str.singularize(collection_name))
-        end
-
-        def tools
-          SleepingKingStudios::Tools::Toolbelt.instance
-        end
-
-        include_examples 'should define reader',
-          :member_name,
-          -> { expected_member_name }
-
-        context 'when initialized with collection_name: a scoped String' do
-          let(:collection_name) { 'spec/scoped_books' }
-
-          it { expect(collection.member_name).to be == expected_member_name }
-
-          context 'when initialized with member_name: value' do
-            let(:member_name) { 'rare_book' }
-            let(:constructor_options) do
-              super().merge(member_name: member_name)
-            end
-
-            it { expect(collection.member_name).to be == member_name }
-          end
-        end
-
-        context 'when initialized with entity_class: a Class' do
-          let(:entity_class) { Book }
-          let(:constructor_options) do
-            super()
-              .tap { |hsh| hsh.delete(:collection_name) }
-              .merge(entity_class: entity_class)
-          end
-
-          it { expect(collection.member_name).to be == 'book' }
-        end
-
-        context 'when initialized with entity_class: a String' do
-          let(:entity_class) { 'Book' }
-          let(:constructor_options) do
-            super()
-              .tap { |hsh| hsh.delete(:collection_name) }
-              .merge(entity_class: entity_class)
-          end
-
-          it { expect(collection.member_name).to be == 'book' }
-        end
-
-        context 'when initialized with entity_class: a scoped Class' do
-          let(:entity_class) { Spec::ScopedBook }
-          let(:constructor_options) do
-            super()
-              .tap { |hsh| hsh.delete(:collection_name) }
-              .merge(entity_class: entity_class)
-          end
-
-          it { expect(collection.member_name).to be == 'scoped_book' }
-        end
-
-        context 'when initialized with entity_class: a scoped String' do
-          let(:entity_class) { 'Spec::ScopedBook' }
-          let(:constructor_options) do
-            super()
-              .tap { |hsh| hsh.delete(:collection_name) }
-              .merge(entity_class: entity_class)
-          end
-
-          it { expect(collection.member_name).to be == 'scoped_book' }
-        end
-
-        context 'when initialized with member_name: value' do
-          let(:member_name) { 'rare_book' }
-          let(:constructor_options) do
-            super().merge(member_name: member_name)
-          end
-
-          it { expect(collection.member_name).to be == member_name }
-        end
-      end
-
-      describe '#options' do
-        let(:expected_options) do
-          return super() if defined?(super())
-
-          constructor_options.tap { |hsh| hsh.delete(:collection_name) }
-        end
-
-        include_examples 'should define reader',
-          :options,
-          -> { be == expected_options }
-
-        context 'when initialized with options' do
-          let(:constructor_options) { super().merge({ key: 'value' }) }
-          let(:expected_options)    { super().merge({ key: 'value' }) }
-
-          it { expect(collection.options).to be == expected_options }
-        end
-      end
-
-      describe '#primary_key_name' do
-        let(:expected_primary_key_name) do
-          return super() if defined?(super())
-
-          options.fetch(:primary_key_name, 'id')
-        end
-
-        include_examples 'should define reader',
-          :primary_key_name,
-          -> { expected_primary_key_name }
-
-        context 'when initialized with primary_key_name: a String' do
-          let(:primary_key_name) { 'uuid' }
-          let(:constructor_options) do
-            super().merge(primary_key_name: primary_key_name)
-          end
-
-          it { expect(collection.primary_key_name).to be == primary_key_name }
-        end
-
-        context 'when initialized with primary_key_name: a Symbol' do
-          let(:primary_key_name) { :uuid }
-          let(:constructor_options) do
-            super().merge(primary_key_name: primary_key_name)
-          end
-
-          it 'should set the primary key name' do
-            expect(collection.primary_key_name).to be == primary_key_name.to_s
-          end
-        end
-      end
-
-      describe '#primary_key_type' do
-        let(:expected_primary_key_type) do
-          return super() if defined?(super())
-
-          options.fetch(:primary_key_type, Integer)
-        end
-
-        include_examples 'should define reader',
-          :primary_key_type,
-          -> { expected_primary_key_type }
-
-        context 'when initialized with primary_key_type: value' do
-          let(:primary_key_type) { String }
-          let(:constructor_options) do
-            super().merge(primary_key_type: primary_key_type)
-          end
-
-          it { expect(collection.primary_key_type).to be == primary_key_type }
-        end
-      end
-
-      describe '#qualified_name' do
-        let(:expected_qualified_name) do
-          return super() if defined?(super())
-
-          options.fetch(:qualified_name, collection_name)
-        end
-
-        include_examples 'should define reader',
-          :qualified_name,
-          -> { expected_qualified_name }
-
-        context 'when initialized with entity_class: a Class' do
-          let(:entity_class) { Book }
-          let(:constructor_options) do
-            super()
-              .tap { |hsh| hsh.delete(:collection_name) }
-              .merge(entity_class: entity_class)
-          end
-
-          it { expect(collection.qualified_name).to be == 'books' }
-        end
-
-        context 'when initialized with entity_class: a String' do
-          let(:entity_class) { 'Book' }
-          let(:constructor_options) do
-            super()
-              .tap { |hsh| hsh.delete(:collection_name) }
-              .merge(entity_class: entity_class)
-          end
-
-          it { expect(collection.qualified_name).to be == 'books' }
-        end
-
-        context 'when initialized with entity_class: a scoped Class' do
-          let(:entity_class) { Spec::ScopedBook }
-          let(:constructor_options) do
-            super()
-              .tap { |hsh| hsh.delete(:collection_name) }
-              .merge(entity_class: entity_class)
-          end
-
-          it { expect(collection.qualified_name).to be == 'spec/scoped_books' }
-        end
-
-        context 'when initialized with entity_class: a scoped String' do
-          let(:entity_class) { 'Spec::ScopedBook' }
-          let(:constructor_options) do
-            super()
-              .tap { |hsh| hsh.delete(:collection_name) }
-              .merge(entity_class: entity_class)
-          end
-
-          it { expect(collection.qualified_name).to be == 'spec/scoped_books' }
-        end
-
-        context 'when initialized with qualified_name: value' do
-          let(:qualified_name) { 'spec/scoped_books' }
-          let(:constructor_options) do
-            super().merge(qualified_name: qualified_name)
-          end
-
-          it { expect(collection.qualified_name).to be == qualified_name }
         end
       end
 

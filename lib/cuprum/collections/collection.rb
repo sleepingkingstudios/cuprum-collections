@@ -3,63 +3,64 @@
 require 'cuprum/command_factory'
 
 require 'cuprum/collections'
-require 'cuprum/collections/naming'
+require 'cuprum/collections/relation'
 
 module Cuprum::Collections
   # Provides a base implementation for collections.
   class Collection < Cuprum::CommandFactory
-    include Cuprum::Collections::Naming
+    include Cuprum::Collections::Relation::Parameters
+    include Cuprum::Collections::Relation::PrimaryKeys
+    include Cuprum::Collections::Relation::Disambiguation
 
     # Error raised when trying to call an abstract collection method.
     class AbstractCollectionError < StandardError; end
 
-    # @param collection_name [String, Symbol] the name of the collection.
-    # @param entity_class [Class, String] the class of entity represented in the
-    #   collection.
-    # @param options [Hash<Symbol>] additional options for the collection.
+    IGNORED_PARAMETERS = %i[
+      collection_name
+      entity_class
+      member_name
+      name
+      qualified_name
+      singular_name
+    ].freeze
+    private_constant :IGNORED_PARAMETERS
+
+    # @overload initialize(entity_class: nil, name: nil, qualified_name: nil, singular_name: nil, **options)
+    #   @param entity_class [Class, String] the class of entity represented by
+    #     the relation.
+    #   @param name [String] the name of the relation. Aliased as
+    #     :collection_name.
+    #   @param qualified_name [String] a scoped name for the relation.
+    #   @param singular_name [String] the name of an entity in the relation.
+    #     Aliased as :member_name.
+    #   @param options [Hash] additional options for the relation.
     #
-    # @option options member_name [String] the name of a collection entity.
-    # @option options primary_key_name [String] the name of the primary key
-    #   attribute. Defaults to 'id'.
-    # @option options primary_key_type [Class, Stannum::Constraint] the type of
-    #   the primary key attribute. Defaults to Integer.
-    # @option options qualified_name [String] the qualified name of the
-    #   collection, which should be unique. Defaults to the collection name.
-    def initialize(collection_name: nil, entity_class: nil, **options) # rubocop:disable Metrics/MethodLength
+    #   @option options primary_key_name [String] the name of the primary key
+    #     attribute. Defaults to 'id'.
+    #   @option primary_key_type [Class, Stannum::Constraint] the type of
+    #     the primary key attribute. Defaults to Integer.
+    def initialize(**parameters) # rubocop:disable Metrics/MethodLength
       super()
 
-      @collection_name = resolve_collection_name(
-        collection_name: collection_name,
-        entity_class:    entity_class
+      relation_params = resolve_parameters(
+        parameters,
+        name:          :collection_name,
+        singular_name: :member_name
       )
-      @member_name = resolve_member_name(
-        collection_name: self.collection_name,
-        **options
-      )
-      @qualified_name = resolve_qualified_name(
-        collection_name: self.collection_name,
-        entity_class:    entity_class,
-        **options
-      )
-      @entity_class = resolve_entity_class(entity_class: entity_class)
-      @options      = options
+      @entity_class   = relation_params[:entity_class]
+      @name           = relation_params[:name]
+      @qualified_name = relation_params[:qualified_name]
+      @singular_name  = relation_params[:singular_name]
+
+      @options = ignore_parameters(**parameters)
     end
 
-    # @return [String] the name of the collection.
-    attr_reader :collection_name
+    alias collection_name name
 
-    # @return [Class] the class of entity represented in the collection.
-    attr_reader :entity_class
-
-    # @return [String] the name of a collection entity.
-    attr_reader :member_name
+    alias member_name singular_name
 
     # @return [Hash<Symbol>] additional options for the collection.
     attr_reader :options
-
-    # @return [String] the qualified name of the collection, which should be
-    #   unique.
-    attr_reader :qualified_name
 
     # @param other [Object] The object to compare.
     #
@@ -87,20 +88,6 @@ module Cuprum::Collections
       comparable_options >= expected
     end
 
-    # @return [Symbol] the name of the primary key attribute. Defaults to 'id'.
-    def primary_key_name
-      @primary_key_name ||= options.fetch(:primary_key_name, 'id').to_s
-    end
-
-    # @return [Class, Stannum::Constraint] the type of the primary key
-    #   attribute. Defaults to Integer.
-    def primary_key_type
-      @primary_key_type ||=
-        options
-          .fetch(:primary_key_type, Integer)
-          .then { |obj| obj.is_a?(String) ? Object.const_get(obj) : obj }
-    end
-
     # A new Query instance, used for querying against the collection data.
     #
     # @return [Object] the query.
@@ -113,7 +100,10 @@ module Cuprum::Collections
     protected
 
     def comparable_options
-      command_options
+      command_options.merge(
+        name:          name,
+        singular_name: singular_name
+      )
     end
 
     private
@@ -129,18 +119,14 @@ module Cuprum::Collections
       }
     end
 
-    def default_entity_class
-      qualified_name
-        .split('/')
-        .then { |ary| [*ary[0...-1], tools.string_tools.singularize(ary[-1])] }
-        .map { |str| tools.string_tools.camelize(str) }
-        .join('::')
+    def ignore_parameters(**parameters)
+      parameters
+        .reject { |key, _| ignored_parameters.include?(key) }
+        .to_h
     end
 
-    def resolve_entity_class(entity_class:)
-      value = entity_class || default_entity_class
-
-      value.is_a?(String) ? Object.const_get(value) : value
+    def ignored_parameters
+      @ignored_parameters ||= Set.new(IGNORED_PARAMETERS)
     end
   end
 end

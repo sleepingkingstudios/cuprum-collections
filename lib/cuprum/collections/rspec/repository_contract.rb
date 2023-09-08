@@ -69,7 +69,7 @@ module Cuprum::Collections::RSpec
         end
 
         it 'should return the collection' do
-          collection = create_collection
+          collection = create_collection(safe: false)
 
           expect(collection).to be repository[qualified_name]
         end
@@ -458,6 +458,8 @@ module Cuprum::Collections::RSpec
         end
 
         if abstract
+          let(:collection_options) { { name: collection_name } }
+
           it 'should raise an exception' do
             expect { create_collection(safe: false) }
               .to raise_error(

@@ -4,6 +4,8 @@ require 'cuprum/collections/basic/collection'
 require 'cuprum/collections/repository'
 require 'cuprum/collections/rspec/repository_contract'
 
+require 'support/book'
+
 RSpec.describe Cuprum::Collections::Repository do
   include Cuprum::Collections::RSpec
 
@@ -54,8 +56,6 @@ RSpec.describe Cuprum::Collections::Repository do
       qualified_name:  'scope/widgets'
     )
   end
-
-  example_class 'Book', 'Hash'
 
   describe '::AbstractRepositoryError' do
     include_examples 'should define constant', :AbstractRepositoryError
