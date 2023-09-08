@@ -3,6 +3,10 @@
 require 'cuprum/collections/relation'
 require 'cuprum/collections/rspec/contracts/relation_contracts'
 
+require 'support/book'
+require 'support/grimoire'
+require 'support/scoped_book'
+
 RSpec.describe Cuprum::Collections::Relation do
   include Cuprum::Collections::RSpec::Contracts::RelationContracts
 
@@ -11,9 +15,22 @@ RSpec.describe Cuprum::Collections::Relation do
   let(:name)                { 'books' }
   let(:constructor_options) { { name: name } }
 
-  example_class 'Book'
-  example_class 'Grimoire',         'Book'
-  example_class 'Spec::ScopedBook', 'Book'
+  describe '::Cardinality' do
+    subject(:relation) { described_class.new(**constructor_options) }
+
+    let(:described_class)     { Spec::ExampleRelation }
+    let(:constructor_options) { {} }
+
+    example_class 'Spec::ExampleRelation' do |klass|
+      klass.include Cuprum::Collections::Relation::Cardinality
+
+      klass.define_method(:initialize) do |**options|
+        @plural = resolve_plurality(**options)
+      end
+    end
+
+    include_contract 'should define cardinality'
+  end
 
   describe '::Disambiguation' do
     subject(:relation) do

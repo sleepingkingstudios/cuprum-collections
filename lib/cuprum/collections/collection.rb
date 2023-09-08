@@ -28,11 +28,11 @@ module Cuprum::Collections
     # @overload initialize(entity_class: nil, name: nil, qualified_name: nil, singular_name: nil, **options)
     #   @param entity_class [Class, String] the class of entity represented by
     #     the relation.
-    #   @param singular_name [String] the name of an entity in the relation.
-    #     Aliased as :member_name.
     #   @param name [String] the name of the relation. Aliased as
     #     :collection_name.
     #   @param qualified_name [String] a scoped name for the relation.
+    #   @param singular_name [String] the name of an entity in the relation.
+    #     Aliased as :member_name.
     #   @param options [Hash] additional options for the relation.
     #
     #   @option options primary_key_name [String] the name of the primary key

@@ -5,6 +5,10 @@ require 'cuprum/collections/basic/commands'
 require 'cuprum/collections/rspec/collection_contract'
 require 'cuprum/collections/rspec/fixtures'
 
+require 'support/book'
+require 'support/grimoire'
+require 'support/scoped_book'
+
 RSpec.describe Cuprum::Collections::Basic::Collection do
   subject(:collection) do
     described_class.new(
@@ -23,10 +27,6 @@ RSpec.describe Cuprum::Collections::Basic::Collection do
   let(:constructor_options) { { name: name } }
   let(:query_class)         { Cuprum::Collections::Basic::Query }
   let(:query_options)       { { data: data } }
-
-  example_class 'Book',             'Hash'
-  example_class 'Grimoire',         'Book'
-  example_class 'Spec::ScopedBook', 'Book'
 
   describe '.new' do
     it 'should define the constructor' do

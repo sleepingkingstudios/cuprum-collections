@@ -4,6 +4,10 @@ require 'cuprum/collections/collection'
 require 'cuprum/collections/rspec/collection_contract'
 require 'cuprum/collections/rspec/contracts/relation_contracts'
 
+require 'support/book'
+require 'support/grimoire'
+require 'support/scoped_book'
+
 RSpec.describe Cuprum::Collections::Collection do
   include Cuprum::Collections::RSpec::Contracts::RelationContracts
 
@@ -50,10 +54,6 @@ RSpec.describe Cuprum::Collections::Collection do
 
     include_contract 'should validate the parameters'
   end
-
-  example_class 'Book'
-  example_class 'Grimoire',         'Book'
-  example_class 'Spec::ScopedBook', 'Book'
 
   include_contract Cuprum::Collections::RSpec::CollectionContract,
     abstract: true

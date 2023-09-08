@@ -5,6 +5,10 @@ require 'cuprum/collections/basic/repository'
 require 'cuprum/collections/rspec/fixtures'
 require 'cuprum/collections/rspec/repository_contract'
 
+require 'support/book'
+require 'support/grimoire'
+require 'support/scoped_book'
+
 RSpec.describe Cuprum::Collections::Basic::Repository do
   include Cuprum::Collections::RSpec
 
@@ -52,10 +56,6 @@ RSpec.describe Cuprum::Collections::Basic::Repository do
       data:            []
     )
   end
-
-  example_class 'Book',             'Hash'
-  example_class 'Grimoire',         'Book'
-  example_class 'Spec::ScopedBook', 'Book'
 
   describe '.new' do
     it 'should define the constructor' do

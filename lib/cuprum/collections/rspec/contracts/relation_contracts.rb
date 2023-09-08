@@ -990,8 +990,140 @@ module Cuprum::Collections::RSpec::Contracts
       end
     end
 
+    # Contract validating a Relation's cardinality properties.
+    module ShouldDefineCardinalityContract
+      extend RSpec::SleepingKingStudios::Contract
+
+      # @!method apply(example_group)
+      #   Adds the contract to the example group.
+      contract do
+        describe '.new' do
+          describe 'with plural: an Object' do
+            let(:constructor_options) do
+              super().merge(plural: Object.new.freeze)
+            end
+            let(:error_message) do
+              'plural must be true or false'
+            end
+
+            it 'should raise an exception' do
+              expect { described_class.new(**constructor_options) }
+                .to raise_error ArgumentError, error_message
+            end
+          end
+
+          describe 'with singular: an Object' do
+            let(:constructor_options) do
+              super().merge(singular: Object.new.freeze)
+            end
+            let(:error_message) do
+              'singular must be true or false'
+            end
+
+            it 'should raise an exception' do
+              expect { described_class.new(**constructor_options) }
+                .to raise_error ArgumentError, error_message
+            end
+          end
+
+          describe 'with singular: nil and plural: value' do
+            let(:constructor_options) do
+              super().merge(plural: true, singular: nil)
+            end
+
+            it 'should not raise an exception' do
+              expect { described_class.new(**constructor_options) }
+                .not_to raise_error
+            end
+          end
+
+          describe 'with singular: value and plural: nil' do
+            let(:constructor_options) do
+              super().merge(plural: nil, singular: true)
+            end
+
+            it 'should not raise an exception' do
+              expect { described_class.new(**constructor_options) }
+                .not_to raise_error
+            end
+          end
+
+          describe 'with singular: value and plural: value' do
+            let(:constructor_options) do
+              super().merge(singular: true, plural: false)
+            end
+            let(:error_message) do
+              'ambiguous cardinality: initialized with parameters ' \
+                'plural: false and singular: true'
+            end
+
+            it 'should raise an exception' do
+              expect { described_class.new(**constructor_options) }
+                .to raise_error ArgumentError, error_message
+            end
+          end
+        end
+
+        describe '#plural?' do
+          include_examples 'should define predicate', :plural?, true
+
+          context 'when initialized with plural: false' do
+            let(:constructor_options) { super().merge(plural: false) }
+
+            it { expect(subject.plural?).to be false }
+          end
+
+          context 'when initialized with plural: true' do
+            let(:constructor_options) { super().merge(plural: true) }
+
+            it { expect(subject.plural?).to be true }
+          end
+
+          context 'when initialized with singular: false' do
+            let(:constructor_options) { super().merge(singular: false) }
+
+            it { expect(subject.plural?).to be true }
+          end
+
+          context 'when initialized with singular: true' do
+            let(:constructor_options) { super().merge(singular: true) }
+
+            it { expect(subject.plural?).to be false }
+          end
+        end
+
+        describe '#singular?' do
+          include_examples 'should define predicate', :singular?, false
+
+          context 'when initialized with plural: false' do
+            let(:constructor_options) { super().merge(plural: false) }
+
+            it { expect(subject.singular?).to be true }
+          end
+
+          context 'when initialized with plural: true' do
+            let(:constructor_options) { super().merge(plural: true) }
+
+            it { expect(subject.singular?).to be false }
+          end
+
+          context 'when initialized with singular: false' do
+            let(:constructor_options) { super().merge(singular: false) }
+
+            it { expect(subject.singular?).to be false }
+          end
+
+          context 'when initialized with singular: true' do
+            let(:constructor_options) { super().merge(singular: true) }
+
+            it { expect(subject.singular?).to be true }
+          end
+        end
+      end
+    end
+
     # Contract validating a Relation's primary key properties.
-    module ShouldDefinePrimaryKeys
+    module ShouldDefinePrimaryKeysContract
       extend RSpec::SleepingKingStudios::Contract
 
       # @!method apply(example_group)
