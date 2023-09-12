@@ -426,6 +426,308 @@ module Cuprum::Collections::RSpec::Contracts
       end
     end
 
+    # Contract validating the behavior of a BelongsToAssociation.
+    module ShouldBeABelongsToAssociationContract
+      extend RSpec::SleepingKingStudios::Contract
+
+      # @!method apply(example_group)
+      #   Adds the contract to the example group.
+      contract do
+        include Cuprum::Collections::RSpec::Contracts::RelationContracts
+
+        include_contract 'should be an association'
+
+        describe '#build_entities_query' do
+          let(:key)      { subject.foreign_key_name }
+          let(:entities) { [] }
+          let(:options)  { {} }
+          let(:query) do
+            association.build_entities_query(*entities, **options)
+          end
+          let(:evaluated) do
+            Spec::QueryBuilder.new.instance_exec(&query)
+          end
+
+          example_class 'Spec::Entity' do |klass|
+            klass.define_method(:initialize) do |**attributes|
+              attributes.each do |key, value|
+                instance_variable_set(:"@#{key}", value)
+              end
+            end
+
+            klass.attr_reader :book_id
+          end
+
+          example_class 'Spec::QueryBuilder' do |klass|
+            klass.define_method(:one_of) { |values| { 'one_of' => values } }
+          end
+
+          describe 'with no entities' do
+            let(:entities) { [] }
+
+            it { expect(query).to be_a Proc }
+
+            it { expect(evaluated).to be == {} }
+          end
+
+          describe 'with one nil entity' do
+            let(:entities) { [nil] }
+
+            it { expect(evaluated).to be == {} }
+          end
+
+          describe 'with one invalid entity' do
+            let(:entities) { [Object.new.freeze] }
+            let(:error_message) do
+              /#{"undefined method `#{key}'"}/
+            end
+
+            it 'should raise an exception' do
+              expect { association.build_entities_query(*entities) }
+                .to raise_error NameError, error_message
+            end
+          end
+
+          describe 'with one entity that responds to #[] and key: nil' do
+            let(:entities) { [{ key => nil }] }
+
+            it { expect(evaluated).to be == {} }
+
+            describe 'with allow_nil: true' do
+              let(:options) { super().merge(allow_nil: true) }
+
+              it { expect(evaluated).to be == { 'id' => nil } }
+            end
+          end
+
+          describe 'with one entity that responds to #[] and key: value' do
+            let(:entities) { [{ key => 0 }] }
+
+            it { expect(evaluated).to be == { 'id' => 0 } }
+          end
+
+          describe 'with one entity that responds to #id and key: nil' do
+            let(:entities) { [Spec::Entity.new(key => nil)] }
+
+            it { expect(evaluated).to be == {} }
+
+            describe 'with allow_nil: true' do
+              let(:options) { super().merge(allow_nil: true) }
+
+              it { expect(evaluated).to be == { 'id' => nil } }
+            end
+          end
+
+          describe 'with one entity that responds to #id and key: value' do
+            let(:entities) { [Spec::Entity.new(key => 0)] }
+
+            it { expect(evaluated).to be == { 'id' => 0 } }
+          end
+
+          describe 'with multiple entities' do
+            let(:entities) do
+              [
+                Spec::Entity.new(key => 0),
+                Spec::Entity.new(key => 1),
+                Spec::Entity.new(key => 2)
+              ]
+            end
+            let(:expected) do
+              { 'id' => { 'one_of' => [0, 1, 2] } }
+            end
+
+            it { expect(evaluated).to be == expected }
+          end
+
+          describe 'with multiple entities including nil' do
+            let(:entities) do
+              [
+                Spec::Entity.new(key => 0),
+                nil,
+                Spec::Entity.new(key => 1),
+                nil,
+                Spec::Entity.new(key => 2)
+              ]
+            end
+            let(:expected) do
+              { 'id' => { 'one_of' => [0, 1, 2] } }
+            end
+
+            it { expect(evaluated).to be == expected }
+          end
+
+          describe 'with multiple entities including nil ids' do
+            let(:entities) do
+              [
+                Spec::Entity.new(key => 0),
+                Spec::Entity.new(key => nil),
+                Spec::Entity.new(key => 1),
+                Spec::Entity.new(key => nil),
+                Spec::Entity.new(key => 2)
+              ]
+            end
+            let(:expected) do
+              { 'id' => { 'one_of' => [0, 1, 2] } }
+            end
+
+            it { expect(evaluated).to be == expected }
+
+            describe 'with allow_nil: true' do
+              let(:options) { super().merge(allow_nil: true) }
+              let(:expected) do
+                { 'id' => { 'one_of' => [0, nil, 1, 2] } }
+              end
+
+              it { expect(evaluated).to be == expected }
+            end
+          end
+
+          describe 'with multiple entities including duplicate ids' do
+            let(:entities) do
+              [
+                Spec::Entity.new(key => 0),
+                Spec::Entity.new(key => 1),
+                Spec::Entity.new(key => 0),
+                Spec::Entity.new(key => 1),
+                Spec::Entity.new(key => 2)
+              ]
+            end
+            let(:expected) do
+              { 'id' => { 'one_of' => [0, 1, 2] } }
+            end
+
+            it { expect(evaluated).to be == expected }
+          end
+        end
+
+        describe '#build_keys_query' do
+          let(:keys)    { [] }
+          let(:options) { {} }
+          let(:query) do
+            association.build_keys_query(*keys, **options)
+          end
+          let(:evaluated) do
+            Spec::QueryBuilder.new.instance_exec(&query)
+          end
+
+          example_class 'Spec::QueryBuilder' do |klass|
+            klass.define_method(:one_of) { |values| { 'one_of' => values } }
+          end
+
+          describe 'with no keys' do
+            let(:keys) { [] }
+
+            it { expect(query).to be_a Proc }
+
+            it { expect(evaluated).to be == {} }
+          end
+
+          describe 'with one nil key' do
+            let(:keys) { [nil] }
+
+            it { expect(evaluated).to be == {} }
+
+            describe 'with allow_nil: true' do
+              let(:options) { { allow_nil: true } }
+
+              it { expect(evaluated).to be == { 'id' => nil } }
+            end
+          end
+
+          describe 'with one non-nil key' do
+            let(:keys) { [0] }
+
+            it { expect(evaluated).to be == { 'id' => 0 } }
+          end
+
+          describe 'with many keys' do
+            let(:keys)     { [0, 1, 2] }
+            let(:expected) { { 'id' => { 'one_of' => keys } } }
+
+            it { expect(evaluated).to be == expected }
+          end
+
+          describe 'with many keys including nil' do
+            let(:keys)     { [0, nil, 2] }
+            let(:expected) { { 'id' => { 'one_of' => [0, 2] } } }
+
+            it { expect(evaluated).to be == expected }
+
+            describe 'with allow_nil: true' do
+              let(:options) { { allow_nil: true } }
+              let(:expected) do
+                { 'id' => { 'one_of' => [0, nil, 2] } }
+              end
+
+              it { expect(evaluated).to be == expected }
+            end
+          end
+
+          describe 'with many non-unique keys' do
+            let(:keys)     { [0, 1, 2, 1, 2] }
+            let(:expected) { { 'id' => { 'one_of' => keys.uniq } } }
+
+            it { expect(evaluated).to be == expected }
+          end
+        end
+
+        describe '#foreign_key_name' do
+          let(:expected) { "#{tools.str.singularize(name)}_id" }
+
+          def tools
+            SleepingKingStudios::Tools::Toolbelt.instance
+          end
+
+          it { expect(subject.foreign_key_name).to be == expected }
+
+          context 'when initialized with foreign_key_name: a String' do
+            let(:foreign_key_name) { 'writer_id' }
+            let(:constructor_options) do
+              super().merge(foreign_key_name: foreign_key_name)
+            end
+
+            it { expect(subject.foreign_key_name).to be == 'writer_id' }
+          end
+
+          context 'when initialized with foreign_key_name: a String' do
+            let(:foreign_key_name) { :writer_id }
+            let(:constructor_options) do
+              super().merge(foreign_key_name: foreign_key_name)
+            end
+
+            it { expect(subject.foreign_key_name).to be == 'writer_id' }
+          end
+
+          context 'when initialized with singular_name: value' do
+            let(:singular_name) { 'author' }
+            let(:constructor_options) do
+              super().merge(singular_name: singular_name)
+            end
+
+            it { expect(subject.foreign_key_name).to be == 'author_id' }
+
+            context 'when initialized with foreign_key_name: a String' do
+              let(:foreign_key_name) { 'writer_id' }
+              let(:constructor_options) do
+                super().merge(foreign_key_name: foreign_key_name)
+              end
+
+              it { expect(subject.foreign_key_name).to be == 'writer_id' }
+            end
+
+            context 'when initialized with foreign_key_name: a String' do
+              let(:foreign_key_name) { :writer_id }
+              let(:constructor_options) do
+                super().merge(foreign_key_name: foreign_key_name)
+              end
+
+              it { expect(subject.foreign_key_name).to be == 'writer_id' }
+            end
+          end
+        end
+      end
+    end
+
     # Contract validating the behavior of a HasAssociation.
     module ShouldBeAHasAssociationContract
       extend RSpec::SleepingKingStudios::Contract
