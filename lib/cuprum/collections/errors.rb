@@ -7,6 +7,7 @@ module Cuprum::Collections
   module Errors
     autoload :AbstractFindError, 'cuprum/collections/errors/abstract_find_error'
     autoload :AlreadyExists,     'cuprum/collections/errors/already_exists'
+    autoload :Associations,      'cuprum/collections/errors/associations'
     autoload :ExtraAttributes,   'cuprum/collections/errors/extra_attributes'
     autoload :FailedValidation,  'cuprum/collections/errors/failed_validation'
     autoload :InvalidParameters, 'cuprum/collections/errors/invalid_parameters'
