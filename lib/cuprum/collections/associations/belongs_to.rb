@@ -14,22 +14,19 @@ module Cuprum::Collections::Associations
       super(**params, singular: true)
     end
 
+    # (see Cuprum::Collections::Association#primary_key_query?)
+    def primary_key_query?
+      true
+    end
+
     private
 
     def default_foreign_key_name
       singular_name&.then { |str| "#{str}_id" }
     end
 
-    def entity_key_name
-      foreign_key_name
-    end
-
     def ignored_parameters
       @ignored_parameters ||= Set.new(IGNORED_PARAMETERS + %i[singular])
-    end
-
-    def query_key_name
-      primary_key_name
     end
   end
 end

@@ -5,7 +5,7 @@ require 'cuprum/collections/resource'
 
 module Cuprum::Collections
   # Class representing an association between resources.
-  class Association < Resource
+  class Association < Resource # rubocop:disable Metrics/ClassLength
     # @overload initialize(entity_class: nil, name: nil, qualified_name: nil, singular_name: nil, **options)
     #   @param entity_class [Class, String] the class of entity represented by
     #     the resource. Aliased as :association_class, :resource_class.
@@ -50,24 +50,35 @@ module Cuprum::Collections
     # Generates a query for finding matching items.
     #
     # @param entities [Array] the entities to query for.
+    # @param allow_nil [Boolean] if true, allows for nil keys. Defaults to
+    #   false.
+    # @param deduplicate [Boolean] if true, removes duplicate keys before
+    #   generating the query. Defaults to true.
     #
     # @return [Proc] the generated query.
-    def build_entities_query(*entities, allow_nil: false)
-      keys = entities.compact.map { |entity| map_entity_to_key(entity) }
+    def build_entities_query(*entities, allow_nil: false, deduplicate: true)
+      keys =
+        map_entities_to_keys(
+          *entities,
+          allow_nil:   allow_nil,
+          deduplicate: deduplicate
+        )
 
-      build_keys_query(*keys, allow_nil: allow_nil)
+      build_keys_query(*keys, allow_nil: allow_nil, deduplicate: false)
     end
 
     # Generates a query for finding matching items by key.
     #
-    # @param keys [Array] the foreign keys to query for.
+    # @param keys [Array] the primary or foreign keys to query for.
     # @param allow_nil [Boolean] if true, allows for nil keys. Defaults to
     #   false.
+    # @param deduplicate [Boolean] if true, removes duplicate keys before
+    #   generating the query. Defaults to true.
     #
     # @return [Proc] the generated query.
-    def build_keys_query(*keys, allow_nil: false)
+    def build_keys_query(*keys, allow_nil: false, deduplicate: true)
       keys     = keys.compact unless allow_nil
-      keys     = keys.uniq
+      keys     = keys.uniq    if deduplicate
       hash_key = query_key_name
 
       if keys.empty?
@@ -103,6 +114,41 @@ module Cuprum::Collections
         options
           .fetch(:inverse_name) { default_inverse_name }
           &.to_s
+    end
+
+    # Maps a list of entities to keys for performing a query.
+    #
+    # @param entities [Array] the entities to query for.
+    # @param allow_nil [Boolean] if true, allows for nil keys. Defaults to
+    #   false.
+    # @param deduplicate [Boolean] if true, removes duplicate keys before
+    #   generating the query. Defaults to true.
+    #
+    # @return [Array] the primary or foreign keys to query for.
+    def map_entities_to_keys(*entities, allow_nil: false, deduplicate: true)
+      entities
+        .compact
+        .map { |entity| map_entity_to_key(entity) }
+        .then { |keys| allow_nil ? keys : keys.compact }
+        .then { |keys| deduplicate ? keys.uniq : keys }
+    end
+
+    # @return [Boolean] true if the association queries by primary key, e.g. a
+    #   :belongs_to association; false if the association queries by foreign
+    #   key, e.g. a :has_one or :has_many association.
+    def primary_key_query?
+      false
+    end
+
+    # @return [String] the name of the key used to perform the query.
+    def query_key_name
+      return primary_key_name if primary_key_query?
+
+      if foreign_key_name.nil? || foreign_key_name.empty?
+        raise ArgumentError, "foreign key name can't be blank"
+      end
+
+      foreign_key_name
     end
 
     # @return [String] the name of an entity in the inverse association.
@@ -153,21 +199,13 @@ module Cuprum::Collections
     end
 
     def entity_key_name
-      primary_key_name
+      primary_key_query? ? foreign_key_name : primary_key_name
     end
 
     def map_entity_to_key(entity)
       return entity[entity_key_name] if entity.respond_to?(:[])
 
       entity.send(entity_key_name)
-    end
-
-    def query_key_name
-      if foreign_key_name.nil? || foreign_key_name.empty?
-        raise ArgumentError, "foreign key name can't be blank"
-      end
-
-      foreign_key_name
     end
 
     def tools

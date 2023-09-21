@@ -85,6 +85,12 @@ module Cuprum::Collections
     # @return [Boolean] true if all of the expected options match, otherwise
     #   false.
     def matches?(**expected)
+      if expected[:entity_class].is_a?(String)
+        expected = expected.merge(
+          entity_class: Object.const_get(expected[:entity_class])
+        )
+      end
+
       comparable_options >= expected
     end
 
@@ -101,8 +107,9 @@ module Cuprum::Collections
 
     def comparable_options
       command_options.merge(
-        name:          name,
-        singular_name: singular_name
+        name:           name,
+        qualified_name: qualified_name,
+        singular_name:  singular_name
       )
     end
 

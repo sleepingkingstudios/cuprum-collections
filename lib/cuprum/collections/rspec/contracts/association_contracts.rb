@@ -41,7 +41,7 @@ module Cuprum::Collections::RSpec::Contracts
             expect(association)
               .to respond_to(:build_entities_query)
               .with_unlimited_arguments
-              .and_keywords(:allow_nil)
+              .and_keywords(:allow_nil, :deduplicate)
           end
         end
 
@@ -50,7 +50,7 @@ module Cuprum::Collections::RSpec::Contracts
             expect(association)
               .to respond_to(:build_keys_query)
               .with_unlimited_arguments
-              .and_keywords(:allow_nil)
+              .and_keywords(:allow_nil, :deduplicate)
           end
         end
 
@@ -248,6 +248,15 @@ module Cuprum::Collections::RSpec::Contracts
           end
         end
 
+        describe '#map_entities_to_keys' do
+          it 'should define the method' do
+            expect(subject)
+              .to respond_to(:map_entities_to_keys)
+              .with_unlimited_arguments
+              .and_keywords(:allow_nil)
+          end
+        end
+
         describe '#options' do
           context 'when initialized with inverse: value' do
             let(:inverse) { described_class.new(name: 'authors') }
@@ -261,6 +270,14 @@ module Cuprum::Collections::RSpec::Contracts
 
         describe '#plural?' do
           include_examples 'should define predicate', :plural?
+        end
+
+        describe '#primary_key_query?' do
+          include_examples 'should define predicate', :primary_key_query?
+        end
+
+        describe '#query_key_name' do
+          include_examples 'should define reader', :query_key_name
         end
 
         describe '#singular_inverse_name' do
@@ -597,6 +614,15 @@ module Cuprum::Collections::RSpec::Contracts
             end
 
             it { expect(evaluated).to be == expected }
+
+            describe 'with deduplicate: false' do
+              let(:options) { super().merge(deduplicate: false) }
+              let(:expected) do
+                { 'id' => { 'one_of' => [0, 1, 0, 1, 2] } }
+              end
+
+              it { expect(evaluated).to be == expected }
+            end
           end
         end
 
@@ -668,6 +694,15 @@ module Cuprum::Collections::RSpec::Contracts
             let(:expected) { { 'id' => { 'one_of' => keys.uniq } } }
 
             it { expect(evaluated).to be == expected }
+
+            describe 'with deduplicate: false' do
+              let(:options) { super().merge(deduplicate: false) }
+              let(:expected) do
+                { 'id' => { 'one_of' => [0, 1, 2, 1, 2] } }
+              end
+
+              it { expect(evaluated).to be == expected }
+            end
           end
         end
 
@@ -722,6 +757,179 @@ module Cuprum::Collections::RSpec::Contracts
               end
 
               it { expect(subject.foreign_key_name).to be == 'writer_id' }
+            end
+          end
+        end
+
+        describe '#map_entities_to_keys' do
+          let(:key)      { subject.foreign_key_name }
+          let(:entities) { [] }
+          let(:options)  { {} }
+          let(:keys) do
+            association.map_entities_to_keys(*entities, **options)
+          end
+
+          example_class 'Spec::Entity' do |klass|
+            klass.define_method(:initialize) do |**attributes|
+              attributes.each do |key, value|
+                instance_variable_set(:"@#{key}", value)
+              end
+            end
+
+            klass.attr_reader :book_id
+          end
+
+          describe 'with no entities' do
+            let(:entities) { [] }
+
+            it { expect(keys).to be == [] }
+          end
+
+          describe 'with one nil entity' do
+            let(:entities) { [nil] }
+
+            it { expect(keys).to be == [] }
+          end
+
+          describe 'with one invalid entity' do
+            let(:entities) { [Object.new.freeze] }
+            let(:error_message) do
+              /#{"undefined method `#{key}'"}/
+            end
+
+            it 'should raise an exception' do
+              expect { association.map_entities_to_keys(*entities) }
+                .to raise_error NameError, error_message
+            end
+          end
+
+          describe 'with one entity that responds to #[] and key: nil' do
+            let(:entities) { [{ key => nil }] }
+
+            it { expect(keys).to be == [] }
+
+            describe 'with allow_nil: true' do
+              let(:options) { super().merge(allow_nil: true) }
+
+              it { expect(keys).to be == [nil] }
+            end
+          end
+
+          describe 'with one entity that responds to #[] and key: value' do
+            let(:entities) { [{ key => 0 }] }
+
+            it { expect(keys).to be == [0] }
+          end
+
+          describe 'with one entity that responds to #id and key: nil' do
+            let(:entities) { [Spec::Entity.new(key => nil)] }
+
+            it { expect(keys).to be == [] }
+
+            describe 'with allow_nil: true' do
+              let(:options) { super().merge(allow_nil: true) }
+
+              it { expect(keys).to be == [nil] }
+            end
+          end
+
+          describe 'with one entity that responds to #id and key: value' do
+            let(:entities) { [Spec::Entity.new(key => 0)] }
+
+            it { expect(keys).to be == [0] }
+          end
+
+          describe 'with multiple entities' do
+            let(:entities) do
+              [
+                Spec::Entity.new(key => 0),
+                Spec::Entity.new(key => 1),
+                Spec::Entity.new(key => 2)
+              ]
+            end
+
+            it { expect(keys).to be == [0, 1, 2] }
+          end
+
+          describe 'with multiple entities including nil' do
+            let(:entities) do
+              [
+                Spec::Entity.new(key => 0),
+                nil,
+                Spec::Entity.new(key => 1),
+                nil,
+                Spec::Entity.new(key => 2)
+              ]
+            end
+
+            it { expect(keys).to be == [0, 1, 2] }
+          end
+
+          describe 'with multiple entities including nil ids' do
+            let(:entities) do
+              [
+                Spec::Entity.new(key => 0),
+                Spec::Entity.new(key => nil),
+                Spec::Entity.new(key => 1),
+                Spec::Entity.new(key => nil),
+                Spec::Entity.new(key => 2)
+              ]
+            end
+
+            it { expect(keys).to be == [0, 1, 2] }
+
+            describe 'with allow_nil: true' do
+              let(:options) { super().merge(allow_nil: true) }
+
+              it { expect(keys).to be == [0, nil, 1, 2] }
+            end
+          end
+
+          describe 'with multiple entities including duplicate ids' do
+            let(:entities) do
+              [
+                Spec::Entity.new(key => 0),
+                Spec::Entity.new(key => 1),
+                Spec::Entity.new(key => 0),
+                Spec::Entity.new(key => 1),
+                Spec::Entity.new(key => 2)
+              ]
+            end
+
+            it { expect(keys).to be == [0, 1, 2] }
+
+            describe 'with deduplicate: false' do
+              let(:options) { super().merge(deduplicate: false) }
+
+              it { expect(keys).to be == [0, 1, 0, 1, 2] }
+            end
+          end
+        end
+
+        describe '#primary_key_query?' do
+          it { expect(subject.primary_key_query?).to be true }
+        end
+
+        describe '#query_key_name' do
+          it { expect(subject.query_key_name).to be == 'id' }
+
+          context 'when initialized with primary_key_name: a String' do
+            let(:primary_key_name) { 'uuid' }
+            let(:constructor_options) do
+              super().merge(primary_key_name: primary_key_name)
+            end
+
+            it { expect(subject.query_key_name).to be == primary_key_name }
+          end
+
+          context 'when initialized with primary_key_name: a Symbol' do
+            let(:primary_key_name) { :uuid }
+            let(:constructor_options) do
+              super().merge(primary_key_name: primary_key_name)
+            end
+
+            it 'should set the primary key name' do
+              expect(subject.query_key_name).to be == primary_key_name.to_s
             end
           end
         end
@@ -916,6 +1124,15 @@ module Cuprum::Collections::RSpec::Contracts
               end
 
               it { expect(evaluated).to be == expected }
+
+              describe 'with deduplicate: false' do
+                let(:options) { super().merge(deduplicate: false) }
+                let(:expected) do
+                  { 'author_id' => { 'one_of' => [0, 1, 0, 1, 2] } }
+                end
+
+                it { expect(evaluated).to be == expected }
+              end
             end
           end
         end
@@ -1005,6 +1222,15 @@ module Cuprum::Collections::RSpec::Contracts
               let(:expected) { { 'author_id' => { 'one_of' => keys.uniq } } }
 
               it { expect(evaluated).to be == expected }
+
+              describe 'with deduplicate: false' do
+                let(:options) { super().merge(deduplicate: false) }
+                let(:expected) do
+                  { 'author_id' => { 'one_of' => [0, 1, 2, 1, 2] } }
+                end
+
+                it { expect(evaluated).to be == expected }
+              end
             end
           end
         end
@@ -1181,6 +1407,338 @@ module Cuprum::Collections::RSpec::Contracts
               end
 
               it { expect(subject.foreign_key_name).to be == 'author_id' }
+            end
+          end
+        end
+
+        describe '#map_entities_to_keys' do
+          let(:key)      { subject.primary_key_name }
+          let(:entities) { [] }
+          let(:options)  { {} }
+          let(:keys)     { subject.map_entities_to_keys(*entities, **options) }
+
+          example_class 'Spec::Entity' do |klass|
+            klass.define_method(:initialize) do |**attributes|
+              attributes.each do |key, value|
+                instance_variable_set(:"@#{key}", value)
+              end
+            end
+
+            klass.attr_reader :id
+          end
+
+          describe 'with no entities' do
+            let(:entities) { [] }
+
+            it { expect(keys).to be == [] }
+          end
+
+          describe 'with one nil entity' do
+            let(:entities) { [nil] }
+
+            it { expect(keys).to be == [] }
+          end
+
+          describe 'with one invalid entity' do
+            let(:entities) { [Object.new.freeze] }
+            let(:error_message) do
+              /#{"undefined method `#{key}'"}/
+            end
+
+            it 'should raise an exception' do
+              expect { association.map_entities_to_keys(*entities) }
+                .to raise_error NameError, error_message
+            end
+          end
+
+          describe 'with one entity that responds to #[] and key: nil' do
+            let(:entities) { [{ key => nil }] }
+
+            it { expect(keys).to be == [] }
+
+            describe 'with allow_nil: true' do
+              let(:options) { super().merge(allow_nil: true) }
+
+              it { expect(keys).to be == [nil] }
+            end
+          end
+
+          describe 'with one entity that responds to #[] and key: value' do
+            let(:entities) { [{ key => 0 }] }
+
+            it { expect(keys).to be == [0] }
+          end
+
+          describe 'with one entity that responds to #id and key: nil' do
+            let(:entities) { [Spec::Entity.new(key => nil)] }
+
+            it { expect(keys).to be == [] }
+
+            describe 'with allow_nil: true' do
+              let(:options) { super().merge(allow_nil: true) }
+
+              it { expect(keys).to be == [nil] }
+            end
+          end
+
+          describe 'with one entity that responds to #id and key: value' do
+            let(:entities) { [Spec::Entity.new(key => 0)] }
+
+            it { expect(keys).to be == [0] }
+          end
+
+          describe 'with multiple entities' do
+            let(:entities) do
+              [
+                Spec::Entity.new(key => 0),
+                Spec::Entity.new(key => 1),
+                Spec::Entity.new(key => 2)
+              ]
+            end
+
+            it { expect(keys).to be == [0, 1, 2] }
+          end
+
+          describe 'with multiple entities including nil' do
+            let(:entities) do
+              [
+                Spec::Entity.new(key => 0),
+                nil,
+                Spec::Entity.new(key => 1),
+                nil,
+                Spec::Entity.new(key => 2)
+              ]
+            end
+
+            it { expect(keys).to be == [0, 1, 2] }
+          end
+
+          describe 'with multiple entities including nil ids' do
+            let(:entities) do
+              [
+                Spec::Entity.new(key => 0),
+                Spec::Entity.new(key => nil),
+                Spec::Entity.new(key => 1),
+                Spec::Entity.new(key => nil),
+                Spec::Entity.new(key => 2)
+              ]
+            end
+
+            it { expect(keys).to be == [0, 1, 2] }
+
+            describe 'with allow_nil: true' do
+              let(:options) { super().merge(allow_nil: true) }
+
+              it { expect(keys).to be == [0, nil, 1, 2] }
+            end
+          end
+
+          describe 'with multiple entities including duplicate ids' do
+            let(:entities) do
+              [
+                Spec::Entity.new(key => 0),
+                Spec::Entity.new(key => 1),
+                Spec::Entity.new(key => 0),
+                Spec::Entity.new(key => 1),
+                Spec::Entity.new(key => 2)
+              ]
+            end
+
+            it { expect(keys).to be == [0, 1, 2] }
+
+            describe 'with deduplicate: false' do
+              let(:options) { super().merge(deduplicate: false) }
+
+              it { expect(keys).to be == [0, 1, 0, 1, 2] }
+            end
+          end
+        end
+
+        describe '#primary_key_query?' do
+          it { expect(subject.primary_key_query?).to be false }
+        end
+
+        describe '#query_key_name' do
+          context 'when the foreign key name is blank' do
+            let(:error_message) do
+              "foreign key name can't be blank"
+            end
+
+            it 'should raise an exception' do
+              expect { association.query_key_name }
+                .to raise_error ArgumentError, error_message
+            end
+          end
+
+          context 'when initialized with foreign_key_name: a String' do
+            let(:foreign_key_name) { 'writer_id' }
+            let(:constructor_options) do
+              super().merge(foreign_key_name: foreign_key_name)
+            end
+
+            it { expect(subject.query_key_name).to be == 'writer_id' }
+          end
+
+          context 'when initialized with foreign_key_name: a String' do
+            let(:foreign_key_name) { :writer_id }
+            let(:constructor_options) do
+              super().merge(foreign_key_name: foreign_key_name)
+            end
+
+            it { expect(subject.query_key_name).to be == 'writer_id' }
+          end
+
+          context 'when initialized with inverse: value' do
+            let(:inverse) { described_class.new(name: 'authors') }
+            let(:constructor_options) do
+              super().merge(inverse: inverse)
+            end
+
+            it { expect(subject.query_key_name).to be == 'author_id' }
+
+            context 'when initialized with foreign_key_name: a String' do
+              let(:foreign_key_name) { 'writer_id' }
+              let(:constructor_options) do
+                super().merge(foreign_key_name: foreign_key_name)
+              end
+
+              it { expect(subject.query_key_name).to be == 'writer_id' }
+            end
+
+            context 'when initialized with foreign_key_name: a String' do
+              let(:foreign_key_name) { :writer_id }
+              let(:constructor_options) do
+                super().merge(foreign_key_name: foreign_key_name)
+              end
+
+              it { expect(subject.query_key_name).to be == 'writer_id' }
+            end
+
+            context 'when initialized with inverse_name: value' do
+              let(:inverse_name) { 'writers' }
+              let(:constructor_options) do
+                super().merge(inverse_name: inverse_name)
+              end
+
+              it { expect(subject.query_key_name).to be == 'author_id' }
+            end
+
+            context 'when initialized with singular_inverse_name: value' do
+              let(:singular_inverse_name) { 'writer' }
+              let(:constructor_options) do
+                super().merge(singular_inverse_name: singular_inverse_name)
+              end
+
+              it { expect(subject.query_key_name).to be == 'writer_id' }
+            end
+          end
+
+          context 'when initialized with inverse_name: value' do
+            let(:inverse_name) { 'authors' }
+            let(:constructor_options) do
+              super().merge(inverse_name: inverse_name)
+            end
+
+            it { expect(subject.query_key_name).to be == 'author_id' }
+
+            context 'when initialized with foreign_key_name: a String' do
+              let(:foreign_key_name) { 'writer_id' }
+              let(:constructor_options) do
+                super().merge(foreign_key_name: foreign_key_name)
+              end
+
+              it { expect(subject.query_key_name).to be == 'writer_id' }
+            end
+
+            context 'when initialized with foreign_key_name: a String' do
+              let(:foreign_key_name) { :writer_id }
+              let(:constructor_options) do
+                super().merge(foreign_key_name: foreign_key_name)
+              end
+
+              it { expect(subject.query_key_name).to be == 'writer_id' }
+            end
+          end
+
+          context 'when initialized with singular_inverse_name: value' do
+            let(:singular_inverse_name) { 'author' }
+            let(:constructor_options) do
+              super().merge(singular_inverse_name: singular_inverse_name)
+            end
+
+            it { expect(subject.query_key_name).to be == 'author_id' }
+
+            context 'when initialized with foreign_key_name: a String' do
+              let(:foreign_key_name) { 'writer_id' }
+              let(:constructor_options) do
+                super().merge(foreign_key_name: foreign_key_name)
+              end
+
+              it { expect(subject.query_key_name).to be == 'writer_id' }
+            end
+
+            context 'when initialized with foreign_key_name: a String' do
+              let(:foreign_key_name) { :writer_id }
+              let(:constructor_options) do
+                super().merge(foreign_key_name: foreign_key_name)
+              end
+
+              it { expect(subject.query_key_name).to be == 'writer_id' }
+            end
+          end
+
+          context 'with a copy with assigned inverse' do
+            subject do
+              super().tap(&:foreign_key_name).with_inverse(new_inverse)
+            end
+
+            let(:new_inverse) { described_class.new(name: 'chapters') }
+
+            it { expect(subject.query_key_name).to be == 'chapter_id' }
+
+            context 'when initialized with foreign_key_name: a String' do
+              let(:foreign_key_name) { 'writer_id' }
+              let(:constructor_options) do
+                super().merge(foreign_key_name: foreign_key_name)
+              end
+
+              it { expect(subject.query_key_name).to be == 'writer_id' }
+            end
+
+            context 'when initialized with foreign_key_name: a String' do
+              let(:foreign_key_name) { :writer_id }
+              let(:constructor_options) do
+                super().merge(foreign_key_name: foreign_key_name)
+              end
+
+              it { expect(subject.query_key_name).to be == 'writer_id' }
+            end
+
+            context 'when initialized with inverse: value' do
+              let(:inverse) { described_class.new(name: 'authors') }
+              let(:constructor_options) do
+                super().merge(inverse: inverse)
+              end
+
+              it { expect(subject.query_key_name).to be == 'chapter_id' }
+            end
+
+            context 'when initialized with inverse_name: value' do
+              let(:inverse_name) { 'authors' }
+              let(:constructor_options) do
+                super().merge(inverse_name: inverse_name)
+              end
+
+              it { expect(subject.query_key_name).to be == 'chapter_id' }
+            end
+
+            context 'when initialized with singular_inverse_name: value' do
+              let(:singular_inverse_name) { 'author' }
+              let(:constructor_options) do
+                super().merge(singular_inverse_name: singular_inverse_name)
+              end
+
+              it { expect(subject.query_key_name).to be == 'author_id' }
             end
           end
         end
