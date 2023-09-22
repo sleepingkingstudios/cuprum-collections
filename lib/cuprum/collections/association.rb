@@ -111,6 +111,13 @@ module Cuprum::Collections
           end
     end
 
+    # @return [String] the name of the inverse key.
+    def inverse_key_name
+      return foreign_key_name if primary_key_query?
+
+      primary_key_name
+    end
+
     # @return [String] the name of the inverse association, if any.
     def inverse_name
       @inverse_name ||=

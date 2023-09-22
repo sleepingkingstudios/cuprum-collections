@@ -168,6 +168,10 @@ module Cuprum::Collections::RSpec::Contracts
           end
         end
 
+        describe '#inverse_key_name' do
+          include_examples 'should define reader', :inverse_key_name
+        end
+
         describe '#inverse_name' do
           include_examples 'should define reader', :inverse_name, nil
 
@@ -757,6 +761,61 @@ module Cuprum::Collections::RSpec::Contracts
               end
 
               it { expect(subject.foreign_key_name).to be == 'writer_id' }
+            end
+          end
+        end
+
+        describe '#inverse_key_name' do
+          let(:expected) { "#{tools.str.singularize(name)}_id" }
+
+          def tools
+            SleepingKingStudios::Tools::Toolbelt.instance
+          end
+
+          it { expect(subject.inverse_key_name).to be == expected }
+
+          context 'when initialized with foreign_key_name: a String' do
+            let(:foreign_key_name) { 'writer_id' }
+            let(:constructor_options) do
+              super().merge(foreign_key_name: foreign_key_name)
+            end
+
+            it { expect(subject.inverse_key_name).to be == 'writer_id' }
+          end
+
+          context 'when initialized with foreign_key_name: a String' do
+            let(:foreign_key_name) { :writer_id }
+            let(:constructor_options) do
+              super().merge(foreign_key_name: foreign_key_name)
+            end
+
+            it { expect(subject.inverse_key_name).to be == 'writer_id' }
+          end
+
+          context 'when initialized with singular_name: value' do
+            let(:singular_name) { 'author' }
+            let(:constructor_options) do
+              super().merge(singular_name: singular_name)
+            end
+
+            it { expect(subject.inverse_key_name).to be == 'author_id' }
+
+            context 'when initialized with foreign_key_name: a String' do
+              let(:foreign_key_name) { 'writer_id' }
+              let(:constructor_options) do
+                super().merge(foreign_key_name: foreign_key_name)
+              end
+
+              it { expect(subject.inverse_key_name).to be == 'writer_id' }
+            end
+
+            context 'when initialized with foreign_key_name: a String' do
+              let(:foreign_key_name) { :writer_id }
+              let(:constructor_options) do
+                super().merge(foreign_key_name: foreign_key_name)
+              end
+
+              it { expect(subject.inverse_key_name).to be == 'writer_id' }
             end
           end
         end
@@ -1560,6 +1619,30 @@ module Cuprum::Collections::RSpec::Contracts
               end
 
               it { expect(subject.foreign_key_name).to be == 'author_id' }
+            end
+          end
+        end
+
+        describe '#inverse_key_name' do
+          it { expect(subject.inverse_key_name).to be == 'id' }
+
+          context 'when initialized with primary_key_name: a String' do
+            let(:primary_key_name) { 'uuid' }
+            let(:constructor_options) do
+              super().merge(primary_key_name: primary_key_name)
+            end
+
+            it { expect(subject.inverse_key_name).to be == primary_key_name }
+          end
+
+          context 'when initialized with primary_key_name: a Symbol' do
+            let(:primary_key_name) { :uuid }
+            let(:constructor_options) do
+              super().merge(primary_key_name: primary_key_name)
+            end
+
+            it 'should set the primary key name' do
+              expect(subject.inverse_key_name).to be == primary_key_name.to_s
             end
           end
         end
