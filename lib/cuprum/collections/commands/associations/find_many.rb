@@ -45,17 +45,15 @@ module Cuprum::Collections::Commands::Associations
       find_command.call(&query)
     end
 
-    def process(*entities)
+    def process(*entities_or_keys)
       association   = @association.with_inverse(resource)
-      expected_keys = association.map_entities_to_keys(*entities)
+      expected_keys =
+        association.map_entities_to_keys(*entities_or_keys, strict: false)
 
-      return singular? ? nil : [] if entities.empty?
+      return singular? ? nil : [] if expected_keys.empty?
 
       values = step do
-        perform_query(
-          association:   association,
-          expected_keys: expected_keys
-        )
+        perform_query(association: association, expected_keys: expected_keys)
       end
 
       singular? ? values.first : values.to_a

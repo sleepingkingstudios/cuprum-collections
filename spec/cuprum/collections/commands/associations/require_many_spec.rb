@@ -68,7 +68,7 @@ RSpec.describe Cuprum::Collections::Commands::Associations::RequireMany do
       end
     end
 
-    describe 'with one argument' do
+    describe 'with one entity' do
       let(:entities) do
         [
           { 'id' => 0, 'author_id' => 0, 'title' => 'Gideon the Ninth' }
@@ -107,7 +107,42 @@ RSpec.describe Cuprum::Collections::Commands::Associations::RequireMany do
       end
     end
 
-    describe 'with many arguments' do
+    describe 'with one key' do
+      let(:keys) { [0] }
+      let(:expected_error) do
+        Cuprum::Collections::Errors::Associations::NotFound.new(
+          attribute_name:  association.query_key_name,
+          attribute_value: [0],
+          collection_name: association.name,
+          primary_key:     association.primary_key_query?
+        )
+      end
+
+      it 'should return a failing result' do
+        expect(command.call(*keys))
+          .to be_a_failing_result
+          .with_error(expected_error)
+      end
+
+      context 'when there is one matching entity' do
+        let(:matching) do
+          [
+            {
+              'id'   => 0,
+              'name' => 'Tammsyn Muir'
+            }
+          ]
+        end
+
+        it 'should return a passing result with the matching results' do
+          expect(command.call(*keys))
+            .to be_a_passing_result
+            .with_value(matching)
+        end
+      end
+    end
+
+    describe 'with many entities' do
       let(:entities) do
         [
           { 'id' => 0, 'author_id' => 0, 'title' => 'Gideon the Ninth' },
@@ -181,6 +216,70 @@ RSpec.describe Cuprum::Collections::Commands::Associations::RequireMany do
       end
     end
 
+    describe 'with many keys' do
+      let(:keys) { [0, 1] }
+      let(:expected_error) do
+        Cuprum::Collections::Errors::Associations::NotFound.new(
+          attribute_name:  association.query_key_name,
+          attribute_value: [0, 1],
+          collection_name: association.name,
+          primary_key:     association.primary_key_query?
+        )
+      end
+
+      it 'should return a failing result' do
+        expect(command.call(*keys))
+          .to be_a_failing_result
+          .with_error(expected_error)
+      end
+
+      context 'when there is one matching entity' do
+        let(:matching) do
+          [
+            {
+              'id'   => 0,
+              'name' => 'Tammsyn Muir'
+            }
+          ]
+        end
+        let(:expected_error) do
+          Cuprum::Collections::Errors::Associations::NotFound.new(
+            attribute_name:  association.query_key_name,
+            attribute_value: [1],
+            collection_name: association.name,
+            primary_key:     association.primary_key_query?
+          )
+        end
+
+        it 'should return a failing result' do
+          expect(command.call(*keys))
+            .to be_a_failing_result
+            .with_error(expected_error)
+        end
+      end
+
+      context 'when there are many matching entities' do
+        let(:matching) do
+          [
+            {
+              'id'   => 0,
+              'name' => 'Tammsyn Muir'
+            },
+            {
+              'id'   => 1,
+              'name' => 'Ursula K. LeGuin'
+            }
+          ]
+        end
+
+        it 'should return a passing result with the matching results' do
+          expect(command.call(*keys))
+            .to be_a_passing_result
+            .with_value(matching)
+        end
+      end
+    end
+
     context 'when initialized with a singular resource' do
       let(:resource) do
         Cuprum::Collections::Resource.new(name: 'book', singular: true)
@@ -194,7 +293,7 @@ RSpec.describe Cuprum::Collections::Commands::Associations::RequireMany do
         end
       end
 
-      describe 'with one argument' do
+      describe 'with one entity' do
         let(:entities) do
           [
             { 'id' => 0, 'author_id' => 0, 'title' => 'Gideon the Ninth' }
@@ -227,6 +326,41 @@ RSpec.describe Cuprum::Collections::Commands::Associations::RequireMany do
 
           it 'should return a passing result with the matching results' do
             expect(command.call(*entities))
+              .to be_a_passing_result
+              .with_value(matching.first)
+          end
+        end
+      end
+
+      describe 'with one key' do
+        let(:keys) { [0] }
+        let(:expected_error) do
+          Cuprum::Collections::Errors::Associations::NotFound.new(
+            attribute_name:  association.query_key_name,
+            attribute_value: 0,
+            collection_name: association.name,
+            primary_key:     association.primary_key_query?
+          )
+        end
+
+        it 'should return a failing result' do
+          expect(command.call(*keys))
+            .to be_a_failing_result
+            .with_error(expected_error)
+        end
+
+        context 'when there is one matching entity' do
+          let(:matching) do
+            [
+              {
+                'id'   => 0,
+                'name' => 'Tammsyn Muir'
+              }
+            ]
+          end
+
+          it 'should return a passing result with the matching results' do
+            expect(command.call(*keys))
               .to be_a_passing_result
               .with_value(matching.first)
           end

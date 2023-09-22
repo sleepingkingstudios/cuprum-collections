@@ -253,7 +253,7 @@ module Cuprum::Collections::RSpec::Contracts
             expect(subject)
               .to respond_to(:map_entities_to_keys)
               .with_unlimited_arguments
-              .and_keywords(:allow_nil)
+              .and_keywords(:allow_nil, :deduplicate, :strict)
           end
         end
 
@@ -496,12 +496,12 @@ module Cuprum::Collections::RSpec::Contracts
           describe 'with one invalid entity' do
             let(:entities) { [Object.new.freeze] }
             let(:error_message) do
-              /#{"undefined method `#{key}'"}/
+              "undefined method :[] or :#{key} for #{entities.first.inspect}"
             end
 
             it 'should raise an exception' do
               expect { association.build_entities_query(*entities) }
-                .to raise_error NameError, error_message
+                .to raise_error ArgumentError, error_message
             end
           end
 
@@ -794,12 +794,93 @@ module Cuprum::Collections::RSpec::Contracts
           describe 'with one invalid entity' do
             let(:entities) { [Object.new.freeze] }
             let(:error_message) do
-              /#{"undefined method `#{key}'"}/
+              "undefined method :[] or :#{key} for #{entities.first.inspect}"
             end
 
             it 'should raise an exception' do
               expect { association.map_entities_to_keys(*entities) }
-                .to raise_error NameError, error_message
+                .to raise_error ArgumentError, error_message
+            end
+
+            describe 'with strict: false' do
+              it 'should raise an exception' do
+                expect do
+                  association.map_entities_to_keys(*entities, strict: false)
+                end
+                  .to raise_error ArgumentError, error_message
+              end
+            end
+          end
+
+          describe 'with one Integer' do
+            let(:entities) { [0] }
+            let(:error_message) do
+              "undefined method :[] or :#{key} for #{entities.first.inspect}"
+            end
+
+            it 'should raise an exception' do
+              expect { association.map_entities_to_keys(*entities) }
+                .to raise_error ArgumentError, error_message
+            end
+
+            describe 'with strict: false' do
+              it 'should raise an exception' do
+                expect(
+                  association.map_entities_to_keys(*entities, strict: false)
+                )
+                  .to be == entities
+              end
+            end
+
+            context 'when initialized with primary_key_type: String' do
+              let(:constructor_options) do
+                super().merge(primary_key_type: String)
+              end
+
+              describe 'with strict: false' do
+                it 'should raise an exception' do
+                  expect do
+                    association.map_entities_to_keys(*entities, strict: false)
+                  end
+                    .to raise_error ArgumentError, error_message
+                end
+              end
+            end
+          end
+
+          describe 'with one String' do
+            let(:entities) { %w[0] }
+            let(:error_message) do
+              "undefined method :[] or :#{key} for #{entities.first.inspect}"
+            end
+
+            it 'should raise an exception' do
+              expect { association.map_entities_to_keys(*entities) }
+                .to raise_error ArgumentError, error_message
+            end
+
+            describe 'with strict: false' do
+              it 'should raise an exception' do
+                expect do
+                  association.map_entities_to_keys(*entities, strict: false)
+                end
+                  .to raise_error ArgumentError, error_message
+              end
+            end
+
+            context 'when initialized with primary_key_type: String' do
+              let(:constructor_options) do
+                super().merge(primary_key_type: String)
+              end
+
+              describe 'with strict: false' do
+                it 'should raise an exception' do
+                  expect(
+                    association.map_entities_to_keys(*entities, strict: false)
+                  )
+                    .to be == entities
+                end
+              end
             end
           end
 
@@ -904,6 +985,78 @@ module Cuprum::Collections::RSpec::Contracts
               it { expect(keys).to be == [0, 1, 0, 1, 2] }
             end
           end
+
+          describe 'with multiple Integers' do
+            let(:entities) { [0, 1, 2] }
+            let(:error_message) do
+              "undefined method :[] or :#{key} for #{entities.first.inspect}"
+            end
+
+            it 'should raise an exception' do
+              expect { association.map_entities_to_keys(*entities) }
+                .to raise_error ArgumentError, error_message
+            end
+
+            describe 'with strict: false' do
+              it 'should raise an exception' do
+                expect(
+                  association.map_entities_to_keys(*entities, strict: false)
+                )
+                  .to be == entities
+              end
+            end
+
+            context 'when initialized with primary_key_type: String' do
+              let(:constructor_options) do
+                super().merge(primary_key_type: String)
+              end
+
+              describe 'with strict: false' do
+                it 'should raise an exception' do
+                  expect do
+                    association.map_entities_to_keys(*entities, strict: false)
+                  end
+                    .to raise_error ArgumentError, error_message
+                end
+              end
+            end
+          end
+
+          describe 'with multiple Strings' do
+            let(:entities) { %w[0 1 2] }
+            let(:error_message) do
+              "undefined method :[] or :#{key} for #{entities.first.inspect}"
+            end
+
+            it 'should raise an exception' do
+              expect { association.map_entities_to_keys(*entities) }
+                .to raise_error ArgumentError, error_message
+            end
+
+            describe 'with strict: false' do
+              it 'should raise an exception' do
+                expect do
+                  association.map_entities_to_keys(*entities, strict: false)
+                end
+                  .to raise_error ArgumentError, error_message
+              end
+            end
+
+            context 'when initialized with primary_key_type: String' do
+              let(:constructor_options) do
+                super().merge(primary_key_type: String)
+              end
+
+              describe 'with strict: false' do
+                it 'should raise an exception' do
+                  expect(
+                    association.map_entities_to_keys(*entities, strict: false)
+                  )
+                    .to be == entities
+                end
+              end
+            end
+          end
         end
 
         describe '#primary_key_query?' do
@@ -1006,12 +1159,12 @@ module Cuprum::Collections::RSpec::Contracts
             describe 'with one invalid entity' do
               let(:entities) { [Object.new.freeze] }
               let(:error_message) do
-                /#{"undefined method `#{key}'"}/
+                "undefined method :[] or :#{key} for #{entities.first.inspect}"
               end
 
               it 'should raise an exception' do
                 expect { association.build_entities_query(*entities) }
-                  .to raise_error NameError, error_message
+                  .to raise_error ArgumentError, error_message
               end
             end
 
@@ -1442,12 +1595,84 @@ module Cuprum::Collections::RSpec::Contracts
           describe 'with one invalid entity' do
             let(:entities) { [Object.new.freeze] }
             let(:error_message) do
-              /#{"undefined method `#{key}'"}/
+              "undefined method :[] or :#{key} for #{entities.first.inspect}"
             end
 
             it 'should raise an exception' do
               expect { association.map_entities_to_keys(*entities) }
-                .to raise_error NameError, error_message
+                .to raise_error ArgumentError, error_message
+            end
+          end
+
+          describe 'with one Integer' do
+            let(:entities) { [0] }
+            let(:error_message) do
+              "undefined method :[] or :#{key} for #{entities.first.inspect}"
+            end
+
+            it 'should raise an exception' do
+              expect { association.map_entities_to_keys(*entities) }
+                .to raise_error ArgumentError, error_message
+            end
+
+            describe 'with strict: false' do
+              it 'should raise an exception' do
+                expect(
+                  association.map_entities_to_keys(*entities, strict: false)
+                )
+                  .to be == entities
+              end
+            end
+
+            context 'when initialized with primary_key_type: String' do
+              let(:constructor_options) do
+                super().merge(primary_key_type: String)
+              end
+
+              describe 'with strict: false' do
+                it 'should raise an exception' do
+                  expect do
+                    association.map_entities_to_keys(*entities, strict: false)
+                  end
+                    .to raise_error ArgumentError, error_message
+                end
+              end
+            end
+          end
+
+          describe 'with one String' do
+            let(:entities) { %w[0] }
+            let(:error_message) do
+              "undefined method :[] or :#{key} for #{entities.first.inspect}"
+            end
+
+            it 'should raise an exception' do
+              expect { association.map_entities_to_keys(*entities) }
+                .to raise_error ArgumentError, error_message
+            end
+
+            describe 'with strict: false' do
+              it 'should raise an exception' do
+                expect do
+                  association.map_entities_to_keys(*entities, strict: false)
+                end
+                  .to raise_error ArgumentError, error_message
+              end
+            end
+
+            context 'when initialized with primary_key_type: String' do
+              let(:constructor_options) do
+                super().merge(primary_key_type: String)
+              end
+
+              describe 'with strict: false' do
+                it 'should raise an exception' do
+                  expect(
+                    association.map_entities_to_keys(*entities, strict: false)
+                  )
+                    .to be == entities
+                end
+              end
             end
           end
 
@@ -1550,6 +1775,78 @@ module Cuprum::Collections::RSpec::Contracts
               let(:options) { super().merge(deduplicate: false) }
 
               it { expect(keys).to be == [0, 1, 0, 1, 2] }
+            end
+          end
+
+          describe 'with multiple Integers' do
+            let(:entities) { [0, 1, 2] }
+            let(:error_message) do
+              "undefined method :[] or :#{key} for #{entities.first.inspect}"
+            end
+
+            it 'should raise an exception' do
+              expect { association.map_entities_to_keys(*entities) }
+                .to raise_error ArgumentError, error_message
+            end
+
+            describe 'with strict: false' do
+              it 'should raise an exception' do
+                expect(
+                  association.map_entities_to_keys(*entities, strict: false)
+                )
+                  .to be == entities
+              end
+            end
+
+            context 'when initialized with primary_key_type: String' do
+              let(:constructor_options) do
+                super().merge(primary_key_type: String)
+              end
+
+              describe 'with strict: false' do
+                it 'should raise an exception' do
+                  expect do
+                    association.map_entities_to_keys(*entities, strict: false)
+                  end
+                    .to raise_error ArgumentError, error_message
+                end
+              end
+            end
+          end
+
+          describe 'with multiple Strings' do
+            let(:entities) { %w[0 1 2] }
+            let(:error_message) do
+              "undefined method :[] or :#{key} for #{entities.first.inspect}"
+            end
+
+            it 'should raise an exception' do
+              expect { association.map_entities_to_keys(*entities) }
+                .to raise_error ArgumentError, error_message
+            end
+
+            describe 'with strict: false' do
+              it 'should raise an exception' do
+                expect do
+                  association.map_entities_to_keys(*entities, strict: false)
+                end
+                  .to raise_error ArgumentError, error_message
+              end
+            end
+
+            context 'when initialized with primary_key_type: String' do
+              let(:constructor_options) do
+                super().merge(primary_key_type: String)
+              end
+
+              describe 'with strict: false' do
+                it 'should raise an exception' do
+                  expect(
+                    association.map_entities_to_keys(*entities, strict: false)
+                  )
+                    .to be == entities
+                end
+              end
             end
           end
         end

@@ -67,7 +67,7 @@ RSpec.describe Cuprum::Collections::Commands::Associations::FindMany do
       end
     end
 
-    describe 'with one argument' do
+    describe 'with one entity' do
       let(:entities) do
         [
           { 'id' => 0, 'name' => 'Tammsyn Muir' }
@@ -127,7 +127,63 @@ RSpec.describe Cuprum::Collections::Commands::Associations::FindMany do
       end
     end
 
-    describe 'with many arguments' do
+    describe 'with one key' do
+      let(:keys) { [0] }
+
+      it 'should return a passing result with no results' do
+        expect(command.call(*keys))
+          .to be_a_passing_result
+          .with_value([])
+      end
+
+      context 'when there is one matching entity' do
+        let(:matching) do
+          [
+            {
+              'id'        => 0,
+              'author_id' => 0,
+              'title'     => 'Gideon the Ninth'
+            }
+          ]
+        end
+
+        it 'should return a passing result with the matching results' do
+          expect(command.call(*keys))
+            .to be_a_passing_result
+            .with_value(matching)
+        end
+      end
+
+      context 'when there are multiple matching entities' do
+        let(:matching) do
+          [
+            {
+              'id'        => 0,
+              'author_id' => 0,
+              'title'     => 'Gideon the Ninth'
+            },
+            {
+              'id'        => 1,
+              'author_id' => 0,
+              'title'     => 'Harrow the Ninth'
+            },
+            {
+              'id'        => 2,
+              'author_id' => 0,
+              'title'     => 'Nona the Ninth'
+            }
+          ]
+        end
+
+        it 'should return a passing result with the matching results' do
+          expect(command.call(*keys))
+            .to be_a_passing_result
+            .with_value(matching)
+        end
+      end
+    end
+
+    describe 'with many entities' do
       let(:entities) do
         [
           { 'id' => 0, 'name' => 'Tammsyn Muir' },
@@ -194,6 +250,67 @@ RSpec.describe Cuprum::Collections::Commands::Associations::FindMany do
       end
     end
 
+    describe 'with many keys' do
+      let(:keys) { [0, 1, 2] }
+
+      it 'should return a passing result with no results' do
+        expect(command.call(*keys))
+          .to be_a_passing_result
+          .with_value([])
+      end
+
+      context 'when there is one matching entity' do
+        let(:matching) do
+          [
+            {
+              'id'        => 0,
+              'author_id' => 0,
+              'title'     => 'Gideon the Ninth'
+            }
+          ]
+        end
+
+        it 'should return a passing result with the matching results' do
+          expect(command.call(*keys))
+            .to be_a_passing_result
+            .with_value(matching)
+        end
+      end
+
+      context 'when there are multiple matching entities' do
+        let(:matching) do
+          [
+            {
+              'id'        => 0,
+              'author_id' => 0,
+              'title'     => 'Gideon the Ninth'
+            },
+            {
+              'id'        => 1,
+              'author_id' => 0,
+              'title'     => 'Harrow the Ninth'
+            },
+            {
+              'id'        => 2,
+              'author_id' => 0,
+              'title'     => 'Nona the Ninth'
+            },
+            {
+              'id'        => 4,
+              'author_id' => 1,
+              'title'     => 'The Word For World Is Forest'
+            }
+          ]
+        end
+
+        it 'should return a passing result with the matching results' do
+          expect(command.call(*keys))
+            .to be_a_passing_result
+            .with_value(matching)
+        end
+      end
+    end
+
     context 'when initialized with a belongs_to association' do
       let(:association) do
         Cuprum::Collections::Associations::BelongsTo.new(name: 'author')
@@ -214,7 +331,7 @@ RSpec.describe Cuprum::Collections::Commands::Associations::FindMany do
         end
       end
 
-      describe 'with one argument' do
+      describe 'with one entity' do
         let(:entities) do
           [
             { 'id' => 0, 'author_id' => 0, 'title' => 'Gideon the Ninth' }
@@ -245,7 +362,34 @@ RSpec.describe Cuprum::Collections::Commands::Associations::FindMany do
         end
       end
 
-      describe 'with many arguments' do
+      describe 'with one key' do
+        let(:keys) { [0] }
+
+        it 'should return a passing result with no results' do
+          expect(command.call(*keys))
+            .to be_a_passing_result
+            .with_value([])
+        end
+
+        context 'when there is one matching entity' do
+          let(:matching) do
+            [
+              {
+                'id'   => 0,
+                'name' => 'Tammsyn Muir'
+              }
+            ]
+          end
+
+          it 'should return a passing result with the matching results' do
+            expect(command.call(*keys))
+              .to be_a_passing_result
+              .with_value(matching)
+          end
+        end
+      end
+
+      describe 'with many entities' do
         let(:entities) do
           [
             { 'id' => 0, 'author_id' => 0, 'title' => 'Gideon the Ninth' },
@@ -303,6 +447,54 @@ RSpec.describe Cuprum::Collections::Commands::Associations::FindMany do
         end
       end
 
+      describe 'with many keys' do
+        let(:keys) { [0, 1, 2] }
+
+        it 'should return a passing result with no results' do
+          expect(command.call(*keys))
+            .to be_a_passing_result
+            .with_value([])
+        end
+
+        context 'when there is one matching entity' do
+          let(:matching) do
+            [
+              {
+                'id'   => 0,
+                'name' => 'Tammsyn Muir'
+              }
+            ]
+          end
+
+          it 'should return a passing result with the matching results' do
+            expect(command.call(*keys))
+              .to be_a_passing_result
+              .with_value(matching)
+          end
+        end
+
+        context 'when there are many matching entities' do
+          let(:matching) do
+            [
+              {
+                'id'   => 0,
+                'name' => 'Tammsyn Muir'
+              },
+              {
+                'id'   => 1,
+                'name' => 'Ursula K. LeGuin'
+              }
+            ]
+          end
+
+          it 'should return a passing result with the matching results' do
+            expect(command.call(*keys))
+              .to be_a_passing_result
+              .with_value(matching)
+          end
+        end
+      end
+
       context 'when initialized with a singular resource' do
         let(:resource) do
           Cuprum::Collections::Resource.new(name: 'book', singular: true)
@@ -316,7 +508,7 @@ RSpec.describe Cuprum::Collections::Commands::Associations::FindMany do
           end
         end
 
-        describe 'with one argument' do
+        describe 'with one entity' do
           let(:entities) do
             [
               { 'id' => 0, 'author_id' => 0, 'title' => 'Gideon the Ninth' }
@@ -346,6 +538,33 @@ RSpec.describe Cuprum::Collections::Commands::Associations::FindMany do
             end
           end
         end
+
+        describe 'with one key' do
+          let(:keys) { [0] }
+
+          it 'should return a passing result with no results' do
+            expect(command.call(*keys))
+              .to be_a_passing_result
+              .with_value(nil)
+          end
+
+          context 'when there is one matching entity' do # rubocop:disable RSpec/NestedGroups
+            let(:matching) do
+              [
+                {
+                  'id'   => 0,
+                  'name' => 'Tammsyn Muir'
+                }
+              ]
+            end
+
+            it 'should return a passing result with the matching results' do
+              expect(command.call(*keys))
+                .to be_a_passing_result
+                .with_value(matching.first)
+            end
+          end
+        end
       end
     end
 
@@ -368,7 +587,7 @@ RSpec.describe Cuprum::Collections::Commands::Associations::FindMany do
         end
       end
 
-      describe 'with one argument' do
+      describe 'with one entity' do
         let(:entities) do
           [
             { 'id' => 0, 'name' => 'Tammsyn Muir' }
@@ -400,7 +619,35 @@ RSpec.describe Cuprum::Collections::Commands::Associations::FindMany do
         end
       end
 
-      describe 'with many arguments' do
+      describe 'with one key' do
+        let(:keys) { [0] }
+
+        it 'should return a passing result with no results' do
+          expect(command.call(*keys))
+            .to be_a_passing_result
+            .with_value([])
+        end
+
+        context 'when there is one matching entity' do
+          let(:matching) do
+            [
+              {
+                'id'        => 0,
+                'author_id' => 0,
+                'title'     => 'Jane A. Agent'
+              }
+            ]
+          end
+
+          it 'should return a passing result with the matching results' do
+            expect(command.call(*keys))
+              .to be_a_passing_result
+              .with_value(matching)
+          end
+        end
+      end
+
+      describe 'with many entities' do
         let(:entities) do
           [
             { 'id' => 0, 'name' => 'Tammsyn Muir' },
@@ -457,6 +704,57 @@ RSpec.describe Cuprum::Collections::Commands::Associations::FindMany do
         end
       end
 
+      describe 'with many keys' do
+        let(:keys) { [0, 1, 2] }
+
+        it 'should return a passing result with no results' do
+          expect(command.call(*keys))
+            .to be_a_passing_result
+            .with_value([])
+        end
+
+        context 'when there is one matching entity' do
+          let(:matching) do
+            [
+              {
+                'id'        => 0,
+                'author_id' => 0,
+                'title'     => 'Jane A. Agent'
+              }
+            ]
+          end
+
+          it 'should return a passing result with the matching results' do
+            expect(command.call(*keys))
+              .to be_a_passing_result
+              .with_value(matching)
+          end
+        end
+
+        context 'when there are many matching entities' do
+          let(:matching) do
+            [
+              {
+                'id'        => 0,
+                'author_id' => 0,
+                'title'     => 'Jane A. Agent'
+              },
+              {
+                'id'        => 1,
+                'author_id' => 1,
+                'title'     => 'John B. Agent'
+              }
+            ]
+          end
+
+          it 'should return a passing result with the matching results' do
+            expect(command.call(*keys))
+              .to be_a_passing_result
+              .with_value(matching)
+          end
+        end
+      end
+
       context 'when initialized with a singular resource' do
         let(:resource) do
           Cuprum::Collections::Resource.new(name: 'author', singular: true)
@@ -470,7 +768,7 @@ RSpec.describe Cuprum::Collections::Commands::Associations::FindMany do
           end
         end
 
-        describe 'with one argument' do
+        describe 'with one entity' do
           let(:entities) do
             [
               { 'id' => 0, 'name' => 'Tammsyn Muir' }
@@ -501,6 +799,34 @@ RSpec.describe Cuprum::Collections::Commands::Associations::FindMany do
             end
           end
         end
+
+        describe 'with one key' do
+          let(:keys) { [0] }
+
+          it 'should return a passing result with no results' do
+            expect(command.call(*keys))
+              .to be_a_passing_result
+              .with_value(nil)
+          end
+
+          context 'when there is one matching entity' do # rubocop:disable RSpec/NestedGroups
+            let(:matching) do
+              [
+                {
+                  'id'        => 0,
+                  'author_id' => 0,
+                  'title'     => 'Gideon the Ninth'
+                }
+              ]
+            end
+
+            it 'should return a passing result with the matching results' do
+              expect(command.call(*keys))
+                .to be_a_passing_result
+                .with_value(matching.first)
+            end
+          end
+        end
       end
     end
 
@@ -517,7 +843,7 @@ RSpec.describe Cuprum::Collections::Commands::Associations::FindMany do
         end
       end
 
-      describe 'with one argument' do
+      describe 'with one entity' do
         let(:entities) do
           [
             { 'id' => 0, 'name' => 'Tammsyn Muir' }
@@ -571,6 +897,62 @@ RSpec.describe Cuprum::Collections::Commands::Associations::FindMany do
 
           it 'should return a passing result with the matching results' do
             expect(command.call(*entities))
+              .to be_a_passing_result
+              .with_value(matching)
+          end
+        end
+      end
+
+      describe 'with one key' do
+        let(:keys) { [0] }
+
+        it 'should return a passing result with no results' do
+          expect(command.call(*keys))
+            .to be_a_passing_result
+            .with_value([])
+        end
+
+        context 'when there is one matching entity' do
+          let(:matching) do
+            [
+              {
+                'id'        => 0,
+                'author_id' => 0,
+                'title'     => 'Gideon the Ninth'
+              }
+            ]
+          end
+
+          it 'should return a passing result with the matching results' do
+            expect(command.call(*keys))
+              .to be_a_passing_result
+              .with_value(matching)
+          end
+        end
+
+        context 'when there are multiple matching entities' do
+          let(:matching) do
+            [
+              {
+                'id'        => 0,
+                'author_id' => 0,
+                'title'     => 'Gideon the Ninth'
+              },
+              {
+                'id'        => 1,
+                'author_id' => 0,
+                'title'     => 'Harrow the Ninth'
+              },
+              {
+                'id'        => 2,
+                'author_id' => 0,
+                'title'     => 'Nona the Ninth'
+              }
+            ]
+          end
+
+          it 'should return a passing result with the matching results' do
+            expect(command.call(*keys))
               .to be_a_passing_result
               .with_value(matching)
           end

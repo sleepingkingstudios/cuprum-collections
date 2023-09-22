@@ -54,6 +54,8 @@ module Cuprum::Collections
     #   false.
     # @param deduplicate [Boolean] if true, removes duplicate keys before
     #   generating the query. Defaults to true.
+    # @param strict [Boolean] if true, raises an exception if given an Array of
+    #   keys instead of entities.
     #
     # @return [Proc] the generated query.
     def build_entities_query(*entities, allow_nil: false, deduplicate: true)
@@ -61,7 +63,8 @@ module Cuprum::Collections
         map_entities_to_keys(
           *entities,
           allow_nil:   allow_nil,
-          deduplicate: deduplicate
+          deduplicate: deduplicate,
+          strict:      true
         )
 
       build_keys_query(*keys, allow_nil: allow_nil, deduplicate: false)
@@ -123,12 +126,19 @@ module Cuprum::Collections
     #   false.
     # @param deduplicate [Boolean] if true, removes duplicate keys before
     #   generating the query. Defaults to true.
+    # @param strict [Boolean] if true, raises an exception if given an Array of
+    #   keys instead of entities.
     #
     # @return [Array] the primary or foreign keys to query for.
-    def map_entities_to_keys(*entities, allow_nil: false, deduplicate: true)
+    def map_entities_to_keys(
+      *entities,
+      allow_nil:   false,
+      deduplicate: true,
+      strict:      true
+    )
       entities
         .compact
-        .map { |entity| map_entity_to_key(entity) }
+        .map { |entity| map_entity_to_key(entity, strict: strict) }
         .then { |keys| allow_nil ? keys : keys.compact }
         .then { |keys| deduplicate ? keys.uniq : keys }
     end
@@ -202,10 +212,25 @@ module Cuprum::Collections
       primary_key_query? ? foreign_key_name : primary_key_name
     end
 
-    def map_entity_to_key(entity)
-      return entity[entity_key_name] if entity.respond_to?(:[])
+    def indexed?(value)
+      return false if value.is_a?(Integer)
 
-      entity.send(entity_key_name)
+      return false if value.is_a?(String)
+
+      value.respond_to?(:[])
+    end
+
+    def map_entity_to_key(value, strict: false)
+      key = entity_key_name
+
+      return value[key] if indexed?(value)
+
+      return value.send(key) if value.respond_to?(key)
+
+      return value if !strict && value.is_a?(primary_key_type)
+
+      raise ArgumentError,
+        "undefined method :[] or :#{key} for #{value.inspect}"
     end
 
     def tools
