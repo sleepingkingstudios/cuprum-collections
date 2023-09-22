@@ -2,6 +2,12 @@
 
 ## 0.3.0
 
+### Associations
+
+Implemented `Cuprum::Collections::Association`, which represents an association between entity types.
+
+- Implemented `Cuprum::Collections::Associations::BelongsTo`.
+
 ### Collections
 
 Defined standard interface for collections.
@@ -22,6 +28,11 @@ Implemented built-in Commands, which take a `:collection` parameter:
 - `Commands::FindOneMatching`
 - `Commands::Update`
 - `Commands::Upsert`
+
+Implemented association Commands, which find or require association entities from a list of entities or keys.
+
+- `Commands::Associations::FindMany`
+- `Commands::Associations::RequireMany`
 
 ### Relations
 

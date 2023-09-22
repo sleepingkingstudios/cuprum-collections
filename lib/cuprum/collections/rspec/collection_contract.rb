@@ -235,6 +235,10 @@ module Cuprum::Collections::RSpec
       end
 
       describe '#matches?' do
+        def tools
+          SleepingKingStudios::Tools::Toolbelt.instance
+        end
+
         it 'should define the method' do
           expect(collection)
             .to respond_to(:matches?)
@@ -246,8 +250,48 @@ module Cuprum::Collections::RSpec
           it { expect(collection.matches?).to be true }
         end
 
-        describe 'with non-matching options' do
-          let(:other_options) { { collection_name: 'spec/scoped_books' } }
+        describe 'with non-matching entity class as a Class' do
+          let(:other_options) { { entity_class: Grimoire } }
+
+          it { expect(collection.matches?(**other_options)).to be false }
+        end
+
+        describe 'with non-matching entity class as a String' do
+          let(:other_options) { { entity_class: 'Grimoire' } }
+
+          it { expect(collection.matches?(**other_options)).to be false }
+        end
+
+        describe 'with non-matching name' do
+          it { expect(collection.matches?(name: 'grimoires')).to be false }
+        end
+
+        describe 'with non-matching primary key name' do
+          let(:other_options) { { primary_key_name: 'uuid' } }
+
+          it { expect(collection.matches?(**other_options)).to be false }
+        end
+
+        describe 'with non-matching primary key type' do
+          let(:other_options) { { primary_key_type: String } }
+
+          it { expect(collection.matches?(**other_options)).to be false }
+        end
+
+        describe 'with non-matching qualified name' do
+          let(:other_options) { { qualified_name: 'spec/scoped_books' } }
+
+          it { expect(collection.matches?(**other_options)).to be false }
+        end
+
+        describe 'with non-matching singular name' do
+          let(:other_options) { { singular_name: 'grimoire' } }
+
+          it { expect(collection.matches?(**other_options)).to be false }
+        end
+
+        describe 'with non-matching custom options' do
+          let(:other_options) { { custom_option: 'custom value' } }
 
           it { expect(collection.matches?(**other_options)).to be false }
         end
@@ -263,8 +307,64 @@ module Cuprum::Collections::RSpec
           it { expect(collection.matches?(**other_options)).to be false }
         end
 
-        describe 'with matching options' do
+        describe 'with matching entity class as a Class' do
+          let(:configured_entity_class) do
+            options.fetch(:default_entity_class, Book)
+          end
+          let(:other_options) { { entity_class: configured_entity_class } }
+
+          it { expect(collection.matches?(**other_options)).to be true }
+        end
+
+        describe 'with matching entity class as a String' do
+          let(:configured_entity_class) do
+            options.fetch(:default_entity_class, Book)
+          end
+          let(:other_options) { { entity_class: configured_entity_class.to_s } }
+
+          it { expect(collection.matches?(**other_options)).to be true }
+        end
+
+        describe 'with matching name' do
           let(:other_options) { { collection_name: name } }
+
+          it { expect(collection.matches?(**other_options)).to be true }
+        end
+
+        describe 'with matching primary key name' do
+          let(:other_options) { { primary_key_name: 'id' } }
+
+          it { expect(collection.matches?(**other_options)).to be true }
+        end
+
+        describe 'with matching primary key type' do
+          let(:other_options) { { primary_key_type: Integer } }
+
+          it { expect(collection.matches?(**other_options)).to be true }
+        end
+
+        describe 'with matching qualified name' do
+          let(:other_options) { { qualified_name: name } }
+
+          it { expect(collection.matches?(**other_options)).to be true }
+        end
+
+        describe 'with matching singular name' do
+          let(:other_options) do
+            { singular_name: tools.str.singularize(name) }
+          end
+
+          it { expect(collection.matches?(**other_options)).to be true }
+        end
+
+        describe 'with multiple matching options' do
+          let(:other_options) do
+            {
+              collection_name:  name,
+              primary_key_name: 'id',
+              qualified_name:   name
+            }
+          end
 
           it { expect(collection.matches?(**other_options)).to be true }
         end

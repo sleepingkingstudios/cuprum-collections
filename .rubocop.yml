@@ -70,12 +70,11 @@ Naming/RescuedExceptionsVariableName:
 RSpec/BeNil:
   Enabled: false
 
-RSpec/ExampleWording:
+RSpec/Eq:
   Enabled: false
 
-RSpec/FilePath:
-  Exclude:
-    - spec/integration/**/*
+RSpec/ExampleWording:
+  Enabled: false
 
 RSpec/HookArgument:
   Enabled: false
@@ -88,6 +87,10 @@ RSpec/MultipleMemoizedHelpers:
 
 RSpec/NestedGroups:
   Max: 5
+
+RSpec/SpecFilePathFormat:
+  Exclude:
+    - spec/integration/**/*
 
 Style/AccessorGrouping:
   EnforcedStyle: separated

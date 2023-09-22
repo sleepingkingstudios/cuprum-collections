@@ -510,11 +510,13 @@ module Cuprum::Collections::RSpec
         describe 'with collection options' do
           let(:primary_key_name) { 'uuid' }
           let(:primary_key_type) { String }
+          let(:qualified_name)   { 'spec/scoped_books' }
           let(:collection_options) do
             super().merge(
               collection_name:  collection_name,
               primary_key_name: primary_key_name,
-              primary_key_type: primary_key_type
+              primary_key_type: primary_key_type,
+              qualified_name:   qualified_name
             )
           end
 
