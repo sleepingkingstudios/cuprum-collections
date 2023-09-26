@@ -391,9 +391,10 @@ RSpec.describe Cuprum::Collections::Relation do
         let(:expected) do
           {
             entity_class:   Book,
-            singular_name:  'book',
             name:           'books',
-            qualified_name: 'books'
+            plural_name:    'books',
+            qualified_name: 'books',
+            singular_name:  'book'
           }
         end
 
@@ -403,7 +404,11 @@ RSpec.describe Cuprum::Collections::Relation do
           let(:name)       { 'grimoires' }
           let(:parameters) { super().merge(name: name) }
           let(:expected) do
-            super().merge(name: name, singular_name: 'grimoire')
+            super().merge(
+              name:          name,
+              plural_name:   'grimoires',
+              singular_name: 'grimoire'
+            )
           end
 
           it { expect(resolved).to be == expected }
@@ -413,8 +418,28 @@ RSpec.describe Cuprum::Collections::Relation do
           let(:name)       { :grimoires }
           let(:parameters) { super().merge(name: name) }
           let(:expected) do
-            super().merge(name: name.to_s, singular_name: 'grimoire')
+            super().merge(
+              name:          name.to_s,
+              plural_name:   'grimoires',
+              singular_name: 'grimoire'
+            )
           end
+
+          it { expect(resolved).to be == expected }
+        end
+
+        describe 'with plural_name: a String' do
+          let(:plural_name) { 'grimoires' }
+          let(:parameters)  { super().merge(plural_name: plural_name) }
+          let(:expected)    { super().merge(plural_name: plural_name) }
+
+          it { expect(resolved).to be == expected }
+        end
+
+        describe 'with plural_name: a Symbol' do
+          let(:plural_name) { :grimoire }
+          let(:parameters)  { super().merge(plural_name: plural_name) }
+          let(:expected)    { super().merge(plural_name: plural_name.to_s) }
 
           it { expect(resolved).to be == expected }
         end
@@ -460,9 +485,10 @@ RSpec.describe Cuprum::Collections::Relation do
         let(:expected) do
           {
             entity_class:   Spec::ScopedBook,
-            singular_name:  'scoped_book',
             name:           'scoped_books',
-            qualified_name: 'spec/scoped_books'
+            plural_name:    'scoped_books',
+            qualified_name: 'spec/scoped_books',
+            singular_name:  'scoped_book'
           }
         end
 
@@ -472,7 +498,11 @@ RSpec.describe Cuprum::Collections::Relation do
           let(:name)       { 'grimoires' }
           let(:parameters) { super().merge(name: name) }
           let(:expected) do
-            super().merge(name: name, singular_name: 'grimoire')
+            super().merge(
+              name:          name,
+              plural_name:   'grimoires',
+              singular_name: 'grimoire'
+            )
           end
 
           it { expect(resolved).to be == expected }
@@ -482,8 +512,28 @@ RSpec.describe Cuprum::Collections::Relation do
           let(:name)       { :grimoires }
           let(:parameters) { super().merge(name: name) }
           let(:expected) do
-            super().merge(name: name.to_s, singular_name: 'grimoire')
+            super().merge(
+              name:          name.to_s,
+              plural_name:   'grimoires',
+              singular_name: 'grimoire'
+            )
           end
+
+          it { expect(resolved).to be == expected }
+        end
+
+        describe 'with plural_name: a String' do
+          let(:plural_name) { 'grimoires' }
+          let(:parameters)  { super().merge(plural_name: plural_name) }
+          let(:expected)    { super().merge(plural_name: plural_name) }
+
+          it { expect(resolved).to be == expected }
+        end
+
+        describe 'with plural_name: a Symbol' do
+          let(:plural_name) { :grimoire }
+          let(:parameters)  { super().merge(plural_name: plural_name) }
+          let(:expected)    { super().merge(plural_name: plural_name.to_s) }
 
           it { expect(resolved).to be == expected }
         end
@@ -529,9 +579,10 @@ RSpec.describe Cuprum::Collections::Relation do
         let(:expected) do
           {
             entity_class:   'Book',
-            singular_name:  'book',
             name:           'books',
-            qualified_name: 'books'
+            plural_name:    'books',
+            qualified_name: 'books',
+            singular_name:  'book'
           }
         end
 
@@ -541,7 +592,11 @@ RSpec.describe Cuprum::Collections::Relation do
           let(:name)       { 'grimoires' }
           let(:parameters) { super().merge(name: name) }
           let(:expected) do
-            super().merge(name: name, singular_name: 'grimoire')
+            super().merge(
+              name:          name,
+              plural_name:   'grimoires',
+              singular_name: 'grimoire'
+            )
           end
 
           it { expect(resolved).to be == expected }
@@ -551,8 +606,28 @@ RSpec.describe Cuprum::Collections::Relation do
           let(:name)       { :grimoires }
           let(:parameters) { super().merge(name: name) }
           let(:expected) do
-            super().merge(name: name.to_s, singular_name: 'grimoire')
+            super().merge(
+              name:          name.to_s,
+              plural_name:   'grimoires',
+              singular_name: 'grimoire'
+            )
           end
+
+          it { expect(resolved).to be == expected }
+        end
+
+        describe 'with plural_name: a String' do
+          let(:plural_name) { 'grimoires' }
+          let(:parameters)  { super().merge(plural_name: plural_name) }
+          let(:expected)    { super().merge(plural_name: plural_name) }
+
+          it { expect(resolved).to be == expected }
+        end
+
+        describe 'with plural_name: a Symbol' do
+          let(:plural_name) { :grimoires }
+          let(:parameters)  { super().merge(plural_name: plural_name) }
+          let(:expected)    { super().merge(plural_name: plural_name.to_s) }
 
           it { expect(resolved).to be == expected }
         end
@@ -598,9 +673,10 @@ RSpec.describe Cuprum::Collections::Relation do
         let(:expected) do
           {
             entity_class:   'Spec::ScopedBook',
-            singular_name:  'scoped_book',
             name:           'scoped_books',
-            qualified_name: 'spec/scoped_books'
+            plural_name:    'scoped_books',
+            qualified_name: 'spec/scoped_books',
+            singular_name:  'scoped_book'
           }
         end
 
@@ -610,7 +686,11 @@ RSpec.describe Cuprum::Collections::Relation do
           let(:name)       { 'grimoires' }
           let(:parameters) { super().merge(name: name) }
           let(:expected) do
-            super().merge(name: name, singular_name: 'grimoire')
+            super().merge(
+              name:          name,
+              plural_name:   'grimoires',
+              singular_name: 'grimoire'
+            )
           end
 
           it { expect(resolved).to be == expected }
@@ -620,8 +700,28 @@ RSpec.describe Cuprum::Collections::Relation do
           let(:name)       { :grimoires }
           let(:parameters) { super().merge(name: name) }
           let(:expected) do
-            super().merge(name: name.to_s, singular_name: 'grimoire')
+            super().merge(
+              name:          name.to_s,
+              plural_name:   'grimoires',
+              singular_name: 'grimoire'
+            )
           end
+
+          it { expect(resolved).to be == expected }
+        end
+
+        describe 'with plural_name: a String' do
+          let(:plural_name) { 'grimoires' }
+          let(:parameters)  { super().merge(plural_name: plural_name) }
+          let(:expected)    { super().merge(plural_name: plural_name) }
+
+          it { expect(resolved).to be == expected }
+        end
+
+        describe 'with plural_name: a Symbol' do
+          let(:plural_name) { :grimoires }
+          let(:parameters)  { super().merge(plural_name: plural_name) }
+          let(:expected)    { super().merge(plural_name: plural_name.to_s) }
 
           it { expect(resolved).to be == expected }
         end
@@ -667,9 +767,10 @@ RSpec.describe Cuprum::Collections::Relation do
         let(:expected) do
           {
             entity_class:   'Book',
-            singular_name:  'book',
             name:           'books',
-            qualified_name: 'books'
+            plural_name:    'books',
+            qualified_name: 'books',
+            singular_name:  'book'
           }
         end
 
@@ -723,6 +824,22 @@ RSpec.describe Cuprum::Collections::Relation do
               qualified_name: 'spec/scoped_books'
             )
           end
+
+          it { expect(resolved).to be == expected }
+        end
+
+        describe 'with plural_name: a String' do
+          let(:plural_name) { 'grimoires' }
+          let(:parameters)  { super().merge(plural_name: plural_name) }
+          let(:expected)    { super().merge(plural_name: plural_name) }
+
+          it { expect(resolved).to be == expected }
+        end
+
+        describe 'with plural_name: a Symbol' do
+          let(:plural_name) { :grimoires }
+          let(:parameters)  { super().merge(plural_name: plural_name) }
+          let(:expected)    { super().merge(plural_name: plural_name.to_s) }
 
           it { expect(resolved).to be == expected }
         end
@@ -776,9 +893,10 @@ RSpec.describe Cuprum::Collections::Relation do
         let(:expected) do
           {
             entity_class:   'Book',
-            singular_name:  'book',
             name:           'books',
-            qualified_name: 'books'
+            plural_name:    'books',
+            qualified_name: 'books',
+            singular_name:  'book'
           }
         end
 
@@ -832,6 +950,526 @@ RSpec.describe Cuprum::Collections::Relation do
               qualified_name: 'spec/scoped_books'
             )
           end
+
+          it { expect(resolved).to be == expected }
+        end
+
+        describe 'with plural_name: a String' do
+          let(:plural_name) { 'grimoires' }
+          let(:parameters)  { super().merge(plural_name: plural_name) }
+          let(:expected)    { super().merge(plural_name: plural_name) }
+
+          it { expect(resolved).to be == expected }
+        end
+
+        describe 'with plural_name: a Symbol' do
+          let(:plural_name) { :grimoires }
+          let(:parameters)  { super().merge(plural_name: plural_name) }
+          let(:expected)    { super().merge(plural_name: plural_name.to_s) }
+
+          it { expect(resolved).to be == expected }
+        end
+
+        describe 'with qualified_name: a String' do
+          let(:qualified_name) { 'grimoires' }
+          let(:parameters)     { super().merge(qualified_name: qualified_name) }
+          let(:expected) do
+            super().merge(
+              entity_class:   'Grimoire',
+              qualified_name: qualified_name
+            )
+          end
+
+          it { expect(resolved).to be == expected }
+        end
+
+        describe 'with qualified_name: a Symbol' do
+          let(:qualified_name) { :grimoires }
+          let(:parameters)     { super().merge(qualified_name: qualified_name) }
+          let(:expected) do
+            super().merge(
+              entity_class:   'Grimoire',
+              qualified_name: qualified_name.to_s
+            )
+          end
+
+          it { expect(resolved).to be == expected }
+        end
+
+        describe 'with singular_name: a String' do
+          let(:singular_name) { 'grimoire' }
+          let(:parameters)  { super().merge(singular_name: singular_name) }
+          let(:expected)    { super().merge(singular_name: singular_name) }
+
+          it { expect(resolved).to be == expected }
+        end
+
+        describe 'with singular_name: a Symbol' do
+          let(:singular_name) { :grimoire }
+          let(:parameters)  { super().merge(singular_name: singular_name) }
+          let(:expected)    { super().merge(singular_name: singular_name.to_s) }
+
+          it { expect(resolved).to be == expected }
+        end
+      end
+
+      describe 'with name: a singular String' do
+        let(:name)         { 'book' }
+        let(:parameters)   { { name: name } }
+        let(:expected) do
+          {
+            entity_class:   'Book',
+            name:           'book',
+            plural_name:    'books',
+            qualified_name: 'books',
+            singular_name:  'book'
+          }
+        end
+
+        it { expect(resolved).to be == expected }
+
+        describe 'with entity_class: a Class' do
+          let(:entity_class) { Grimoire }
+          let(:parameters)   { super().merge(entity_class: entity_class) }
+          let(:expected) do
+            super().merge(
+              entity_class:   entity_class,
+              qualified_name: 'grimoires'
+            )
+          end
+
+          it { expect(resolved).to be == expected }
+        end
+
+        describe 'with entity_class: a scoped Class' do
+          let(:entity_class) { Spec::ScopedBook }
+          let(:parameters)   { super().merge(entity_class: entity_class) }
+          let(:expected) do
+            super().merge(
+              entity_class:   entity_class,
+              qualified_name: 'spec/scoped_books'
+            )
+          end
+
+          it { expect(resolved).to be == expected }
+        end
+
+        describe 'with entity_class: a String' do
+          let(:entity_class) { 'Grimoire' }
+          let(:parameters)   { super().merge(entity_class: entity_class) }
+          let(:expected) do
+            super().merge(
+              entity_class:   entity_class,
+              qualified_name: 'grimoires'
+            )
+          end
+
+          it { expect(resolved).to be == expected }
+        end
+
+        describe 'with entity_class: a scoped String' do
+          let(:entity_class) { 'Spec::ScopedBook' }
+          let(:parameters)   { super().merge(entity_class: entity_class) }
+          let(:expected) do
+            super().merge(
+              entity_class:   entity_class,
+              qualified_name: 'spec/scoped_books'
+            )
+          end
+
+          it { expect(resolved).to be == expected }
+        end
+
+        describe 'with plural_name: a String' do
+          let(:plural_name) { 'grimoires' }
+          let(:parameters)  { super().merge(plural_name: plural_name) }
+          let(:expected)    { super().merge(plural_name: plural_name) }
+
+          it { expect(resolved).to be == expected }
+        end
+
+        describe 'with plural_name: a Symbol' do
+          let(:plural_name) { :grimoires }
+          let(:parameters)  { super().merge(plural_name: plural_name) }
+          let(:expected)    { super().merge(plural_name: plural_name.to_s) }
+
+          it { expect(resolved).to be == expected }
+        end
+
+        describe 'with qualified_name: a String' do
+          let(:qualified_name) { 'grimoires' }
+          let(:parameters)     { super().merge(qualified_name: qualified_name) }
+          let(:expected) do
+            super().merge(
+              entity_class:   'Grimoire',
+              qualified_name: qualified_name
+            )
+          end
+
+          it { expect(resolved).to be == expected }
+        end
+
+        describe 'with qualified_name: a Symbol' do
+          let(:qualified_name) { :grimoires }
+          let(:parameters)     { super().merge(qualified_name: qualified_name) }
+          let(:expected) do
+            super().merge(
+              entity_class:   'Grimoire',
+              qualified_name: qualified_name.to_s
+            )
+          end
+
+          it { expect(resolved).to be == expected }
+        end
+
+        describe 'with singular_name: a String' do
+          let(:singular_name) { 'grimoire' }
+          let(:parameters)  { super().merge(singular_name: singular_name) }
+          let(:expected)    { super().merge(singular_name: singular_name) }
+
+          it { expect(resolved).to be == expected }
+        end
+
+        describe 'with singular_name: a Symbol' do
+          let(:singular_name) { :grimoire }
+          let(:parameters)  { super().merge(singular_name: singular_name) }
+          let(:expected)    { super().merge(singular_name: singular_name.to_s) }
+
+          it { expect(resolved).to be == expected }
+        end
+      end
+
+      describe 'with name: a singular Symbol' do
+        let(:name)         { :book }
+        let(:parameters)   { { name: name } }
+        let(:expected) do
+          {
+            entity_class:   'Book',
+            name:           'book',
+            plural_name:    'books',
+            qualified_name: 'books',
+            singular_name:  'book'
+          }
+        end
+
+        it { expect(resolved).to be == expected }
+
+        describe 'with entity_class: a Class' do
+          let(:entity_class) { Grimoire }
+          let(:parameters)   { super().merge(entity_class: entity_class) }
+          let(:expected) do
+            super().merge(
+              entity_class:   entity_class,
+              qualified_name: 'grimoires'
+            )
+          end
+
+          it { expect(resolved).to be == expected }
+        end
+
+        describe 'with entity_class: a scoped Class' do
+          let(:entity_class) { Spec::ScopedBook }
+          let(:parameters)   { super().merge(entity_class: entity_class) }
+          let(:expected) do
+            super().merge(
+              entity_class:   entity_class,
+              qualified_name: 'spec/scoped_books'
+            )
+          end
+
+          it { expect(resolved).to be == expected }
+        end
+
+        describe 'with entity_class: a String' do
+          let(:entity_class) { 'Grimoire' }
+          let(:parameters)   { super().merge(entity_class: entity_class) }
+          let(:expected) do
+            super().merge(
+              entity_class:   entity_class,
+              qualified_name: 'grimoires'
+            )
+          end
+
+          it { expect(resolved).to be == expected }
+        end
+
+        describe 'with entity_class: a scoped String' do
+          let(:entity_class) { 'Spec::ScopedBook' }
+          let(:parameters)   { super().merge(entity_class: entity_class) }
+          let(:expected) do
+            super().merge(
+              entity_class:   entity_class,
+              qualified_name: 'spec/scoped_books'
+            )
+          end
+
+          it { expect(resolved).to be == expected }
+        end
+
+        describe 'with plural_name: a String' do
+          let(:plural_name) { 'grimoires' }
+          let(:parameters)  { super().merge(plural_name: plural_name) }
+          let(:expected)    { super().merge(plural_name: plural_name) }
+
+          it { expect(resolved).to be == expected }
+        end
+
+        describe 'with plural_name: a Symbol' do
+          let(:plural_name) { :grimoires }
+          let(:parameters)  { super().merge(plural_name: plural_name) }
+          let(:expected)    { super().merge(plural_name: plural_name.to_s) }
+
+          it { expect(resolved).to be == expected }
+        end
+
+        describe 'with qualified_name: a String' do
+          let(:qualified_name) { 'grimoires' }
+          let(:parameters)     { super().merge(qualified_name: qualified_name) }
+          let(:expected) do
+            super().merge(
+              entity_class:   'Grimoire',
+              qualified_name: qualified_name
+            )
+          end
+
+          it { expect(resolved).to be == expected }
+        end
+
+        describe 'with qualified_name: a Symbol' do
+          let(:qualified_name) { :grimoires }
+          let(:parameters)     { super().merge(qualified_name: qualified_name) }
+          let(:expected) do
+            super().merge(
+              entity_class:   'Grimoire',
+              qualified_name: qualified_name.to_s
+            )
+          end
+
+          it { expect(resolved).to be == expected }
+        end
+
+        describe 'with singular_name: a String' do
+          let(:singular_name) { 'grimoire' }
+          let(:parameters)  { super().merge(singular_name: singular_name) }
+          let(:expected)    { super().merge(singular_name: singular_name) }
+
+          it { expect(resolved).to be == expected }
+        end
+
+        describe 'with singular_name: a Symbol' do
+          let(:singular_name) { :grimoire }
+          let(:parameters)  { super().merge(singular_name: singular_name) }
+          let(:expected)    { super().merge(singular_name: singular_name.to_s) }
+
+          it { expect(resolved).to be == expected }
+        end
+      end
+
+      describe 'with name: an uncountable String' do
+        let(:name)         { 'data' }
+        let(:parameters)   { { name: name } }
+        let(:expected) do
+          {
+            entity_class:   'Data',
+            name:           'data',
+            plural_name:    'data',
+            qualified_name: 'data',
+            singular_name:  'data'
+          }
+        end
+
+        it { expect(resolved).to be == expected }
+
+        describe 'with entity_class: a Class' do
+          let(:entity_class) { Grimoire }
+          let(:parameters)   { super().merge(entity_class: entity_class) }
+          let(:expected) do
+            super().merge(
+              entity_class:   entity_class,
+              qualified_name: 'grimoires'
+            )
+          end
+
+          it { expect(resolved).to be == expected }
+        end
+
+        describe 'with entity_class: a scoped Class' do
+          let(:entity_class) { Spec::ScopedBook }
+          let(:parameters)   { super().merge(entity_class: entity_class) }
+          let(:expected) do
+            super().merge(
+              entity_class:   entity_class,
+              qualified_name: 'spec/scoped_books'
+            )
+          end
+
+          it { expect(resolved).to be == expected }
+        end
+
+        describe 'with entity_class: a String' do
+          let(:entity_class) { 'Grimoire' }
+          let(:parameters)   { super().merge(entity_class: entity_class) }
+          let(:expected) do
+            super().merge(
+              entity_class:   entity_class,
+              qualified_name: 'grimoires'
+            )
+          end
+
+          it { expect(resolved).to be == expected }
+        end
+
+        describe 'with entity_class: a scoped String' do
+          let(:entity_class) { 'Spec::ScopedBook' }
+          let(:parameters)   { super().merge(entity_class: entity_class) }
+          let(:expected) do
+            super().merge(
+              entity_class:   entity_class,
+              qualified_name: 'spec/scoped_books'
+            )
+          end
+
+          it { expect(resolved).to be == expected }
+        end
+
+        describe 'with plural_name: a String' do
+          let(:plural_name) { 'grimoires' }
+          let(:parameters)  { super().merge(plural_name: plural_name) }
+          let(:expected)    { super().merge(plural_name: plural_name) }
+
+          it { expect(resolved).to be == expected }
+        end
+
+        describe 'with plural_name: a Symbol' do
+          let(:plural_name) { :grimoires }
+          let(:parameters)  { super().merge(plural_name: plural_name) }
+          let(:expected)    { super().merge(plural_name: plural_name.to_s) }
+
+          it { expect(resolved).to be == expected }
+        end
+
+        describe 'with qualified_name: a String' do
+          let(:qualified_name) { 'grimoires' }
+          let(:parameters)     { super().merge(qualified_name: qualified_name) }
+          let(:expected) do
+            super().merge(
+              entity_class:   'Grimoire',
+              qualified_name: qualified_name
+            )
+          end
+
+          it { expect(resolved).to be == expected }
+        end
+
+        describe 'with qualified_name: a Symbol' do
+          let(:qualified_name) { :grimoires }
+          let(:parameters)     { super().merge(qualified_name: qualified_name) }
+          let(:expected) do
+            super().merge(
+              entity_class:   'Grimoire',
+              qualified_name: qualified_name.to_s
+            )
+          end
+
+          it { expect(resolved).to be == expected }
+        end
+
+        describe 'with singular_name: a String' do
+          let(:singular_name) { 'grimoire' }
+          let(:parameters)  { super().merge(singular_name: singular_name) }
+          let(:expected)    { super().merge(singular_name: singular_name) }
+
+          it { expect(resolved).to be == expected }
+        end
+
+        describe 'with singular_name: a Symbol' do
+          let(:singular_name) { :grimoire }
+          let(:parameters)  { super().merge(singular_name: singular_name) }
+          let(:expected)    { super().merge(singular_name: singular_name.to_s) }
+
+          it { expect(resolved).to be == expected }
+        end
+      end
+
+      describe 'with name: an uncountable Symbol' do
+        let(:name)         { :data }
+        let(:parameters)   { { name: name } }
+        let(:expected) do
+          {
+            entity_class:   'Data',
+            name:           'data',
+            plural_name:    'data',
+            qualified_name: 'data',
+            singular_name:  'data'
+          }
+        end
+
+        it { expect(resolved).to be == expected }
+
+        describe 'with entity_class: a Class' do
+          let(:entity_class) { Grimoire }
+          let(:parameters)   { super().merge(entity_class: entity_class) }
+          let(:expected) do
+            super().merge(
+              entity_class:   entity_class,
+              qualified_name: 'grimoires'
+            )
+          end
+
+          it { expect(resolved).to be == expected }
+        end
+
+        describe 'with entity_class: a scoped Class' do
+          let(:entity_class) { Spec::ScopedBook }
+          let(:parameters)   { super().merge(entity_class: entity_class) }
+          let(:expected) do
+            super().merge(
+              entity_class:   entity_class,
+              qualified_name: 'spec/scoped_books'
+            )
+          end
+
+          it { expect(resolved).to be == expected }
+        end
+
+        describe 'with entity_class: a String' do
+          let(:entity_class) { 'Grimoire' }
+          let(:parameters)   { super().merge(entity_class: entity_class) }
+          let(:expected) do
+            super().merge(
+              entity_class:   entity_class,
+              qualified_name: 'grimoires'
+            )
+          end
+
+          it { expect(resolved).to be == expected }
+        end
+
+        describe 'with entity_class: a scoped String' do
+          let(:entity_class) { 'Spec::ScopedBook' }
+          let(:parameters)   { super().merge(entity_class: entity_class) }
+          let(:expected) do
+            super().merge(
+              entity_class:   entity_class,
+              qualified_name: 'spec/scoped_books'
+            )
+          end
+
+          it { expect(resolved).to be == expected }
+        end
+
+        describe 'with plural_name: a String' do
+          let(:plural_name) { 'grimoires' }
+          let(:parameters)  { super().merge(plural_name: plural_name) }
+          let(:expected)    { super().merge(plural_name: plural_name) }
+
+          it { expect(resolved).to be == expected }
+        end
+
+        describe 'with plural_name: a Symbol' do
+          let(:plural_name) { :grimoires }
+          let(:parameters)  { super().merge(plural_name: plural_name) }
+          let(:expected)    { super().merge(plural_name: plural_name.to_s) }
 
           it { expect(resolved).to be == expected }
         end

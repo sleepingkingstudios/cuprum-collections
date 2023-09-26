@@ -152,48 +152,6 @@ module Cuprum::Collections::RSpec::Contracts
           end
         end
 
-        describe 'with singular_name: an Object' do
-          let(:error_message) { 'member name is not a String or a Symbol' }
-
-          it 'should raise an exception' do
-            expect do
-              call_method(
-                name:          'books',
-                singular_name: Object.new.freeze
-              )
-            end
-              .to raise_error ArgumentError, error_message
-          end
-        end
-
-        describe 'with singular_name: an empty String' do
-          let(:error_message) { "member name can't be blank" }
-
-          it 'should raise an exception' do
-            expect do
-              call_method(
-                name:          'books',
-                singular_name: ''
-              )
-            end
-              .to raise_error ArgumentError, error_message
-          end
-        end
-
-        describe 'with singular_name: an empty Symbol' do
-          let(:error_message) { "member name can't be blank" }
-
-          it 'should raise an exception' do
-            expect do
-              call_method(
-                name:          'books',
-                singular_name: :''
-              )
-            end
-              .to raise_error ArgumentError, error_message
-          end
-        end
-
         describe 'with name: nil' do
           let(:error_message) { "name or entity class can't be blank" }
 
@@ -282,6 +240,48 @@ module Cuprum::Collections::RSpec::Contracts
           end
         end
 
+        describe 'with plural_name: an Object' do
+          let(:error_message) { 'plural name is not a String or a Symbol' }
+
+          it 'should raise an exception' do
+            expect do
+              call_method(
+                name:        'books',
+                plural_name: Object.new.freeze
+              )
+            end
+              .to raise_error ArgumentError, error_message
+          end
+        end
+
+        describe 'with plural_name: an empty String' do
+          let(:error_message) { "plural name can't be blank" }
+
+          it 'should raise an exception' do
+            expect do
+              call_method(
+                name:        'books',
+                plural_name: ''
+              )
+            end
+              .to raise_error ArgumentError, error_message
+          end
+        end
+
+        describe 'with plural_name: an empty Symbol' do
+          let(:error_message) { "plural name can't be blank" }
+
+          it 'should raise an exception' do
+            expect do
+              call_method(
+                name:        'books',
+                plural_name: :''
+              )
+            end
+              .to raise_error ArgumentError, error_message
+          end
+        end
+
         describe 'with qualified_name: an Object' do
           let(:error_message) { 'qualified name is not a String or a Symbol' }
 
@@ -323,6 +323,48 @@ module Cuprum::Collections::RSpec::Contracts
               .to raise_error ArgumentError, error_message
           end
         end
+
+        describe 'with singular_name: an Object' do
+          let(:error_message) { 'singular name is not a String or a Symbol' }
+
+          it 'should raise an exception' do
+            expect do
+              call_method(
+                name:          'books',
+                singular_name: Object.new.freeze
+              )
+            end
+              .to raise_error ArgumentError, error_message
+          end
+        end
+
+        describe 'with singular_name: an empty String' do
+          let(:error_message) { "singular name can't be blank" }
+
+          it 'should raise an exception' do
+            expect do
+              call_method(
+                name:          'books',
+                singular_name: ''
+              )
+            end
+              .to raise_error ArgumentError, error_message
+          end
+        end
+
+        describe 'with singular_name: an empty Symbol' do
+          let(:error_message) { "singular name can't be blank" }
+
+          it 'should raise an exception' do
+            expect do
+              call_method(
+                name:          'books',
+                singular_name: :''
+              )
+            end
+              .to raise_error ArgumentError, error_message
+          end
+        end
       end
     end
 
@@ -352,6 +394,7 @@ module Cuprum::Collections::RSpec::Contracts
               keywords = %i[
                 entity_class
                 name
+                plural_name
                 qualified_name
                 singular_name
               ]
@@ -559,6 +602,126 @@ module Cuprum::Collections::RSpec::Contracts
           end
         end
 
+        describe '#plural_name' do
+          include_examples 'should define reader', :plural_name
+
+          context 'when initialized with entity_class: a Class' do
+            let(:entity_class) { Grimoire }
+            let(:constructor_options) do
+              super()
+                .tap { |hsh| hsh.delete(:name) }
+                .merge(entity_class: entity_class)
+            end
+
+            it { expect(subject.plural_name).to be == 'grimoires' }
+
+            context 'when initialized with plural_name: value' do
+              let(:plural_name) { 'books' }
+              let(:constructor_options) do
+                super().merge(plural_name: plural_name)
+              end
+
+              it { expect(subject.plural_name).to be == plural_name }
+            end
+          end
+
+          context 'when initialized with entity_class: a scoped Class' do
+            let(:entity_class) { Spec::ScopedBook }
+            let(:constructor_options) do
+              super()
+                .tap { |hsh| hsh.delete(:name) }
+                .merge(entity_class: entity_class)
+            end
+
+            it { expect(subject.plural_name).to be == 'scoped_books' }
+
+            context 'when initialized with plural_name: value' do
+              let(:plural_name) { 'books' }
+              let(:constructor_options) do
+                super().merge(plural_name: plural_name)
+              end
+
+              it { expect(subject.plural_name).to be == plural_name }
+            end
+          end
+
+          context 'when initialized with entity_class: a String' do
+            let(:entity_class) { 'Grimoire' }
+            let(:constructor_options) do
+              super()
+                .tap { |hsh| hsh.delete(:name) }
+                .merge(entity_class: entity_class)
+            end
+
+            it { expect(subject.plural_name).to be == 'grimoires' }
+
+            context 'when initialized with plural_name: value' do
+              let(:plural_name) { 'books' }
+              let(:constructor_options) do
+                super().merge(plural_name: plural_name)
+              end
+
+              it { expect(subject.plural_name).to be == plural_name }
+            end
+          end
+
+          context 'when initialized with entity_class: a scoped String' do
+            let(:entity_class) { 'Spec::ScopedBook' }
+            let(:constructor_options) do
+              super()
+                .tap { |hsh| hsh.delete(:name) }
+                .merge(entity_class: entity_class)
+            end
+
+            it { expect(subject.plural_name).to be == 'scoped_books' }
+
+            context 'when initialized with plural_name: value' do
+              let(:plural_name) { 'books' }
+              let(:constructor_options) do
+                super().merge(plural_name: plural_name)
+              end
+
+              it { expect(subject.plural_name).to be == plural_name }
+            end
+          end
+
+          context 'when initialized with name: a String' do
+            let(:name) { 'grimoires' }
+            let(:constructor_options) do
+              super().merge(name: name)
+            end
+
+            it { expect(subject.plural_name).to be == 'grimoires' }
+
+            context 'when initialized with plural_name: value' do
+              let(:plural_name) { 'books' }
+              let(:constructor_options) do
+                super().merge(plural_name: plural_name)
+              end
+
+              it { expect(subject.plural_name).to be == plural_name }
+            end
+          end
+
+          context 'when initialized with name: a Symbol' do
+            let(:name) { :grimoires }
+            let(:constructor_options) do
+              super().merge(name: name)
+            end
+
+            it { expect(subject.plural_name).to be == 'grimoires' }
+
+            context 'when initialized with plural_name: value' do
+              let(:plural_name) { 'books' }
+              let(:constructor_options) do
+                super().merge(plural_name: plural_name)
+              end
+
+              it { expect(subject.plural_name).to be == plural_name }
+            end
+          end
+        end
+
         describe '#singular_name' do
           include_examples 'should define reader', :singular_name
 
@@ -640,24 +803,6 @@ module Cuprum::Collections::RSpec::Contracts
 
               it { expect(subject.singular_name).to be == singular_name }
             end
-          end
-
-          context 'when initialized with singular_name: a String' do
-            let(:singular_name) { 'book' }
-            let(:constructor_options) do
-              super().merge(singular_name: singular_name)
-            end
-
-            it { expect(subject.singular_name).to be == singular_name }
-          end
-
-          context 'when initialized with singular_name: a Symbol' do
-            let(:singular_name) { :book }
-            let(:constructor_options) do
-              super().merge(singular_name: singular_name)
-            end
-
-            it { expect(subject.singular_name).to be == singular_name.to_s }
           end
 
           context 'when initialized with name: a String' do

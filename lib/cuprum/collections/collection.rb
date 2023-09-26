@@ -49,6 +49,7 @@ module Cuprum::Collections
       )
       @entity_class   = relation_params[:entity_class]
       @name           = relation_params[:name]
+      @plural_name    = relation_params[:plural_name]
       @qualified_name = relation_params[:qualified_name]
       @singular_name  = relation_params[:singular_name]
 
