@@ -133,7 +133,7 @@ module Cuprum::Collections
 
     # Methods for resolving a relations's naming and entity class from options.
     module Parameters # rubocop:disable Metrics/ModuleLength
-      class << self
+      class << self # rubocop:disable Metrics/ClassLength
         # @overload resolve_parameters(entity_class: nil, singular_name: nil, name: nil, qualified_name: nil)
         #   Helper method for resolving a Relation's required parameters.
         #
@@ -153,14 +153,16 @@ module Cuprum::Collections
           entity_class   = entity_class_from(**params)
           class_name     = entity_class_name(entity_class)
           name           = relation_name_from(**params, class_name: class_name)
-          singular_name  = singular_name_from(**params, name: name)
+          plural_name    = plural_name_from(**params, name: name)
           qualified_name = qualified_name_from(**params, class_name: class_name)
+          singular_name  = singular_name_from(**params, name: name)
 
           {
             entity_class:   entity_class,
-            singular_name:  singular_name,
             name:           name,
-            qualified_name: qualified_name
+            plural_name:    plural_name,
+            qualified_name: qualified_name,
+            singular_name:  singular_name
           }
         end
 
@@ -168,7 +170,7 @@ module Cuprum::Collections
 
         def classify(raw)
           raw
-            .then { |str| tools.string_tools.singularize(str) }
+            .then { |str| tools.string_tools.singularize(str).to_s }
             .split('/')
             .map { |str| tools.string_tools.camelize(str) }
             .join('::')
@@ -201,6 +203,17 @@ module Cuprum::Collections
           !params[key].nil?
         end
 
+        def plural_name_from(name:, **parameters)
+          if parameters.key?(:plural_name) && !parameters[:plural_name].nil?
+            return validate_parameter(
+              parameters[:plural_name],
+              as: 'plural name'
+            )
+          end
+
+          tools.string_tools.pluralize(name)
+        end
+
         def qualified_name_from(class_name:, **params)
           if has_key?(params, :qualified_name)
             return params[:qualified_name].to_s
@@ -219,7 +232,7 @@ module Cuprum::Collections
           if parameters.key?(:singular_name) && !parameters[:singular_name].nil?
             return validate_parameter(
               parameters[:singular_name],
-              as: 'member name'
+              as: 'singular name'
             )
           end
 
@@ -249,7 +262,7 @@ module Cuprum::Collections
           value.to_s
         end
 
-        def validate_parameters(**params) # rubocop:disable Metrics/MethodLength
+        def validate_parameters(**params) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
           unless has_key?(params, :entity_class) || has_key?(params, :name)
             raise ArgumentError, "name or entity class can't be blank"
           end
@@ -258,28 +271,35 @@ module Cuprum::Collections
             validate_entity_class(params[:entity_class])
           end
 
-          if has_key?(params, :singular_name)
-            validate_parameter(params[:singular_name], as: 'member name')
-          end
-
           if has_key?(params, :name)
             validate_parameter(params[:name], as: 'name')
           end
 
-          if has_key?(params, :qualified_name) # rubocop:disable Style/GuardClause
+          if has_key?(params, :plural_name)
+            validate_parameter(params[:plural_name], as: 'plural name')
+          end
+
+          if has_key?(params, :qualified_name)
             validate_parameter(params[:qualified_name], as: 'qualified name')
+          end
+
+          if has_key?(params, :singular_name) # rubocop:disable Style/GuardClause
+            validate_parameter(params[:singular_name], as: 'singular name')
           end
         end
       end
 
-      # @return [String] the name of an entity in the relation.
-      attr_reader :singular_name
-
       # @return [String] the name of the relation.
       attr_reader :name
 
+      # @return [String] the pluralized name of the relation.
+      attr_reader :plural_name
+
       # @return [String] a scoped name for the relation.
       attr_reader :qualified_name
+
+      # @return [String] the name of an entity in the relation.
+      attr_reader :singular_name
 
       # @return [Class] the class of entity represented by the relation.
       def entity_class
@@ -334,6 +354,7 @@ module Cuprum::Collections
 
       @entity_class   = relation_params[:entity_class]
       @name           = relation_params[:name]
+      @plural_name    = relation_params[:plural_name]
       @qualified_name = relation_params[:qualified_name]
       @singular_name  = relation_params[:singular_name]
 
