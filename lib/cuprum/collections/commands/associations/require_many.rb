@@ -17,16 +17,19 @@ module Cuprum::Collections::Commands::Associations
       entities.map { |entity| entity[association.query_key_name] }
     end
 
-    def missing_keys_error(missing_keys:)
+    def missing_keys_error(missing_keys:, plural:)
+      attribute_value =
+        !plural && missing_keys.is_a?(Array) ? missing_keys.first : missing_keys
+
       Cuprum::Collections::Errors::Associations::NotFound.new(
         attribute_name:  association.query_key_name,
-        attribute_value: singular? ? missing_keys.first : missing_keys,
+        attribute_value: attribute_value,
         collection_name: association.name,
         primary_key:     association.primary_key_query?
       )
     end
 
-    def perform_query(association:, expected_keys:)
+    def perform_query(association:, expected_keys:, plural:, **)
       entities     = step { super }
       missing_keys = find_missing_keys(
         entities:      entities,
@@ -35,7 +38,9 @@ module Cuprum::Collections::Commands::Associations
 
       return success(entities) if missing_keys.empty?
 
-      error = missing_keys_error(missing_keys: missing_keys)
+      missing_keys = missing_keys.first unless plural
+      error        =
+        missing_keys_error(missing_keys: missing_keys, plural: plural)
 
       failure(error)
     end
