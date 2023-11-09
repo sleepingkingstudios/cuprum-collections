@@ -133,7 +133,7 @@ module Cuprum::Collections
 
     # Methods for resolving a relations's naming and entity class from options.
     module Parameters # rubocop:disable Metrics/ModuleLength
-      class << self # rubocop:disable Metrics/ClassLength
+      class << self
         # @overload resolve_parameters(entity_class: nil, singular_name: nil, name: nil, qualified_name: nil)
         #   Helper method for resolving a Relation's required parameters.
         #
