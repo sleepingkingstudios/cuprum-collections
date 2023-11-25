@@ -48,6 +48,14 @@ module Cuprum::Collections::RSpec
           let(:command) do
             collection.const_get(class_name).new(**constructor_options)
           end
+          let(:expected_options) do
+            Hash
+              .new { |_, key| collection.send(key) }
+              .merge(
+                collection_name: collection.name,
+                member_name:     collection.singular_name
+              )
+          end
 
           it { expect(collection).to define_constant(class_name) }
 
@@ -60,7 +68,7 @@ module Cuprum::Collections::RSpec
           command_options.each do |option_name|
             it "should set the ##{option_name}" do
               expect(command.send(option_name))
-                .to be == collection.send(option_name)
+                .to be == expected_options[option_name]
             end
           end
 
@@ -68,7 +76,7 @@ module Cuprum::Collections::RSpec
             let(:constructor_options) do
               super().merge(
                 custom_option: 'value',
-                member_name:   'tome'
+                singular_name: 'tome'
               )
             end
 
@@ -77,9 +85,7 @@ module Cuprum::Collections::RSpec
             command_options.each do |option_name|
               it "should set the ##{option_name}" do
                 expect(command.send(option_name)).to(
-                  be == constructor_options.fetch(option_name) do
-                    collection.send(option_name)
-                  end
+                  be == expected_options[option_name]
                 )
               end
             end
@@ -90,6 +96,14 @@ module Cuprum::Collections::RSpec
           let(:constructor_options) { defined?(super()) ? super() : {} }
           let(:command) do
             collection.send(command_name, **constructor_options)
+          end
+          let(:expected_options) do
+            Hash
+              .new { |_, key| collection.send(key) }
+              .merge(
+                collection_name: collection.name,
+                member_name:     collection.singular_name
+              )
           end
 
           it 'should define the command' do
@@ -104,7 +118,7 @@ module Cuprum::Collections::RSpec
           command_options.each do |option_name|
             it "should set the ##{option_name}" do
               expect(command.send(option_name))
-                .to be == collection.send(option_name)
+                .to be == expected_options[option_name]
             end
           end
 
@@ -112,7 +126,7 @@ module Cuprum::Collections::RSpec
             let(:constructor_options) do
               super().merge(
                 custom_option: 'value',
-                member_name:   'tome'
+                singular_name: 'tome'
               )
             end
 
@@ -121,9 +135,7 @@ module Cuprum::Collections::RSpec
             command_options.each do |option_name|
               it "should set the ##{option_name}" do
                 expect(command.send(option_name)).to(
-                  be == constructor_options.fetch(option_name) do
-                    collection.send(option_name)
-                  end
+                  be == expected_options[option_name]
                 )
               end
             end
@@ -164,7 +176,7 @@ module Cuprum::Collections::RSpec
       include_examples 'should define the command', :validate_one
 
       describe '#==' do
-        let(:other_options)    { { collection_name: name } }
+        let(:other_options)    { { name: name } }
         let(:other_collection) { described_class.new(**other_options) }
 
         describe 'with nil' do
@@ -198,8 +210,8 @@ module Cuprum::Collections::RSpec
         context 'when initialized with options' do
           let(:constructor_options) do
             super().merge(
-              member_name:    'grimoire',
-              qualified_name: 'spec/scoped_books'
+              qualified_name: 'spec/scoped_books',
+              singular_name:  'grimoire'
             )
           end
 
@@ -210,8 +222,8 @@ module Cuprum::Collections::RSpec
           describe 'with a collection with matching properties' do
             let(:other_options) do
               super().merge(
-                member_name:    'grimoire',
-                qualified_name: 'spec/scoped_books'
+                qualified_name: 'spec/scoped_books',
+                singular_name:  'grimoire'
               )
             end
 
@@ -299,8 +311,8 @@ module Cuprum::Collections::RSpec
         describe 'with partially-matching options' do
           let(:other_options) do
             {
-              collection_name: name,
-              member_name:     'grimoire'
+              name:          name,
+              singular_name: 'grimoire'
             }
           end
 

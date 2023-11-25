@@ -63,14 +63,21 @@ module Cuprum::Collections
         # @param alternatives [Symbol, Array<Symbol>] the additional keywords.
         #
         # @return [Hash] the disambiguated keywords.
-        def disambiguate_keyword(params, key, *alternatives)
+        def disambiguate_keyword(params, key, *alternatives) # rubocop:disable Metrics/MethodLength
           params = params.dup
           values = keyword_values(params, key, *alternatives)
 
           return params if values.empty?
 
           if values.size == 1
-            _, value = values.first
+            match, value = values.first
+
+            unless match == key
+              tools.core_tools.deprecate(
+                "#{match.inspect} keyword",
+                message: "Use #{key.inspect} instead"
+              )
+            end
 
             return params.merge(key => value)
           end
@@ -117,6 +124,10 @@ module Cuprum::Collections
           keys
             .map { |key| [key, keywords.delete(key)] }
             .reject { |_, value| value.nil? } # rubocop:disable Style/CollectionCompact
+        end
+
+        def tools
+          SleepingKingStudios::Tools::Toolbelt.instance
         end
       end
 
@@ -381,6 +392,10 @@ module Cuprum::Collections
 
     def ignored_parameters
       @ignored_parameters ||= Set.new(IGNORED_PARAMETERS)
+    end
+
+    def tools
+      SleepingKingStudios::Tools::Toolbelt.instance
     end
   end
 end

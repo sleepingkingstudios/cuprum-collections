@@ -28,11 +28,9 @@ module Cuprum::Collections
     # @overload initialize(entity_class: nil, name: nil, qualified_name: nil, singular_name: nil, **options)
     #   @param entity_class [Class, String] the class of entity represented by
     #     the relation.
-    #   @param name [String] the name of the relation. Aliased as
-    #     :collection_name.
+    #   @param name [String] the name of the relation.
     #   @param qualified_name [String] a scoped name for the relation.
     #   @param singular_name [String] the name of an entity in the relation.
-    #     Aliased as :member_name.
     #   @param options [Hash] additional options for the relation.
     #
     #   @option options primary_key_name [String] the name of the primary key
@@ -56,10 +54,6 @@ module Cuprum::Collections
       @options = ignore_parameters(**parameters)
     end
 
-    alias collection_name name
-
-    alias member_name singular_name
-
     # @return [Hash<Symbol>] additional options for the collection.
     attr_reader :options
 
@@ -71,6 +65,14 @@ module Cuprum::Collections
       return false unless self.class == other.class
 
       comparable_options == other.comparable_options
+    end
+
+    # @return [String] the name of the collection.
+    def collection_name
+      tools.core_tools.deprecate '#collection_name method',
+        message: 'Use #name instead'
+
+      name
     end
 
     # @return [Integer] the count of items in the collection.
@@ -93,6 +95,14 @@ module Cuprum::Collections
       end
 
       comparable_options >= expected
+    end
+
+    # @return [String] the name of an entity in the relation.
+    def member_name
+      tools.core_tools.deprecate '#member_name method',
+        message: 'Use #singular_name instead'
+
+      singular_name
     end
 
     # A new Query instance, used for querying against the collection data.
@@ -118,9 +128,9 @@ module Cuprum::Collections
 
     def command_options
       @command_options ||= {
-        collection_name:  collection_name,
+        collection_name:  name,
         entity_class:     entity_class,
-        member_name:      member_name,
+        member_name:      singular_name,
         primary_key_name: primary_key_name,
         primary_key_type: primary_key_type,
         **options
@@ -135,6 +145,10 @@ module Cuprum::Collections
 
     def ignored_parameters
       @ignored_parameters ||= Set.new(IGNORED_PARAMETERS)
+    end
+
+    def tools
+      SleepingKingStudios::Tools::Toolbelt.instance
     end
   end
 end

@@ -14,6 +14,13 @@ RSpec.describe Cuprum::Collections::Relation do
 
   let(:name)                { 'books' }
   let(:constructor_options) { { name: name } }
+  let(:core_tools) do
+    SleepingKingStudios::Tools::Toolbelt.instance.core_tools
+  end
+
+  before(:example) do
+    allow(core_tools).to receive(:deprecate)
+  end
 
   describe '::Cardinality' do
     subject(:relation) { described_class.new(**constructor_options) }
@@ -39,7 +46,37 @@ RSpec.describe Cuprum::Collections::Relation do
 
     let(:described_class) { super()::Disambiguation }
 
+    before(:example) do
+      allow(core_tools)
+        .to receive(:deprecate)
+        .with(an_instance_of(String), message: an_instance_of(String))
+        .and_return(nil)
+    end
+
     describe '.disambiguate_keyword' do
+      shared_examples 'should not print a deprecation warning' do
+        it 'should not print a deprecation warning' do
+          begin
+            disambiguate
+          rescue StandardError
+            # Do nothing.
+          end
+
+          expect(core_tools).not_to have_received(:deprecate)
+        end
+      end
+
+      shared_examples 'should print a deprecation warning' \
+      do |actual:, expected:|
+        it 'should print a deprecation warning' do
+          disambiguate
+
+          expect(core_tools)
+            .to have_received(:deprecate)
+            .with(":#{actual} keyword", message: "Use :#{expected} instead")
+        end
+      end
+
       let(:keywords)     { {} }
       let(:key)          { :original_key }
       let(:alternatives) { [] }
@@ -60,6 +97,8 @@ RSpec.describe Cuprum::Collections::Relation do
 
         it { expect(disambiguate).to be == keywords }
 
+        include_examples 'should not print a deprecation warning'
+
         describe 'with keywords' do
           let(:keywords) do
             {
@@ -69,6 +108,8 @@ RSpec.describe Cuprum::Collections::Relation do
           end
 
           it { expect(disambiguate).to be == keywords }
+
+          include_examples 'should not print a deprecation warning'
         end
       end
 
@@ -76,6 +117,8 @@ RSpec.describe Cuprum::Collections::Relation do
         let(:alternatives) { :alternate_key }
 
         it { expect(disambiguate).to be == keywords }
+
+        include_examples 'should not print a deprecation warning'
 
         describe 'with keywords: no matching keys' do
           let(:keywords) do
@@ -85,6 +128,8 @@ RSpec.describe Cuprum::Collections::Relation do
           end
 
           it { expect(disambiguate).to be == keywords }
+
+          include_examples 'should not print a deprecation warning'
         end
 
         describe 'with keywords: { original key: value }' do
@@ -96,6 +141,8 @@ RSpec.describe Cuprum::Collections::Relation do
           end
 
           it { expect(disambiguate).to be == keywords }
+
+          include_examples 'should not print a deprecation warning'
         end
 
         describe 'with keywords: { alternate key: value }' do
@@ -113,6 +160,10 @@ RSpec.describe Cuprum::Collections::Relation do
           end
 
           it { expect(disambiguate).to be == expected }
+
+          include_examples 'should print a deprecation warning',
+            expected: :original_key,
+            actual:   :alternate_key
         end
 
         describe 'with ambiguous keywords' do
@@ -133,6 +184,8 @@ RSpec.describe Cuprum::Collections::Relation do
             expect { disambiguate }
               .to raise_error ArgumentError, error_message
           end
+
+          include_examples 'should not print a deprecation warning'
         end
       end
 
@@ -140,6 +193,8 @@ RSpec.describe Cuprum::Collections::Relation do
         let(:alternatives) { %i[alternate_key fallback_key] }
 
         it { expect(disambiguate).to be == keywords }
+
+        include_examples 'should not print a deprecation warning'
 
         describe 'with keywords: { original key: value }' do
           let(:keywords) do
@@ -150,6 +205,8 @@ RSpec.describe Cuprum::Collections::Relation do
           end
 
           it { expect(disambiguate).to be == keywords }
+
+          include_examples 'should not print a deprecation warning'
         end
 
         describe 'with keywords: { alternate key: value }' do
@@ -167,6 +224,10 @@ RSpec.describe Cuprum::Collections::Relation do
           end
 
           it { expect(disambiguate).to be == expected }
+
+          include_examples 'should print a deprecation warning',
+            expected: :original_key,
+            actual:   :alternate_key
         end
 
         describe 'with keywords: { fallback key: value }' do
@@ -184,6 +245,10 @@ RSpec.describe Cuprum::Collections::Relation do
           end
 
           it { expect(disambiguate).to be == expected }
+
+          include_examples 'should print a deprecation warning',
+            expected: :original_key,
+            actual:   :fallback_key
         end
 
         describe 'with ambiguous keywords' do
@@ -208,11 +273,36 @@ RSpec.describe Cuprum::Collections::Relation do
             expect { disambiguate }
               .to raise_error ArgumentError, error_message
           end
+
+          include_examples 'should not print a deprecation warning'
         end
       end
     end
 
     describe '.resolve_parameters' do
+      shared_examples 'should not print a deprecation warning' do
+        it 'should not print a deprecation warning' do
+          begin
+            resolved
+          rescue StandardError
+            # Do nothing.
+          end
+
+          expect(core_tools).not_to have_received(:deprecate)
+        end
+      end
+
+      shared_examples 'should print a deprecation warning' \
+      do |actual:, expected:|
+        it 'should print a deprecation warning' do
+          resolved
+
+          expect(core_tools)
+            .to have_received(:deprecate)
+            .with(":#{actual} keyword", message: "Use :#{expected} instead")
+        end
+      end
+
       let(:parameters) { { name: 'books' } }
       let(:ambiguous)  { {} }
       let(:resolved) do
@@ -245,6 +335,8 @@ RSpec.describe Cuprum::Collections::Relation do
             .to have_received(:resolve_parameters)
             .with(parameters)
         end
+
+        include_examples 'should not print a deprecation warning'
       end
 
       describe 'with one ambiguous keyword' do
@@ -260,6 +352,10 @@ RSpec.describe Cuprum::Collections::Relation do
             .to have_received(:resolve_parameters)
             .with(received)
         end
+
+        include_examples 'should print a deprecation warning',
+          expected: :singular_name,
+          actual:   :member_name
       end
 
       describe 'with many ambiguous keywords' do
@@ -291,6 +387,20 @@ RSpec.describe Cuprum::Collections::Relation do
           expect(Cuprum::Collections::Relation::Parameters)
             .to have_received(:resolve_parameters)
             .with(received)
+        end
+
+        it 'should print deprecation warnings', :aggregate_failures do # rubocop:disable RSpec/ExampleLength
+          resolved
+
+          expect(core_tools)
+            .to have_received(:deprecate)
+            .with(
+              ':scoped_name keyword',
+              message: 'Use :qualified_name instead'
+            )
+          expect(core_tools)
+            .to have_received(:deprecate)
+            .with(':member_name keyword', message: 'Use :singular_name instead')
         end
       end
     end

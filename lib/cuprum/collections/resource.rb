@@ -12,12 +12,11 @@ module Cuprum::Collections
 
     # @overload initialize(entity_class: nil, name: nil, qualified_name: nil, singular_name: nil, **options)
     #   @param entity_class [Class, String] the class of entity represented by
-    #     the resource. Aliased as :resource_class.
+    #     the resource.
     #   @param name [String] the name of the resource. Aliased as
     #     :resource_name.
     #   @param qualified_name [String] a scoped name for the resource.
     #   @param singular_name [String] the name of an entity in the resource.
-    #     Aliased as :singular_resource_name.
     #   @param options [Hash] additional options for the resource.
     #
     #   @option options plural [Boolean] if true, the resource represents a
@@ -39,8 +38,28 @@ module Cuprum::Collections
       super(**params)
     end
 
-    alias resource_class entity_class
-    alias resource_name name
-    alias singular_resource_name singular_name
+    # @return [Class] the class of entity represented by the resource.
+    def resource_class
+      tools.core_tools.deprecate '#resource_class method',
+        message: 'Use #entity_class instead'
+
+      entity_class
+    end
+
+    # @return [String] the name of the resource.
+    def resource_name
+      tools.core_tools.deprecate '#resource_name method',
+        message: 'Use #name instead'
+
+      name
+    end
+
+    # @return[String] the name of an entity in the resource.
+    def singular_resource_name
+      tools.core_tools.deprecate '#singular_resource_name method',
+        message: 'Use #singular_name instead'
+
+      singular_name
+    end
   end
 end

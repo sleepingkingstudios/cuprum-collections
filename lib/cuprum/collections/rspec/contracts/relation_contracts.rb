@@ -40,9 +40,26 @@ module Cuprum::Collections::RSpec::Contracts
 
         Array(as).each do |alt|
           describe "##{alt}" do
+            let(:core_tools) do
+              SleepingKingStudios::Tools::Toolbelt.instance.core_tools
+            end
+
+            before(:example) { allow(core_tools).to receive(:deprecate) }
+
             include_examples 'should define reader',
               alt,
               -> { subject.send(key) }
+
+            it 'should print a deprecation warning' do
+              subject.send(alt)
+
+              expect(core_tools)
+                .to have_received(:deprecate)
+                .with(
+                  "##{alt} method",
+                  message: "Use ##{key} instead"
+                )
+            end
 
             context "when initialized with #{key}: value" do
               let(:constructor_options) do
@@ -74,6 +91,11 @@ module Cuprum::Collections::RSpec::Contracts
                   .tap { |hsh| hsh.delete(key) }
                   .merge(alt => value)
               end
+              let(:core_tools) do
+                SleepingKingStudios::Tools::Toolbelt.instance.core_tools
+              end
+
+              before(:example) { allow(core_tools).to receive(:deprecate) }
 
               it { expect(subject.send(key)).to be == value }
             end
@@ -88,6 +110,11 @@ module Cuprum::Collections::RSpec::Contracts
                   .tap { |hsh| hsh.delete(key) }
                   .merge(alt => value)
               end
+              let(:core_tools) do
+                SleepingKingStudios::Tools::Toolbelt.instance.core_tools
+              end
+
+              before(:example) { allow(core_tools).to receive(:deprecate) }
 
               it { expect(subject.options).not_to have_key alt }
             end
