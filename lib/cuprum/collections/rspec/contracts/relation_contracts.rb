@@ -324,6 +324,15 @@ module Cuprum::Collections::RSpec::Contracts
           end
         end
 
+        describe 'with qualified_name: value and name, entity_class: nil' do
+          it 'should not raise an exception' do
+            expect do
+              call_method(entity_class: nil, name: nil, qualified_name: 'books')
+            end
+              .not_to raise_error
+          end
+        end
+
         describe 'with singular_name: an Object' do
           let(:error_message) { 'singular name is not a String or a Symbol' }
 

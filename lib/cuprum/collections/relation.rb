@@ -133,6 +133,9 @@ module Cuprum::Collections
 
     # Methods for resolving a relations's naming and entity class from options.
     module Parameters # rubocop:disable Metrics/ModuleLength
+      PARAMETER_KEYS = %i[entity_class name qualified_name].freeze
+      private_constant :PARAMETER_KEYS
+
       class << self
         # @overload resolve_parameters(entity_class: nil, singular_name: nil, name: nil, qualified_name: nil)
         #   Helper method for resolving a Relation's required parameters.
@@ -262,10 +265,14 @@ module Cuprum::Collections
           value.to_s
         end
 
-        def validate_parameters(**params) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
-          unless has_key?(params, :entity_class) || has_key?(params, :name)
-            raise ArgumentError, "name or entity class can't be blank"
-          end
+        def validate_parameter_keys(params)
+          return if PARAMETER_KEYS.any? { |key| has_key?(params, key) }
+
+          raise ArgumentError, "name or entity class can't be blank"
+        end
+
+        def validate_parameters(**params) # rubocop:disable Metrics/MethodLength
+          validate_parameter_keys(params)
 
           if has_key?(params, :entity_class)
             validate_entity_class(params[:entity_class])
