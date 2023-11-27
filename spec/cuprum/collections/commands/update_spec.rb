@@ -29,8 +29,8 @@ RSpec.describe Cuprum::Collections::Commands::Update do
 
   let(:collection) do
     Cuprum::Collections::Basic::Collection.new(
-      collection_name: 'books',
-      data:            [],
+      name: 'books',
+      data: [],
       **collection_options
     )
   end

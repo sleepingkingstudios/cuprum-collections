@@ -7,12 +7,12 @@ require 'cuprum/collections/rspec/fixtures'
 RSpec.describe Cuprum::Collections::Commands::FindOneMatching do
   subject(:command) { described_class.new(collection: collection) }
 
-  let(:data)            { [] }
-  let(:collection_name) { 'books' }
+  let(:data) { [] }
+  let(:name) { 'books' }
   let(:collection) do
     Cuprum::Collections::Basic::Collection.new(
-      collection_name: collection_name,
-      data:            data
+      name: name,
+      data: data
     )
   end
 
@@ -39,7 +39,7 @@ RSpec.describe Cuprum::Collections::Commands::FindOneMatching do
       let(:expected_error) do
         Cuprum::Collections::Errors::NotFound.new(
           attributes:      attributes,
-          collection_name: collection_name
+          collection_name: name
         )
       end
 
@@ -58,7 +58,7 @@ RSpec.describe Cuprum::Collections::Commands::FindOneMatching do
       end
       let(:expected_error) do
         Cuprum::Collections::Errors::NotFound.new(
-          collection_name: collection_name,
+          collection_name: name,
           query:           query
         )
       end
@@ -78,7 +78,7 @@ RSpec.describe Cuprum::Collections::Commands::FindOneMatching do
         let(:expected_error) do
           Cuprum::Collections::Errors::NotFound.new(
             attributes:      attributes,
-            collection_name: collection_name
+            collection_name: name
           )
         end
 
@@ -111,7 +111,7 @@ RSpec.describe Cuprum::Collections::Commands::FindOneMatching do
         let(:expected_error) do
           Cuprum::Collections::Errors::NotUnique.new(
             attributes:      attributes,
-            collection_name: collection_name
+            collection_name: name
           )
         end
 
@@ -131,7 +131,7 @@ RSpec.describe Cuprum::Collections::Commands::FindOneMatching do
         end
         let(:expected_error) do
           Cuprum::Collections::Errors::NotFound.new(
-            collection_name: collection_name,
+            collection_name: name,
             query:           query
           )
         end
@@ -185,7 +185,7 @@ RSpec.describe Cuprum::Collections::Commands::FindOneMatching do
         end
         let(:expected_error) do
           Cuprum::Collections::Errors::NotUnique.new(
-            collection_name: collection_name,
+            collection_name: name,
             query:           query
           )
         end

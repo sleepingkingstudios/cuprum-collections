@@ -17,20 +17,20 @@ RSpec.describe Cuprum::Collections::Basic::Repository do
   shared_context 'when the repository has many collections' do
     let(:books_collection) do
       Cuprum::Collections::Basic::Collection.new(
-        collection_name: 'books',
-        data:            []
+        name: 'books',
+        data: []
       )
     end
     let(:authors_collection) do
       Cuprum::Collections::Basic::Collection.new(
-        collection_name: 'authors',
-        data:            []
+        name: 'authors',
+        data: []
       )
     end
     let(:publishers_collection) do
       Cuprum::Collections::Basic::Collection.new(
-        collection_name: 'publishers',
-        data:            []
+        name: 'publishers',
+        data: []
       )
     end
     let(:collections) do
@@ -52,8 +52,8 @@ RSpec.describe Cuprum::Collections::Basic::Repository do
   let(:constructor_options) { {} }
   let(:example_collection) do
     Cuprum::Collections::Basic::Collection.new(
-      collection_name: 'widgets',
-      data:            []
+      name: 'widgets',
+      data: []
     )
   end
 
@@ -74,7 +74,7 @@ RSpec.describe Cuprum::Collections::Basic::Repository do
     let(:collection_name)    { 'books' }
     let(:collection_options) { {} }
     let(:collection) do
-      repository.create(collection_name: collection_name, **collection_options)
+      repository.create(name: collection_name, **collection_options)
     end
 
     it { expect(collection.count).to be 0 }
@@ -86,7 +86,7 @@ RSpec.describe Cuprum::Collections::Basic::Repository do
 
       it 'should raise an exception' do
         expect do
-          repository.create(collection_name: 'books', data: Object.new.freeze)
+          repository.create(name: 'books', data: Object.new.freeze)
         end
           .to raise_error(ArgumentError, error_message)
       end
@@ -116,7 +116,7 @@ RSpec.describe Cuprum::Collections::Basic::Repository do
     let(:collection_options) { {} }
     let(:collection) do
       repository.find_or_create(
-        collection_name: collection_name,
+        name: collection_name,
         **collection_options
       )
     end
@@ -131,8 +131,8 @@ RSpec.describe Cuprum::Collections::Basic::Repository do
       it 'should raise an exception' do # rubocop:disable RSpec/ExampleLength
         expect do
           repository.find_or_create(
-            collection_name: 'books',
-            data:            Object.new.freeze
+            name: 'books',
+            data: Object.new.freeze
           )
         end
           .to raise_error(ArgumentError, error_message)
