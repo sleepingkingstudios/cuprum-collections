@@ -3,9 +3,11 @@
 require 'sleeping_king_studios/tools/string_tools'
 
 require 'cuprum/collections/basic/query'
-require 'cuprum/collections/rspec/query_contract'
+require 'cuprum/collections/rspec/contracts/query_contracts'
 
 RSpec.describe Cuprum::Collections::Basic::Query do
+  include Cuprum::Collections::RSpec::Contracts::QueryContracts
+
   subject(:query) { described_class.new(stringify_data(data)) }
 
   let(:data)          { [] }
@@ -27,5 +29,5 @@ RSpec.describe Cuprum::Collections::Basic::Query do
     it { expect(described_class).to respond_to(:new).with(1).argument }
   end
 
-  include_contract Cuprum::Collections::RSpec::QUERY_CONTRACT
+  include_contract 'should be a query'
 end

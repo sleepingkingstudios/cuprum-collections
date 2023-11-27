@@ -4,14 +4,17 @@ require 'stannum/rspec/validate_parameter'
 
 require 'cuprum/collections/constraints/ordering'
 require 'cuprum/collections/rspec'
-require 'cuprum/collections/rspec/querying_contract'
+require 'cuprum/collections/rspec/contracts/query_contracts'
 
 module Cuprum::Collections::RSpec
   # Contract validating the behavior of a FindMatching command implementation.
   FIND_MATCHING_COMMAND_CONTRACT = lambda do
     include Stannum::RSpec::Matchers
+    include Cuprum::Collections::RSpec::Contracts::QueryContracts
 
     describe '#call' do
+      include_contract 'with query contexts'
+
       shared_examples 'should return the matching items' do
         it { expect(result).to be_a_passing_result }
 
@@ -29,8 +32,6 @@ module Cuprum::Collections::RSpec
 
         it { expect(result.value[collection_name]).to be == expected_data }
       end
-
-      include_contract Cuprum::Collections::RSpec::QUERYING_CONTEXTS
 
       let(:options) do
         opts = {}
@@ -94,7 +95,7 @@ module Cuprum::Collections::RSpec
 
       include_examples 'should return the matching items'
 
-      include_contract Cuprum::Collections::RSpec::QUERYING_CONTRACT,
+      include_contract 'should perform queries',
         block: lambda {
           include_examples 'should return the matching items'
         }
@@ -115,7 +116,7 @@ module Cuprum::Collections::RSpec
 
         include_examples 'should return the wrapped items'
 
-        include_contract Cuprum::Collections::RSpec::QUERYING_CONTRACT,
+        include_contract 'should perform queries',
           block: lambda {
             include_examples 'should return the wrapped items'
           }
@@ -126,7 +127,7 @@ module Cuprum::Collections::RSpec
 
         include_examples 'should return the matching items'
 
-        include_contract Cuprum::Collections::RSpec::QUERYING_CONTRACT,
+        include_contract 'should perform queries',
           block: lambda {
             include_examples 'should return the matching items'
           }
@@ -136,7 +137,7 @@ module Cuprum::Collections::RSpec
 
           include_examples 'should return the wrapped items'
 
-          include_contract Cuprum::Collections::RSpec::QUERYING_CONTRACT,
+          include_contract 'should perform queries',
             block: lambda {
               include_examples 'should return the wrapped items'
             }

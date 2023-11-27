@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
 require 'cuprum/collections/basic/query_builder'
-require 'cuprum/collections/rspec/query_builder_contract'
+require 'cuprum/collections/rspec/contracts/query_contracts'
 
 RSpec.describe Cuprum::Collections::Basic::QueryBuilder do
+  include Cuprum::Collections::RSpec::Contracts::QueryContracts
+
   shared_context 'when the query has criteria' do
     let(:base_query) do
       super().where do
@@ -24,7 +26,7 @@ RSpec.describe Cuprum::Collections::Basic::QueryBuilder do
     it { expect(described_class).to respond_to(:new).with(1).argument }
   end
 
-  include_contract Cuprum::Collections::RSpec::QUERY_BUILDER_CONTRACT
+  include_contract 'should be a query builder'
 
   describe '#call' do
     def match_item(expected)

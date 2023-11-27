@@ -5,7 +5,15 @@ require 'cuprum/collections/rspec'
 module Cuprum::Collections::RSpec
   # Namespace for RSpec contract objects.
   module Contracts
+    autoload :AssociationContracts,
+      'cuprum/collections/rspec/contracts/association_contracts'
+    autoload :CollectionContracts,
+      'cuprum/collections/rspec/contracts/collection_contracts'
+    autoload :QueryContracts,
+      'cuprum/collections/rspec/contracts/query_contracts'
     autoload :RelationContracts,
       'cuprum/collections/rspec/contracts/relation_contracts'
+    autoload :RepositoryContracts,
+      'cuprum/collections/rspec/contracts/repository_contracts'
   end
 end
