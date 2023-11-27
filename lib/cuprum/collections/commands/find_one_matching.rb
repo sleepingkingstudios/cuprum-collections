@@ -92,7 +92,7 @@ module Cuprum::Collections::Commands
     private
 
     def error_params_for(attributes: nil, &block)
-      { collection_name: collection.collection_name }.merge(
+      { collection_name: collection.name }.merge(
         if block_given?
           { query: collection.query.where(&block) }
         else

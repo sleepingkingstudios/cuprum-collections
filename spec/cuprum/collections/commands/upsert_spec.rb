@@ -29,8 +29,8 @@ RSpec.describe Cuprum::Collections::Commands::Upsert do
 
   let(:collection) do
     Cuprum::Collections::Basic::Collection.new(
-      collection_name: 'books',
-      data:            [],
+      name: 'books',
+      data: [],
       **collection_options
     )
   end
@@ -338,7 +338,7 @@ RSpec.describe Cuprum::Collections::Commands::Upsert do
           let(:expected_error) do
             Cuprum::Collections::Errors::NotUnique.new(
               attributes:      filter_attributes,
-              collection_name: collection.collection_name
+              collection_name: collection.name
             )
           end
 
@@ -387,7 +387,7 @@ RSpec.describe Cuprum::Collections::Commands::Upsert do
           let(:expected_error) do
             Cuprum::Collections::Errors::NotUnique.new(
               attributes:      filter_attributes,
-              collection_name: collection.collection_name
+              collection_name: collection.name
             )
           end
 
@@ -459,7 +459,7 @@ RSpec.describe Cuprum::Collections::Commands::Upsert do
           let(:expected_error) do
             Cuprum::Collections::Errors::NotUnique.new(
               attributes:      filter_attributes,
-              collection_name: collection.collection_name
+              collection_name: collection.name
             )
           end
 
@@ -510,7 +510,7 @@ RSpec.describe Cuprum::Collections::Commands::Upsert do
           let(:expected_error) do
             Cuprum::Collections::Errors::NotUnique.new(
               attributes:      filter_attributes,
-              collection_name: collection.collection_name
+              collection_name: collection.name
             )
           end
 

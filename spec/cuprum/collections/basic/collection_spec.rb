@@ -33,7 +33,7 @@ RSpec.describe Cuprum::Collections::Basic::Collection do
       expect(described_class)
         .to respond_to(:new)
         .with(0).arguments
-        .and_keywords(:collection_name, :data)
+        .and_keywords(:data, :entity_class, :name, :qualified_name)
         .and_any_keywords
     end
   end

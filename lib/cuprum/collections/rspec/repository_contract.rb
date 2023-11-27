@@ -63,7 +63,7 @@ module Cuprum::Collections::RSpec
         end
 
         it 'should create the collection' do
-          create_collection
+          create_collection(safe: false)
 
           expect(repository.key?(qualified_name)).to be true
         end
@@ -81,11 +81,11 @@ module Cuprum::Collections::RSpec
         end
 
         it 'should set the collection name' do
-          expect(collection.collection_name).to be == collection_name.to_s
+          expect(collection.name).to be == collection_name.to_s
         end
 
         it 'should set the member name' do
-          expect(collection.member_name).to be == configured_member_name
+          expect(collection.singular_name).to be == configured_member_name
         end
 
         it 'should set the qualified name' do
@@ -332,24 +332,6 @@ module Cuprum::Collections::RSpec
           next
         end
 
-        describe 'with collection_name: a String' do
-          let(:collection_name) { 'books' }
-          let(:collection_options) do
-            super().merge(collection_name: collection_name)
-          end
-
-          include_examples 'should create the collection'
-        end
-
-        describe 'with collection_name: a Symbol' do
-          let(:collection_name) { :books }
-          let(:collection_options) do
-            super().merge(collection_name: collection_name)
-          end
-
-          include_examples 'should create the collection'
-        end
-
         describe 'with entity_class: a Class' do
           let(:entity_class) { Book }
           let(:collection_options) do
@@ -368,12 +350,30 @@ module Cuprum::Collections::RSpec
           include_examples 'should create the collection'
         end
 
+        describe 'with name: a String' do
+          let(:collection_name) { 'books' }
+          let(:collection_options) do
+            super().merge(name: collection_name)
+          end
+
+          include_examples 'should create the collection'
+        end
+
+        describe 'with name: a Symbol' do
+          let(:collection_name) { :books }
+          let(:collection_options) do
+            super().merge(name: collection_name)
+          end
+
+          include_examples 'should create the collection'
+        end
+
         describe 'with collection options' do
           let(:primary_key_name) { 'uuid' }
           let(:primary_key_type) { String }
           let(:collection_options) do
             super().merge(
-              collection_name:  collection_name,
+              name:             collection_name,
               primary_key_name: primary_key_name,
               primary_key_type: primary_key_type
             )
@@ -385,7 +385,7 @@ module Cuprum::Collections::RSpec
         context 'when the collection already exists' do
           let(:collection_name) { 'books' }
           let(:collection_options) do
-            super().merge(collection_name: collection_name)
+            super().merge(name: collection_name)
           end
           let(:error_message) do
             "collection #{qualified_name} already exists"
@@ -471,24 +471,6 @@ module Cuprum::Collections::RSpec
           next
         end
 
-        describe 'with collection_name: a String' do
-          let(:collection_name) { 'books' }
-          let(:collection_options) do
-            super().merge(collection_name: collection_name)
-          end
-
-          include_examples 'should create the collection'
-        end
-
-        describe 'with collection_name: a Symbol' do
-          let(:collection_name) { :books }
-          let(:collection_options) do
-            super().merge(collection_name: collection_name)
-          end
-
-          include_examples 'should create the collection'
-        end
-
         describe 'with entity_class: a Class' do
           let(:entity_class) { Book }
           let(:collection_options) do
@@ -507,13 +489,31 @@ module Cuprum::Collections::RSpec
           include_examples 'should create the collection'
         end
 
+        describe 'with name: a String' do
+          let(:collection_name) { 'books' }
+          let(:collection_options) do
+            super().merge(name: collection_name)
+          end
+
+          include_examples 'should create the collection'
+        end
+
+        describe 'with name: a Symbol' do
+          let(:collection_name) { :books }
+          let(:collection_options) do
+            super().merge(name: collection_name)
+          end
+
+          include_examples 'should create the collection'
+        end
+
         describe 'with collection options' do
           let(:primary_key_name) { 'uuid' }
           let(:primary_key_type) { String }
           let(:qualified_name)   { 'spec/scoped_books' }
           let(:collection_options) do
             super().merge(
-              collection_name:  collection_name,
+              name:             collection_name,
               primary_key_name: primary_key_name,
               primary_key_type: primary_key_type,
               qualified_name:   qualified_name
@@ -526,7 +526,7 @@ module Cuprum::Collections::RSpec
         context 'when the collection already exists' do
           let(:collection_name) { 'books' }
           let(:collection_options) do
-            super().merge(collection_name: collection_name)
+            super().merge(name: collection_name)
           end
           let(:error_message) do
             "collection #{qualified_name} already exists"

@@ -12,8 +12,8 @@ RSpec.describe Spec::Support::Commands::Show do
   let(:data)            { Cuprum::Collections::RSpec::BOOKS_FIXTURES.dup }
   let(:collection_options) do
     {
-      collection_name: collection_name,
-      data:            data
+      name: collection_name,
+      data: data
     }
   end
   let(:collection) do

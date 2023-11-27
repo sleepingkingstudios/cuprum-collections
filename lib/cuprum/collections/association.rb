@@ -8,14 +8,12 @@ module Cuprum::Collections
   class Association < Resource # rubocop:disable Metrics/ClassLength
     # @overload initialize(entity_class: nil, name: nil, qualified_name: nil, singular_name: nil, **options)
     #   @param entity_class [Class, String] the class of entity represented by
-    #     the resource. Aliased as :association_class, :resource_class.
+    #     the resource.
     #   @param inverse [Cuprum::Collections::Resource] the inverse association,
     #     if any.
-    #   @param name [String] the name of the resource. Aliased as
-    #     :association_name, :resource_name.
+    #   @param name [String] the name of the resource.
     #   @param qualified_name [String] a scoped name for the resource.
     #   @param singular_name [String] the name of an entity in the resource.
-    #     Aliased as :singular_resource_name.
     #   @param options [Hash] additional options for the resource.
     #
     #   @option options foreign_key_name [String] the name of the foreign key
@@ -41,11 +39,24 @@ module Cuprum::Collections
       super(**params)
     end
 
-    alias association_class entity_class
-    alias association_name name
-
     # @return [Cuprum::Collections::Resource] the inverse association, if any.
     attr_reader :inverse
+
+    # @return [Class] the class of entity represented by the resource.
+    def association_class
+      tools.core_tools.deprecate '#association_class method',
+        message: 'Use #entity_class instead'
+
+      entity_class
+    end
+
+    # @return [String] the name of the resource.
+    def association_name
+      tools.core_tools.deprecate '#association_name method',
+        message: 'Use #name instead'
+
+      name
+    end
 
     # Generates a query for finding matching items.
     #

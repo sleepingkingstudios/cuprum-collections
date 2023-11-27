@@ -4,13 +4,13 @@ require 'cuprum/collections/basic'
 
 RSpec.describe Cuprum::Collections::Basic do
   describe '.new' do
-    let(:collection_name) { 'books' }
-    let(:data)            { [] }
-    let(:options)         { { key: 'value' } }
+    let(:name)    { 'books' }
+    let(:data)    { [] }
+    let(:options) { { key: 'value' } }
     let(:constructor_options) do
       {
-        collection_name: collection_name,
-        data:            data,
+        name: name,
+        data: data,
         **options
       }
     end
@@ -25,9 +25,9 @@ RSpec.describe Cuprum::Collections::Basic do
 
     it { expect(collection).to be_a described_class::Collection }
 
-    it { expect(collection.collection_name).to be == collection_name }
-
     it { expect(collection.data).to be == data }
+
+    it { expect(collection.name).to be == name }
 
     it { expect(collection.options).to be == options }
   end
