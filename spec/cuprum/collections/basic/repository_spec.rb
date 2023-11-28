@@ -94,7 +94,7 @@ RSpec.describe Cuprum::Collections::Basic::Repository do
 
     describe 'with data: an Array' do
       let(:data) do
-        Cuprum::Collections::RSpec::BOOKS_FIXTURES
+        Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES.dup
       end
       let(:collection_options) { super().merge(data: data) }
 
@@ -103,7 +103,7 @@ RSpec.describe Cuprum::Collections::Basic::Repository do
 
     context 'when initialized with data: value' do
       let(:data) do
-        { 'books' => Cuprum::Collections::RSpec::BOOKS_FIXTURES }
+        { 'books' => Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES.dup }
       end
       let(:constructor_options) { super().merge(data: data) }
 
@@ -141,7 +141,7 @@ RSpec.describe Cuprum::Collections::Basic::Repository do
 
     describe 'with data: an Array' do
       let(:data) do
-        Cuprum::Collections::RSpec::BOOKS_FIXTURES
+        Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES.dup
       end
       let(:collection_options) { super().merge(data: data) }
 
@@ -150,7 +150,7 @@ RSpec.describe Cuprum::Collections::Basic::Repository do
 
     context 'when initialized with data: value' do
       let(:data) do
-        { 'books' => Cuprum::Collections::RSpec::BOOKS_FIXTURES }
+        { 'books' => Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES.dup }
       end
       let(:constructor_options) { super().merge(data: data) }
 

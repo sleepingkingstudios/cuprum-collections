@@ -11,7 +11,7 @@ module Cuprum::Collections::RSpec::Contracts
     module ShouldBeAQuery
       extend RSpec::SleepingKingStudios::Contract
 
-      BOOKS_FIXTURES = Cuprum::Collections::RSpec::BOOKS_FIXTURES
+      BOOKS_FIXTURES = Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES
       private_constant :BOOKS_FIXTURES
 
       OPERATORS = Cuprum::Collections::Queries::Operators

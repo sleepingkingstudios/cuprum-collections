@@ -20,7 +20,7 @@ RSpec.describe Cuprum::Collections::Basic::Collection do
   end
 
   shared_context 'when the collection has many items' do
-    let(:data)  { Cuprum::Collections::RSpec::BOOKS_FIXTURES }
+    let(:data)  { Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES.dup }
     let(:items) { data }
   end
 

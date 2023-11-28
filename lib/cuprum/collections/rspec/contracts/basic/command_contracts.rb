@@ -428,7 +428,7 @@ module Cuprum::Collections::RSpec::Contracts::Basic
             Stannum::Constraints::Types::HashWithStringKeys.new
           end
           let(:fixtures_data) do
-            Cuprum::Collections::RSpec::BOOKS_FIXTURES.dup
+            Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES.dup
           end
           let(:query) do
             Cuprum::Collections::Basic::Query.new(mapped_data)

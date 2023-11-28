@@ -6,5 +6,6 @@ module Cuprum::Collections
   # Namespace for RSpec contracts, which validate collection implementations.
   module RSpec
     autoload :Contracts, 'cuprum/collections/rspec/contracts'
+    autoload :Fixtures,  'cuprum/collections/rspec/fixtures'
   end
 end

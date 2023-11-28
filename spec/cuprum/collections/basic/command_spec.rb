@@ -15,8 +15,10 @@ RSpec.describe Cuprum::Collections::Basic::Command do
     )
   end
 
+  let(:data) do
+    Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES.dup
+  end
   let(:collection_name)     { 'books' }
-  let(:data)                { Cuprum::Collections::RSpec::BOOKS_FIXTURES }
   let(:constructor_options) { {} }
 
   describe '.new' do
