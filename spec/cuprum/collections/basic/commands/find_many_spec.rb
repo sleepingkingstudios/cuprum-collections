@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
 require 'cuprum/collections/basic/commands/find_many'
-require 'cuprum/collections/basic/rspec/command_contract'
-require 'cuprum/collections/rspec/find_many_command_contract'
-
-require 'support/examples/basic_command_examples'
+require 'cuprum/collections/rspec/contracts/basic/command_contracts'
+require 'cuprum/collections/rspec/contracts/command_contracts'
 
 RSpec.describe Cuprum::Collections::Basic::Commands::FindMany do
-  include Spec::Support::Examples::BasicCommandExamples
+  include Cuprum::Collections::RSpec::Contracts::Basic::CommandContracts
+  include Cuprum::Collections::RSpec::Contracts::CommandContracts
+
+  with_contract 'with basic command contexts'
 
   include_context 'with parameters for a basic contract'
 
@@ -38,11 +39,11 @@ RSpec.describe Cuprum::Collections::Basic::Commands::FindMany do
     end
   end
 
-  include_contract Cuprum::Collections::Basic::RSpec::COMMAND_CONTRACT
+  include_contract 'should be a basic command'
 
-  include_contract Cuprum::Collections::RSpec::FIND_MANY_COMMAND_CONTRACT
+  include_contract 'should be a find many command'
 
   wrap_context 'with a custom primary key' do
-    include_contract Cuprum::Collections::RSpec::FIND_MANY_COMMAND_CONTRACT
+    include_contract 'should be a find many command'
   end
 end

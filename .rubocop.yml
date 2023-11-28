@@ -1,6 +1,13 @@
 require:
   - rubocop-rspec
 
+AllCops:
+  TargetRubyVersion: 2.7
+  NewCops: enable
+  Exclude:
+    - tmp/**/*
+    - vendor/**/*
+
 RSpec:
   Language:
     ExampleGroups:
@@ -17,6 +24,8 @@ RSpec:
         - fdescribe
         - fwrap_context
     Includes:
+      Contexts:
+        - with_contract
       Examples:
         - finclude_contract
         - finclude_examples
@@ -27,13 +36,6 @@ RSpec:
         - xinclude_contract
         - xinclude_examples
         - xwrap_examples
-
-AllCops:
-  TargetRubyVersion: 2.7
-  NewCops: enable
-  Exclude:
-    - tmp/**/*
-    - vendor/**/*
 
 Layout/ArgumentAlignment:
   EnforcedStyle: with_fixed_indentation

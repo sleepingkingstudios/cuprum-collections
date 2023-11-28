@@ -2,7 +2,7 @@
 
 require 'cuprum/collections/basic/collection'
 require 'cuprum/collections/basic/commands'
-require 'cuprum/collections/rspec/collection_contract'
+require 'cuprum/collections/rspec/contracts/collection_contracts'
 require 'cuprum/collections/rspec/fixtures'
 
 require 'support/book'
@@ -10,6 +10,8 @@ require 'support/grimoire'
 require 'support/scoped_book'
 
 RSpec.describe Cuprum::Collections::Basic::Collection do
+  include Cuprum::Collections::RSpec::Contracts::CollectionContracts
+
   subject(:collection) do
     described_class.new(
       data: data,
@@ -18,7 +20,7 @@ RSpec.describe Cuprum::Collections::Basic::Collection do
   end
 
   shared_context 'when the collection has many items' do
-    let(:data)  { Cuprum::Collections::RSpec::BOOKS_FIXTURES }
+    let(:data)  { Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES.dup }
     let(:items) { data }
   end
 
@@ -38,7 +40,7 @@ RSpec.describe Cuprum::Collections::Basic::Collection do
     end
   end
 
-  include_contract Cuprum::Collections::RSpec::CollectionContract,
+  include_contract 'should be a collection',
     command_options:      %i[data default_contract],
     commands_namespace:   'Cuprum::Collections::Basic::Commands',
     default_entity_class: Hash

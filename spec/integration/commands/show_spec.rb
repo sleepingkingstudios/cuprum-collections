@@ -8,8 +8,10 @@ require 'support/commands/show'
 RSpec.describe Spec::Support::Commands::Show do
   subject(:command) { described_class.new(collection) }
 
+  let(:data) do
+    Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES.dup
+  end
   let(:collection_name) { 'books' }
-  let(:data)            { Cuprum::Collections::RSpec::BOOKS_FIXTURES.dup }
   let(:collection_options) do
     {
       name: collection_name,

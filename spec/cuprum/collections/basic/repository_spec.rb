@@ -3,14 +3,14 @@
 require 'cuprum/collections/basic/collection'
 require 'cuprum/collections/basic/repository'
 require 'cuprum/collections/rspec/fixtures'
-require 'cuprum/collections/rspec/repository_contract'
+require 'cuprum/collections/rspec/contracts/repository_contracts'
 
 require 'support/book'
 require 'support/grimoire'
 require 'support/scoped_book'
 
 RSpec.describe Cuprum::Collections::Basic::Repository do
-  include Cuprum::Collections::RSpec
+  include Cuprum::Collections::RSpec::Contracts::RepositoryContracts
 
   subject(:repository) { described_class.new(**constructor_options) }
 
@@ -66,7 +66,7 @@ RSpec.describe Cuprum::Collections::Basic::Repository do
     end
   end
 
-  include_contract Cuprum::Collections::RSpec::RepositoryContract,
+  include_contract 'should be a repository',
     collection_class: Cuprum::Collections::Basic::Collection,
     entity_class:     Hash
 
@@ -94,7 +94,7 @@ RSpec.describe Cuprum::Collections::Basic::Repository do
 
     describe 'with data: an Array' do
       let(:data) do
-        Cuprum::Collections::RSpec::BOOKS_FIXTURES
+        Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES.dup
       end
       let(:collection_options) { super().merge(data: data) }
 
@@ -103,7 +103,7 @@ RSpec.describe Cuprum::Collections::Basic::Repository do
 
     context 'when initialized with data: value' do
       let(:data) do
-        { 'books' => Cuprum::Collections::RSpec::BOOKS_FIXTURES }
+        { 'books' => Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES.dup }
       end
       let(:constructor_options) { super().merge(data: data) }
 
@@ -141,7 +141,7 @@ RSpec.describe Cuprum::Collections::Basic::Repository do
 
     describe 'with data: an Array' do
       let(:data) do
-        Cuprum::Collections::RSpec::BOOKS_FIXTURES
+        Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES.dup
       end
       let(:collection_options) { super().merge(data: data) }
 
@@ -150,7 +150,7 @@ RSpec.describe Cuprum::Collections::Basic::Repository do
 
     context 'when initialized with data: value' do
       let(:data) do
-        { 'books' => Cuprum::Collections::RSpec::BOOKS_FIXTURES }
+        { 'books' => Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES.dup }
       end
       let(:constructor_options) { super().merge(data: data) }
 

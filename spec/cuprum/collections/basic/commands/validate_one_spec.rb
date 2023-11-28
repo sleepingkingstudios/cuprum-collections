@@ -4,13 +4,14 @@ require 'stannum/constraints/presence'
 require 'stannum/contracts/hash_contract'
 
 require 'cuprum/collections/basic/commands/validate_one'
-require 'cuprum/collections/basic/rspec/command_contract'
-require 'cuprum/collections/rspec/validate_one_command_contract'
-
-require 'support/examples/basic_command_examples'
+require 'cuprum/collections/rspec/contracts/basic/command_contracts'
+require 'cuprum/collections/rspec/contracts/command_contracts'
 
 RSpec.describe Cuprum::Collections::Basic::Commands::ValidateOne do
-  include Spec::Support::Examples::BasicCommandExamples
+  include Cuprum::Collections::RSpec::Contracts::Basic::CommandContracts
+  include Cuprum::Collections::RSpec::Contracts::CommandContracts
+
+  with_contract 'with basic command contexts'
 
   include_context 'with parameters for a basic contract'
 
@@ -47,9 +48,9 @@ RSpec.describe Cuprum::Collections::Basic::Commands::ValidateOne do
     end
   end
 
-  include_contract Cuprum::Collections::Basic::RSpec::COMMAND_CONTRACT
+  include_contract 'should be a basic command'
 
-  include_contract Cuprum::Collections::RSpec::VALIDATE_ONE_COMMAND_CONTRACT,
+  include_contract 'should be a validate one command',
     default_contract: false
 
   context 'when the collection has a default contract' do
@@ -73,7 +74,7 @@ RSpec.describe Cuprum::Collections::Basic::Commands::ValidateOne do
       }
     end
 
-    include_contract Cuprum::Collections::RSpec::VALIDATE_ONE_COMMAND_CONTRACT,
+    include_contract 'should be a validate one command',
       default_contract: true
   end
 end

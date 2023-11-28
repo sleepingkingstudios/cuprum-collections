@@ -2,12 +2,12 @@
 
 require 'cuprum/collections/basic/collection'
 require 'cuprum/collections/repository'
-require 'cuprum/collections/rspec/repository_contract'
+require 'cuprum/collections/rspec/contracts/repository_contracts'
 
 require 'support/book'
 
 RSpec.describe Cuprum::Collections::Repository do
-  include Cuprum::Collections::RSpec
+  include Cuprum::Collections::RSpec::Contracts::RepositoryContracts
 
   subject(:repository) { described_class.new }
 
@@ -101,6 +101,5 @@ RSpec.describe Cuprum::Collections::Repository do
     it { expect(described_class).to respond_to(:new).with(0).arguments }
   end
 
-  include_contract Cuprum::Collections::RSpec::RepositoryContract,
-    abstract: true
+  include_contract 'should be a repository', abstract: true
 end

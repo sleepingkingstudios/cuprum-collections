@@ -7,18 +7,25 @@
 Implemented `Cuprum::Collections::Association`, which represents an association between entity types.
 
 - Implemented `Cuprum::Collections::Associations::BelongsTo`.
+- Implemented `Cuprum::Collections::Associations::HasMany`.
+- Implemented `Cuprum::Collections::Associations::HasOne`.
 
 ### Collections
 
 Defined standard interface for collections.
 
 - Implemented `Cuprum::Collections::Collection`.
-- Collections can now be initialized with any combination of collection name and entity class.
+- Collections can now be initialized with any combination of collection name, entity class, and qualified name.
 
 Updated `Cuprum::Collections::Basic::Collection`.
 
 - Implemented `#count` method.
 - Implemented `#qualified_name` method.
+
+Deprecated certain collection methods and corresponding constructor keywords:
+
+- `#collection_name`: Use `#name`.
+- `#member_name`: Use `#singular_name`.
 
 ### Commands
 
@@ -48,6 +55,10 @@ Defined standard interface for repositories.
 ### Resources
 
 Defined `Cuprum::Collections::Resource`, representing a singular or plural resource of entities.
+
+### RSpec
+
+- **(Breaking Change)** Contracts have been refactored to use `RSpec::SleepingKingStudios::Contract`. Contract names and filenames have changed.
 
 ## 0.2.0
 

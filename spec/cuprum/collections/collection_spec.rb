@@ -1,15 +1,14 @@
 # frozen_string_literal: true
 
 require 'cuprum/collections/collection'
-require 'cuprum/collections/rspec/collection_contract'
-require 'cuprum/collections/rspec/contracts/relation_contracts'
+require 'cuprum/collections/rspec/contracts/collection_contracts'
 
 require 'support/book'
 require 'support/grimoire'
 require 'support/scoped_book'
 
 RSpec.describe Cuprum::Collections::Collection do
-  include Cuprum::Collections::RSpec::Contracts::RelationContracts
+  include Cuprum::Collections::RSpec::Contracts::CollectionContracts
 
   subject(:collection) do
     described_class.new(**constructor_options)
@@ -55,6 +54,5 @@ RSpec.describe Cuprum::Collections::Collection do
     include_contract 'should validate the parameters'
   end
 
-  include_contract Cuprum::Collections::RSpec::CollectionContract,
-    abstract: true
+  include_contract 'should be a collection', abstract: true
 end

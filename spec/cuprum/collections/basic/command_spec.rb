@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
 require 'cuprum/collections/basic/command'
-require 'cuprum/collections/basic/rspec/command_contract'
+require 'cuprum/collections/rspec/contracts/basic/command_contracts'
 require 'cuprum/collections/rspec/fixtures'
 
 RSpec.describe Cuprum::Collections::Basic::Command do
+  include Cuprum::Collections::RSpec::Contracts::Basic::CommandContracts
+
   subject(:command) do
     described_class.new(
       collection_name: collection_name,
@@ -13,8 +15,10 @@ RSpec.describe Cuprum::Collections::Basic::Command do
     )
   end
 
+  let(:data) do
+    Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES.dup
+  end
   let(:collection_name)     { 'books' }
-  let(:data)                { Cuprum::Collections::RSpec::BOOKS_FIXTURES }
   let(:constructor_options) { {} }
 
   describe '.new' do
@@ -27,7 +31,7 @@ RSpec.describe Cuprum::Collections::Basic::Command do
     end
   end
 
-  include_contract Cuprum::Collections::Basic::RSpec::COMMAND_CONTRACT
+  include_contract 'should be a basic command'
 
   describe '#call' do
     it 'should define the method' do
