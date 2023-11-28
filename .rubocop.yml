@@ -24,6 +24,8 @@ RSpec:
         - fdescribe
         - fwrap_context
     Includes:
+      Contexts:
+        - with_contract
       Examples:
         - finclude_contract
         - finclude_examples

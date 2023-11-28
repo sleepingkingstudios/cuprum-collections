@@ -7,8 +7,12 @@ module Cuprum::Collections::RSpec
   module Contracts
     autoload :AssociationContracts,
       'cuprum/collections/rspec/contracts/association_contracts'
+    autoload :Basic,
+      'cuprum/collections/rspec/contracts/basic'
     autoload :CollectionContracts,
       'cuprum/collections/rspec/contracts/collection_contracts'
+    autoload :CommandContracts,
+      'cuprum/collections/rspec/contracts/command_contracts'
     autoload :QueryContracts,
       'cuprum/collections/rspec/contracts/query_contracts'
     autoload :RelationContracts,

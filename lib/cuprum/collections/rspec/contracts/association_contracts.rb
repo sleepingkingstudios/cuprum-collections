@@ -12,6 +12,9 @@ module Cuprum::Collections::RSpec::Contracts
 
       # @!method apply(example_group)
       #   Adds the contract to the example group.
+      #
+      #   @param example_group [RSpec::Core::ExampleGroup] the example group to
+      #     which the contract is applied.
       contract do
         include Cuprum::Collections::RSpec::Contracts::RelationContracts
 
@@ -453,6 +456,9 @@ module Cuprum::Collections::RSpec::Contracts
 
       # @!method apply(example_group)
       #   Adds the contract to the example group.
+      #
+      #   @param example_group [RSpec::Core::ExampleGroup] the example group to
+      #     which the contract is applied.
       contract do
         include Cuprum::Collections::RSpec::Contracts::RelationContracts
 
@@ -1154,6 +1160,9 @@ module Cuprum::Collections::RSpec::Contracts
 
       # @!method apply(example_group)
       #   Adds the contract to the example group.
+      #
+      #   @param example_group [RSpec::Core::ExampleGroup] the example group to
+      #     which the contract is applied.
       contract do
         include Cuprum::Collections::RSpec::Contracts::RelationContracts
 

@@ -15,7 +15,7 @@ module Cuprum::Collections::RSpec::Contracts
       # @!method apply(example_group)
       #   Adds the contract to the example group.
       #
-      #   @param example_group [RSpec::Core::ExampleGroup] The example group to
+      #   @param example_group [RSpec::Core::ExampleGroup] the example group to
       #     which the contract is applied.
       #   @param options [Hash] additional options for the contract.
       #

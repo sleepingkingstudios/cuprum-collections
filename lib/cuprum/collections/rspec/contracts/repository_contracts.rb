@@ -9,7 +9,7 @@ module Cuprum::Collections::RSpec::Contracts
     module ShouldBeARepositoryContract
       extend RSpec::SleepingKingStudios::Contract
 
-      # @!method apply(example_group)
+      # @!method apply(example_group, abstract:, **options)
       #   Adds the contract to the example group.
       #
       #   @param abstract [Boolean] if true, the repository is abstract and does

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'cuprum/collections/queries'
 require 'cuprum/collections/rspec/contracts'
 require 'cuprum/collections/rspec/fixtures'
 
@@ -16,9 +17,11 @@ module Cuprum::Collections::RSpec::Contracts
       OPERATORS = Cuprum::Collections::Queries::Operators
       private_constant :OPERATORS
 
-      # @!method apply(example_group)
+      # @!method apply(example_group, operators:)
       #   Adds the contract to the example group.
       #
+      #   @param example_group [RSpec::Core::ExampleGroup] the example group to
+      #     which the contract is applied.
       #   @param operators [Array<Symbol>] the expected operators.
       contract do |operators: OPERATORS.values|
         include Cuprum::Collections::RSpec::Contracts::QueryContracts
@@ -678,6 +681,9 @@ module Cuprum::Collections::RSpec::Contracts
 
       # @!method apply(example_group)
       #   Adds the contract to the example group.
+      #
+      #   @param example_group [RSpec::Core::ExampleGroup] the example group to
+      #     which the contract is applied.
       contract do
         describe '#base_query' do
           include_examples 'should define reader',
@@ -774,9 +780,11 @@ module Cuprum::Collections::RSpec::Contracts
       OPERATORS = Cuprum::Collections::Queries::Operators
       private_constant :OPERATORS
 
-      # @!method apply(example_group)
+      # @!method apply(example_group, block:, operators:)
       #   Adds the contract to the example group.
       #
+      #   @param example_group [RSpec::Core::ExampleGroup] the example group to
+      #     which the contract is applied.
       #   @param block [Proc] the expectations for each query context.
       #   @param operators [Array<Symbol>] the expected operators.
       contract do |block:, operators: OPERATORS.values|
@@ -930,6 +938,9 @@ module Cuprum::Collections::RSpec::Contracts
 
       # @!method apply(example_group)
       #   Adds the contract to the example group.
+      #
+      #   @param example_group [RSpec::Core::ExampleGroup] the example group to
+      #     which the contract is applied.
       contract do
         let(:filter)    { nil }
         let(:strategy)  { nil }

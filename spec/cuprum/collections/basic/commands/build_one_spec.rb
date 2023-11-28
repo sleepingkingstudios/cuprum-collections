@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
 require 'cuprum/collections/basic/commands/build_one'
-require 'cuprum/collections/basic/rspec/command_contract'
-require 'cuprum/collections/rspec/build_one_command_contract'
-
-require 'support/examples/basic_command_examples'
+require 'cuprum/collections/rspec/contracts/basic/command_contracts'
+require 'cuprum/collections/rspec/contracts/command_contracts'
 
 RSpec.describe Cuprum::Collections::Basic::Commands::BuildOne do
-  include Spec::Support::Examples::BasicCommandExamples
+  include Cuprum::Collections::RSpec::Contracts::Basic::CommandContracts
+  include Cuprum::Collections::RSpec::Contracts::CommandContracts
+
+  with_contract 'with basic command contexts'
 
   include_context 'with parameters for a basic contract'
 
@@ -35,8 +36,8 @@ RSpec.describe Cuprum::Collections::Basic::Commands::BuildOne do
     end
   end
 
-  include_contract Cuprum::Collections::Basic::RSpec::COMMAND_CONTRACT
+  include_contract 'should be a basic command'
 
-  include_contract Cuprum::Collections::RSpec::BUILD_ONE_COMMAND_CONTRACT,
+  include_contract 'should be a build one command',
     allow_extra_attributes: true
 end

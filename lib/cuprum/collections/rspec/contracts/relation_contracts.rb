@@ -9,9 +9,11 @@ module Cuprum::Collections::RSpec::Contracts
     module ShouldDisambiguateParameter
       extend RSpec::SleepingKingStudios::Contract
 
-      # @!method apply(example_group)
+      # @!method apply(example_group, key, as:, value:)
       #   Adds the contract to the example group.
       #
+      #   @param example_group [RSpec::Core::ExampleGroup] the example group to
+      #     which the contract is applied.
       #   @param key [Symbol] the original parameter key.
       #   @param as [Symbol, Array<Symbol>] the aliased key or keys.
       #   @param value [Object] the custom value for the property.
@@ -129,6 +131,9 @@ module Cuprum::Collections::RSpec::Contracts
 
       # @!method apply(example_group)
       #   Adds the contract to the example group.
+      #
+      #   @param example_group [RSpec::Core::ExampleGroup] the example group to
+      #     which the contract is applied.
       contract do
         describe 'with no parameters' do
           let(:error_message) { "name or entity class can't be blank" }
@@ -408,9 +413,11 @@ module Cuprum::Collections::RSpec::Contracts
     module ShouldBeARelationContract
       extend RSpec::SleepingKingStudios::Contract
 
-      # @!method apply(example_group)
+      # @!method apply(example_group, **options)
       #   Adds the contract to the example group.
       #
+      #   @param example_group [RSpec::Core::ExampleGroup] the example group to
+      #     which the contract is applied.
       #   @param options [Hash] additional options for the contract.
       #
       #   @option options cardinality [Boolean] true if the relation accepts
@@ -1177,6 +1184,9 @@ module Cuprum::Collections::RSpec::Contracts
 
       # @!method apply(example_group)
       #   Adds the contract to the example group.
+      #
+      #   @param example_group [RSpec::Core::ExampleGroup] the example group to
+      #     which the contract is applied.
       contract do
         describe '.new' do
           describe 'with plural: an Object' do
@@ -1309,6 +1319,9 @@ module Cuprum::Collections::RSpec::Contracts
 
       # @!method apply(example_group)
       #   Adds the contract to the example group.
+      #
+      #   @param example_group [RSpec::Core::ExampleGroup] the example group to
+      #     which the contract is applied.
       contract do
         describe '#primary_key_name' do
           let(:expected_primary_key_name) do
