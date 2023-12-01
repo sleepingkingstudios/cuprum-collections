@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.3.0
+## 0.4.0
 
 ### Associations
 
@@ -17,24 +17,12 @@ Defined standard interface for collections.
 - Implemented `Cuprum::Collections::Collection`.
 - Collections can now be initialized with any combination of collection name, entity class, and qualified name.
 
-Updated `Cuprum::Collections::Basic::Collection`.
-
-- Implemented `#count` method.
-- Implemented `#qualified_name` method.
-
 Deprecated certain collection methods and corresponding constructor keywords:
 
 - `#collection_name`: Use `#name`.
 - `#member_name`: Use `#singular_name`.
 
 ### Commands
-
-Implemented built-in Commands, which take a `:collection` parameter:
-
-- `Commands::Create`
-- `Commands::FindOneMatching`
-- `Commands::Update`
-- `Commands::Upsert`
 
 Implemented association Commands, which find or require association entities from a list of entities or keys.
 
@@ -59,6 +47,24 @@ Defined `Cuprum::Collections::Resource`, representing a singular or plural resou
 ### RSpec
 
 - **(Breaking Change)** Contracts have been refactored to use `RSpec::SleepingKingStudios::Contract`. Contract names and filenames have changed.
+
+## 0.3.0
+
+### Collections
+
+Updated `Cuprum::Collections::Basic::Collection`.
+
+- Implemented `#count` method.
+- Implemented `#qualified_name` method.
+
+### Commands
+
+Implemented built-in Commands, which take a `:collection` parameter:
+
+- `Commands::Create`
+- `Commands::FindOneMatching`
+- `Commands::Update`
+- `Commands::Upsert`
 
 ## 0.2.0
 

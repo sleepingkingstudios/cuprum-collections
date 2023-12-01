@@ -65,8 +65,6 @@ module Cuprum::Collections
     #   false.
     # @param deduplicate [Boolean] if true, removes duplicate keys before
     #   generating the query. Defaults to true.
-    # @param strict [Boolean] if true, raises an exception if given an Array of
-    #   keys instead of entities.
     #
     # @return [Proc] the generated query.
     def build_entities_query(*entities, allow_nil: false, deduplicate: true)

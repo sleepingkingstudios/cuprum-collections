@@ -137,8 +137,8 @@ module Cuprum::Collections
       end
 
       # (see Cuprum::Collections::Relation::Disambiguation.resolve_parameters)
-      def resolve_parameters(parameters, **ambiguous)
-        Disambiguation.resolve_parameters(parameters, **ambiguous)
+      def resolve_parameters(params, **ambiguous)
+        Disambiguation.resolve_parameters(params, **ambiguous)
       end
     end
 
