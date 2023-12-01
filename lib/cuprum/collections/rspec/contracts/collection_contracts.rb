@@ -12,7 +12,7 @@ module Cuprum::Collections::RSpec::Contracts
     module ShouldBeACollectionContract
       extend RSpec::SleepingKingStudios::Contract
 
-      # @!method apply(example_group)
+      # @!method apply(example_group, **options)
       #   Adds the contract to the example group.
       #
       #   @param example_group [RSpec::Core::ExampleGroup] the example group to

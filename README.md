@@ -68,8 +68,8 @@ Each collection provides three features:
 
 ```ruby
 collection = Cuprum::Collections::Basic.new(
-  collection_name: 'books',
-  data:            book_data,
+  name: 'books',
+  data: book_data,
 )
 
 # Add an item to the collection.
@@ -107,10 +107,12 @@ Because a collection can represent any sort of data, from a raw Ruby Hash to an 
 
 Each collection also defines the following methods:
 
-- `#collection_name`: The collection name is a short description of what the collection contains. For example, a collection of `Book` objects might have a collection name of `'books'`, while a collection of `Authorization::Credentials::ApiKey` objects might have a collection name of `'api_keys'`.
+- `#name`: The collection name is a short description of what the collection contains. For example, a collection of `Book` objects might have a collection name of `'books'`, while a collection of `Authorization::Credentials::ApiKey` objects might have a collection name of `'api_keys'`.
+- `#entity_class`: The type of entity contained in the collection.
 - `#qualified_name`: The qualified name is a full description of the collection, and should be unique. For example, a collection of `Book` objects might have a qualified name of `'books'`, while a collection of `Authorization::Credentials::ApiKey` objects might have a qualified name of `'authorization/credentials/api_keys'`.
+- `#singular_name`: The name of an item in the collection.
 
-As a general rule, the `#collection_name` is used when displaying information to the user, while the `#qualified_name` is used to uniquely identify the collection (such as when adding to or retrieving from a [Repository](#repositories)).
+As a general rule, the `#name` is used when displaying information to the user, while the `#qualified_name` is used to uniquely identify the collection (such as when adding to or retrieving from a [Repository](#repositories)).
 
 <a id="commands"></a>
 
@@ -406,7 +408,7 @@ repository.key?('api_keys')
 repository.key?('authorization/credentials/api_keys')
 #=> false
 
-api_keys_collection.collection_name
+api_keys_collection.name
 #=> 'api_keys'
 api_keys_collection.qualified_name
 #=> 'authorization/credentials/api_keys'
@@ -432,14 +434,14 @@ The `Cuprum::Basic::Collection` provides a reference implementation of a collect
 
 ```ruby
 collection = Cuprum::Collections::Basic.new(
-  collection_name: 'books',
-  data:            book_data,
+  name: 'books',
+  data: book_data,
 )
 ```
 
 Initializing a basic collection requires, at a minumum, the following keywords:
 
-- The `:collection_name` parameter sets the name of the collection. It is used to create an envelope for query commands, such as the `FindMany`, `FindMatching` and `FindOne` commands.
+- The `:name` parameter sets the name of the collection. It is used to create an envelope for query commands, such as the `FindMany`, `FindMatching` and `FindOne` commands.
 - The `:data` parameter initializes the collection with existing data. The data must be either an empty array or an `Array` of `Hash`es with `String` keys.
 
 You can also specify some optional keywords:
@@ -471,7 +473,7 @@ repository = Cuprum::Collections::Basic::Repository.new(data: data)
 repository.keys
 #=> []
 
-repository.build(collection_name: 'books')
+repository.build(name: 'books')
 #=> an instance of Cuprum::Collections::Basic::Collection
 repository.keys
 #=> ['books']
@@ -593,8 +595,8 @@ A `Cuprum::Collections::Query` provides a low-level interface for performing que
 
 ```ruby
 collection = Cuprum::Collections::Basic.new(
-  collection_name: 'books',
-  data:            book_data,
+  name: 'books',
+  data: book_data,
 )
 query      = collection.query
 
