@@ -21,8 +21,8 @@ module Cuprum::Collections::Basic
       validate_data!(data)
 
       qualified_name =
-        Cuprum::Collections::Relation::Disambiguation
-          .resolve_parameters(parameters, name: :collection_name)
+        Cuprum::Collections::Relation::Parameters
+          .resolve_parameters(parameters)
           .fetch(:qualified_name)
 
       data ||= @data.fetch(qualified_name, [])

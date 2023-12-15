@@ -53,95 +53,6 @@ module Cuprum::Collections
       end
     end
 
-    # Methods for disambiguating parameters with multiple keywords.
-    module Disambiguation
-      class << self
-        # Helper method for resolving an ambiguous keyword.
-        #
-        # @param params [Hash] the original method keywords.
-        # @param key [Symbol] the original key to resolve.
-        # @param alternatives [Symbol, Array<Symbol>] the additional keywords.
-        #
-        # @return [Hash] the disambiguated keywords.
-        def disambiguate_keyword(params, key, *alternatives) # rubocop:disable Metrics/MethodLength
-          params = params.dup
-          values = keyword_values(params, key, *alternatives)
-
-          return params if values.empty?
-
-          if values.size == 1
-            match, value = values.first
-
-            unless match == key
-              tools.core_tools.deprecate(
-                "#{match.inspect} keyword",
-                message: "Use #{key.inspect} instead"
-              )
-            end
-
-            return params.merge(key => value)
-          end
-
-          raise ArgumentError, ambiguous_keywords_error(values)
-        end
-
-        # Helper method for resolving a Relation's required parameters.
-        #
-        # The returned Hash will define the :entity_class, :singular_name,
-        # :name, and :qualified_name keys.
-        #
-        # @param params [Hash] the parameters to resolve.
-        # @param ambiguous [Hash{Symbol => Symbol, Array<Symbol>}] ambiguous
-        #   keywords to resolve. Each key-value pair is passed to
-        #   .disambiguate_keyword before the parameters are resolved.
-        #
-        # @return [Hash] the resolved parameters.
-        #
-        # @see .disambiguate_keyword
-        # @see Cuprum::Collections::Relation::Parameters.resolve_parameters
-        def resolve_parameters(params, **ambiguous)
-          params = ambiguous.reduce(params) do |hsh, (key, alternatives)|
-            disambiguate_keyword(hsh, key, *alternatives)
-          end
-
-          Cuprum::Collections::Relation::Parameters.resolve_parameters(params)
-        end
-
-        private
-
-        def ambiguous_keywords_error(values)
-          expected, _ = values.first
-          formatted   =
-            values
-              .map { |key, value| "#{key}: #{value.inspect}" }
-              .join(', ')
-
-          "ambiguous parameter #{expected}: initialized with parameters " \
-            "#{formatted}"
-        end
-
-        def keyword_values(keywords, *keys)
-          keys
-            .map { |key| [key, keywords.delete(key)] }
-            .reject { |_, value| value.nil? } # rubocop:disable Style/CollectionCompact
-        end
-
-        def tools
-          SleepingKingStudios::Tools::Toolbelt.instance
-        end
-      end
-
-      # (see Cuprum::Collections::Relation::Disambiguation.disambiguate_keyword)
-      def disambiguate_keyword(params, key, *alternatives)
-        Disambiguation.disambiguate_keyword(params, key, *alternatives)
-      end
-
-      # (see Cuprum::Collections::Relation::Disambiguation.resolve_parameters)
-      def resolve_parameters(params, **ambiguous)
-        Disambiguation.resolve_parameters(params, **ambiguous)
-      end
-    end
-
     # Methods for resolving a relations's naming and entity class from options.
     module Parameters # rubocop:disable Metrics/ModuleLength
       PARAMETER_KEYS = %i[entity_class name qualified_name].freeze
@@ -392,10 +303,6 @@ module Cuprum::Collections
 
     def ignored_parameters
       @ignored_parameters ||= Set.new(IGNORED_PARAMETERS)
-    end
-
-    def tools
-      SleepingKingStudios::Tools::Toolbelt.instance
     end
   end
 end

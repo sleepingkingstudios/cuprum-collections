@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.0
+
+Remove deprecations from previous versions:
+
+- Removed `Cuprum::Collections::Relation::Disambiguation`.
+
 ## 0.4.0
 
 ### Associations

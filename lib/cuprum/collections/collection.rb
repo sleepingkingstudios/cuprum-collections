@@ -10,15 +10,12 @@ module Cuprum::Collections
   class Collection < Cuprum::CommandFactory
     include Cuprum::Collections::Relation::Parameters
     include Cuprum::Collections::Relation::PrimaryKeys
-    include Cuprum::Collections::Relation::Disambiguation
 
     # Error raised when trying to call an abstract collection method.
     class AbstractCollectionError < StandardError; end
 
     IGNORED_PARAMETERS = %i[
-      collection_name
       entity_class
-      member_name
       name
       qualified_name
       singular_name
@@ -37,14 +34,10 @@ module Cuprum::Collections
     #     attribute. Defaults to 'id'.
     #   @option primary_key_type [Class, Stannum::Constraint] the type of
     #     the primary key attribute. Defaults to Integer.
-    def initialize(**parameters) # rubocop:disable Metrics/MethodLength
+    def initialize(**parameters)
       super()
 
-      relation_params = resolve_parameters(
-        parameters,
-        name:          :collection_name,
-        singular_name: :member_name
-      )
+      relation_params = resolve_parameters(parameters)
       @entity_class   = relation_params[:entity_class]
       @name           = relation_params[:name]
       @plural_name    = relation_params[:plural_name]
@@ -67,14 +60,6 @@ module Cuprum::Collections
       comparable_options == other.comparable_options
     end
 
-    # @return [String] the name of the collection.
-    def collection_name
-      tools.core_tools.deprecate '#collection_name method',
-        message: 'Use #name instead'
-
-      name
-    end
-
     # @return [Integer] the count of items in the collection.
     def count
       query.count
@@ -95,14 +80,6 @@ module Cuprum::Collections
       end
 
       comparable_options >= expected
-    end
-
-    # @return [String] the name of an entity in the relation.
-    def member_name
-      tools.core_tools.deprecate '#member_name method',
-        message: 'Use #singular_name instead'
-
-      singular_name
     end
 
     # A new Query instance, used for querying against the collection data.
@@ -145,10 +122,6 @@ module Cuprum::Collections
 
     def ignored_parameters
       @ignored_parameters ||= Set.new(IGNORED_PARAMETERS)
-    end
-
-    def tools
-      SleepingKingStudios::Tools::Toolbelt.instance
     end
   end
 end
