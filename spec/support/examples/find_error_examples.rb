@@ -44,23 +44,6 @@ module Spec::Support::Examples
       end
     end
 
-    shared_context 'when initialized with primary key name and values' do
-      let(:primary_key_name)  { 'id' }
-      let(:primary_key_value) { 0 }
-      let(:constructor_options) do
-        {
-          collection_name:    collection_name,
-          primary_key_name:   primary_key_name,
-          primary_key_values: [primary_key_value]
-        }
-      end
-
-      before(:example) do
-        allow(SleepingKingStudios::Tools::CoreTools.instance)
-          .to receive(:deprecate)
-      end
-    end
-
     shared_examples 'should implement the FindError methods' \
     do |message_fragment|
       describe '.new' do
@@ -244,56 +227,6 @@ module Spec::Support::Examples
             end
           end
         end
-
-        describe 'with primary_key_name:, primary_key_values:' do
-          let(:keywords) do
-            {
-              collection_name:    collection_name,
-              primary_key_name:   'name',
-              primary_key_values: ['Alan Bradley']
-            }
-          end
-          let(:error_message) do
-            'deprecated mode does not support empty or multiple attribute ' \
-              'values'
-          end
-
-          before(:example) do
-            allow(SleepingKingStudios::Tools::CoreTools.instance)
-              .to receive(:deprecate)
-          end
-
-          it 'should print a deprecation warning' do # rubocop:disable RSpec/ExampleLength
-            described_class.new(**keywords)
-
-            expect(SleepingKingStudios::Tools::CoreTools.instance)
-              .to have_received(:deprecate)
-              .with(
-                'NotFound.new(primary_key_name:, primary_key_values:)',
-                message: 'use NotFound.new(attribute_name:, attribute_value:)'
-              )
-          end
-
-          context 'when the values Array is empty' do
-            let(:keywords) { super().merge(primary_key_values: []) }
-
-            it 'should raise an exception' do
-              expect { described_class.new(**keywords) }
-                .to raise_error ArgumentError, error_message
-            end
-          end
-
-          context 'when the values Array has multiple items' do
-            let(:keywords) do
-              super().merge(primary_key_values: ['Alan Bradley', 'Kevin Flynn'])
-            end
-
-            it 'should raise an exception' do
-              expect { described_class.new(**keywords) }
-                .to raise_error ArgumentError, error_message
-            end
-          end
-        end
       end
 
       describe '#as_json' do
@@ -370,20 +303,6 @@ module Spec::Support::Examples
 
           it { expect(error.as_json).to be == expected }
         end
-
-        wrap_context 'when initialized with primary key name and values' do
-          let(:expected_data) do
-            {
-              'attribute_name'  => primary_key_name,
-              'collection_name' => collection_name,
-              'attribute_value' => primary_key_value,
-              'details'         => error.details,
-              'primary_key'     => true
-            }
-          end
-
-          it { expect(error.as_json).to be == expected }
-        end
       end
 
       describe '#attribute_name' do
@@ -400,10 +319,6 @@ module Spec::Support::Examples
           it { expect(error.attribute_name).to be nil }
         end
         # rubocop:enable RSpec/RepeatedExampleGroupBody
-
-        wrap_context 'when initialized with primary key name and values' do
-          it { expect(error.attribute_name).to be == primary_key_name }
-        end
       end
 
       describe '#attribute_value' do
@@ -426,10 +341,6 @@ module Spec::Support::Examples
           it { expect(error.attribute_value).to be nil }
         end
         # rubocop:enable RSpec/RepeatedExampleGroupBody
-
-        wrap_context 'when initialized with primary key name and values' do
-          it { expect(error.attribute_value).to be == primary_key_value }
-        end
       end
 
       describe '#attributes' do
@@ -439,15 +350,9 @@ module Spec::Support::Examples
           it { expect(error.attributes).to be == attributes }
         end
 
-        # rubocop:disable RSpec/RepeatedExampleGroupBody
         wrap_context 'when initialized with query: value' do
           it { expect(error.attributes).to be nil }
         end
-
-        wrap_context 'when initialized with primary key name and values' do
-          it { expect(error.attributes).to be nil }
-        end
-        # rubocop:enable RSpec/RepeatedExampleGroupBody
       end
 
       describe '#collection_name' do
@@ -476,12 +381,6 @@ module Spec::Support::Examples
 
           it { expect(error.details).to be == expected }
         end
-
-        wrap_context 'when initialized with primary key name and values' do
-          let(:expected) { [[primary_key_name, :equal, primary_key_value]] }
-
-          it { expect(error.details).to be == expected }
-        end
       end
 
       describe '#message' do
@@ -498,15 +397,6 @@ module Spec::Support::Examples
         wrap_context 'when initialized with query: value' do
           let(:expected) do
             "Book #{message_fragment} matching the query"
-          end
-
-          it { expect(error.message).to be == expected }
-        end
-
-        wrap_context 'when initialized with primary key name and values' do
-          let(:expected) do
-            "Book #{message_fragment} with #{primary_key_name.inspect} " \
-              "#{primary_key_value.inspect} (primary key)"
           end
 
           it { expect(error.message).to be == expected }
@@ -528,17 +418,12 @@ module Spec::Support::Examples
         wrap_context 'when initialized with primary_key: true' do
           it { expect(error.primary_key?).to be true }
         end
-
-        wrap_context 'when initialized with primary key name and values' do
-          it { expect(error.primary_key?).to be true }
-        end
         # rubocop:enable RSpec/RepeatedExampleGroupBody
       end
 
       describe '#query' do
         include_examples 'should define reader', :query, nil
 
-        # rubocop:disable RSpec/RepeatedExampleGroupBody
         wrap_context 'when initialized with attributes: value' do
           it { expect(error.query).to be nil }
         end
@@ -546,11 +431,6 @@ module Spec::Support::Examples
         wrap_context 'when initialized with query: value' do
           it { expect(error.query).to be query }
         end
-
-        wrap_context 'when initialized with primary key name and values' do
-          it { expect(error.query).to be nil }
-        end
-        # rubocop:enable RSpec/RepeatedExampleGroupBody
       end
     end
   end

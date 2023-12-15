@@ -148,9 +148,7 @@ module Cuprum::Collections::Errors
     end
 
     def resolve_options(**options) # rubocop:disable Metrics/MethodLength
-      if options[:primary_key_name] && options[:primary_key_values]
-        resolve_primary_key_options(**options)
-      elsif options[:attribute_name] && options.key?(:attribute_value)
+      if options[:attribute_name] && options.key?(:attribute_value)
         resolve_attribute_options(**options)
       elsif options[:attributes]
         resolve_attributes_options(**options)
@@ -161,26 +159,6 @@ module Cuprum::Collections::Errors
           'missing keywords :attribute_name, :attribute_value or :attributes ' \
           'or :query'
       end
-    end
-
-    def resolve_primary_key_options(**options) # rubocop:disable Metrics/MethodLength
-      values = Array(options[:primary_key_values])
-
-      unless values.size == 1
-        raise ArgumentError,
-          'deprecated mode does not support empty or multiple attribute values'
-      end
-
-      SleepingKingStudios::Tools::CoreTools
-        .instance
-        .deprecate(
-          'NotFound.new(primary_key_name:, primary_key_values:)',
-          message: 'use NotFound.new(attribute_name:, attribute_value:)'
-        )
-
-      @attribute_name  = options[:primary_key_name]
-      @attribute_value = values.first
-      @primary_key     = true
     end
 
     def titleize(string)
