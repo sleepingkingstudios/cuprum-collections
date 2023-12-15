@@ -5,6 +5,7 @@
 Remove deprecations from previous versions:
 
 - Removed `Cuprum::Collections::Relation::Disambiguation`.
+- Removed initializing an `AbstractFindError` subclass with `primary_key_name` and `primary_key_values` keywords.
 
 ## 0.4.0
 
