@@ -153,13 +153,13 @@ module Cuprum::Collections
     end
 
     def qualified_name_for(**parameters)
-      Cuprum::Collections::Relation::Disambiguation
-        .resolve_parameters(parameters, name: :collection_name)
+      Cuprum::Collections::Relation::Parameters
+        .resolve_parameters(parameters)
         .fetch(:qualified_name)
     end
 
     def valid_collection?(collection)
-      collection.respond_to?(:collection_name)
+      collection.respond_to?(:qualified_name)
     end
 
     def validate_collection!(collection)

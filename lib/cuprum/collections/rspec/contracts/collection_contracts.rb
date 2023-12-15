@@ -149,14 +149,6 @@ module Cuprum::Collections::RSpec::Contracts
           constructor:          false,
           default_entity_class: options[:default_entity_class]
 
-        include_contract 'should disambiguate parameter',
-          :name,
-          as: :collection_name
-
-        include_contract 'should disambiguate parameter',
-          :singular_name,
-          as: :member_name
-
         include_contract 'should define primary keys'
 
         include_examples 'should define the command', :assign_one

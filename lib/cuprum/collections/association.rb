@@ -31,9 +31,6 @@ module Cuprum::Collections
     #   @option options singular_inverse_name [String, Symbol] the name of an
     #     entity in the inverse association.
     def initialize(**params)
-      params = disambiguate_keyword(params, :entity_class, :association_class)
-      params = disambiguate_keyword(params, :name, :association_name)
-
       @inverse = params.delete(:inverse)
 
       super(**params)
@@ -41,22 +38,6 @@ module Cuprum::Collections
 
     # @return [Cuprum::Collections::Resource] the inverse association, if any.
     attr_reader :inverse
-
-    # @return [Class] the class of entity represented by the resource.
-    def association_class
-      tools.core_tools.deprecate '#association_class method',
-        message: 'Use #entity_class instead'
-
-      entity_class
-    end
-
-    # @return [String] the name of the resource.
-    def association_name
-      tools.core_tools.deprecate '#association_name method',
-        message: 'Use #name instead'
-
-      name
-    end
 
     # Generates a query for finding matching items.
     #

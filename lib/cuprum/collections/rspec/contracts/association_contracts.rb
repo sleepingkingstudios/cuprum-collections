@@ -24,19 +24,6 @@ module Cuprum::Collections::RSpec::Contracts
 
         include_contract 'should be a relation'
 
-        include_contract 'should disambiguate parameter',
-          :entity_class,
-          as:    %i[association_class resource_class],
-          value: Grimoire
-
-        include_contract 'should disambiguate parameter',
-          :name,
-          as: %i[association_name resource_name]
-
-        include_contract 'should disambiguate parameter',
-          :singular_name,
-          as: :singular_resource_name
-
         include_contract 'should define primary keys'
 
         describe '#build_entities_query' do

@@ -15,22 +15,22 @@ RSpec.describe Cuprum::Collections::Repository do
     let(:books_collection) do
       instance_double(
         Cuprum::Collections::Basic::Collection,
-        collection_name: 'books',
-        qualified_name:  'sources/books'
+        name:           'books',
+        qualified_name: 'sources/books'
       )
     end
     let(:authors_collection) do
       instance_double(
         Cuprum::Collections::Basic::Collection,
-        collection_name: :authors,
-        qualified_name:  'authors'
+        name:           :authors,
+        qualified_name: 'authors'
       )
     end
     let(:publishers_collection) do
       instance_double(
         Cuprum::Collections::Basic::Collection,
-        collection_name: 'publishers',
-        qualified_name:  'publishers'
+        name:           'publishers',
+        qualified_name: 'publishers'
       )
     end
     let(:collections) do
@@ -52,8 +52,8 @@ RSpec.describe Cuprum::Collections::Repository do
   let(:example_collection) do
     instance_double(
       Cuprum::Collections::Basic::Collection,
-      collection_name: 'widgets',
-      qualified_name:  'scope/widgets'
+      name:           'widgets',
+      qualified_name: 'scope/widgets'
     )
   end
 

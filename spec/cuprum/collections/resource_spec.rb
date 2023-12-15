@@ -18,19 +18,6 @@ RSpec.describe Cuprum::Collections::Resource do
   include_contract 'should be a relation',
     cardinality: true
 
-  include_contract 'should disambiguate parameter',
-    :entity_class,
-    as:    :resource_class,
-    value: Grimoire
-
-  include_contract 'should disambiguate parameter',
-    :name,
-    as: :resource_name
-
-  include_contract 'should disambiguate parameter',
-    :singular_name,
-    as: :singular_resource_name
-
   include_contract 'should define primary keys'
 
   include_contract 'should define cardinality'
