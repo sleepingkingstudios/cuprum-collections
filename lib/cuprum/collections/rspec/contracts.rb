@@ -19,5 +19,7 @@ module Cuprum::Collections::RSpec
       'cuprum/collections/rspec/contracts/relation_contracts'
     autoload :RepositoryContracts,
       'cuprum/collections/rspec/contracts/repository_contracts'
+    autoload :Scopes,
+      'cuprum/collections/rspec/contracts/scopes'
   end
 end
