@@ -190,7 +190,20 @@ module Cuprum::Collections::Scopes
     end
 
     # Exception raised when an invalid operator is called in a block.
-    class UnknownOperatorException < StandardError; end
+    class UnknownOperatorException < StandardError
+      # @param msg [String] the exception message.
+      # @param name [String] the name of the invalid operator.
+      def initialize(msg = nil, name = nil)
+        super(msg)
+
+        @name = name
+      end
+
+      # @return [String] the name of the invalid operator.
+      def name
+        @name || cause&.name
+      end
+    end
 
     class << self
       private

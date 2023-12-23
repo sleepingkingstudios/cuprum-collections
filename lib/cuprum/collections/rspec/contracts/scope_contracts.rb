@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'cuprum/collections/rspec/contracts'
+require 'cuprum/collections/rspec/fixtures'
 
 module Cuprum::Collections::RSpec::Contracts
   # Contracts for asserting on scope objects.
@@ -110,6 +111,299 @@ module Cuprum::Collections::RSpec::Contracts
             it "should set the copied scope's criteria" do
               expect(scope.with_criteria(new_criteria).criteria)
                 .to be == new_criteria
+            end
+          end
+        end
+      end
+    end
+
+    # Contract validating the scope filters data based on the criteria.
+    module ShouldFilterDataByCriteriaContract
+      extend RSpec::SleepingKingStudios::Contract
+
+      # @!method apply(example_group)
+      #   Adds the contract to the example group.
+      #
+      #   @param example_group [RSpec::Core::ExampleGroup] the example group to
+      #     which the contract is applied.
+      contract do
+        shared_context 'with data' do
+          let(:data) do
+            Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES
+          end
+        end
+
+        context 'when the scope has no criteria' do
+          describe 'with empty data' do
+            let(:data)     { [] }
+            let(:expected) { data }
+
+            it { expect(filtered_data).to be == expected }
+          end
+
+          wrap_context 'with data' do
+            let(:expected) { data }
+
+            it { expect(filtered_data).to be == expected }
+          end
+        end
+
+        context 'when the scope has an equality criterion' do
+          let(:criteria) do
+            described_class.parse({ 'title' => 'The Word for World is Forest' })
+          end
+
+          describe 'with empty data' do
+            let(:data)     { [] }
+            let(:expected) { data }
+
+            it { expect(filtered_data).to be == expected }
+          end
+
+          wrap_context 'with data' do
+            let(:expected) do
+              data.select do |item|
+                item['title'] == 'The Word for World is Forest'
+              end
+            end
+
+            it { expect(filtered_data).to be == expected }
+          end
+        end
+
+        context 'when the scope has a greater than criterion' do
+          let(:criteria) do
+            described_class.parse do
+              { 'published_at' => greater_than('1972-03-13') }
+            end
+          end
+
+          describe 'with empty data' do
+            let(:data)     { [] }
+            let(:expected) { data }
+
+            it { expect(filtered_data).to be == expected }
+          end
+
+          wrap_context 'with data' do
+            let(:expected) do
+              data.select do |item|
+                item['published_at'] > '1972-03-13'
+              end
+            end
+
+            it { expect(filtered_data).to be == expected }
+          end
+        end
+
+        context 'when the scope has a greater than or equal to criterion' do
+          let(:criteria) do
+            described_class.parse do
+              { 'published_at' => greater_than_or_equal_to('1972-03-13') }
+            end
+          end
+
+          describe 'with empty data' do
+            let(:data)     { [] }
+            let(:expected) { data }
+
+            it { expect(filtered_data).to be == expected }
+          end
+
+          wrap_context 'with data' do
+            let(:expected) do
+              data.select do |item|
+                item['published_at'] >= '1972-03-13'
+              end
+            end
+
+            it { expect(filtered_data).to be == expected }
+          end
+        end
+
+        context 'when the scope has a less than criterion' do
+          let(:criteria) do
+            described_class.parse do
+              { 'published_at' => less_than('1972-03-13') }
+            end
+          end
+
+          describe 'with empty data' do
+            let(:data)     { [] }
+            let(:expected) { data }
+
+            it { expect(filtered_data).to be == expected }
+          end
+
+          wrap_context 'with data' do
+            let(:expected) do
+              data.select do |item|
+                item['published_at'] < '1972-03-13'
+              end
+            end
+
+            it { expect(filtered_data).to be == expected }
+          end
+        end
+
+        context 'when the scope has a less than or equal to criterion' do
+          let(:criteria) do
+            described_class.parse do
+              { 'published_at' => less_than_or_equal_to('1972-03-13') }
+            end
+          end
+
+          describe 'with empty data' do
+            let(:data)     { [] }
+            let(:expected) { data }
+
+            it { expect(filtered_data).to be == expected }
+          end
+
+          wrap_context 'with data' do
+            let(:expected) do
+              data.select do |item|
+                item['published_at'] <= '1972-03-13'
+              end
+            end
+
+            it { expect(filtered_data).to be == expected }
+          end
+        end
+
+        context 'when the scope has a not equal criterion' do
+          let(:criteria) do
+            described_class.parse do
+              { 'author' => not_equal('J.R.R. Tolkien') }
+            end
+          end
+
+          describe 'with empty data' do
+            let(:data)     { [] }
+            let(:expected) { data }
+
+            it { expect(filtered_data).to be == expected }
+          end
+
+          wrap_context 'with data' do
+            let(:expected) do
+              data.reject do |item|
+                item['author'] == 'J.R.R. Tolkien'
+              end
+            end
+
+            it { expect(filtered_data).to be == expected }
+          end
+        end
+
+        context 'when the scope has a not one of criterion' do
+          let(:criteria) do
+            described_class.parse do
+              titles = ['The Fellowship Of The Ring', 'The Two Towers']
+
+              { 'title' => not_one_of(titles) }
+            end
+          end
+
+          describe 'with empty data' do
+            let(:data)     { [] }
+            let(:expected) { data }
+
+            it { expect(filtered_data).to be == expected }
+          end
+
+          wrap_context 'with data' do
+            let(:expected) do
+              data.reject do |item|
+                ['The Fellowship Of The Ring', 'The Two Towers']
+                  .include?(item['title'])
+              end
+            end
+
+            it { expect(filtered_data).to be == expected }
+          end
+        end
+
+        context 'when the scope has a one of criterion' do
+          let(:criteria) do
+            described_class.parse do
+              titles = ['The Fellowship Of The Ring', 'The Two Towers']
+
+              { 'title' => one_of(titles) }
+            end
+          end
+
+          describe 'with empty data' do
+            let(:data)     { [] }
+            let(:expected) { data }
+
+            it { expect(filtered_data).to be == expected }
+          end
+
+          wrap_context 'with data' do
+            let(:expected) do
+              data.select do |item|
+                ['The Fellowship Of The Ring', 'The Two Towers']
+                  .include?(item['title'])
+              end
+            end
+
+            it { expect(filtered_data).to be == expected }
+          end
+        end
+
+        context 'when the scope has multiple criteria' do
+          let(:criteria) do
+            described_class.parse do
+              titles = ['The Fellowship Of The Ring', 'The Two Towers']
+
+              { 'author' => 'J.R.R. Tolkien', 'title' => not_one_of(titles) }
+            end
+          end
+
+          describe 'with empty data' do
+            let(:data)     { [] }
+            let(:expected) { data }
+
+            it { expect(filtered_data).to be == expected }
+          end
+
+          wrap_context 'with data' do
+            let(:expected) do
+              data
+                .select { |item| item['author'] == 'J.R.R. Tolkien' }
+                .reject do |item|
+                  ['The Fellowship Of The Ring', 'The Two Towers']
+                    .include?(item['title'])
+                end
+            end
+
+            it { expect(filtered_data).to be == expected }
+          end
+        end
+
+        context 'when the scope has invalid criteria' do
+          let(:criteria) { [['title', :random, nil]] }
+          let(:error_class) do
+            Cuprum::Collections::Scopes::Criteria::UnknownOperatorException
+          end
+          let(:error_message) do
+            'unknown operator "random"'
+          end
+
+          describe 'with empty data' do
+            let(:data) { [] }
+
+            it 'should raise an exception' do
+              expect { filtered_data }
+                .to raise_error error_class, error_message
+            end
+          end
+
+          wrap_context 'with data' do
+            it 'should raise an exception' do
+              expect { filtered_data }
+                .to raise_error error_class, error_message
             end
           end
         end
@@ -531,7 +825,7 @@ module Cuprum::Collections::RSpec::Contracts
             parse_criteria(&block)
           rescue error_class => exception
             expect(exception.cause).to be_a NameError
-            expect(exception.cause.name).to be == :random
+            expect(exception.name).to be == :random
           end
         end
 

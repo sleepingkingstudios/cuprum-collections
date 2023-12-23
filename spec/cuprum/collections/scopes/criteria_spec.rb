@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/queries'
 require 'cuprum/collections/scope'
 require 'cuprum/collections/scopes/criteria'
 require 'cuprum/collections/rspec/contracts/scope_contracts'
@@ -20,7 +19,6 @@ RSpec.describe Cuprum::Collections::Scopes::Criteria do
     subject(:parser) { described_class.instance }
 
     let(:described_class) { Cuprum::Collections::Scopes::Criteria::Parser }
-    let(:operators)       { Cuprum::Collections::Queries::Operators }
 
     describe '.instance' do
       include_examples 'should define class reader',
@@ -68,9 +66,41 @@ RSpec.describe Cuprum::Collections::Scopes::Criteria do
   end
 
   describe '::UnknownOperatorException' do
+    subject(:error) { described_class::UnknownOperatorException.new(message) }
+
+    let(:message) { 'unknown operator "random"' }
+
     include_examples 'should define constant',
       :UnknownOperatorException,
       -> { be_a(Class).and(be < StandardError) }
+
+    describe '#message' do
+      include_examples 'should define reader', :message, -> { message }
+    end
+
+    describe '#name' do
+      include_examples 'should define reader', :name, nil
+
+      context 'when initialized with name: value' do
+        let(:error) do
+          described_class::UnknownOperatorException.new(message, name)
+        end
+        let(:name) { 'random' }
+
+        it { expect(error.name).to be == name }
+      end
+
+      context 'when the exception has a cause' do
+        let(:name)  { 'random' }
+        let(:cause) { NameError.new(nil, name) }
+
+        before(:example) do
+          allow(error).to receive(:cause).and_return(cause) # rubocop:disable RSpec/SubjectStub
+        end
+
+        it { expect(error.name).to be == name }
+      end
+    end
   end
 
   include_contract 'should be a criteria scope'
