@@ -13,14 +13,15 @@ module Cuprum::Collections::Basic::Scopes
     Operators = Cuprum::Collections::Queries::Operators
     private_constant :Operators
 
-    # Filters the provided data based on the configured criteria.
-    def call(data:)
-      raise ArgumentError, 'data must be an Array' unless data.is_a?(Array)
+    # Returns true if the provided item matches the configured criteria.
+    def match?(item:)
+      super
 
-      criteria.reduce(data) do |filtered, (attribute, operator, value)|
-        filtered.select(&filter_for(attribute, operator, value))
+      criteria.all? do |(attribute, operator, value)|
+        filter_for(attribute, operator, value).call(item)
       end
     end
+    alias matches? match?
 
     private
 

@@ -6,7 +6,7 @@ require 'cuprum/collections/rspec/fixtures'
 module Cuprum::Collections::RSpec::Contracts
   # Contracts for asserting on scope objects.
   module ScopeContracts
-    # Contract validating the behavior of a Container scope.
+    # Contract validating the behavior of a Container scope implementation.
     module ShouldBeAContainerScopeContract
       extend RSpec::SleepingKingStudios::Contract
 
@@ -469,12 +469,10 @@ module Cuprum::Collections::RSpec::Contracts
           end
 
           describe 'with empty data' do
-            let(:data) { [] }
+            let(:data)     { [] }
+            let(:expected) { data }
 
-            it 'should raise an exception' do
-              expect { filtered_data }
-                .to raise_error error_class, error_message
-            end
+            it { expect(filtered_data).to be == expected }
           end
 
           wrap_context 'with data' do
