@@ -45,7 +45,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::CriteriaScope do
   end
 
   describe '#match?' do
-    let(:item) { [] }
+    let(:item) { {} }
 
     it 'should define the method' do
       expect(scope).to respond_to(:match?).with(0).arguments.and_keywords(:item)
