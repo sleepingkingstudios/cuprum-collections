@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/basic'
-require 'cuprum/collections/scope'
+require 'cuprum/collections/basic/scopes'
+require 'cuprum/collections/scopes/base'
 
-module Cuprum::Collections::Basic
+module Cuprum::Collections::Basic::Scopes
   # Abstract class representing a set of filters for a basic query.
-  class Scope < Cuprum::Collections::Scope
+  class Base < Cuprum::Collections::Scopes::Base
     # Filters the provided data.
     def call(data:)
       raise ArgumentError, 'data must be an Array' unless data.is_a?(Array)

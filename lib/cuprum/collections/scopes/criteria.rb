@@ -226,6 +226,11 @@ module Cuprum::Collections::Scopes
     # @return [Array] the criteria used for filtering query data.
     attr_reader :criteria
 
+    # (see Cuprum::Collections::Scopes::Base#type)
+    def type
+      :criteria
+    end
+
     # Creates a copy of the scope with the given criteria.
     #
     # @param criteria [Array] the criteria used for filtering query data.

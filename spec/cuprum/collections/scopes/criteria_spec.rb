@@ -1,17 +1,18 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/scope'
+require 'cuprum/collections/scopes/base'
 require 'cuprum/collections/scopes/criteria'
-require 'cuprum/collections/rspec/contracts/scope_contracts'
+require 'cuprum/collections/rspec/contracts/scopes/criteria_contracts'
 
 RSpec.describe Cuprum::Collections::Scopes::Criteria do
-  include Cuprum::Collections::RSpec::Contracts::ScopeContracts
+  include Cuprum::Collections::RSpec::Contracts::Scopes::CriteriaContracts
 
   subject(:scope) { described_class.new(criteria: criteria) }
 
   let(:described_class) { Spec::ExampleScope }
 
-  example_class 'Spec::ExampleScope', Cuprum::Collections::Scope do |klass|
+  example_class 'Spec::ExampleScope', Cuprum::Collections::Scopes::Base \
+  do |klass|
     klass.include Cuprum::Collections::Scopes::Criteria # rubocop:disable RSpec/DescribedClass
   end
 
@@ -103,5 +104,5 @@ RSpec.describe Cuprum::Collections::Scopes::Criteria do
     end
   end
 
-  include_contract 'should be a criteria scope'
+  include_contract 'should be a criteria scope', abstract: true
 end

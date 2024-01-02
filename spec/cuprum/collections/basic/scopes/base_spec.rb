@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/basic/scope'
+require 'cuprum/collections/basic/scopes/base'
 require 'cuprum/collections/rspec/fixtures'
 
-RSpec.describe Cuprum::Collections::Basic::Scope do
+RSpec.describe Cuprum::Collections::Basic::Scopes::Base do
   subject(:scope) { described_class.new }
 
   describe '.new' do
@@ -98,7 +98,8 @@ RSpec.describe Cuprum::Collections::Basic::Scope do
     let(:described_class) { Spec::HasSeriesScope }
 
     # rubocop:disable RSpec/DescribedClass
-    example_class 'Spec::HasSeriesScope', Cuprum::Collections::Basic::Scope \
+    example_class 'Spec::HasSeriesScope',
+      Cuprum::Collections::Basic::Scopes::Base \
     do |klass|
       klass.define_method :match? do |item:|
         !(item['series'].nil? || item['series'].empty?)

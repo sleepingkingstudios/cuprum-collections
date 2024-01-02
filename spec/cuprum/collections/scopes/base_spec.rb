@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/scope'
+require 'cuprum/collections/scopes/base'
 
-RSpec.describe Cuprum::Collections::Scope do
+RSpec.describe Cuprum::Collections::Scopes::Base do
   describe '.new' do
     it 'should define the constructor' do
       expect(described_class)
@@ -10,5 +10,9 @@ RSpec.describe Cuprum::Collections::Scope do
         .with(0).arguments
         .and_any_keywords
     end
+  end
+
+  describe '#type' do
+    include_examples 'should define reader', :type, :abstract
   end
 end
