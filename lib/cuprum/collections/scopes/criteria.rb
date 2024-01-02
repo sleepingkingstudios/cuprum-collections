@@ -216,6 +216,7 @@ module Cuprum::Collections::Scopes
     end
 
     # @param criteria [Array] the criteria used for filtering query data.
+    # @param options [Hash] additional options for the scope.
     def initialize(criteria:, **options)
       super(**options)
 
