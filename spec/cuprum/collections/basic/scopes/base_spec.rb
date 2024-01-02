@@ -97,7 +97,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::Base do
   context 'with a scope subclass' do
     let(:described_class) { Spec::HasSeriesScope }
 
-    # rubocop:disable RSpec/DescribedClass
+    # rubocop:disable RSpec/DescribedClass, Style/RedundantLineContinuation
     example_class 'Spec::HasSeriesScope',
       Cuprum::Collections::Basic::Scopes::Base \
     do |klass|
@@ -105,7 +105,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::Base do
         !(item['series'].nil? || item['series'].empty?)
       end
     end
-    # rubocop:enable RSpec/DescribedClass
+    # rubocop:enable RSpec/DescribedClass, Style/RedundantLineContinuation
 
     describe '#call' do
       describe 'with an empty Array' do
