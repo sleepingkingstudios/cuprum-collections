@@ -358,8 +358,4 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::CriteriaScope do
       end
     end
   end
-
-  describe '#type' do
-    include_examples 'should define reader', :type, :criteria
-  end
 end

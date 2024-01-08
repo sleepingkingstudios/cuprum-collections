@@ -25,7 +25,7 @@ module Cuprum::Collections::Scopes
       end
 
       # @override parse(value = nil, &block)
-      #   (see Cuprum::Collections::Scopes::Parser#parse)
+      #   (see Cuprum::Collections::Scopes::Criteria::Parser#parse)
       def parse(*args, &block)
         parser = Cuprum::Collections::Scopes::Criteria::Parser.instance
 

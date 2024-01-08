@@ -16,12 +16,14 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
       #     which the contract is applied.
       #   @param abstract [Boolean] if true, the scope is abstract and does not
       #     define a #call implementation. Defaults to false.
-      contract do |abstract: false|
+      contract do |abstract: false, constructor: true|
         shared_context 'with criteria' do
           let(:criteria) do
+            operators = Cuprum::Collections::Queries::Operators
+
             [
-              ['title', 'eq', 'Gideon the Ninth'],
-              ['author', 'eq', 'Tamsyn Muir']
+              ['title',  operators::EQUAL, 'Gideon the Ninth'],
+              ['author', operators::EQUAL, 'Tamsyn Muir']
             ]
           end
         end
@@ -29,6 +31,8 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
         let(:criteria) { [] }
 
         describe '.new' do
+          next unless constructor
+
           it 'should define the constructor' do
             expect(described_class)
               .to be_constructible
