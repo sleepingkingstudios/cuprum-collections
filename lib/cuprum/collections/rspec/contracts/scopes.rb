@@ -7,5 +7,7 @@ module Cuprum::Collections::RSpec::Contracts
   module Scopes
     autoload :CriteriaContracts,
       'cuprum/collections/rspec/contracts/scopes/criteria_contracts'
+    autoload :LogicalContracts,
+      'cuprum/collections/rspec/contracts/scopes/logical_contracts'
   end
 end

@@ -16,5 +16,10 @@ module Cuprum::Collections::Basic::Scopes
       scopes.all? { |scope| scope.match?(item: item) }
     end
     alias matches? match?
+
+    # (see Cuprum::Collections::Scopes::Base#type)
+    def type
+      :conjunction
+    end
   end
 end
