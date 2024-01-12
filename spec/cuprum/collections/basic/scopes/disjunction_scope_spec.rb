@@ -2,11 +2,9 @@
 
 require 'cuprum/collections/basic/scopes/criteria_scope'
 require 'cuprum/collections/basic/scopes/disjunction_scope'
-require 'cuprum/collections/rspec/contracts/scope_contracts'
 require 'cuprum/collections/rspec/contracts/scopes/logical_contracts'
 
 RSpec.describe Cuprum::Collections::Basic::Scopes::DisjunctionScope do
-  include Cuprum::Collections::RSpec::Contracts::ScopeContracts
   include Cuprum::Collections::RSpec::Contracts::Scopes::LogicalContracts
 
   subject(:scope) { described_class.new(scopes: scopes) }

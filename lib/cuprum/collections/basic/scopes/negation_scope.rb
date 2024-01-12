@@ -16,5 +16,10 @@ module Cuprum::Collections::Basic::Scopes
       scopes.any? { |scope| !scope.match?(item: item) }
     end
     alias matches? match?
+
+    # (see Cuprum::Collections::Scopes::Base#type)
+    def type
+      :negation
+    end
   end
 end
