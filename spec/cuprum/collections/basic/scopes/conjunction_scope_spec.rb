@@ -3,13 +3,16 @@
 require 'cuprum/collections/basic/scopes/conjunction_scope'
 require 'cuprum/collections/basic/scopes/criteria_scope'
 require 'cuprum/collections/rspec/contracts/scope_contracts'
+require 'cuprum/collections/rspec/contracts/scopes/logical_contracts'
 
 RSpec.describe Cuprum::Collections::Basic::Scopes::ConjunctionScope do
   include Cuprum::Collections::RSpec::Contracts::ScopeContracts
+  include Cuprum::Collections::RSpec::Contracts::Scopes::LogicalContracts
 
   subject(:scope) { described_class.new(scopes: scopes) }
 
   let(:scopes) { [] }
+  let(:data) { [] }
 
   def build_scope(filters = nil, &block)
     scope_class = Cuprum::Collections::Basic::Scopes::CriteriaScope
@@ -21,15 +24,13 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::ConjunctionScope do
     end
   end
 
-  include_contract 'should be a container scope'
+  def filtered_data
+    scope.call(data: data)
+  end
+
+  include_contract 'should be a conjunction scope'
 
   describe '#call' do
-    let(:data) { [] }
-
-    def filtered_data
-      scope.call(data: data)
-    end
-
     it 'should define the method' do
       expect(scope).to respond_to(:call).with(0).arguments.and_keywords(:data)
     end
@@ -51,8 +52,6 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::ConjunctionScope do
           .to raise_error ArgumentError, error_message
       end
     end
-
-    include_contract 'should filter data by logical and'
   end
 
   describe '#match?' do

@@ -25,7 +25,7 @@ module Cuprum::Collections::Scopes
       end
 
       # @override parse(value = nil, &block)
-      #   (see Cuprum::Collections::Scopes::Parser#parse)
+      #   (see Cuprum::Collections::Scopes::Criteria::Parser#parse)
       def parse(*args, &block)
         parser = Cuprum::Collections::Scopes::Criteria::Parser.instance
 
@@ -225,6 +225,11 @@ module Cuprum::Collections::Scopes
 
     # @return [Array] the criteria used for filtering query data.
     attr_reader :criteria
+
+    # (see Cuprum::Collections::Scopes::Base#type)
+    def type
+      :criteria
+    end
 
     # Creates a copy of the scope with the given criteria.
     #

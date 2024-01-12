@@ -1,29 +1,28 @@
 # frozen_string_literal: true
 
 require 'cuprum/collections/basic/scopes/criteria_scope'
-require 'cuprum/collections/rspec/contracts/scope_contracts'
+require 'cuprum/collections/rspec/contracts/scopes/criteria_contracts'
 
 RSpec.describe Cuprum::Collections::Basic::Scopes::CriteriaScope do
-  include Cuprum::Collections::RSpec::Contracts::ScopeContracts
+  include Cuprum::Collections::RSpec::Contracts::Scopes::CriteriaContracts
 
   subject(:scope) { described_class.new(criteria: criteria) }
 
   let(:criteria) { [] }
+  let(:data)     { [] }
+
+  def filtered_data
+    scope.call(data: data)
+  end
 
   include_contract 'should be a criteria scope'
 
   describe '#call' do
-    let(:data) { [] }
-
-    def filtered_data
-      scope.call(data: data)
-    end
-
     it 'should define the method' do
       expect(scope).to respond_to(:call).with(0).arguments.and_keywords(:data)
     end
 
-    describe 'with nil' do
+    describe 'with data: nil' do
       let(:error_message) { 'data must be an Array' }
 
       it 'should raise an exception' do
@@ -32,7 +31,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::CriteriaScope do
       end
     end
 
-    describe 'with an Object' do
+    describe 'with data: an Object' do
       let(:error_message) { 'data must be an Array' }
 
       it 'should raise an exception' do
@@ -40,8 +39,6 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::CriteriaScope do
           .to raise_error ArgumentError, error_message
       end
     end
-
-    include_contract 'should filter data by criteria'
   end
 
   describe '#match?' do

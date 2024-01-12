@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/basic/scope'
+require 'cuprum/collections/basic/scopes/base'
 require 'cuprum/collections/rspec/fixtures'
 
-RSpec.describe Cuprum::Collections::Basic::Scope do
+RSpec.describe Cuprum::Collections::Basic::Scopes::Base do
   subject(:scope) { described_class.new }
 
   describe '.new' do
@@ -97,14 +97,15 @@ RSpec.describe Cuprum::Collections::Basic::Scope do
   context 'with a scope subclass' do
     let(:described_class) { Spec::HasSeriesScope }
 
-    # rubocop:disable RSpec/DescribedClass
-    example_class 'Spec::HasSeriesScope', Cuprum::Collections::Basic::Scope \
+    # rubocop:disable RSpec/DescribedClass, Style/RedundantLineContinuation
+    example_class 'Spec::HasSeriesScope',
+      Cuprum::Collections::Basic::Scopes::Base \
     do |klass|
       klass.define_method :match? do |item:|
         !(item['series'].nil? || item['series'].empty?)
       end
     end
-    # rubocop:enable RSpec/DescribedClass
+    # rubocop:enable RSpec/DescribedClass, Style/RedundantLineContinuation
 
     describe '#call' do
       describe 'with an empty Array' do

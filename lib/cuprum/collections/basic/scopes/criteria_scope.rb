@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/basic/scope'
 require 'cuprum/collections/basic/scopes'
+require 'cuprum/collections/basic/scopes/base'
 require 'cuprum/collections/queries'
 require 'cuprum/collections/scopes/criteria'
 
 module Cuprum::Collections::Basic::Scopes
   # Scope for filtering on basic collection data based on criteria.
-  class CriteriaScope < Cuprum::Collections::Basic::Scope
+  class CriteriaScope < Cuprum::Collections::Basic::Scopes::Base
     include Cuprum::Collections::Scopes::Criteria
 
     Operators = Cuprum::Collections::Queries::Operators
