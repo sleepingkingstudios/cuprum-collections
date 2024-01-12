@@ -3,9 +3,11 @@
 require 'cuprum/collections/basic/scopes/criteria_scope'
 require 'cuprum/collections/basic/scopes/disjunction_scope'
 require 'cuprum/collections/rspec/contracts/scope_contracts'
+require 'cuprum/collections/rspec/contracts/scopes/logical_contracts'
 
 RSpec.describe Cuprum::Collections::Basic::Scopes::DisjunctionScope do
   include Cuprum::Collections::RSpec::Contracts::ScopeContracts
+  include Cuprum::Collections::RSpec::Contracts::Scopes::LogicalContracts
 
   subject(:scope) { described_class.new(scopes: scopes) }
 
@@ -21,14 +23,14 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::DisjunctionScope do
     end
   end
 
-  include_contract 'should be a container scope'
+  def filtered_data
+    scope.call(data: data)
+  end
+
+  include_contract 'should be a disjunction scope'
 
   describe '#call' do
     let(:data) { [] }
-
-    def filtered_data
-      scope.call(data: data)
-    end
 
     it 'should define the method' do
       expect(scope).to respond_to(:call).with(0).arguments.and_keywords(:data)
@@ -51,8 +53,6 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::DisjunctionScope do
           .to raise_error ArgumentError, error_message
       end
     end
-
-    include_contract 'should filter data by logical or'
   end
 
   describe '#match?' do
