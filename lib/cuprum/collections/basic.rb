@@ -19,7 +19,6 @@ module Cuprum::Collections
     autoload :Commands,   'cuprum/collections/basic/commands'
     autoload :Query,      'cuprum/collections/basic/query'
     autoload :Repository, 'cuprum/collections/basic/repository'
-    autoload :Scope,      'cuprum/collections/basic/scope'
     autoload :Scopes,     'cuprum/collections/basic/scopes'
   end
 end

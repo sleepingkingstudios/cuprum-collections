@@ -6,6 +6,7 @@ module Cuprum::Collections
   # Namespace for scope functionality, which filters query data.
   module Scopes
     autoload :Base,             'cuprum/collections/scopes/base'
+    autoload :Builder,          'cuprum/collections/scopes/builder'
     autoload :Collection,       'cuprum/collections/scopes/collection'
     autoload :ConjunctionScope, 'cuprum/collections/scopes/conjunction_scope'
     autoload :Criteria,         'cuprum/collections/scopes/criteria'
