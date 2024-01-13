@@ -382,7 +382,7 @@ module Cuprum::Collections::RSpec::Contracts
         describe '#query' do
           let(:error_message) do
             "#{described_class.name} is an abstract class. Define a " \
-              'repository subclass and implement the #query method.'
+              'collection subclass and implement the #query method.'
           end
           let(:default_order) { defined?(super()) ? super() : {} }
           let(:query)         { collection.query }

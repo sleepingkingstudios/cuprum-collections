@@ -2,6 +2,8 @@
 
 require 'stannum/messages/default_strategy'
 
+require 'cuprum/collections'
+
 RSpec.configure do |config|
   config.before(:suite) do
     Stannum::Messages::DefaultStrategy.load_paths <<

@@ -87,7 +87,7 @@ module Cuprum::Collections
     # @return [Object] the query.
     def query
       raise AbstractCollectionError,
-        "#{self.class.name} is an abstract class. Define a repository " \
+        "#{self.class.name} is an abstract class. Define a collection " \
         'subclass and implement the #query method.'
     end
 

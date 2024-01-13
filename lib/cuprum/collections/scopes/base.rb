@@ -11,5 +11,13 @@ module Cuprum::Collections::Scopes
     def type
       :abstract
     end
+
+    private
+
+    def builder
+      Cuprum::Collections::Scopes::Builder.instance
+    end
   end
 end
+
+require 'cuprum/collections/scopes/builder'

@@ -15,6 +15,12 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::Base do
     end
   end
 
+  describe '#builder' do
+    let(:expected) { Cuprum::Collections::Basic::Scopes::Builder.instance }
+
+    include_examples 'should define private reader', :builder, -> { expected }
+  end
+
   describe '#call' do
     let(:data) { [] }
 

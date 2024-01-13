@@ -20,5 +20,13 @@ module Cuprum::Collections::Basic::Scopes
       true
     end
     alias matches? match?
+
+    private
+
+    def builder
+      Cuprum::Collections::Basic::Scopes::Builder.instance
+    end
   end
 end
+
+require 'cuprum/collections/basic/scopes/builder'
