@@ -234,6 +234,16 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           end
         end
 
+        describe '.instance' do
+          it 'should define the class method' do
+            expect(described_class).to respond_to(:instance).with(0).arguments
+          end
+
+          it { expect(described_class.instance).to be_a described_class }
+
+          it { expect(described_class.instance).to be subject }
+        end
+
         describe '#build' do
           it 'should define the method' do
             expect(subject)

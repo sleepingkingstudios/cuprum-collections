@@ -7,6 +7,8 @@ module Cuprum::Collections::Basic
   module Scopes
     autoload :Base,
       'cuprum/collections/basic/scopes/base'
+    autoload :Builder,
+      'cuprum/collections/basic/scopes/builder'
     autoload :ConjunctionScope,
       'cuprum/collections/basic/scopes/conjunction_scope'
     autoload :CriteriaScope,

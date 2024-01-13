@@ -41,14 +41,6 @@ RSpec.describe Cuprum::Collections::Scopes::Building do
     end
   end
 
-  describe '.instance' do
-    it { expect(described_class).to respond_to(:instance).with(0).arguments }
-
-    it { expect(described_class.instance).to be_a described_class }
-
-    it { expect(described_class.instance).to be builder }
-  end
-
   include_contract 'should be a scope builder', abstract: true
 
   describe '#build' do
