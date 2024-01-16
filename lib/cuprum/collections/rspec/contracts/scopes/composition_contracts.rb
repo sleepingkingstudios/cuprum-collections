@@ -222,5 +222,183 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
         end
       end
     end
+
+    # Contract validating scope composition for conjunction scopes.
+    module ShouldComposeScopesForConjunction
+      extend  RSpec::SleepingKingStudios::Contract
+      include Cuprum::Collections::RSpec::Contracts::Scopes::CompositionContracts # rubocop:disable Layout/LineLength
+
+      # @!method apply(example_group)
+      #   Adds the contract to the example group.
+      #
+      #   @param example_group [RSpec::Core::ExampleGroup] the example group to
+      #     which the contract is applied.
+      contract do
+        shared_context 'when the scope has many child scopes' do
+          let(:scopes) do
+            [
+              build_scope({ 'author' => 'J.R.R. Tolkien' }),
+              build_scope({ 'series' => 'The Lord of the Rings' }),
+              build_scope do
+                { 'published_at' => less_than('1955-01-01') }
+              end
+            ]
+          end
+        end
+
+        include_contract 'should compose scopes', except: %i[and not]
+
+        describe '#and' do
+          shared_examples 'should combine the scopes with logical AND' do
+            it { expect(outer).to be_a Cuprum::Collections::Scopes::Base }
+
+            it { expect(outer.type).to be :conjunction }
+
+            it { expect(outer.scopes.size).to be scopes.size + 1 }
+
+            it { expect(inner).to be_a Cuprum::Collections::Scopes::Base }
+
+            it { expect(inner.type).to be :criteria }
+
+            it { expect(inner.criteria).to be == criteria }
+          end
+
+          let(:criteria) do
+            operators = Cuprum::Collections::Queries::Operators
+
+            [
+              [
+                'title',
+                operators::EQUAL,
+                'A Wizard of Earthsea'
+              ]
+            ]
+          end
+
+          describe 'with a block' do
+            let(:block) { -> { { 'title' => 'A Wizard of Earthsea' } } }
+            let(:outer) { subject.and(&block) }
+            let(:inner) { outer.scopes.last }
+
+            include_examples 'should combine the scopes with logical AND'
+
+            wrap_context 'when the scope has many child scopes' do
+              include_examples 'should combine the scopes with logical AND'
+
+              it { expect(outer.scopes[0...scopes.size]).to be == scopes }
+            end
+          end
+
+          describe 'with a hash' do
+            let(:value) { { 'title' => 'A Wizard of Earthsea' } }
+            let(:outer) { subject.and(value) }
+            let(:inner) { outer.scopes.last }
+
+            include_examples 'should combine the scopes with logical AND'
+
+            wrap_context 'when the scope has many child scopes' do
+              include_examples 'should combine the scopes with logical AND'
+
+              it { expect(outer.scopes[0...scopes.size]).to be == scopes }
+            end
+          end
+
+          describe 'with a scope' do
+            let(:inner) do
+              Cuprum::Collections::Scopes::CriteriaScope.new(criteria: criteria)
+            end
+            let(:outer) { subject.and(inner) }
+
+            include_examples 'should combine the scopes with logical AND'
+
+            wrap_context 'when the scope has many child scopes' do
+              include_examples 'should combine the scopes with logical AND'
+
+              it { expect(outer.scopes[0...scopes.size]).to be == scopes }
+            end
+          end
+        end
+
+        describe '#not' do
+          shared_examples 'should combine the scopes with logical NAND' do
+            it { expect(outer).to be_a Cuprum::Collections::Scopes::Base }
+
+            it { expect(outer.type).to be :conjunction }
+
+            it { expect(outer.scopes.size).to be scopes.size + 1 }
+
+            it { expect(invert).to be_a Cuprum::Collections::Scopes::Base }
+
+            it { expect(invert.type).to be :negation }
+
+            it { expect(invert.scopes.size).to be 1 }
+
+            it { expect(inner).to be_a Cuprum::Collections::Scopes::Base }
+
+            it { expect(inner.type).to be :criteria }
+
+            it { expect(inner.criteria).to be == criteria }
+          end
+
+          let(:criteria) do
+            operators = Cuprum::Collections::Queries::Operators
+
+            [
+              [
+                'title',
+                operators::EQUAL,
+                'A Wizard of Earthsea'
+              ]
+            ]
+          end
+
+          describe 'with a block' do
+            let(:block)  { -> { { 'title' => 'A Wizard of Earthsea' } } }
+            let(:outer)  { subject.not(&block) }
+            let(:invert) { outer.scopes.last }
+            let(:inner)  { invert.scopes.first }
+
+            include_examples 'should combine the scopes with logical NAND'
+
+            wrap_context 'when the scope has many child scopes' do
+              include_examples 'should combine the scopes with logical NAND'
+
+              it { expect(outer.scopes[0...scopes.size]).to be == scopes }
+            end
+          end
+
+          describe 'with a hash' do
+            let(:value)  { { 'title' => 'A Wizard of Earthsea' } }
+            let(:outer)  { subject.not(value) }
+            let(:invert) { outer.scopes.last }
+            let(:inner)  { invert.scopes.first }
+
+            include_examples 'should combine the scopes with logical NAND'
+
+            wrap_context 'when the scope has many child scopes' do
+              include_examples 'should combine the scopes with logical NAND'
+
+              it { expect(outer.scopes[0...scopes.size]).to be == scopes }
+            end
+          end
+
+          describe 'with a scope' do
+            let(:inner) do
+              Cuprum::Collections::Scopes::CriteriaScope.new(criteria: criteria)
+            end
+            let(:outer)  { subject.not(inner) }
+            let(:invert) { outer.scopes.last }
+
+            include_examples 'should combine the scopes with logical NAND'
+
+            wrap_context 'when the scope has many child scopes' do
+              include_examples 'should combine the scopes with logical NAND'
+
+              it { expect(outer.scopes[0...scopes.size]).to be == scopes }
+            end
+          end
+        end
+      end
+    end
   end
 end

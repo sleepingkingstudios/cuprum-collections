@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/scopes/composition'
 require 'cuprum/collections/rspec/contracts/scopes/composition_contracts'
+require 'cuprum/collections/scopes/base'
+require 'cuprum/collections/scopes/composition'
 
 RSpec.describe Cuprum::Collections::Scopes::Composition do
   include Cuprum::Collections::RSpec::Contracts::Scopes::CompositionContracts
