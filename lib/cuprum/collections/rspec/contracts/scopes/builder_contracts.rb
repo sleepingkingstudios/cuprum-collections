@@ -284,8 +284,8 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
               subject.build(&block)
             end
 
-            def parse_criteria(&block)
-              subject.build(&block).criteria
+            def parse_criteria(...)
+              subject.build(...).criteria
             end
 
             include_examples 'should build a criteria scope'

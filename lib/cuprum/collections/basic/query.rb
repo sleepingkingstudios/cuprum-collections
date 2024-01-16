@@ -48,10 +48,10 @@ module Cuprum::Collections::Basic
     # @see #order
     # @see #to_a
     # @see #where
-    def each(&block)
-      return enum_for(:each) unless block_given?
+    def each(...)
+      return enum_for(:each, ...) unless block_given?
 
-      filtered_data.each(&block)
+      filtered_data.each(...)
     end
 
     # Checks for the presence of collection items matching the query.

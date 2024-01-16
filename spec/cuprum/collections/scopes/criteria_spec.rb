@@ -44,8 +44,8 @@ RSpec.describe Cuprum::Collections::Scopes::Criteria do
     end
 
     describe '#parse_block' do
-      def parse_criteria(&block)
-        parser.parse_block(&block)
+      def parse_criteria(...)
+        parser.parse_block(...)
       end
 
       it 'should define the method' do
