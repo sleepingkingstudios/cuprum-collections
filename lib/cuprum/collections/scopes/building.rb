@@ -47,8 +47,17 @@ module Cuprum::Collections::Scopes
     end
 
     # Creates a new logical AND scope wrapping the given scopes.
-    def build_conjunction_scope(scopes:)
-      validate_scopes!(scopes)
+    #
+    # @param scopes [Array<Cuprum::Collections::Scopes::Base>] the scopes to
+    #   wrap in an AND scope.
+    # @param safe [Boolean] if true, validates and converts the scopes to match
+    #   the builder's scope classes. Defaults to true.
+    def build_conjunction_scope(scopes:, safe: true)
+      if safe
+        validate_scopes!(scopes)
+
+        scopes = transform_scopes(scopes)
+      end
 
       conjunction_scope_class.new(scopes: scopes)
     end
@@ -61,15 +70,33 @@ module Cuprum::Collections::Scopes
     end
 
     # Creates a new logical OR scope wrapping the given scopes.
-    def build_disjunction_scope(scopes:)
-      validate_scopes!(scopes)
+    #
+    # @param scopes [Array<Cuprum::Collections::Scopes::Base>] the scopes to
+    #   wrap in an AND scope.
+    # @param safe [Boolean] if true, validates and converts the scopes to match
+    #   the builder's scope classes. Defaults to true.
+    def build_disjunction_scope(scopes:, safe: true)
+      if safe
+        validate_scopes!(scopes)
+
+        scopes = transform_scopes(scopes)
+      end
 
       disjunction_scope_class.new(scopes: scopes)
     end
 
     # Creates a new logical NAND scope wrapping the given scopes.
-    def build_negation_scope(scopes:)
-      validate_scopes!(scopes)
+    #
+    # @param scopes [Array<Cuprum::Collections::Scopes::Base>] the scopes to
+    #   wrap in an AND scope.
+    # @param safe [Boolean] if true, validates and converts the scopes to match
+    #   the builder's scope classes. Defaults to true.
+    def build_negation_scope(scopes:, safe: true)
+      if safe
+        validate_scopes!(scopes)
+
+        scopes = transform_scopes(scopes)
+      end
 
       negation_scope_class.new(scopes: scopes)
     end
@@ -86,13 +113,13 @@ module Cuprum::Collections::Scopes
     def build_transformed_scope(original) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       case original.type
       when :conjunction
-        conjunction_scope_class.new(scopes: original.scopes)
+        conjunction_scope_class.new(scopes: transform_scopes(original.scopes))
       when :criteria
         criteria_scope_class.new(criteria: original.criteria)
       when :disjunction
-        disjunction_scope_class.new(scopes: original.scopes)
+        disjunction_scope_class.new(scopes: transform_scopes(original.scopes))
       when :negation
-        negation_scope_class.new(scopes: original.scopes)
+        negation_scope_class.new(scopes: transform_scopes(original.scopes))
       else
         error_message =
           "#{self.class.name} cannot transform scopes of type " \
@@ -128,6 +155,10 @@ module Cuprum::Collections::Scopes
         "#{self.class.name} is an abstract class. Define a builder " \
         'class and implement the #negation_scope_class method.',
         caller(1..-1)
+    end
+
+    def transform_scopes(scopes)
+      scopes.map { |scope| build_transformed_scope(scope) }
     end
 
     def validate_criteria!(criteria)

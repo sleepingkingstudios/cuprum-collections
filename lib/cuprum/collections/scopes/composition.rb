@@ -17,7 +17,9 @@ module Cuprum::Collections::Scopes
     def and(...)
       scope = builder.build(...)
 
-      builder.build_conjunction_scope(scopes: [self, scope])
+      # We control the current and generated scopes, so we can skip validation
+      # and transformation.
+      builder.build_conjunction_scope(scopes: [self, scope], safe: false)
     end
     alias where and
 
@@ -30,9 +32,11 @@ module Cuprum::Collections::Scopes
     #   Inverts and combines with the current scope using a logical AND.
     def not(...)
       scope    = builder.build(...)
-      inverted = builder.build_negation_scope(scopes: [scope])
+      inverted = builder.build_negation_scope(scopes: [scope], safe: false)
 
-      builder.build_conjunction_scope(scopes: [self, inverted])
+      # We control the current and generated scopes, so we can skip validation
+      # and transformation.
+      builder.build_conjunction_scope(scopes: [self, inverted], safe: false)
     end
 
     # @override and(hash = nil, &block)
@@ -45,7 +49,9 @@ module Cuprum::Collections::Scopes
     def or(...)
       scope = builder.build(...)
 
-      builder.build_disjunction_scope(scopes: [self, scope])
+      # We control the current and generated scopes, so we can skip validation
+      # and transformation.
+      builder.build_disjunction_scope(scopes: [self, scope], safe: false)
     end
   end
 end
