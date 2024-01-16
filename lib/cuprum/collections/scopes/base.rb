@@ -1,10 +1,13 @@
 # frozen_string_literal: true
 
 require 'cuprum/collections/scopes'
+require 'cuprum/collections/scopes/composition'
 
 module Cuprum::Collections::Scopes
   # Abstract class representing a set of filters for a query.
   class Base
+    include Cuprum::Collections::Scopes::Composition
+
     def initialize(**); end
 
     # @return [Symbol] the scope type.
