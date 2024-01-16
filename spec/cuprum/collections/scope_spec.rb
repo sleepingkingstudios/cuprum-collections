@@ -10,12 +10,16 @@ RSpec.describe Cuprum::Collections::Scope do
     described_class.new(*constructor_args, &constructor_block)
   end
 
-  let(:constructor_args) do
-    criteria
-      .to_h { |(attribute, _, value)| [attribute, value] }
-      .then { |hsh| [hsh] }
+  let(:constructor_args) { [] }
+  let(:constructor_block) do
+    expected = criteria
+
+    lambda do
+      expected.to_h do |(attribute, operator, value)|
+        [attribute, send(operator, value)]
+      end
+    end
   end
-  let(:constructor_block) { nil }
 
   describe '.new' do
     def parse_criteria(...)

@@ -1,10 +1,13 @@
 # frozen_string_literal: true
 
 require 'cuprum/collections/rspec/contracts/scopes'
+require 'cuprum/collections/rspec/contracts/scopes/composition_contracts'
 
 module Cuprum::Collections::RSpec::Contracts::Scopes
   # Contracts for asserting on criteria scope objects.
   module CriteriaContracts
+    include Cuprum::Collections::RSpec::Contracts::Scopes::CompositionContracts
+
     # Contract validating the behavior of a Criteria scope implementation.
     module ShouldBeACriteriaScopeContract
       extend RSpec::SleepingKingStudios::Contract
@@ -79,6 +82,8 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
           include_contract 'should parse criteria'
         end
+
+        include_contract 'should compose scopes for criteria'
 
         describe '#call' do
           next if abstract

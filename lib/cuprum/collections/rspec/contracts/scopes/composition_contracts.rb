@@ -4,6 +4,8 @@ require 'cuprum/collections/queries'
 require 'cuprum/collections/rspec/contracts/scopes'
 require 'cuprum/collections/scopes/base'
 require 'cuprum/collections/scopes/builder'
+require 'cuprum/collections/scopes/criteria_scope'
+require 'cuprum/collections/scopes/negation_scope'
 
 module Cuprum::Collections::RSpec::Contracts::Scopes
   # Contracts for validating the behavior of scope composition.
@@ -34,10 +36,10 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
             it { expect(inner.type).to be :criteria }
 
-            it { expect(inner.criteria).to be == criteria }
+            it { expect(inner.criteria).to be == expected }
           end
 
-          let(:criteria) do
+          let(:expected) do
             operators = Cuprum::Collections::Queries::Operators
 
             [
@@ -78,7 +80,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
           describe 'with a scope' do
             let(:inner) do
-              Cuprum::Collections::Scopes::CriteriaScope.new(criteria: criteria)
+              Cuprum::Collections::Scopes::CriteriaScope.new(criteria: expected)
             end
             let(:outer) { subject.and(inner) }
 
@@ -106,10 +108,10 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
             it { expect(inner.type).to be :criteria }
 
-            it { expect(inner.criteria).to be == criteria }
+            it { expect(inner.criteria).to be == expected }
           end
 
-          let(:criteria) do
+          let(:expected) do
             operators = Cuprum::Collections::Queries::Operators
 
             [
@@ -150,7 +152,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
           describe 'with a scope' do
             let(:inner) do
-              Cuprum::Collections::Scopes::CriteriaScope.new(criteria: criteria)
+              Cuprum::Collections::Scopes::CriteriaScope.new(criteria: expected)
             end
             let(:outer)  { subject.not(inner) }
             let(:invert) { outer.scopes.last }
@@ -173,10 +175,10 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
             it { expect(inner.type).to be :criteria }
 
-            it { expect(inner.criteria).to be == criteria }
+            it { expect(inner.criteria).to be == expected }
           end
 
-          let(:criteria) do
+          let(:expected) do
             operators = Cuprum::Collections::Queries::Operators
 
             [
@@ -213,7 +215,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
           describe 'with a scope' do
             let(:inner) do
-              Cuprum::Collections::Scopes::CriteriaScope.new(criteria: criteria)
+              Cuprum::Collections::Scopes::CriteriaScope.new(criteria: expected)
             end
             let(:outer) { subject.or(inner) }
 
@@ -224,7 +226,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
     end
 
     # Contract validating scope composition for conjunction scopes.
-    module ShouldComposeScopesForConjunction
+    module ShouldComposeScopesForConjunctionContract
       extend  RSpec::SleepingKingStudios::Contract
       include Cuprum::Collections::RSpec::Contracts::Scopes::CompositionContracts # rubocop:disable Layout/LineLength
 
@@ -260,10 +262,10 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
             it { expect(inner.type).to be :criteria }
 
-            it { expect(inner.criteria).to be == criteria }
+            it { expect(inner.criteria).to be == expected }
           end
 
-          let(:criteria) do
+          let(:expected) do
             operators = Cuprum::Collections::Queries::Operators
 
             [
@@ -305,7 +307,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
           describe 'with a scope' do
             let(:inner) do
-              Cuprum::Collections::Scopes::CriteriaScope.new(criteria: criteria)
+              Cuprum::Collections::Scopes::CriteriaScope.new(criteria: expected)
             end
             let(:outer) { subject.and(inner) }
 
@@ -337,10 +339,10 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
             it { expect(inner.type).to be :criteria }
 
-            it { expect(inner.criteria).to be == criteria }
+            it { expect(inner.criteria).to be == expected }
           end
 
-          let(:criteria) do
+          let(:expected) do
             operators = Cuprum::Collections::Queries::Operators
 
             [
@@ -384,7 +386,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
           describe 'with a scope' do
             let(:inner) do
-              Cuprum::Collections::Scopes::CriteriaScope.new(criteria: criteria)
+              Cuprum::Collections::Scopes::CriteriaScope.new(criteria: expected)
             end
             let(:outer)  { subject.not(inner) }
             let(:invert) { outer.scopes.last }
@@ -396,6 +398,131 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
               it { expect(outer.scopes[0...scopes.size]).to be == scopes }
             end
+          end
+        end
+      end
+    end
+
+    # Contract validating scope composition for conjunction scopes.
+    module ShouldComposeScopesForCriteriaContract
+      extend  RSpec::SleepingKingStudios::Contract
+      include Cuprum::Collections::RSpec::Contracts::Scopes::CompositionContracts # rubocop:disable Layout/LineLength
+
+      # @!method apply(example_group)
+      #   Adds the contract to the example group.
+      #
+      #   @param example_group [RSpec::Core::ExampleGroup] the example group to
+      #     which the contract is applied.
+      contract do
+        shared_context 'when the scope has multiple criteria' do
+          let(:criteria) do
+            operators = Cuprum::Collections::Queries::Operators
+
+            [
+              [
+                'author',
+                operators::EQUAL,
+                'Ursula K. LeGuin'
+              ],
+              [
+                'published_at',
+                operators::LESS_THAN,
+                '1970-01-01'
+              ]
+            ]
+          end
+        end
+
+        include_contract 'should compose scopes', except: %i[and]
+
+        describe '#and' do
+          shared_examples 'should merge the criteria' do
+            it { expect(outer).to be_a Cuprum::Collections::Scopes::Base }
+
+            it { expect(outer.type).to be :criteria }
+
+            it { expect(outer.criteria).to be == [*criteria, *expected] }
+          end
+
+          let(:expected) do
+            operators = Cuprum::Collections::Queries::Operators
+
+            [
+              [
+                'title',
+                operators::EQUAL,
+                'A Wizard of Earthsea'
+              ]
+            ]
+          end
+
+          describe 'with a block' do
+            let(:block) { -> { { 'title' => 'A Wizard of Earthsea' } } }
+            let(:outer) { subject.and(&block) }
+
+            include_examples 'should merge the criteria'
+
+            wrap_context 'when the scope has multiple criteria' do
+              include_examples 'should merge the criteria'
+            end
+          end
+
+          describe 'with a hash' do
+            let(:value) { { 'title' => 'A Wizard of Earthsea' } }
+            let(:outer) { subject.and(value) }
+
+            include_examples 'should merge the criteria'
+
+            wrap_context 'when the scope has multiple criteria' do
+              include_examples 'should merge the criteria'
+            end
+          end
+
+          describe 'with a criteria scope' do
+            let(:other_scope) do
+              Cuprum::Collections::Scopes::CriteriaScope
+                .new(criteria: expected)
+            end
+            let(:outer) { subject.and(other_scope) }
+
+            include_examples 'should merge the criteria'
+
+            wrap_context 'when the scope has multiple criteria' do
+              include_examples 'should merge the criteria'
+            end
+          end
+
+          describe 'with a non-criteria scope' do
+            let(:other_scope) do
+              wrapped =
+                Cuprum::Collections::Scopes::CriteriaScope
+                  .new(criteria: expected)
+
+              Cuprum::Collections::Scopes::NegationScope.new(scopes: [wrapped])
+            end
+            let(:outer)  { subject.and(other_scope) }
+            let(:invert) { outer.scopes.last }
+            let(:inner)  { invert.scopes.last }
+
+            it { expect(outer).to be_a Cuprum::Collections::Scopes::Base }
+
+            it { expect(outer.type).to be :conjunction }
+
+            it { expect(outer.scopes.size).to be 2 }
+
+            it { expect(outer.scopes.first).to be subject }
+
+            it { expect(invert).to be_a Cuprum::Collections::Scopes::Base }
+
+            it { expect(invert.type).to be :negation }
+
+            it { expect(invert.scopes.size).to be 1 }
+
+            it { expect(inner).to be_a Cuprum::Collections::Scopes::Base }
+
+            it { expect(inner.type).to be :criteria }
+
+            it { expect(inner.criteria).to be == expected }
           end
         end
       end
