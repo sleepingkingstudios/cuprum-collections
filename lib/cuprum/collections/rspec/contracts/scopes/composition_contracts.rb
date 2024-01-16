@@ -4,6 +4,7 @@ require 'cuprum/collections/queries'
 require 'cuprum/collections/rspec/contracts/scopes'
 require 'cuprum/collections/scopes/base'
 require 'cuprum/collections/scopes/builder'
+require 'cuprum/collections/scopes/conjunction_scope'
 require 'cuprum/collections/scopes/criteria_scope'
 require 'cuprum/collections/scopes/negation_scope'
 
@@ -79,10 +80,11 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           end
 
           describe 'with a scope' do
-            let(:inner) do
+            let(:original) do
               Cuprum::Collections::Scopes::CriteriaScope.new(criteria: expected)
             end
-            let(:outer) { subject.and(inner) }
+            let(:outer) { subject.and(original) }
+            let(:inner) { outer.scopes.last }
 
             include_examples 'should combine the scopes with logical AND'
           end
@@ -151,11 +153,12 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           end
 
           describe 'with a scope' do
-            let(:inner) do
+            let(:original) do
               Cuprum::Collections::Scopes::CriteriaScope.new(criteria: expected)
             end
-            let(:outer)  { subject.not(inner) }
+            let(:outer)  { subject.not(original) }
             let(:invert) { outer.scopes.last }
+            let(:inner)  { invert.scopes.last }
 
             include_examples 'should combine the scopes with logical NAND'
           end
@@ -197,6 +200,8 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
               .and_a_block
           end
 
+          next if except.include?(:or)
+
           describe 'with a block' do
             let(:block) { -> { { 'title' => 'A Wizard of Earthsea' } } }
             let(:outer) { subject.or(&block) }
@@ -214,10 +219,11 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           end
 
           describe 'with a scope' do
-            let(:inner) do
+            let(:original) do
               Cuprum::Collections::Scopes::CriteriaScope.new(criteria: expected)
             end
-            let(:outer) { subject.or(inner) }
+            let(:outer) { subject.or(original) }
+            let(:inner) { outer.scopes.last }
 
             include_examples 'should combine the scopes with logical OR'
           end
@@ -305,11 +311,37 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             end
           end
 
-          describe 'with a scope' do
-            let(:inner) do
+          describe 'with a conjunction scope' do
+            let(:original) do
+              wrapped =
+                Cuprum::Collections::Scopes::CriteriaScope
+                  .new(criteria: expected)
+
+              Cuprum::Collections::Scopes::ConjunctionScope
+                .new(scopes: [wrapped])
+            end
+            let(:outer) { subject.and(original) }
+            let(:inner) { outer.scopes.last }
+
+            it { expect(outer).to be_a Cuprum::Collections::Scopes::Base }
+
+            it { expect(outer.type).to be :conjunction }
+
+            it { expect(outer.scopes.size).to be scopes.size + 1 }
+
+            it { expect(inner).to be_a Cuprum::Collections::Scopes::Base }
+
+            it { expect(inner.type).to be :criteria }
+
+            it { expect(inner.criteria).to be == expected }
+          end
+
+          describe 'with a non-conjunction scope' do
+            let(:original) do
               Cuprum::Collections::Scopes::CriteriaScope.new(criteria: expected)
             end
-            let(:outer) { subject.and(inner) }
+            let(:outer) { subject.and(original) }
+            let(:inner) { outer.scopes.last }
 
             include_examples 'should combine the scopes with logical AND'
 
@@ -385,11 +417,12 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           end
 
           describe 'with a scope' do
-            let(:inner) do
+            let(:original) do
               Cuprum::Collections::Scopes::CriteriaScope.new(criteria: expected)
             end
-            let(:outer)  { subject.not(inner) }
+            let(:outer)  { subject.not(original) }
             let(:invert) { outer.scopes.last }
+            let(:inner)  { invert.scopes.last }
 
             include_examples 'should combine the scopes with logical NAND'
 
