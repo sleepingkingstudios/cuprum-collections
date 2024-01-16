@@ -6,6 +6,7 @@ require 'cuprum/collections/scopes/base'
 require 'cuprum/collections/scopes/builder'
 require 'cuprum/collections/scopes/conjunction_scope'
 require 'cuprum/collections/scopes/criteria_scope'
+require 'cuprum/collections/scopes/disjunction_scope'
 require 'cuprum/collections/scopes/negation_scope'
 
 module Cuprum::Collections::RSpec::Contracts::Scopes
@@ -334,6 +335,16 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             it { expect(inner.type).to be :criteria }
 
             it { expect(inner.criteria).to be == expected }
+
+            wrap_context 'when the scope has many child scopes' do
+              it { expect(outer.scopes.size).to be scopes.size + 1 }
+
+              it { expect(inner).to be_a Cuprum::Collections::Scopes::Base }
+
+              it { expect(inner.type).to be :criteria }
+
+              it { expect(inner.criteria).to be == expected }
+            end
           end
 
           describe 'with a non-conjunction scope' do
@@ -556,6 +567,140 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             it { expect(inner.type).to be :criteria }
 
             it { expect(inner.criteria).to be == expected }
+          end
+        end
+      end
+    end
+
+    # Contract validating scope composition for disjunction scopes.
+    module ShouldComposeScopesForDisjunctionContract
+      extend  RSpec::SleepingKingStudios::Contract
+      include Cuprum::Collections::RSpec::Contracts::Scopes::CompositionContracts # rubocop:disable Layout/LineLength
+
+      # @!method apply(example_group)
+      #   Adds the contract to the example group.
+      #
+      #   @param example_group [RSpec::Core::ExampleGroup] the example group to
+      #     which the contract is applied.
+      contract do
+        shared_context 'when the scope has many child scopes' do
+          let(:scopes) do
+            [
+              build_scope({ 'author' => 'J.R.R. Tolkien' }),
+              build_scope({ 'series' => 'The Lord of the Rings' }),
+              build_scope do
+                { 'published_at' => less_than('1955-01-01') }
+              end
+            ]
+          end
+        end
+
+        include_contract 'should compose scopes', except: %i[or]
+
+        describe '#or' do
+          shared_examples 'should combine the scopes with logical OR' do
+            it { expect(outer).to be_a Cuprum::Collections::Scopes::Base }
+
+            it { expect(outer.type).to be :disjunction }
+
+            it { expect(outer.scopes.size).to be scopes.size + 1 }
+
+            it { expect(inner).to be_a Cuprum::Collections::Scopes::Base }
+
+            it { expect(inner.type).to be :criteria }
+
+            it { expect(inner.criteria).to be == expected }
+          end
+
+          let(:expected) do
+            operators = Cuprum::Collections::Queries::Operators
+
+            [
+              [
+                'title',
+                operators::EQUAL,
+                'A Wizard of Earthsea'
+              ]
+            ]
+          end
+
+          describe 'with a block' do
+            let(:block) { -> { { 'title' => 'A Wizard of Earthsea' } } }
+            let(:outer) { subject.or(&block) }
+            let(:inner) { outer.scopes.last }
+
+            include_examples 'should combine the scopes with logical OR'
+
+            wrap_context 'when the scope has many child scopes' do
+              include_examples 'should combine the scopes with logical OR'
+
+              it { expect(outer.scopes[0...scopes.size]).to be == scopes }
+            end
+          end
+
+          describe 'with a hash' do
+            let(:value) { { 'title' => 'A Wizard of Earthsea' } }
+            let(:outer) { subject.or(value) }
+            let(:inner) { outer.scopes.last }
+
+            include_examples 'should combine the scopes with logical OR'
+
+            wrap_context 'when the scope has many child scopes' do
+              include_examples 'should combine the scopes with logical OR'
+
+              it { expect(outer.scopes[0...scopes.size]).to be == scopes }
+            end
+          end
+
+          describe 'with a disjunction scope' do
+            let(:original) do
+              wrapped =
+                Cuprum::Collections::Scopes::CriteriaScope
+                  .new(criteria: expected)
+
+              Cuprum::Collections::Scopes::DisjunctionScope
+                .new(scopes: [wrapped])
+            end
+            let(:outer) { subject.or(original) }
+            let(:inner) { outer.scopes.last }
+
+            it { expect(outer).to be_a Cuprum::Collections::Scopes::Base }
+
+            it { expect(outer.type).to be :disjunction }
+
+            it { expect(outer.scopes.size).to be scopes.size + 1 }
+
+            it { expect(inner).to be_a Cuprum::Collections::Scopes::Base }
+
+            it { expect(inner.type).to be :criteria }
+
+            it { expect(inner.criteria).to be == expected }
+
+            wrap_context 'when the scope has many child scopes' do
+              it { expect(outer.scopes.size).to be scopes.size + 1 }
+
+              it { expect(inner).to be_a Cuprum::Collections::Scopes::Base }
+
+              it { expect(inner.type).to be :criteria }
+
+              it { expect(inner.criteria).to be == expected }
+            end
+          end
+
+          describe 'with a non-disjunction scope' do
+            let(:original) do
+              Cuprum::Collections::Scopes::CriteriaScope.new(criteria: expected)
+            end
+            let(:outer) { subject.or(original) }
+            let(:inner) { outer.scopes.last }
+
+            include_examples 'should combine the scopes with logical OR'
+
+            wrap_context 'when the scope has many child scopes' do
+              include_examples 'should combine the scopes with logical OR'
+
+              it { expect(outer.scopes[0...scopes.size]).to be == scopes }
+            end
           end
         end
       end

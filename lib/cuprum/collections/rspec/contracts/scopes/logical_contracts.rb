@@ -53,6 +53,8 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
       contract do |abstract: false|
         include_contract 'should be a container scope'
 
+        include_contract 'should compose scopes for disjunction'
+
         describe '#call' do
           next if abstract
 
