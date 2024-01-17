@@ -451,6 +451,70 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
             include_examples 'should build a negation scope'
           end
+
+          describe 'with a conjunction scope of matching class' do
+            # :nocov:
+            unless conjunction_scope_class
+              pending '(must specify :conjunction_class option)'
+
+              next
+            end
+            # :nocov:
+
+            let(:original) do
+              conjunction_scope_class.new(scopes: [])
+            end
+
+            it { expect(subject.build(original)).to be original }
+          end
+
+          describe 'with a criteria scope of matching class' do
+            # :nocov:
+            unless criteria_scope_class
+              pending '(must specify :criteria_scope_class option)'
+
+              next
+            end
+            # :nocov:
+
+            let(:original) do
+              criteria_scope_class.new(criteria: [])
+            end
+
+            it { expect(subject.build(original)).to be original }
+          end
+
+          describe 'with a disjunction scope of matching class' do
+            # :nocov:
+            unless disjunction_scope_class
+              pending '(must specify :disjunction_scope_class option)'
+
+              next
+            end
+            # :nocov:
+
+            let(:original) do
+              disjunction_scope_class.new(scopes: [])
+            end
+
+            it { expect(subject.build(original)).to be original }
+          end
+
+          describe 'with a negation scope of matching class' do
+            # :nocov:
+            unless negation_scope_class
+              pending '(must specify :negation_scope_class option)'
+
+              next
+            end
+            # :nocov:
+
+            let(:original) do
+              negation_scope_class.new(scopes: [])
+            end
+
+            it { expect(subject.build(original)).to be original }
+          end
         end
 
         describe '#build_conjunction_scope' do
@@ -697,6 +761,78 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             end
 
             include_examples 'should build a negation scope'
+          end
+
+          describe 'with a conjunction scope of matching class' do
+            # :nocov:
+            unless conjunction_scope_class
+              pending '(must specify :conjunction_class option)'
+
+              next
+            end
+            # :nocov:
+
+            let(:original) do
+              conjunction_scope_class.new(scopes: [])
+            end
+
+            it 'should return the original scope' do
+              expect(subject.transform_scope(scope: original)).to be original
+            end
+          end
+
+          describe 'with a criteria scope of matching class' do
+            # :nocov:
+            unless criteria_scope_class
+              pending '(must specify :criteria_scope_class option)'
+
+              next
+            end
+            # :nocov:
+
+            let(:original) do
+              criteria_scope_class.new(criteria: [])
+            end
+
+            it 'should return the original scope' do
+              expect(subject.transform_scope(scope: original)).to be original
+            end
+          end
+
+          describe 'with a disjunction scope of matching class' do
+            # :nocov:
+            unless disjunction_scope_class
+              pending '(must specify :disjunction_scope_class option)'
+
+              next
+            end
+            # :nocov:
+
+            let(:original) do
+              disjunction_scope_class.new(scopes: [])
+            end
+
+            it 'should return the original scope' do
+              expect(subject.transform_scope(scope: original)).to be original
+            end
+          end
+
+          describe 'with a negation scope of matching class' do
+            # :nocov:
+            unless negation_scope_class
+              pending '(must specify :negation_scope_class option)'
+
+              next
+            end
+            # :nocov:
+
+            let(:original) do
+              negation_scope_class.new(scopes: [])
+            end
+
+            it 'should return the original scope' do
+              expect(subject.transform_scope(scope: original)).to be original
+            end
           end
         end
       end

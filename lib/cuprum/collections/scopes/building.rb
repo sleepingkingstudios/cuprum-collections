@@ -110,15 +110,23 @@ module Cuprum::Collections::Scopes
 
     private
 
-    def build_transformed_scope(original) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+    def build_transformed_scope(original) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
       case original.type
       when :conjunction
+        return original if original.is_a?(conjunction_scope_class)
+
         conjunction_scope_class.new(scopes: transform_scopes(original.scopes))
       when :criteria
+        return original if original.is_a?(criteria_scope_class)
+
         criteria_scope_class.new(criteria: original.criteria)
       when :disjunction
+        return original if original.is_a?(disjunction_scope_class)
+
         disjunction_scope_class.new(scopes: transform_scopes(original.scopes))
       when :negation
+        return original if original.is_a?(negation_scope_class)
+
         negation_scope_class.new(scopes: transform_scopes(original.scopes))
       else
         error_message =
