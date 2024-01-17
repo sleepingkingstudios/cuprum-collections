@@ -705,5 +705,285 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
         end
       end
     end
+
+    # Contract validating scope composition for negation scopes.
+    module ShouldComposeScopesForNegationContract
+      extend  RSpec::SleepingKingStudios::Contract
+      include Cuprum::Collections::RSpec::Contracts::Scopes::CompositionContracts # rubocop:disable Layout/LineLength
+
+      # @!method apply(example_group)
+      #   Adds the contract to the example group.
+      #
+      #   @param example_group [RSpec::Core::ExampleGroup] the example group to
+      #     which the contract is applied.
+      contract do
+        shared_context 'when the scope has many child scopes' do
+          let(:scopes) do
+            [
+              build_scope({ 'author' => 'J.R.R. Tolkien' }),
+              build_scope({ 'series' => 'The Lord of the Rings' }),
+              build_scope do
+                { 'published_at' => less_than('1955-01-01') }
+              end
+            ]
+          end
+        end
+
+        include_contract 'should compose scopes', except: %i[and not]
+
+        describe '#and' do
+          shared_examples 'should combine the scopes with logical AND' do
+            it { expect(outer).to be_a Cuprum::Collections::Scopes::Base }
+
+            it { expect(outer.type).to be :conjunction }
+
+            it { expect(outer.scopes.size).to be 2 }
+
+            it { expect(outer.scopes.first).to be subject }
+
+            it { expect(inner).to be_a Cuprum::Collections::Scopes::Base }
+
+            it { expect(inner.type).to be :criteria }
+
+            it { expect(inner.criteria).to be == expected }
+          end
+
+          shared_examples 'should merge the scopes' do
+            it { expect(outer).to be_a Cuprum::Collections::Scopes::Base }
+
+            it { expect(outer.type).to be :negation }
+
+            it { expect(outer.scopes.size).to be scopes.size + 1 }
+
+            it { expect(inner).to be_a Cuprum::Collections::Scopes::Base }
+
+            it { expect(inner.type).to be :criteria }
+
+            it { expect(inner.criteria).to be == expected }
+          end
+
+          let(:expected) do
+            operators = Cuprum::Collections::Queries::Operators
+
+            [
+              [
+                'title',
+                operators::EQUAL,
+                'A Wizard of Earthsea'
+              ]
+            ]
+          end
+
+          describe 'with a block' do
+            let(:block) { -> { { 'title' => 'A Wizard of Earthsea' } } }
+            let(:outer) { subject.and(&block) }
+            let(:inner) { outer.scopes.last }
+
+            include_examples 'should combine the scopes with logical AND'
+
+            wrap_context 'when the scope has many child scopes' do
+              include_examples 'should combine the scopes with logical AND'
+            end
+          end
+
+          describe 'with a hash' do
+            let(:value) { { 'title' => 'A Wizard of Earthsea' } }
+            let(:outer) { subject.and(value) }
+            let(:inner) { outer.scopes.last }
+
+            include_examples 'should combine the scopes with logical AND'
+
+            wrap_context 'when the scope has many child scopes' do
+              include_examples 'should combine the scopes with logical AND'
+            end
+          end
+
+          describe 'with a negation scope' do
+            let(:original) do
+              wrapped =
+                Cuprum::Collections::Scopes::CriteriaScope
+                  .new(criteria: expected)
+
+              Cuprum::Collections::Scopes::NegationScope.new(scopes: [wrapped])
+            end
+            let(:outer) { subject.and(original) }
+            let(:inner) { outer.scopes.last }
+
+            include_examples 'should merge the scopes'
+
+            wrap_context 'when the scope has many child scopes' do
+              include_examples 'should merge the scopes'
+
+              it { expect(outer.scopes[0...scopes.size]).to be == scopes }
+            end
+          end
+
+          describe 'with a non-negation scope' do
+            let(:original) do
+              Cuprum::Collections::Scopes::CriteriaScope.new(criteria: expected)
+            end
+            let(:outer) { subject.and(original) }
+            let(:inner) { outer.scopes.last }
+
+            include_examples 'should combine the scopes with logical AND'
+
+            wrap_context 'when the scope has many child scopes' do
+              include_examples 'should combine the scopes with logical AND'
+            end
+          end
+        end
+
+        describe '#not' do
+          shared_examples 'should combine the scopes with logical NAND' do
+            it { expect(outer).to be_a Cuprum::Collections::Scopes::Base }
+
+            it { expect(outer.type).to be :conjunction }
+
+            it { expect(outer.scopes.size).to be 2 }
+
+            it { expect(outer.scopes.first).to be subject }
+
+            it { expect(invert).to be_a Cuprum::Collections::Scopes::Base }
+
+            it { expect(invert.type).to be :negation }
+
+            it { expect(invert.scopes.size).to be 1 }
+
+            it { expect(inner).to be_a Cuprum::Collections::Scopes::Base }
+
+            it { expect(inner.type).to be :criteria }
+
+            it { expect(inner.criteria).to be == expected }
+          end
+
+          let(:expected) do
+            operators = Cuprum::Collections::Queries::Operators
+
+            [
+              [
+                'title',
+                operators::EQUAL,
+                'A Wizard of Earthsea'
+              ]
+            ]
+          end
+
+          describe 'with a block' do
+            let(:block)  { -> { { 'title' => 'A Wizard of Earthsea' } } }
+            let(:outer)  { subject.not(&block) }
+            let(:invert) { outer.scopes.last }
+            let(:inner)  { invert.scopes.last }
+
+            include_examples 'should combine the scopes with logical NAND'
+
+            wrap_context 'when the scope has many child scopes' do
+              include_examples 'should combine the scopes with logical NAND'
+            end
+          end
+
+          describe 'with a hash' do
+            let(:value)  { { 'title' => 'A Wizard of Earthsea' } }
+            let(:outer)  { subject.not(value) }
+            let(:invert) { outer.scopes.last }
+            let(:inner)  { invert.scopes.last }
+
+            include_examples 'should combine the scopes with logical NAND'
+
+            wrap_context 'when the scope has many child scopes' do
+              include_examples 'should combine the scopes with logical NAND'
+            end
+          end
+
+          describe 'with a negation scope with one child scope' do
+            let(:original) do
+              wrapped =
+                Cuprum::Collections::Scopes::CriteriaScope
+                  .new(criteria: expected)
+
+              Cuprum::Collections::Scopes::NegationScope.new(scopes: [wrapped])
+            end
+            let(:outer) { subject.not(original) }
+
+            it { expect(outer).to be_a Cuprum::Collections::Scopes::Base }
+
+            it { expect(outer.type).to be :criteria }
+
+            it { expect(outer.criteria).to be == expected }
+          end
+
+          describe 'with a negation scope with many child scopes' do
+            let(:expected_first) do
+              operators = Cuprum::Collections::Queries::Operators
+
+              [
+                [
+                  'title',
+                  operators::EQUAL,
+                  'A Wizard of Earthsea'
+                ]
+              ]
+            end
+            let(:expected_second) do
+              operators = Cuprum::Collections::Queries::Operators
+
+              [
+                [
+                  'category',
+                  operators::EQUAL,
+                  'Science Fiction and Fantasy'
+                ]
+              ]
+            end
+            let(:original) do
+              wrapped_first =
+                Cuprum::Collections::Scopes::CriteriaScope
+                  .new(criteria: expected_first)
+              wrapped_second =
+                Cuprum::Collections::Scopes::CriteriaScope
+                  .new(criteria: expected_second)
+
+              Cuprum::Collections::Scopes::NegationScope
+                .new(scopes: [wrapped_first, wrapped_second])
+            end
+            let(:outer)     { subject.not(original) }
+            let(:inner_one) { outer.scopes.first }
+            let(:inner_two) { outer.scopes.last }
+
+            it { expect(outer).to be_a Cuprum::Collections::Scopes::Base }
+
+            it { expect(outer.type).to be :conjunction }
+
+            it { expect(outer.scopes.size).to be 2 }
+
+            it { expect(inner_one).to be_a Cuprum::Collections::Scopes::Base }
+
+            it { expect(inner_one.type).to be :criteria }
+
+            it { expect(inner_one.criteria).to be == expected_first }
+
+            it { expect(inner_two).to be_a Cuprum::Collections::Scopes::Base }
+
+            it { expect(inner_two.type).to be :criteria }
+
+            it { expect(inner_two.criteria).to be == expected_second }
+          end
+
+          describe 'with a non-negation scope' do
+            let(:original) do
+              Cuprum::Collections::Scopes::CriteriaScope.new(criteria: expected)
+            end
+            let(:outer)  { subject.not(original) }
+            let(:invert) { outer.scopes.last }
+            let(:inner)  { invert.scopes.last }
+
+            include_examples 'should combine the scopes with logical NAND'
+
+            wrap_context 'when the scope has many child scopes' do
+              include_examples 'should combine the scopes with logical NAND'
+            end
+          end
+        end
+      end
+    end
   end
 end
