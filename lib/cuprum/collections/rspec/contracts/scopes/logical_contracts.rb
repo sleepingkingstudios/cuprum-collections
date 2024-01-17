@@ -2,12 +2,14 @@
 
 require 'cuprum/collections/rspec/contracts'
 require 'cuprum/collections/rspec/contracts/scope_contracts'
+require 'cuprum/collections/rspec/contracts/scopes/composition_contracts'
 require 'cuprum/collections/rspec/fixtures'
 
 module Cuprum::Collections::RSpec::Contracts::Scopes
   # Contracts for asserting on logical scope objects.
   module LogicalContracts
     include Cuprum::Collections::RSpec::Contracts::ScopeContracts
+    include Cuprum::Collections::RSpec::Contracts::Scopes::CompositionContracts
 
     # Contract validating the behavior of a logical AND scope implementation.
     module ShouldBeAConjunctionScopeContract
@@ -22,6 +24,8 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
       #     define a #call implementation. Defaults to false.
       contract do |abstract: false|
         include_contract 'should be a container scope'
+
+        include_contract 'should compose scopes for conjunction'
 
         describe '#call' do
           next if abstract
@@ -49,6 +53,8 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
       contract do |abstract: false|
         include_contract 'should be a container scope'
 
+        include_contract 'should compose scopes for disjunction'
+
         describe '#call' do
           next if abstract
 
@@ -74,6 +80,8 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
       #     define a #call implementation. Defaults to false.
       contract do |abstract: false|
         include_contract 'should be a container scope'
+
+        include_contract 'should compose scopes for negation'
 
         describe '#call' do
           next if abstract

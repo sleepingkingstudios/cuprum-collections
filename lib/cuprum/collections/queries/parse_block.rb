@@ -136,8 +136,8 @@ module Cuprum::Collections::Queries
 
     private
 
-    def call_block(&block)
-      handle_unknown_operator { Builder.new.instance_exec(&block) }
+    def call_block(...)
+      handle_unknown_operator { Builder.new.instance_exec(...) }
     rescue StandardError => exception
       error = Cuprum::Errors::UncaughtException.new(
         exception: exception,

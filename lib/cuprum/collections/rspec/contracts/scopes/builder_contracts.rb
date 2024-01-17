@@ -49,6 +49,33 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
             next
           end
+
+          define_method :expected_class_for do |type| # rubocop:disable Metrics/MethodLength
+            case type
+            when :conjunction
+              conjunction_scope_class
+            when :criteria
+              criteria_scope_class
+            when :disjunction
+              disjunction_scope_class
+            when :negation
+              negation_scope_class
+            else
+              raise "unknown scope type #{type.inspect}"
+            end
+          end
+
+          def should_recursively_convert_scopes(original_scopes, converted) # rubocop:disable Metrics/AbcSize
+            original_scopes.zip(converted).each do |original, scope|
+              expect(scope).to be_a expected_class_for(original.type)
+
+              if scope.type == :criteria
+                expect(scope.criteria).to be == original.criteria
+              elsif %i[conjunction disjunction negation].include?(scope.type)
+                should_recursively_convert_scopes(original.scopes, scope.scopes)
+              end
+            end
+          end
           # :nocov:
 
           describe 'with scopes: an empty Array' do
@@ -64,7 +91,11 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
             it { expect(scope).to be_a conjunction_scope_class }
 
-            it { expect(scope.scopes).to be == scopes }
+            it { expect(scope.scopes.size).to be == scopes.size }
+
+            it 'should convert the scopes', :aggregate_failures do
+              should_recursively_convert_scopes(scopes, scope.scopes)
+            end
           end
         end
 
@@ -120,6 +151,33 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
             next
           end
+
+          define_method :expected_class_for do |type| # rubocop:disable Metrics/MethodLength
+            case type
+            when :conjunction
+              conjunction_scope_class
+            when :criteria
+              criteria_scope_class
+            when :disjunction
+              disjunction_scope_class
+            when :negation
+              negation_scope_class
+            else
+              raise "unknown scope type #{type.inspect}"
+            end
+          end
+
+          def should_recursively_convert_scopes(original_scopes, converted) # rubocop:disable Metrics/AbcSize
+            original_scopes.zip(converted).each do |original, scope|
+              expect(scope).to be_a expected_class_for(original.type)
+
+              if scope.type == :criteria
+                expect(scope.criteria).to be == original.criteria
+              elsif %i[conjunction disjunction negation].include?(scope.type)
+                should_recursively_convert_scopes(original.scopes, scope.scopes)
+              end
+            end
+          end
           # :nocov:
 
           describe 'with scopes: an empty Array' do
@@ -135,7 +193,11 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
             it { expect(scope).to be_a disjunction_scope_class }
 
-            it { expect(scope.scopes).to be == scopes }
+            it { expect(scope.scopes.size).to be == scopes.size }
+
+            it 'should convert the scopes', :aggregate_failures do
+              should_recursively_convert_scopes(scopes, scope.scopes)
+            end
           end
         end
 
@@ -148,6 +210,33 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
             next
           end
+
+          define_method :expected_class_for do |type| # rubocop:disable Metrics/MethodLength
+            case type
+            when :conjunction
+              conjunction_scope_class
+            when :criteria
+              criteria_scope_class
+            when :disjunction
+              disjunction_scope_class
+            when :negation
+              negation_scope_class
+            else
+              raise "unknown scope type #{type.inspect}"
+            end
+          end
+
+          def should_recursively_convert_scopes(original_scopes, converted) # rubocop:disable Metrics/AbcSize
+            original_scopes.zip(converted).each do |original, scope|
+              expect(scope).to be_a expected_class_for(original.type)
+
+              if scope.type == :criteria
+                expect(scope.criteria).to be == original.criteria
+              elsif %i[conjunction disjunction negation].include?(scope.type)
+                should_recursively_convert_scopes(original.scopes, scope.scopes)
+              end
+            end
+          end
           # :nocov:
 
           describe 'with scopes: an empty Array' do
@@ -163,7 +252,11 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
             it { expect(scope).to be_a negation_scope_class }
 
-            it { expect(scope.scopes).to be == scopes }
+            it { expect(scope.scopes.size).to be == scopes.size }
+
+            it 'should convert the scopes', :aggregate_failures do
+              should_recursively_convert_scopes(scopes, scope.scopes)
+            end
           end
         end
 
@@ -284,8 +377,8 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
               subject.build(&block)
             end
 
-            def parse_criteria(&block)
-              subject.build(&block).criteria
+            def parse_criteria(...)
+              subject.build(...).criteria
             end
 
             include_examples 'should build a criteria scope'
@@ -358,6 +451,70 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
             include_examples 'should build a negation scope'
           end
+
+          describe 'with a conjunction scope of matching class' do
+            # :nocov:
+            unless conjunction_scope_class
+              pending '(must specify :conjunction_class option)'
+
+              next
+            end
+            # :nocov:
+
+            let(:original) do
+              conjunction_scope_class.new(scopes: [])
+            end
+
+            it { expect(subject.build(original)).to be original }
+          end
+
+          describe 'with a criteria scope of matching class' do
+            # :nocov:
+            unless criteria_scope_class
+              pending '(must specify :criteria_scope_class option)'
+
+              next
+            end
+            # :nocov:
+
+            let(:original) do
+              criteria_scope_class.new(criteria: [])
+            end
+
+            it { expect(subject.build(original)).to be original }
+          end
+
+          describe 'with a disjunction scope of matching class' do
+            # :nocov:
+            unless disjunction_scope_class
+              pending '(must specify :disjunction_scope_class option)'
+
+              next
+            end
+            # :nocov:
+
+            let(:original) do
+              disjunction_scope_class.new(scopes: [])
+            end
+
+            it { expect(subject.build(original)).to be original }
+          end
+
+          describe 'with a negation scope of matching class' do
+            # :nocov:
+            unless negation_scope_class
+              pending '(must specify :negation_scope_class option)'
+
+              next
+            end
+            # :nocov:
+
+            let(:original) do
+              negation_scope_class.new(scopes: [])
+            end
+
+            it { expect(subject.build(original)).to be original }
+          end
         end
 
         describe '#build_conjunction_scope' do
@@ -371,7 +528,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             expect(subject)
               .to respond_to(:build_conjunction_scope)
               .with(0).arguments
-              .and_keywords(:scopes)
+              .and_keywords(:safe, :scopes)
           end
 
           include_examples 'should validate the scopes'
@@ -379,6 +536,28 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           next if abstract
 
           include_examples 'should build a conjunction scope'
+
+          describe 'with safe: false' do
+            let(:scope) do
+              subject.build_conjunction_scope(scopes: scopes, safe: false)
+            end
+
+            describe 'with scopes: an empty Array' do
+              let(:scopes) { [] }
+
+              it { expect(scope).to be_a conjunction_scope_class }
+
+              it { expect(scope.scopes).to be == scopes }
+            end
+
+            describe 'with scopes: an Array of Scopes' do
+              let(:scopes) { Array.new(3) { build_scope } }
+
+              it { expect(scope).to be_a conjunction_scope_class }
+
+              it { expect(scope.scopes).to be == scopes }
+            end
+          end
         end
 
         describe '#build_criteria_scope' do
@@ -411,7 +590,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             expect(subject)
               .to respond_to(:build_disjunction_scope)
               .with(0).arguments
-              .and_keywords(:scopes)
+              .and_keywords(:safe, :scopes)
           end
 
           include_examples 'should validate the scopes'
@@ -419,6 +598,28 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           next if abstract
 
           include_examples 'should build a disjunction scope'
+
+          describe 'with safe: false' do
+            let(:scope) do
+              subject.build_disjunction_scope(scopes: scopes, safe: false)
+            end
+
+            describe 'with scopes: an empty Array' do
+              let(:scopes) { [] }
+
+              it { expect(scope).to be_a disjunction_scope_class }
+
+              it { expect(scope.scopes).to be == scopes }
+            end
+
+            describe 'with scopes: an Array of Scopes' do
+              let(:scopes) { Array.new(3) { build_scope } }
+
+              it { expect(scope).to be_a disjunction_scope_class }
+
+              it { expect(scope.scopes).to be == scopes }
+            end
+          end
         end
 
         describe '#build_negation_scope' do
@@ -432,7 +633,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             expect(subject)
               .to respond_to(:build_negation_scope)
               .with(0).arguments
-              .and_keywords(:scopes)
+              .and_keywords(:safe, :scopes)
           end
 
           include_examples 'should validate the scopes'
@@ -440,6 +641,28 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           next if abstract
 
           include_examples 'should build a negation scope'
+
+          describe 'with safe: false' do
+            let(:scope) do
+              subject.build_negation_scope(scopes: scopes, safe: false)
+            end
+
+            describe 'with scopes: an empty Array' do
+              let(:scopes) { [] }
+
+              it { expect(scope).to be_a negation_scope_class }
+
+              it { expect(scope.scopes).to be == scopes }
+            end
+
+            describe 'with scopes: an Array of Scopes' do
+              let(:scopes) { Array.new(3) { build_scope } }
+
+              it { expect(scope).to be_a negation_scope_class }
+
+              it { expect(scope.scopes).to be == scopes }
+            end
+          end
         end
 
         describe '#transform_scope' do
@@ -538,6 +761,78 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             end
 
             include_examples 'should build a negation scope'
+          end
+
+          describe 'with a conjunction scope of matching class' do
+            # :nocov:
+            unless conjunction_scope_class
+              pending '(must specify :conjunction_class option)'
+
+              next
+            end
+            # :nocov:
+
+            let(:original) do
+              conjunction_scope_class.new(scopes: [])
+            end
+
+            it 'should return the original scope' do
+              expect(subject.transform_scope(scope: original)).to be original
+            end
+          end
+
+          describe 'with a criteria scope of matching class' do
+            # :nocov:
+            unless criteria_scope_class
+              pending '(must specify :criteria_scope_class option)'
+
+              next
+            end
+            # :nocov:
+
+            let(:original) do
+              criteria_scope_class.new(criteria: [])
+            end
+
+            it 'should return the original scope' do
+              expect(subject.transform_scope(scope: original)).to be original
+            end
+          end
+
+          describe 'with a disjunction scope of matching class' do
+            # :nocov:
+            unless disjunction_scope_class
+              pending '(must specify :disjunction_scope_class option)'
+
+              next
+            end
+            # :nocov:
+
+            let(:original) do
+              disjunction_scope_class.new(scopes: [])
+            end
+
+            it 'should return the original scope' do
+              expect(subject.transform_scope(scope: original)).to be original
+            end
+          end
+
+          describe 'with a negation scope of matching class' do
+            # :nocov:
+            unless negation_scope_class
+              pending '(must specify :negation_scope_class option)'
+
+              next
+            end
+            # :nocov:
+
+            let(:original) do
+              negation_scope_class.new(scopes: [])
+            end
+
+            it 'should return the original scope' do
+              expect(subject.transform_scope(scope: original)).to be original
+            end
           end
         end
       end

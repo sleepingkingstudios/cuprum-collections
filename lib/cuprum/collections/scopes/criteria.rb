@@ -92,10 +92,10 @@ module Cuprum::Collections::Scopes
       # @yield the query block.
       #
       # @yieldreturn [Hash] a Hash with String keys.
-      def parse_block(&block) # rubocop:disable Metrics/MethodLength
+      def parse_block(...) # rubocop:disable Metrics/MethodLength
         raise ArgumentError, 'no block given' unless block_given?
 
-        value = instance_exec(&block)
+        value = instance_exec(...)
 
         Parser.validate_hash(value)
 

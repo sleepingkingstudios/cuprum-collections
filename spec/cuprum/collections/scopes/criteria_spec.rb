@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'cuprum/collections/scopes/base'
+require 'cuprum/collections/scopes/composition/criteria'
 require 'cuprum/collections/scopes/criteria'
 require 'cuprum/collections/rspec/contracts/scopes/criteria_contracts'
 
@@ -14,6 +15,7 @@ RSpec.describe Cuprum::Collections::Scopes::Criteria do
   example_class 'Spec::ExampleScope', Cuprum::Collections::Scopes::Base \
   do |klass|
     klass.include Cuprum::Collections::Scopes::Criteria # rubocop:disable RSpec/DescribedClass
+    klass.include Cuprum::Collections::Scopes::Composition::Criteria
   end
 
   describe '::Parser' do
@@ -44,8 +46,8 @@ RSpec.describe Cuprum::Collections::Scopes::Criteria do
     end
 
     describe '#parse_block' do
-      def parse_criteria(&block)
-        parser.parse_block(&block)
+      def parse_criteria(...)
+        parser.parse_block(...)
       end
 
       it 'should define the method' do
