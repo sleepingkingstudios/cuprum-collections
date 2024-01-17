@@ -374,7 +374,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           end
         end
 
-        context 'when the scope has multiple criteria' do
+        context 'when the scope has mixed criteria' do
           let(:criteria) do
             described_class.parse do
               titles = ['The Fellowship Of The Ring', 'The Two Towers']
@@ -398,6 +398,32 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
                   ['The Fellowship Of The Ring', 'The Two Towers']
                     .include?(item['title'])
                 end
+            end
+
+            it { expect(filtered_data).to be == expected }
+          end
+        end
+
+        context 'when the scope has multiple matching criteria' do
+          let(:criteria) do
+            described_class.parse({
+              'author' => 'J.R.R. Tolkien',
+              'series' => 'The Lord of the Rings'
+            })
+          end
+
+          describe 'with empty data' do
+            let(:data)     { [] }
+            let(:expected) { data }
+
+            it { expect(filtered_data).to be == expected }
+          end
+
+          wrap_context 'with data' do
+            let(:expected) do
+              data
+                .select { |item| item['author'] == 'J.R.R. Tolkien' }
+                .select { |item| item['series'] == 'The Lord of the Rings' }
             end
 
             it { expect(filtered_data).to be == expected }
