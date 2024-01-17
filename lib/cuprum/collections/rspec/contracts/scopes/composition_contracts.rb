@@ -163,6 +163,72 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
             include_examples 'should combine the scopes with logical NAND'
           end
+
+          describe 'with a conjunction scope' do
+            let(:expected_first) do
+              operators = Cuprum::Collections::Queries::Operators
+
+              [
+                [
+                  'title',
+                  operators::EQUAL,
+                  'A Wizard of Earthsea'
+                ]
+              ]
+            end
+            let(:expected_second) do
+              operators = Cuprum::Collections::Queries::Operators
+
+              [
+                [
+                  'category',
+                  operators::EQUAL,
+                  'Science Fiction and Fantasy'
+                ]
+              ]
+            end
+            let(:original) do
+              wrapped_first =
+                Cuprum::Collections::Scopes::CriteriaScope
+                  .new(criteria: expected_first)
+              wrapped_second =
+                Cuprum::Collections::Scopes::CriteriaScope
+                  .new(criteria: expected_second)
+
+              Cuprum::Collections::Scopes::ConjunctionScope
+                .new(scopes: [wrapped_first, wrapped_second])
+            end
+            let(:outer)     { subject.not(original) }
+            let(:invert)    { outer.scopes.last }
+            let(:inner_one) { invert.scopes.first }
+            let(:inner_two) { invert.scopes.last }
+
+            it { expect(outer).to be_a Cuprum::Collections::Scopes::Base }
+
+            it { expect(outer.type).to be :conjunction }
+
+            it { expect(outer.scopes.size).to be 2 }
+
+            it { expect(outer.scopes.first).to be subject }
+
+            it { expect(invert).to be_a Cuprum::Collections::Scopes::Base }
+
+            it { expect(invert.type).to be :negation }
+
+            it { expect(invert.scopes.size).to be 2 }
+
+            it { expect(inner_one).to be_a Cuprum::Collections::Scopes::Base }
+
+            it { expect(inner_one.type).to be :criteria }
+
+            it { expect(inner_one.criteria).to be == expected_first }
+
+            it { expect(inner_two).to be_a Cuprum::Collections::Scopes::Base }
+
+            it { expect(inner_two.type).to be :criteria }
+
+            it { expect(inner_two.criteria).to be == expected_second }
+          end
         end
 
         describe '#or' do
@@ -427,6 +493,61 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             end
           end
 
+          describe 'with a conjunction scope' do
+            let(:original) do
+              wrapped =
+                Cuprum::Collections::Scopes::CriteriaScope
+                  .new(criteria: expected)
+
+              Cuprum::Collections::Scopes::ConjunctionScope
+                .new(scopes: [wrapped])
+            end
+            let(:outer)  { subject.not(original) }
+            let(:invert) { outer.scopes.last }
+            let(:inner)  { invert.scopes.first }
+            let(:inner)  { invert.scopes.last }
+
+            it { expect(outer).to be_a Cuprum::Collections::Scopes::Base }
+
+            it { expect(outer.type).to be :conjunction }
+
+            it { expect(outer.scopes.size).to be scopes.size + 1 }
+
+            it { expect(invert).to be_a Cuprum::Collections::Scopes::Base }
+
+            it { expect(invert.type).to be :negation }
+
+            it { expect(invert.scopes.size).to be 1 }
+
+            it { expect(inner).to be_a Cuprum::Collections::Scopes::Base }
+
+            it { expect(inner.type).to be :criteria }
+
+            it { expect(inner.criteria).to be == expected }
+
+            wrap_context 'when the scope has many child scopes' do
+              it { expect(outer).to be_a Cuprum::Collections::Scopes::Base }
+
+              it { expect(outer.type).to be :conjunction }
+
+              it { expect(outer.scopes.size).to be scopes.size + 1 }
+
+              it { expect(outer.scopes[0...scopes.size]).to be == scopes }
+
+              it { expect(invert).to be_a Cuprum::Collections::Scopes::Base }
+
+              it { expect(invert.type).to be :negation }
+
+              it { expect(invert.scopes.size).to be 1 }
+
+              it { expect(inner).to be_a Cuprum::Collections::Scopes::Base }
+
+              it { expect(inner.type).to be :criteria }
+
+              it { expect(inner.criteria).to be == expected }
+            end
+          end
+
           describe 'with a scope' do
             let(:original) do
               Cuprum::Collections::Scopes::CriteriaScope.new(criteria: expected)
@@ -520,6 +641,33 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             wrap_context 'when the scope has multiple criteria' do
               include_examples 'should merge the criteria'
             end
+          end
+
+          describe 'with a conjunction scope' do
+            let(:other_scope) do
+              wrapped =
+                Cuprum::Collections::Scopes::CriteriaScope
+                  .new(criteria: expected)
+
+              Cuprum::Collections::Scopes::ConjunctionScope
+                .new(scopes: [wrapped])
+            end
+            let(:outer) { subject.and(other_scope) }
+            let(:inner) { outer.scopes.last }
+
+            it { expect(outer).to be_a(Cuprum::Collections::Scopes::Base) }
+
+            it { expect(outer.type).to be :conjunction }
+
+            it { expect(outer.scopes.size).to be 2 }
+
+            it { expect(outer.scopes.first).to be subject }
+
+            it { expect(inner).to be_a(Cuprum::Collections::Scopes::Base) }
+
+            it { expect(inner.type).to be :criteria }
+
+            it { expect(inner.criteria).to be == expected }
           end
 
           describe 'with a criteria scope' do

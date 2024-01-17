@@ -9,9 +9,7 @@ module Cuprum::Collections::Scopes::Composition
 
     # (see Cuprum::Collections::Scopes::Composition#and)
     def and(*args, &block)
-      return super unless args.first.is_a?(Cuprum::Collections::Scopes::Base)
-
-      return super unless args.first.type == :negation
+      return super unless negation_scope?(args.first)
 
       scopes = args.first.scopes.map do |scope|
         builder.transform_scope(scope: scope)
@@ -23,9 +21,7 @@ module Cuprum::Collections::Scopes::Composition
 
     # (see Cuprum::Collections::Scopes::Composition#not)
     def not(*args, &block)
-      return super unless args.first.is_a?(Cuprum::Collections::Scopes::Base)
-
-      return super unless args.first.type == :negation
+      return super unless negation_scope?(args.first)
 
       scopes = args.first.scopes.map do |scope|
         builder.transform_scope(scope: scope)

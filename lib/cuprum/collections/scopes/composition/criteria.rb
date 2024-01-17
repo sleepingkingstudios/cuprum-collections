@@ -10,17 +10,18 @@ module Cuprum::Collections::Scopes::Composition
 
     # (see Cuprum::Collections::Scopes::Composition#and)
     def and(*args, &block)
-      criteria =
-        if args.first.is_a?(Cuprum::Collections::Scopes::Base)
-          return super if args.first.type != :criteria
+      return and_criteria_scope(args.first) if criteria_scope?(args.first)
 
-          args.first.criteria
-        else
-          self.class.parse(*args, &block)
-        end
+      return super if scope?(args.first)
 
-      with_criteria([*self.criteria, *criteria])
+      with_criteria([*criteria, *self.class.parse(*args, &block)])
     end
     alias where and
+
+    private
+
+    def and_criteria_scope(scope)
+      with_criteria([*criteria, *scope.criteria])
+    end
   end
 end
