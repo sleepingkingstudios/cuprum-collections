@@ -241,6 +241,16 @@ module Cuprum::Collections::Scopes
     # @return [Array] the criteria used for filtering query data.
     attr_reader :criteria
 
+    # (see Cuprum::Collections::Scopes::Composition#and)
+    def and(*args, &block)
+      return and_criteria_scope(args.first) if criteria_scope?(args.first)
+
+      return super if scope?(args.first)
+
+      with_criteria([*criteria, *self.class.parse(*args, &block)])
+    end
+    alias where and
+
     # (see Cuprum::Collections::Scopes::Base#type)
     def type
       :criteria
@@ -258,5 +268,11 @@ module Cuprum::Collections::Scopes
     protected
 
     attr_writer :criteria
+
+    private
+
+    def and_criteria_scope(scope)
+      with_criteria([*criteria, *scope.criteria])
+    end
   end
 end

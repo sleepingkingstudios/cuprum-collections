@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/scopes/composition'
+require 'cuprum/collections/scopes'
+require 'cuprum/collections/scopes/container'
 
-module Cuprum::Collections::Scopes::Composition
-  # Defines composition behavior for conjunction scopes.
+module Cuprum::Collections::Scopes
+  # Functionality for implementing a logical AND scope.
   module Conjunction
-    include Cuprum::Collections::Scopes::Composition
+    include Cuprum::Collections::Scopes::Container
 
     # (see Cuprum::Collections::Scopes::Composition#and)
     def and(*args, &block)
@@ -23,6 +24,11 @@ module Cuprum::Collections::Scopes::Composition
       inverted = builder.build_negation_scope(scopes: [scope], safe: false)
 
       with_scopes([*scopes, inverted])
+    end
+
+    # (see Cuprum::Collections::Scopes::Base#type)
+    def type
+      :conjunction
     end
 
     private

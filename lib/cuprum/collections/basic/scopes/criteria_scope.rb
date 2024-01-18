@@ -3,14 +3,12 @@
 require 'cuprum/collections/basic/scopes'
 require 'cuprum/collections/basic/scopes/base'
 require 'cuprum/collections/queries'
-require 'cuprum/collections/scopes/composition/criteria'
 require 'cuprum/collections/scopes/criteria'
 
 module Cuprum::Collections::Basic::Scopes
   # Scope for filtering on basic collection data based on criteria.
   class CriteriaScope < Cuprum::Collections::Basic::Scopes::Base
     include Cuprum::Collections::Scopes::Criteria
-    include Cuprum::Collections::Scopes::Composition::Criteria
 
     Operators = Cuprum::Collections::Queries::Operators
     private_constant :Operators

@@ -12,7 +12,7 @@ RSpec.describe Cuprum::Collections::Scopes::ConjunctionScope do
   let(:scopes) { [] }
 
   def build_scope(filters = nil, &block)
-    scope_class = Cuprum::Collections::Basic::Scopes::CriteriaScope
+    scope_class = Cuprum::Collections::Scopes::CriteriaScope
 
     if block_given?
       scope_class.build(&block)

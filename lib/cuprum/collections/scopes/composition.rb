@@ -5,11 +5,6 @@ require 'cuprum/collections/scopes'
 module Cuprum::Collections::Scopes
   # Defines a fluent interface for composing scopes.
   module Composition
-    autoload :Conjunction, 'cuprum/collections/scopes/composition/conjunction'
-    autoload :Criteria,    'cuprum/collections/scopes/composition/criteria'
-    autoload :Disjunction, 'cuprum/collections/scopes/composition/disjunction'
-    autoload :Negation,    'cuprum/collections/scopes/composition/negation'
-
     # @override and(hash = nil, &block)
     #   Parses the hash or block and combines using a logical AND.
     #
