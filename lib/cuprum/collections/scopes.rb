@@ -17,5 +17,7 @@ module Cuprum::Collections
     autoload :DisjunctionScope, 'cuprum/collections/scopes/disjunction_scope'
     autoload :Negation,         'cuprum/collections/scopes/negation'
     autoload :NegationScope,    'cuprum/collections/scopes/negation_scope'
+    autoload :Null,             'cuprum/collections/scopes/null'
+    autoload :NullScope,        'cuprum/collections/scopes/null_scope'
   end
 end
