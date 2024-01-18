@@ -7,6 +7,7 @@ require 'cuprum/collections/scopes/conjunction_scope'
 require 'cuprum/collections/scopes/criteria_scope'
 require 'cuprum/collections/scopes/disjunction_scope'
 require 'cuprum/collections/scopes/negation_scope'
+require 'cuprum/collections/scopes/null_scope'
 
 module Cuprum::Collections::RSpec::Contracts::Scopes
   # Contracts for asserting on scope builder objects.
@@ -34,22 +35,19 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
       #     logical OR scopes. Ignored if :abstract is true.
       #   @option options negation_class [Class] the class for returned logical
       #     NAND scopes. Ignored if :abstract is true.
+      #   @option options null_class [Class] the class for returned null scopes.
+      #     Ignored if :abstract is true.
       contract do |abstract: false, **contract_options|
         conjunction_scope_class = contract_options[:conjunction_class]
         criteria_scope_class    = contract_options[:criteria_class]
         disjunction_scope_class = contract_options[:disjunction_class]
         negation_scope_class    = contract_options[:negation_class]
+        null_scope_class        = contract_options[:null_class]
 
-        shared_examples 'should build a conjunction scope' do
+        shared_context 'with container scope helpers' do
           let(:scope) { build_container(scopes: scopes) }
 
           # :nocov:
-          unless conjunction_scope_class
-            pending '(must specify :conjunction_class option)'
-
-            next
-          end
-
           define_method :expected_class_for do |type| # rubocop:disable Metrics/MethodLength
             case type
             when :conjunction
@@ -60,6 +58,8 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
               disjunction_scope_class
             when :negation
               negation_scope_class
+            when :null
+              null_scope_class
             else
               raise "unknown scope type #{type.inspect}"
             end
@@ -75,6 +75,18 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
                 should_recursively_convert_scopes(original.scopes, scope.scopes)
               end
             end
+          end
+          # :nocov:
+        end
+
+        shared_examples 'should build a conjunction scope' do
+          include_context 'with container scope helpers'
+
+          # :nocov:
+          unless conjunction_scope_class
+            pending '(must specify :conjunction_class option)'
+
+            next
           end
           # :nocov:
 
@@ -143,40 +155,15 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
         end
 
         shared_examples 'should build a disjunction scope' do
-          # :nocov:
+          include_context 'with container scope helpers'
+
           let(:scope) { build_container(scopes: scopes) }
 
+          # :nocov:
           unless disjunction_scope_class
             pending '(must specify :disjunction_class option)'
 
             next
-          end
-
-          define_method :expected_class_for do |type| # rubocop:disable Metrics/MethodLength
-            case type
-            when :conjunction
-              conjunction_scope_class
-            when :criteria
-              criteria_scope_class
-            when :disjunction
-              disjunction_scope_class
-            when :negation
-              negation_scope_class
-            else
-              raise "unknown scope type #{type.inspect}"
-            end
-          end
-
-          def should_recursively_convert_scopes(original_scopes, converted) # rubocop:disable Metrics/AbcSize
-            original_scopes.zip(converted).each do |original, scope|
-              expect(scope).to be_a expected_class_for(original.type)
-
-              if scope.type == :criteria
-                expect(scope.criteria).to be == original.criteria
-              elsif %i[conjunction disjunction negation].include?(scope.type)
-                should_recursively_convert_scopes(original.scopes, scope.scopes)
-              end
-            end
           end
           # :nocov:
 
@@ -202,6 +189,8 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
         end
 
         shared_examples 'should build a negation scope' do
+          include_context 'with container scope helpers'
+
           let(:scope) { build_container(scopes: scopes) }
 
           # :nocov:
@@ -209,33 +198,6 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             pending '(must specify :negation_class option)'
 
             next
-          end
-
-          define_method :expected_class_for do |type| # rubocop:disable Metrics/MethodLength
-            case type
-            when :conjunction
-              conjunction_scope_class
-            when :criteria
-              criteria_scope_class
-            when :disjunction
-              disjunction_scope_class
-            when :negation
-              negation_scope_class
-            else
-              raise "unknown scope type #{type.inspect}"
-            end
-          end
-
-          def should_recursively_convert_scopes(original_scopes, converted) # rubocop:disable Metrics/AbcSize
-            original_scopes.zip(converted).each do |original, scope|
-              expect(scope).to be_a expected_class_for(original.type)
-
-              if scope.type == :criteria
-                expect(scope.criteria).to be == original.criteria
-              elsif %i[conjunction disjunction negation].include?(scope.type)
-                should_recursively_convert_scopes(original.scopes, scope.scopes)
-              end
-            end
           end
           # :nocov:
 
@@ -258,6 +220,20 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
               should_recursively_convert_scopes(scopes, scope.scopes)
             end
           end
+        end
+
+        shared_examples 'should build a null scope' do
+          let(:scope) { build_null }
+
+          # :nocov:
+          unless null_scope_class
+            pending '(must specify :null_class option)'
+
+            next
+          end
+          # :nocov:
+
+          it { expect(scope).to be_a null_scope_class }
         end
 
         shared_examples 'should validate the criteria' do
@@ -452,6 +428,16 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             include_examples 'should build a negation scope'
           end
 
+          describe 'with a null scope' do
+            def build_null
+              original = Cuprum::Collections::Scopes::NullScope.new
+
+              subject.build(original)
+            end
+
+            include_examples 'should build a null scope'
+          end
+
           describe 'with a conjunction scope of matching class' do
             # :nocov:
             unless conjunction_scope_class
@@ -511,6 +497,22 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
             let(:original) do
               negation_scope_class.new(scopes: [])
+            end
+
+            it { expect(subject.build(original)).to be original }
+          end
+
+          describe 'with a null scope of matching class' do
+            # :nocov:
+            unless null_scope_class
+              pending '(must specify :null_class option)'
+
+              next
+            end
+            # :nocov:
+
+            let(:original) do
+              null_scope_class.new
             end
 
             it { expect(subject.build(original)).to be original }
@@ -665,6 +667,22 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           end
         end
 
+        describe '#build_null_scope' do
+          def build_null
+            subject.build_null_scope
+          end
+
+          it 'should define the method' do
+            expect(subject)
+              .to respond_to(:build_null_scope)
+              .with(0).arguments
+          end
+
+          next if abstract
+
+          include_examples 'should build a null scope'
+        end
+
         describe '#transform_scope' do
           let(:scope) { subject.transform_scope(scope: original) }
 
@@ -763,6 +781,16 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             include_examples 'should build a negation scope'
           end
 
+          describe 'with a null scope' do
+            def build_null
+              original = Cuprum::Collections::Scopes::NullScope.new
+
+              subject.transform_scope(scope: original)
+            end
+
+            include_examples 'should build a null scope'
+          end
+
           describe 'with a conjunction scope of matching class' do
             # :nocov:
             unless conjunction_scope_class
@@ -828,6 +856,24 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
             let(:original) do
               negation_scope_class.new(scopes: [])
+            end
+
+            it 'should return the original scope' do
+              expect(subject.transform_scope(scope: original)).to be original
+            end
+          end
+
+          describe 'with a null scope of matching class' do
+            # :nocov:
+            unless null_scope_class
+              pending '(must specify :null_class option)'
+
+              next
+            end
+            # :nocov:
+
+            let(:original) do
+              null_scope_class.new
             end
 
             it 'should return the original scope' do
