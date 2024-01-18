@@ -10,6 +10,11 @@ module Cuprum::Collections::Scopes
 
     def initialize(**); end
 
+    # @return [Boolean] false.
+    def empty?
+      false
+    end
+
     # @return [Symbol] the scope type.
     def type
       :abstract

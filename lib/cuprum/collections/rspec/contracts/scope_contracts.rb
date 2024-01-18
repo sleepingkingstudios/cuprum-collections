@@ -37,6 +37,14 @@ module Cuprum::Collections::RSpec::Contracts
           end
         end
 
+        describe '#empty?' do
+          include_examples 'should define predicate', :empty?, true
+
+          wrap_context 'with scopes' do
+            it { expect(subject.empty?).to be false }
+          end
+        end
+
         describe '#scopes' do
           include_examples 'should define reader', :scopes, -> { scopes }
 
@@ -172,6 +180,10 @@ module Cuprum::Collections::RSpec::Contracts
 
             it { expect(filtered_data).to be == expected }
           end
+        end
+
+        describe '#empty?' do
+          include_examples 'should define predicate', :empty?, true
         end
 
         describe '#or' do

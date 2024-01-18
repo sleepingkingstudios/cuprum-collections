@@ -16,6 +16,11 @@ module Cuprum::Collections::Scopes
     # @return [Array<Scope>] the scopes wrapped by the scope.
     attr_reader :scopes
 
+    # @return [Boolean] true if the scope has no child scopes; otherwise false.
+    def empty?
+      @scopes.empty?
+    end
+
     # Creates a copy of the scope with the given child scopes.
     #
     # @param scopes [Array] the child scopes.

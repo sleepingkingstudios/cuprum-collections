@@ -17,6 +17,11 @@ module Cuprum::Collections::Scopes
     end
     alias where and
 
+    # @return [Boolean] true.
+    def empty?
+      true
+    end
+
     # @override or(hash = nil, &block)
     #   Parses the hash or block and returns the parsed scope.
     #

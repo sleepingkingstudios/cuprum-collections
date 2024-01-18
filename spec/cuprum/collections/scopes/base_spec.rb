@@ -23,6 +23,10 @@ RSpec.describe Cuprum::Collections::Scopes::Base do
     include_examples 'should define private reader', :builder, -> { expected }
   end
 
+  describe '#empty?' do
+    include_examples 'should define predicate', :empty?, false
+  end
+
   describe '#type' do
     include_examples 'should define reader', :type, :abstract
   end

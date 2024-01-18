@@ -251,6 +251,11 @@ module Cuprum::Collections::Scopes
     end
     alias where and
 
+    # @return [Boolean] true if the scope has no criteria; otherwise false.
+    def empty?
+      @criteria.empty?
+    end
+
     # (see Cuprum::Collections::Scopes::Base#type)
     def type
       :criteria

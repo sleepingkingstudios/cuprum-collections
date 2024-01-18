@@ -101,6 +101,14 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           end
         end
 
+        describe '#empty?' do
+          include_examples 'should define predicate', :empty?, true
+
+          wrap_context 'with criteria' do
+            it { expect(subject.empty?).to be false }
+          end
+        end
+
         describe '#type' do
           include_examples 'should define reader', :type, :criteria
         end
