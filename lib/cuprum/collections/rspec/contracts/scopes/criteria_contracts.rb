@@ -215,6 +215,21 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           end
         end
 
+        describe '#as_json' do
+          let(:expected) do
+            {
+              'criteria' => subject.criteria,
+              'type'     => subject.type
+            }
+          end
+
+          it { expect(subject.as_json).to be == expected }
+
+          wrap_context 'with criteria' do
+            it { expect(subject.as_json).to be == expected }
+          end
+        end
+
         describe '#call' do
           next if abstract
 

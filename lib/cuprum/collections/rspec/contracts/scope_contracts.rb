@@ -37,6 +37,14 @@ module Cuprum::Collections::RSpec::Contracts
           end
         end
 
+        describe '#as_json' do
+          it { expect(subject).to respond_to(:as_json).with(0).arguments }
+
+          it { expect(subject.as_json).to be_a Hash }
+
+          it { expect(subject.as_json['type']).to be subject.type }
+        end
+
         describe '#empty?' do
           include_examples 'should define predicate', :empty?, -> { be_boolean }
         end
@@ -178,6 +186,16 @@ module Cuprum::Collections::RSpec::Contracts
                 it { expect(subject == other).to be true }
               end
             end
+          end
+        end
+
+        describe '#as_json' do
+          it { expect(subject.as_json['scopes']).to be == [] }
+
+          wrap_context 'with scopes' do
+            let(:expected) { subject.scopes.map(&:as_json) }
+
+            it { expect(subject.as_json['scopes']).to be == expected }
           end
         end
 
@@ -387,6 +405,12 @@ module Cuprum::Collections::RSpec::Contracts
 
             it { expect(subject.and(original)).to be subject }
           end
+        end
+
+        describe '#as_json' do
+          let(:expected) { { 'type' => subject.type } }
+
+          it { expect(subject.as_json).to be == expected }
         end
 
         describe '#call' do

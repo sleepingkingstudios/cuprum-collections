@@ -26,6 +26,11 @@ module Cuprum::Collections::Scopes
       other.scopes == scopes
     end
 
+    # (see Cuprum::Colletions::Scopes::Base#as_json)
+    def as_json
+      super().merge({ 'scopes' => scopes.map(&:as_json) })
+    end
+
     # @private
     def debug
       message = "#{super} (#{scopes.count})"
