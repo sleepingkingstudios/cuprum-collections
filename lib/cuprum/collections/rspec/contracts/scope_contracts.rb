@@ -7,6 +7,46 @@ require 'cuprum/collections/scope'
 module Cuprum::Collections::RSpec::Contracts
   # Contracts for asserting on scope objects.
   module ScopeContracts
+    # Contract validating the behavior of a scope implementation.
+    module ShouldBeAScopeContract
+      extend RSpec::SleepingKingStudios::Contract
+
+      # @!method apply(example_group)
+      #   Adds the contract to the example group.
+      #
+      #   @param example_group [RSpec::Core::ExampleGroup] the example group to
+      #     which the contract is applied.
+      contract do
+        describe '#==' do
+          it { expect(subject == nil).to be false } # rubocop:disable Style/NilComparison
+
+          it { expect(subject == Object.new.freeze).to be false }
+
+          describe 'with a scope of different type' do
+            let(:other) { Spec::OtherScope.new }
+
+            # rubocop:disable Style/RedundantLineContinuation
+            example_class 'Spec::OtherScope',
+              Cuprum::Collections::Scopes::Base \
+            do |klass|
+              klass.define_method(:type) { :invalid }
+            end
+            # rubocop:enable Style/RedundantLineContinuation
+
+            it { expect(subject == other).to be false }
+          end
+        end
+
+        describe '#empty?' do
+          include_examples 'should define predicate', :empty?, -> { be_boolean }
+        end
+
+        describe '#type' do
+          include_examples 'should define reader', :type, -> { be_a(Symbol) }
+        end
+      end
+    end
+
     # Contract validating the behavior of a Container scope implementation.
     module ShouldBeAContainerScopeContract
       extend RSpec::SleepingKingStudios::Contract
@@ -37,8 +77,112 @@ module Cuprum::Collections::RSpec::Contracts
           end
         end
 
+        include_contract 'should be a scope'
+
+        describe '#==' do
+          describe 'with a scope with the same class' do
+            let(:other) { described_class.new(scopes: other_scopes) }
+
+            describe 'with empty scopes' do
+              let(:other_scopes) { [] }
+
+              it { expect(subject == other).to be true }
+            end
+
+            describe 'with non-matching scopes' do
+              let(:other_scopes) do
+                Array.new(3) do
+                  Cuprum::Collections::Scope.new({ 'ok' => true })
+                end
+              end
+
+              it { expect(subject == other).to be false }
+            end
+
+            wrap_context 'with scopes' do
+              describe 'with empty scopes' do
+                let(:other_scopes) { [] }
+
+                it { expect(subject == other).to be false }
+              end
+
+              describe 'with non-matching scopes' do
+                let(:other_scopes) do
+                  Array.new(3) do
+                    Cuprum::Collections::Scope.new({ 'ok' => true })
+                  end
+                end
+
+                it { expect(subject == other).to be false }
+              end
+
+              describe 'with matching scopes' do
+                let(:other_scopes) { subject.scopes }
+
+                it { expect(subject == other).to be true }
+              end
+            end
+          end
+
+          describe 'with a scope with the same type' do
+            let(:other) { Spec::CustomScope.new(scopes: other_scopes) }
+
+            # rubocop:disable Style/RedundantLineContinuation
+            example_class 'Spec::CustomScope',
+              Cuprum::Collections::Scopes::Base \
+            do |klass|
+              klass.include Cuprum::Collections::Scopes::Container
+            end
+            # rubocop:enable Style/RedundantLineContinuation
+
+            before(:example) do
+              allow(other).to receive(:type).and_return(scope.type)
+            end
+
+            describe 'with empty scopes' do
+              let(:other_scopes) { [] }
+
+              it { expect(subject == other).to be true }
+            end
+
+            describe 'with non-matching scopes' do
+              let(:other_scopes) do
+                Array.new(3) do
+                  Cuprum::Collections::Scope.new({ 'ok' => true })
+                end
+              end
+
+              it { expect(subject == other).to be false }
+            end
+
+            wrap_context 'with scopes' do
+              describe 'with empty scopes' do
+                let(:other_scopes) { [] }
+
+                it { expect(subject == other).to be false }
+              end
+
+              describe 'with non-matching scopes' do
+                let(:other_scopes) do
+                  Array.new(3) do
+                    Cuprum::Collections::Scope.new({ 'ok' => true })
+                  end
+                end
+
+                it { expect(subject == other).to be false }
+              end
+
+              describe 'with matching scopes' do
+                let(:other_scopes) { subject.scopes }
+
+                it { expect(subject == other).to be true }
+              end
+            end
+          end
+        end
+
         describe '#empty?' do
-          include_examples 'should define predicate', :empty?, true
+          it { expect(subject.empty?).to be true }
 
           wrap_context 'with scopes' do
             it { expect(subject.empty?).to be false }
@@ -104,6 +248,30 @@ module Cuprum::Collections::RSpec::Contracts
       #   @param abstract [Boolean] if true, the scope is abstract and does not
       #     define a #call implementation. Defaults to false.
       contract do |abstract: false|
+        include_contract 'should be a scope'
+
+        describe '#==' do
+          describe 'with a scope with the same class' do
+            let(:other) { described_class.new }
+
+            it { expect(subject == other).to be true }
+          end
+
+          describe 'with a scope with the same type' do
+            let(:other) { Spec::CustomScope.new }
+
+            # rubocop:disable Style/RedundantLineContinuation
+            example_class 'Spec::CustomScope',
+              Cuprum::Collections::Scopes::Base \
+            do |klass|
+              klass.define_method(:type) { :null }
+            end
+            # rubocop:enable Style/RedundantLineContinuation
+
+            it { expect(subject == other).to be true }
+          end
+        end
+
         describe '#and' do
           shared_examples 'should return the scope' do
             it { expect(outer).to be_a Cuprum::Collections::Scopes::Base }
@@ -183,7 +351,7 @@ module Cuprum::Collections::RSpec::Contracts
         end
 
         describe '#empty?' do
-          include_examples 'should define predicate', :empty?, true
+          it { expect(subject.empty?).to be true }
         end
 
         describe '#or' do
@@ -302,7 +470,7 @@ module Cuprum::Collections::RSpec::Contracts
         end
 
         describe '#type' do
-          include_examples 'should define reader', :type, :null
+          it { expect(subject.type).to be :null }
         end
       end
     end

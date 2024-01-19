@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
 require 'cuprum/collections/rspec/contracts/scopes'
+require 'cuprum/collections/rspec/contracts/scope_contracts'
 require 'cuprum/collections/rspec/contracts/scopes/composition_contracts'
 
 module Cuprum::Collections::RSpec::Contracts::Scopes
   # Contracts for asserting on criteria scope objects.
   module CriteriaContracts
+    include Cuprum::Collections::RSpec::Contracts::ScopeContracts
     include Cuprum::Collections::RSpec::Contracts::Scopes::CompositionContracts
 
     # Contract validating the behavior of a Criteria scope implementation.
@@ -19,7 +21,9 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
       #     which the contract is applied.
       #   @param abstract [Boolean] if true, the scope is abstract and does not
       #     define a #call implementation. Defaults to false.
-      contract do |abstract: false, constructor: true|
+      #   @param equality [Boolean] if false, skips the specs for the equality
+      #     operator #==. Defaults to true.
+      contract do |abstract: false, equality: true, constructor: true|
         shared_context 'with criteria' do
           let(:criteria) do
             operators = Cuprum::Collections::Queries::Operators
@@ -83,7 +87,133 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           include_contract 'should parse criteria'
         end
 
+        include_contract 'should be a scope'
+
         include_contract 'should compose scopes for criteria'
+
+        describe '#==' do
+          next unless equality
+
+          describe 'with a scope with the same class' do
+            let(:other) { described_class.new(criteria: other_criteria) }
+
+            describe 'with empty criteria' do
+              let(:other_criteria) { [] }
+
+              it { expect(subject == other).to be true }
+            end
+
+            describe 'with non-matching criteria' do
+              let(:other_criteria) do
+                operators = Cuprum::Collections::Queries::Operators
+
+                [
+                  [
+                    'ok',
+                    operators::EQUAL,
+                    true
+                  ]
+                ]
+              end
+
+              it { expect(subject == other).to be false }
+            end
+
+            wrap_context 'with criteria' do
+              describe 'with empty criteria' do
+                let(:other_criteria) { [] }
+
+                it { expect(subject == other).to be false }
+              end
+
+              describe 'with non-matching criteria' do
+                let(:other_criteria) do
+                  operators = Cuprum::Collections::Queries::Operators
+
+                  [
+                    [
+                      'ok',
+                      operators::EQUAL,
+                      true
+                    ]
+                  ]
+                end
+
+                it { expect(subject == other).to be false }
+              end
+
+              describe 'with matching criteria' do
+                let(:other_criteria) { subject.criteria }
+
+                it { expect(subject == other).to be true }
+              end
+            end
+          end
+
+          describe 'with a scope with the same type' do
+            let(:other) { Spec::CustomScope.new(criteria: other_criteria) }
+
+            # rubocop:disable Style/RedundantLineContinuation
+            example_class 'Spec::CustomScope',
+              Cuprum::Collections::Scopes::Base \
+            do |klass|
+              klass.include Cuprum::Collections::Scopes::Criteria
+            end
+            # rubocop:enable Style/RedundantLineContinuation
+
+            describe 'with empty criteria' do
+              let(:other_criteria) { [] }
+
+              it { expect(subject == other).to be true }
+            end
+
+            describe 'with non-matching criteria' do
+              let(:other_criteria) do
+                operators = Cuprum::Collections::Queries::Operators
+
+                [
+                  [
+                    'ok',
+                    operators::EQUAL,
+                    true
+                  ]
+                ]
+              end
+
+              it { expect(subject == other).to be false }
+            end
+
+            wrap_context 'with criteria' do
+              describe 'with empty criteria' do
+                let(:other_criteria) { [] }
+
+                it { expect(subject == other).to be false }
+              end
+
+              describe 'with non-matching criteria' do
+                let(:other_criteria) do
+                  operators = Cuprum::Collections::Queries::Operators
+
+                  [
+                    [
+                      'ok',
+                      operators::EQUAL,
+                      true
+                    ]
+                  ]
+                end
+
+                it { expect(subject == other).to be false }
+              end
+
+              describe 'with matching criteria' do
+                let(:other_criteria) { subject.criteria }
+
+                it { expect(subject == other).to be true }
+              end
+            end
+          end
+        end
 
         describe '#call' do
           next if abstract

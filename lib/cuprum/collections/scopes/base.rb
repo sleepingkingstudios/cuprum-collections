@@ -10,6 +10,16 @@ module Cuprum::Collections::Scopes
 
     def initialize(**); end
 
+    # @param other [Object] the object to compare.
+    #
+    # @return [Boolean] true if the other object is a scope with matching type;
+    #   otherwise false.
+    def ==(other)
+      return false unless other.is_a?(Cuprum::Collections::Scopes::Base)
+
+      other.type == type
+    end
+
     # @return [Boolean] false.
     def empty?
       false

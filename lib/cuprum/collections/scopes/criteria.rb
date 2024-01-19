@@ -241,6 +241,16 @@ module Cuprum::Collections::Scopes
     # @return [Array] the criteria used for filtering query data.
     attr_reader :criteria
 
+    # @param other [Object] the object to compare.
+    #
+    # @return [Boolean] true if the other object is a scope with matching type
+    #   and criteria; otherwise false.
+    def ==(other)
+      return false unless super
+
+      other.criteria == criteria
+    end
+
     # (see Cuprum::Collections::Scopes::Composition#and)
     def and(*args, &block)
       return and_criteria_scope(args.first) if criteria_scope?(args.first)
