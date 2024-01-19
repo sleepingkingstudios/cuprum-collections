@@ -253,6 +253,8 @@ module Cuprum::Collections::Scopes
 
     # (see Cuprum::Collections::Scopes::Composition#and)
     def and(*args, &block)
+      return self if empty_scope?(args.first)
+
       return and_criteria_scope(args.first) if criteria_scope?(args.first)
 
       return super if scope?(args.first)
@@ -260,6 +262,17 @@ module Cuprum::Collections::Scopes
       with_criteria([*criteria, *self.class.parse(*args, &block)])
     end
     alias where and
+
+    # @private
+    def debug
+      message = "#{super} (#{criteria.count})"
+
+      return message if empty?
+
+      criteria.reduce("#{message}:") do |str, (attribute, operator, value)|
+        str + "\n- #{attribute.inspect} #{operator} #{value.inspect}"
+      end
+    end
 
     # @return [Boolean] true if the scope has no criteria; otherwise false.
     def empty?

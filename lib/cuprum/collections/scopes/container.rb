@@ -26,6 +26,17 @@ module Cuprum::Collections::Scopes
       other.scopes == scopes
     end
 
+    # @private
+    def debug
+      message = "#{super} (#{scopes.count})"
+
+      return message if empty?
+
+      scopes.reduce("#{message}:") do |str, scope|
+        str + "\n- #{scope.debug.gsub("\n", "\n  ")}"
+      end
+    end
+
     # @return [Boolean] true if the scope has no child scopes; otherwise false.
     def empty?
       @scopes.empty?

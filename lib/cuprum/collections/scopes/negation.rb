@@ -10,6 +10,8 @@ module Cuprum::Collections::Scopes
 
     # (see Cuprum::Collections::Scopes::Composition#and)
     def and(*args, &block)
+      return self if empty_scope?(args.first)
+
       return super unless negation_scope?(args.first)
 
       scopes = args.first.scopes.map do |scope|
@@ -22,6 +24,8 @@ module Cuprum::Collections::Scopes
 
     # (see Cuprum::Collections::Scopes::Composition#not)
     def not(*args, &block)
+      return self if empty_scope?(args.first)
+
       return super unless negation_scope?(args.first)
 
       scopes = args.first.scopes.map do |scope|

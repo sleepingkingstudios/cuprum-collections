@@ -10,7 +10,9 @@ module Cuprum::Collections::Scopes
 
     # (see Cuprum::Collections::Scopes::Composition#or)
     def or(*args, &block)
-      return or_disjuncton_scope(args.first) if disjunction_scope?(args.first)
+      return self if empty_scope?(args.first)
+
+      return or_disjunction_scope(args.first) if disjunction_scope?(args.first)
 
       with_scopes([*scopes, builder.build(*args, &block)])
     end
@@ -22,7 +24,7 @@ module Cuprum::Collections::Scopes
 
     private
 
-    def or_disjuncton_scope(scope)
+    def or_disjunction_scope(scope)
       scopes = scope.scopes.map do |inner|
         builder.transform_scope(scope: inner)
       end

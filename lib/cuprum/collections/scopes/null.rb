@@ -12,8 +12,10 @@ module Cuprum::Collections::Scopes
     #
     # @override and(scope)
     #   Returns the given scope.
-    def and(...)
-      builder.build(...)
+    def and(*args, &block)
+      return self if empty_scope?(args.first)
+
+      builder.build(*args, &block)
     end
     alias where and
 
@@ -29,8 +31,10 @@ module Cuprum::Collections::Scopes
     #
     # @override or(scope)
     #   Returns the given scope.
-    def or(...)
-      builder.build(...)
+    def or(*args, &block)
+      return self if empty_scope?(args.first)
+
+      builder.build(*args, &block)
     end
 
     # @override not(hash = nil, &block)
@@ -40,8 +44,14 @@ module Cuprum::Collections::Scopes
     #
     # @override not(scope)
     #   Inverts and returns the given scope.
-    def not(...)
-      scope = builder.build(...)
+    def not(*args, &block)
+      return self if empty_scope?(args.first)
+
+      return not_conjunction_scope(args.first) if conjunction_scope?(args.first)
+
+      return not_negation_scope(args.first) if negation_scope?(args.first)
+
+      scope = builder.build(*args, &block)
 
       builder.build_negation_scope(scopes: [scope], safe: false)
     end
@@ -49,6 +59,26 @@ module Cuprum::Collections::Scopes
     # (see Cuprum::Collections::Scopes::Base#type)
     def type
       :null
+    end
+
+    private
+
+    def not_conjunction_scope(scope)
+      scopes = scope.scopes.map do |inner|
+        builder.transform_scope(scope: inner)
+      end
+
+      builder.build_negation_scope(scopes: scopes, safe: false)
+    end
+
+    def not_negation_scope(scope)
+      scopes = scope.scopes.map do |inner|
+        builder.transform_scope(scope: inner)
+      end
+
+      return scopes.first if scopes.size == 1
+
+      builder.build_conjunction_scope(scopes: scopes, safe: false)
     end
   end
 end
