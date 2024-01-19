@@ -441,15 +441,6 @@ module Cuprum::Collections::RSpec::Contracts
               .using_constraint(primary_keys_contract)
           end
 
-          it 'should validate the :scope keyword' do
-            expect(command)
-              .to validate_parameter(:call, :scope)
-              .using_constraint(
-                Stannum::Constraints::Type.new(query.class, optional: true)
-              )
-              .with_value(Object.new.freeze)
-          end
-
           describe 'with an array of invalid primary keys' do
             let(:primary_keys) { invalid_primary_key_values }
             let(:expected_error) do
@@ -667,154 +658,6 @@ module Cuprum::Collections::RSpec::Contracts
                 end
               end
             end
-
-            describe 'with scope: query' do
-              let(:scope_filter) { -> { {} } }
-
-              describe 'with an array of invalid primary keys' do
-                let(:primary_keys) { invalid_primary_key_values }
-                let(:expected_error) do
-                  Cuprum::Errors::MultipleErrors.new(
-                    errors: primary_keys.map do |primary_key|
-                      Cuprum::Collections::Errors::NotFound.new(
-                        attribute_name:  primary_key_name,
-                        attribute_value: primary_key,
-                        collection_name: command.collection_name,
-                        primary_key:     true
-                      )
-                    end
-                  )
-                end
-
-                it 'should return a failing result' do
-                  expect(command.call(primary_keys: primary_keys, scope: scope))
-                    .to be_a_failing_result
-                    .with_error(expected_error)
-                end
-              end
-
-              describe 'with a scope that does not match any keys' do
-                let(:scope_filter) { -> { { author: 'Ursula K. LeGuin' } } }
-
-                describe 'with a valid array of primary keys' do
-                  let(:primary_keys) { valid_primary_key_values }
-                  let(:expected_error) do
-                    Cuprum::Errors::MultipleErrors.new(
-                      errors: primary_keys.map do |primary_key|
-                        Cuprum::Collections::Errors::NotFound.new(
-                          attribute_name:  primary_key_name,
-                          attribute_value: primary_key,
-                          collection_name: command.collection_name,
-                          primary_key:     true
-                        )
-                      end
-                    )
-                  end
-
-                  it 'should return a failing result' do
-                    expect(
-                      command.call(primary_keys: primary_keys, scope: scope)
-                    )
-                      .to be_a_failing_result
-                      .with_error(expected_error)
-                  end
-                end
-              end
-
-              describe 'with a scope that matches some keys' do
-                let(:scope_filter) { -> { { series: nil } } }
-                let(:matching_data) do
-                  super().map do |item|
-                    next nil unless item['series'].nil?
-
-                    item
-                  end
-                end
-
-                describe 'with a valid array of primary keys' do
-                  let(:primary_keys) { valid_primary_key_values }
-                  let(:expected_error) do
-                    found_keys =
-                      matching_data
-                        .compact
-                        .map { |item| item[primary_key_name.to_s] }
-
-                    Cuprum::Errors::MultipleErrors.new(
-                      errors: primary_keys.map do |primary_key|
-                        next if found_keys.include?(primary_key)
-
-                        Cuprum::Collections::Errors::NotFound.new(
-                          attribute_name:  primary_key_name,
-                          attribute_value: primary_key,
-                          collection_name: command.collection_name,
-                          primary_key:     true
-                        )
-                      end
-                    )
-                  end
-
-                  it 'should return a failing result' do
-                    expect(
-                      command.call(primary_keys: primary_keys, scope: scope)
-                    )
-                      .to be_a_failing_result
-                      .with_error(expected_error)
-                  end
-                end
-
-                describe 'with allow_partial: true' do
-                  describe 'with a valid array of primary keys' do
-                    let(:primary_keys) { valid_primary_key_values }
-                    let(:expected_error) do
-                      found_keys =
-                        matching_data
-                          .compact
-                          .map { |item| item[primary_key_name.to_s] }
-
-                      Cuprum::Errors::MultipleErrors.new(
-                        errors: primary_keys.map do |primary_key|
-                          next if found_keys.include?(primary_key)
-
-                          Cuprum::Collections::Errors::NotFound.new(
-                            attribute_name:  primary_key_name,
-                            attribute_value: primary_key,
-                            collection_name: command.collection_name,
-                            primary_key:     true
-                          )
-                        end
-                      )
-                    end
-
-                    it 'should return a passing result' do
-                      expect(
-                        command.call(
-                          allow_partial: true,
-                          primary_keys:  primary_keys,
-                          scope:         scope
-                        )
-                      )
-                        .to be_a_passing_result
-                        .with_value(expected_data)
-                        .and_error(expected_error)
-                    end
-                  end
-                end
-              end
-
-              describe 'with a scope that matches all keys' do
-                let(:scope_filter) { -> { { author: 'J.R.R. Tolkien' } } }
-
-                describe 'with a valid array of primary keys' do
-                  let(:primary_keys) { valid_primary_key_values }
-
-                  it 'should return a passing result' do
-                    expect(command.call(primary_keys: primary_keys))
-                      .to be_a_passing_result
-                      .with_value(expected_data)
-                  end
-                end
-              end
-            end
           end
         end
       end
@@ -854,6 +697,7 @@ module Cuprum::Collections::RSpec::Contracts
             it { expect(result.value[collection_name]).to be == expected_data }
           end
 
+          let(:filter) { defined?(super()) ? super() : nil }
           let(:options) do
             opts = {}
 
@@ -899,15 +743,6 @@ module Cuprum::Collections::RSpec::Contracts
               .to validate_parameter(:call, :order)
               .with_value(Object.new)
               .using_constraint(constraint, required: false)
-          end
-
-          it 'should validate the :scope keyword' do
-            expect(command)
-              .to validate_parameter(:call, :scope)
-              .using_constraint(
-                Stannum::Constraints::Type.new(query.class, optional: true)
-              )
-              .with_value(Object.new.freeze)
           end
 
           it 'should validate the :where keyword' do
@@ -963,55 +798,6 @@ module Cuprum::Collections::RSpec::Contracts
                   include_examples 'should return the wrapped items'
                 }
             end
-
-            describe 'with scope: query' do
-              let(:scope_filter) { -> { {} } }
-              let(:options)      { super().merge(scope: scope) }
-
-              describe 'with a scope that does not match any values' do
-                let(:scope_filter)  { -> { { series: 'Mistborn' } } }
-                let(:matching_data) { [] }
-
-                include_examples 'should return the matching items'
-              end
-
-              describe 'with a scope that matches some values' do
-                let(:scope_filter) { -> { { series: nil } } }
-                let(:matching_data) do
-                  super().select { |item| item['series'].nil? }
-                end
-
-                include_examples 'should return the matching items'
-
-                describe 'with a where filter' do
-                  let(:filter)  { -> { { author: 'Ursula K. LeGuin' } } }
-                  let(:options) { super().merge(where: filter) }
-                  let(:matching_data) do
-                    super()
-                      .select { |item| item['author'] == 'Ursula K. LeGuin' }
-                  end
-
-                  include_examples 'should return the matching items'
-                end
-              end
-
-              describe 'with a scope that matches all values' do
-                let(:scope_filter) { -> { { id: not_equal(nil) } } }
-
-                include_examples 'should return the matching items'
-
-                describe 'with a where filter' do
-                  let(:filter)  { -> { { author: 'Ursula K. LeGuin' } } }
-                  let(:options) { super().merge(where: filter) }
-                  let(:matching_data) do
-                    super()
-                      .select { |item| item['author'] == 'Ursula K. LeGuin' }
-                  end
-
-                  include_examples 'should return the matching items'
-                end
-              end
-            end
           end
         end
       end
@@ -1054,15 +840,6 @@ module Cuprum::Collections::RSpec::Contracts
             expect(command)
               .to validate_parameter(:call, :primary_key)
               .using_constraint(primary_key_type)
-          end
-
-          it 'should validate the :scope keyword' do
-            expect(command)
-              .to validate_parameter(:call, :scope)
-              .using_constraint(
-                Stannum::Constraints::Type.new(query.class, optional: true)
-              )
-              .with_value(Object.new.freeze)
           end
 
           describe 'with an invalid primary key' do
@@ -1134,47 +911,11 @@ module Cuprum::Collections::RSpec::Contracts
                 end
               end
             end
-
-            describe 'with scope: query' do
-              let(:scope_filter) { -> { {} } }
-
-              describe 'with a scope that does not match the key' do
-                let(:scope_filter) { -> { { author: 'Ursula K. LeGuin' } } }
-
-                describe 'with an valid primary key' do
-                  let(:primary_key) { valid_primary_key_value }
-                  let(:expected_error) do
-                    Cuprum::Collections::Errors::NotFound.new(
-                      attribute_name:  primary_key_name,
-                      attribute_value: primary_key,
-                      collection_name: command.collection_name,
-                      primary_key:     true
-                    )
-                  end
-
-                  it 'should return a failing result' do
-                    expect(command.call(primary_key: primary_key, scope: scope))
-                      .to be_a_failing_result
-                      .with_error(expected_error)
-                  end
-                end
-              end
-
-              describe 'with a scope that matches the key' do
-                let(:scope_filter) { -> { { author: 'J.R.R. Tolkien' } } }
-
-                describe 'with a valid primary key' do
-                  let(:primary_key) { valid_primary_key_value }
-
-                  it 'should return a passing result' do
-                    expect(command.call(primary_key: primary_key))
-                      .to be_a_passing_result
-                      .with_value(expected_data)
-                  end
-                end
-              end
-            end
           end
+        end
+
+        describe '#query' do
+          include_examples 'should define reader', :query, -> { query }
         end
       end
     end

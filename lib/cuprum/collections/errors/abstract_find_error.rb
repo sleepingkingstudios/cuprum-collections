@@ -40,7 +40,7 @@ module Cuprum::Collections::Errors
         attributes:      attributes,
         collection_name: collection_name,
         message:         generate_message,
-        query:           query&.criteria
+        scope:           scope
       )
     end
 
@@ -56,18 +56,23 @@ module Cuprum::Collections::Errors
     # @return [String] the name of the collection.
     attr_reader :collection_name
 
-    # @return [Cuprum::Collections::Query] the performed query, if any.
-    attr_reader :query
+    # @return [Cuprum::Collections::Scopes::Base] the query scope, if any.
+    attr_reader :scope
 
-    # @return [Array<Array>] the details of the query, in query criteria format.
-    def details
+    # @return [Array<Array>] the details of the query, in scope format.
+    def details # rubocop:disable Metrics/MethodLength
       if attribute_name
-        [[attribute_name, :equal, attribute_value]]
+        criteria = [[attribute_name, :equal, attribute_value]]
+
+        { 'type' => :criteria, 'criteria' => criteria }
       elsif attributes
-        attributes
-          .map { |attr_name, attr_value| [attr_name, :equal, attr_value] }
-      elsif query
-        query.criteria
+        criteria =
+          attributes
+            .map { |attr_name, attr_value| [attr_name, :equal, attr_value] }
+
+        { 'type' => :criteria, 'criteria' => criteria }
+      elsif scope
+        scope
       end
     end
 
@@ -115,7 +120,7 @@ module Cuprum::Collections::Errors
           "#{primary_key? ? ' (primary key)' : ''}"
       elsif attributes
         "#{core_message} with attributes #{attributes.inspect}"
-      elsif query
+      elsif scope
         "#{core_message} matching the query"
       end
     end
@@ -142,7 +147,7 @@ module Cuprum::Collections::Errors
 
     def resolve_query_options(**options)
       options = options.dup
-      @query  = options.delete(:query)
+      @scope  = options.delete(:query)&.scope
 
       validate_keywords(extra_keywords: options.keys)
     end

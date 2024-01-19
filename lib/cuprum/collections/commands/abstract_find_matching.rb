@@ -1,56 +1,54 @@
 # frozen_string_literal: true
 
 require 'cuprum/collections/commands'
-require 'cuprum/collections/queries/parse'
+require 'cuprum/collections/commands/query_command'
+require 'cuprum/collections/errors/invalid_query'
 
 module Cuprum::Collections::Commands
   # Abstract implementation of the FindMatching command.
-  #
-  # Subclasses must define the #build_query method, which returns an empty
-  # Query instance for that collection.
   module AbstractFindMatching
+    include Cuprum::Collections::Commands::QueryCommand
+
     private
 
-    def apply_query(criteria:, limit:, offset:, order:, scope:)
-      query = scope || build_query
+    def apply_query(limit:, offset:, order:, scope:)
+      query = self.query
       query = query.limit(limit)   if limit
       query = query.offset(offset) if offset
       query = query.order(order)   if order
-      query = query.where(criteria, strategy: :unsafe) unless criteria.empty?
+      query = query.where(scope)   if scope
 
       success(query)
     end
 
-    def parse_criteria(strategy:, where:, &block)
-      return [] if strategy.nil? && where.nil? && !block_given?
+    def build_scope(value, &block)
+      return Cuprum::Collections::Scope.build(&block) if block_given?
 
-      Cuprum::Collections::Queries::Parse.new.call(
-        strategy: strategy,
-        where:    where || block
+      Cuprum::Collections::Scope.build(value) if value
+    rescue ArgumentError => exception
+      error = Cuprum::Collections::Errors::InvalidQuery.new(
+        message: exception.message,
+        query:   value
       )
+
+      failure(error)
     end
 
-    def process( # rubocop:disable Metrics/MethodLength, Metrics/ParameterLists
+    def process(
       envelope: false,
       limit:    nil,
       offset:   nil,
       order:    nil,
-      scope:    nil,
-      strategy: nil,
       where:    nil,
       &block
     )
-      criteria = step do
-        parse_criteria(strategy: strategy, where: where, &block)
-      end
-
+      scope = step { build_scope(where, &block) }
       query = step do
         apply_query(
-          criteria: criteria,
-          limit:    limit,
-          offset:   offset,
-          order:    order,
-          scope:    scope
+          limit:  limit,
+          offset: offset,
+          order:  order,
+          scope:  scope
         )
       end
 

@@ -30,7 +30,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
       #   @option options conjunction_class [Class] the class for returned
       #     logical AND scopes. Ignored if :abstract is true.
       #   @option options criteria_class [Class] the class for returned criteria
-      #     scopes.Ignored if :abstract is true.
+      #     scopes. Ignored if :abstract is true.
       #   @option options disjunction_class [Class] the class for returned
       #     logical OR scopes. Ignored if :abstract is true.
       #   @option options negation_class [Class] the class for returned logical

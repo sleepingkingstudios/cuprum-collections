@@ -10,36 +10,30 @@ module Cuprum::Collections::Errors
     # Short string used to identify the type of error.
     TYPE = 'cuprum.collections.errors.invalid_query'
 
-    # @param errors [Stannum::Errors] The errors returned by the query builder.
-    # @param strategy [Symbol] The strategy used to construct the query.
-    def initialize(errors:, strategy:, message: nil)
-      @errors   = errors
-      @strategy = strategy
+    # @param query [Object] the given filter parameters, if any.
+    # @param message [String] the message to display.
+    def initialize(query:, message: nil)
+      @query = query
 
       super(
-        errors:   errors,
-        message:  message || default_message,
-        strategy: strategy
+        message: message || default_message,
+        query:   query
       )
     end
 
-    # @return [Stannum::Errors] the errors returned by the query builder.
-    attr_reader :errors
-
-    # @return [Symbol] the strategy used to construct the query.
-    attr_reader :strategy
+    # @return [Object] the given filter parameters, if any.
+    attr_reader :query
 
     private
 
     def as_json_data
       {
-        'errors'   => errors.to_a,
-        'strategy' => strategy
+        'query' => (query.respond_to?(:as_json) ? query.as_json : query.inspect)
       }
     end
 
     def default_message
-      "unable to parse query with strategy #{strategy.inspect}"
+      'unable to parse query'
     end
   end
 end

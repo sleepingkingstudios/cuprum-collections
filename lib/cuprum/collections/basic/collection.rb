@@ -4,6 +4,7 @@ require 'cuprum/command_factory'
 
 require 'cuprum/collections/basic'
 require 'cuprum/collections/basic/commands'
+require 'cuprum/collections/basic/scopes/null_scope'
 require 'cuprum/collections/collection'
 
 module Cuprum::Collections::Basic
@@ -58,17 +59,17 @@ module Cuprum::Collections::Basic
 
     command_class :find_many do
       Cuprum::Collections::Basic::Commands::FindMany
-        .subclass(**command_options)
+        .subclass(query: query, **command_options)
     end
 
     command_class :find_matching do
       Cuprum::Collections::Basic::Commands::FindMatching
-        .subclass(**command_options)
+        .subclass(query: query, **command_options)
     end
 
     command_class :find_one do
       Cuprum::Collections::Basic::Commands::FindOne
-        .subclass(**command_options)
+        .subclass(query: query, **command_options)
     end
 
     command_class :insert_one do
@@ -96,7 +97,7 @@ module Cuprum::Collections::Basic
     #
     # @return [Cuprum::Collections::Basic::Query] the query.
     def query
-      Cuprum::Collections::Basic::Query.new(data)
+      Cuprum::Collections::Basic::Query.new(data, scope: scope)
     end
 
     protected
@@ -106,6 +107,12 @@ module Cuprum::Collections::Basic
         data:             data,
         default_contract: default_contract
       )
+    end
+
+    private
+
+    def default_scope
+      Cuprum::Collections::Basic::Scopes::NullScope.new
     end
   end
 end

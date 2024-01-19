@@ -11,7 +11,7 @@ module Cuprum::Collections::Basic::Commands
   class FindMany < Cuprum::Collections::Basic::Command
     include Cuprum::Collections::Commands::AbstractFindMany
 
-    # @!method call(primary_keys:, allow_partial: false, envelope: false, scope: nil)
+    # @!method call(primary_keys:, allow_partial: false, envelope: false)
     #   Queries the collection for the items with the given primary keys.
     #
     #   The command will find and return the entities with the given primary
@@ -27,8 +27,6 @@ module Cuprum::Collections::Basic::Commands
     #     found.
     #   @param envelope [Boolean] If true, wraps the result value in a Hash.
     #   @param primary_keys [Array] The primary keys of the requested items.
-    #   @param scope [Cuprum::Collections::Basic::Query, nil] Optional scope for
-    #     the query. Items must match the scope as well as the primary keys.
     #
     #   @return [Cuprum::Result<Array<Hash{String, Object}>>] a result with the
     #     requested items.
@@ -36,14 +34,9 @@ module Cuprum::Collections::Basic::Commands
       keyword :allow_partial, Stannum::Constraints::Boolean.new, default: true
       keyword :envelope,      Stannum::Constraints::Boolean.new, default: true
       keyword :primary_keys,  Array
-      keyword :scope,         Cuprum::Collections::Basic::Query, optional: true
     end
 
     private
-
-    def build_query
-      Cuprum::Collections::Basic::Query.new(data)
-    end
 
     def items_with_primary_keys(items:)
       # :nocov:
@@ -54,8 +47,7 @@ module Cuprum::Collections::Basic::Commands
     def process(
       primary_keys:,
       allow_partial: false,
-      envelope:      false,
-      scope:         nil
+      envelope:      false
     )
       step { validate_primary_keys(primary_keys) }
 

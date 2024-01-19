@@ -4,6 +4,7 @@ require 'cuprum/command_factory'
 
 require 'cuprum/collections'
 require 'cuprum/collections/relation'
+require 'cuprum/collections/scopes/null_scope'
 
 module Cuprum::Collections
   # Provides a base implementation for collections.
@@ -17,6 +18,7 @@ module Cuprum::Collections
     IGNORED_PARAMETERS = %i[
       entity_class
       name
+      query
       qualified_name
       singular_name
     ].freeze
@@ -34,7 +36,7 @@ module Cuprum::Collections
     #     attribute. Defaults to 'id'.
     #   @option primary_key_type [Class, Stannum::Constraint] the type of
     #     the primary key attribute. Defaults to Integer.
-    def initialize(**parameters)
+    def initialize(**parameters) # rubocop:disable Metrics/MethodLength
       super()
 
       relation_params = resolve_parameters(parameters)
@@ -44,6 +46,12 @@ module Cuprum::Collections
       @qualified_name = relation_params[:qualified_name]
       @singular_name  = relation_params[:singular_name]
 
+      @scope   =
+        if parameters.key?(:scope)
+          default_scope.and(parameters[:scope])
+        else
+          default_scope
+        end
       @options = ignore_parameters(**parameters)
     end
 
@@ -91,12 +99,26 @@ module Cuprum::Collections
         'subclass and implement the #query method.'
     end
 
+    # @return [Cuprum::Collections::Scopes::Base] the configured scope for the
+    #   collection.
+    def scope
+      @scope ||= default_scope
+    end
+
+    # Returns a copy of the collection that merges the given scope.
+    def with_scope(other_scope)
+      dup.tap { |copy| copy.scope = scope.and(other_scope) }
+    end
+
     protected
+
+    attr_writer :scope
 
     def comparable_options
       command_options.merge(
         name:           name,
         qualified_name: qualified_name,
+        scope:          scope,
         singular_name:  singular_name
       )
     end
@@ -112,6 +134,10 @@ module Cuprum::Collections
         primary_key_type: primary_key_type,
         **options
       }
+    end
+
+    def default_scope
+      Cuprum::Collections::Scopes::NullScope.new
     end
 
     def ignore_parameters(**parameters)

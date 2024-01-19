@@ -7,9 +7,8 @@ require 'stannum/errors'
 RSpec.describe Cuprum::Collections::Errors::InvalidQuery do
   subject(:error) { described_class.new(**keywords) }
 
-  let(:strategy) { :block }
-  let(:errors)   { Stannum::Errors.new }
-  let(:keywords) { { errors: errors, strategy: strategy } }
+  let(:query)    { %w[invalid query] }
+  let(:keywords) { { query: query } }
 
   describe '::TYPE' do
     include_examples 'should define immutable constant',
@@ -22,39 +21,25 @@ RSpec.describe Cuprum::Collections::Errors::InvalidQuery do
       expect(described_class)
         .to be_constructible
         .with(0).arguments
-        .and_keywords(:errors, :message, :strategy)
+        .and_keywords(:message, :query)
     end
   end
 
   describe '#as_json' do
     let(:expected) do
       {
-        'data'    => {
-          'errors'   => errors.to_a,
-          'strategy' => strategy
-        },
+        'data'    => { 'query' => query.inspect },
         'message' => error.message,
         'type'    => error.type
       }
     end
 
     include_examples 'should have reader', :as_json, -> { be == expected }
-
-    context 'when the error is initialized with message: value' do
-      let(:message)  { 'the query is full of eels' }
-      let(:keywords) { super().merge(message: message) }
-
-      it { expect(error.as_json).to be == expected }
-    end
-  end
-
-  describe '#errors' do
-    include_examples 'should define reader', :errors, -> { errors }
   end
 
   describe '#message' do
     let(:expected) do
-      "unable to parse query with strategy #{strategy.inspect}"
+      'unable to parse query'
     end
 
     include_examples 'should have reader', :message, -> { be == expected }
@@ -67,8 +52,8 @@ RSpec.describe Cuprum::Collections::Errors::InvalidQuery do
     end
   end
 
-  describe '#strategy' do
-    include_examples 'should define reader', :strategy, -> { strategy }
+  describe '#query' do
+    include_examples 'should define reader', :query, -> { query }
   end
 
   describe '#type' do

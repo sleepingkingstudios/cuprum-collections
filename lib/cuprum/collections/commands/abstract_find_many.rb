@@ -1,20 +1,20 @@
 # frozen_string_literal: true
 
 require 'cuprum/collections/commands'
+require 'cuprum/collections/commands/query_command'
 require 'cuprum/collections/errors/not_found'
 
 module Cuprum::Collections::Commands
   # Abstract implementation of the FindMany command.
-  #
-  # Subclasses must define the #build_query method, which returns an empty
-  # Query instance for that collection.
   module AbstractFindMany
+    include Cuprum::Collections::Commands::QueryCommand
+
     private
 
-    def apply_query(primary_keys:, scope:)
+    def apply_query(primary_keys:)
       key = primary_key_name
 
-      (scope || build_query).where { { key => one_of(primary_keys) } }
+      query.where { { key => one_of(primary_keys) } }
     end
 
     def build_results(items:, primary_keys:)
@@ -54,13 +54,8 @@ module Cuprum::Collections::Commands
       )
     end
 
-    def process(
-      primary_keys:,
-      allow_partial: false,
-      envelope:      false,
-      scope:         nil
-    )
-      query   = apply_query(primary_keys: primary_keys, scope: scope)
+    def process(primary_keys:, allow_partial: false, envelope: false)
+      query   = apply_query(primary_keys: primary_keys)
       items   = items_with_primary_keys(items: query.to_a)
       results = build_results(items: items, primary_keys: primary_keys)
 

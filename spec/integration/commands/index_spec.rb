@@ -46,7 +46,7 @@ RSpec.describe Spec::Support::Commands::Index do
     end
 
     describe 'with query parameters' do
-      let(:filter) { -> { { author: 'Ursula K. LeGuin' } } }
+      let(:filter) { { author: 'Ursula K. LeGuin' } }
       let(:limit)  { 3 }
       let(:offset) { 1 }
       let(:order)  { :title }

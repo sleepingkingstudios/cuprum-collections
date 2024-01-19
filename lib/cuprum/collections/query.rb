@@ -2,38 +2,36 @@
 
 require 'cuprum/collections'
 require 'cuprum/collections/queries/ordering'
+require 'cuprum/collections/scopes/null_scope'
 
 module Cuprum::Collections
   # Abstract base class for collection Query implementations.
   class Query
+    include Enumerable
+
     UNDEFINED = Object.new.freeze
     private_constant :UNDEFINED
 
-    def initialize
-      @criteria = []
+    # @param scope [Cuprum::Collections::Scopes::Base] the base scope for the
+    #   query. Defaults to nil.
+    def initialize(scope: nil)
+      @limit  = nil
+      @offset = nil
+      @order  = {}
+      @scope  = scope ? default_scope.and(scope) : default_scope
     end
 
-    # Returns a normalized representation of the query criteria.
+    # Returns the current scope for the query.
     #
-    # The query criteria define which data from the collection matches the
-    # query. Specifically, an item in the collection matches the query if and
-    # only if it matches each criterion. If the query has no criteria, then it
-    # will match all items in the collection.
+    # Composition methods should not be called on the scope directly, as they
+    # will not change the scope object bound to the query. Call the
+    # corresponding methods on the query itself, i.e. call query.where() instead
+    # of query.scope.where().
     #
-    # Each criterion is represented as an Array with three elements:
-    # - The name of the property or column to select by.
-    # - The operation to filter, such as :eq (an equality operation).
-    # - The expected value.
-    #
-    # For example, a query that selects all items whose :series property is
-    # equal to 'The Lord of the Rings' would have the following criterion:
-    # `[:series, :eq, 'The Lord of the Rings']`.
-    #
-    # @return [Array<Array>] the query criteria.
-    #
-    # @see #where
-    def criteria
-      @criteria.dup
+    # @return [Cuprum::Collections::Scopes::Base] the current scope for the
+    #   query.
+    def scope
+      @scope ||= default_scope
     end
 
     # Sets or returns the maximum number of items returned by the query.
@@ -151,49 +149,35 @@ module Cuprum::Collections
       dup.reset!
     end
 
-    # Returns a copy of the query with the specified filters.
+    # @overload where(hash)
+    #   Returns a copy of the query with the specified filters.
     #
-    # The given parameters are used to construct query criteria, which define
-    # which data from the collection matches the query. Specifically, an item in
-    # the collection matches the query if and only if it matches each criterion.
-    # If the query has no criteria, then it will match all items in the
-    # collection.
+    #   If the query already has a scope, then the filters will be merged with
+    #   the existing scope. Any items in the collection must match both the
+    #   previous scope and the new criteria to be returned by the query.
     #
-    # When #where is called on a query that already defines criteria, then the
-    # new criteria are appended to the old. Any items in the collection must
-    # match both the old and the new criteria to be returned by the query.
+    #   @param hash [Hash{String=>Object}] the filters to apply to the query.
     #
-    # @example Filtering Data By Equality
-    #   # The query will only return items whose author is 'J.R.R. Tolkien'.
-    #   query = query.where { { author: 'J.R.R. Tolkien' } }
+    #   @example Filtering Data By Equality
+    #     # The query will only return items whose author is 'J.R.R. Tolkien'.
+    #     query = query.where { { author: 'J.R.R. Tolkien' } }
     #
-    # @example Filtering Data By Operator
-    #   # The query will only return items whose author is 'J.R.R. Tolkien',
-    #   # and whose series is not 'The Lord of the Rings'.
-    #   query = query.where do
-    #     {
-    #       author: eq('J.R.R. Tolkien'),
-    #       series: ne('The Lord of the Rings')
-    #     }
-    #   end
+    #   @see #scope
     #
     # @overload where(&block)
-    #   @yield The given block is passed to a QueryBuilder, which converts the
-    #     block to query criteria and generates a new query using those
-    #     criteria.
+    #   Returns a copy of the query with the specified filters.
     #
-    #   @yieldreturn [Hash] The filters to apply to the query. The hash keys
-    #     should be the names of attributes or columns, and the corresponding
-    #     values should be either the literal value for that attribute or a
-    #     method call for a valid operation defined for the query.
+    #   If the query already has a scope, then the filters will be merged with
+    #   the existing scope. Any items in the collection must match both the
+    #   previous scope and the new criteria to be returned by the query.
     #
-    # @see #criteria
-    def where(filter = nil, strategy: nil, &block)
-      filter ||= block
-
-      return dup if filter.nil? && strategy.nil?
-
-      query_builder.call(strategy: strategy, where: filter)
+    #   @yieldreturn [Hash{String=>Object}] the filters to apply to the query.
+    #     The hash keys should be the names of attributes or columns, and the
+    #     corresponding values should be either the literal value for that
+    #     attribute or a method call for a valid operation defined for the
+    #     query.
+    def where(...)
+      dup.with_scope(scope.where(...)).reset!
     end
 
     protected
@@ -202,12 +186,6 @@ module Cuprum::Collections
       # :nocov:
       self
       # :nocov:
-    end
-
-    def with_criteria(criteria)
-      @criteria += criteria
-
-      self
     end
 
     def with_limit(count)
@@ -228,7 +206,17 @@ module Cuprum::Collections
       self
     end
 
+    def with_scope(scope)
+      @scope = scope
+
+      self
+    end
+
     private
+
+    def default_scope
+      Cuprum::Collections::Scopes::NullScope.new
+    end
 
     def validate_limit(count)
       return if count.is_a?(Integer) && !count.negative?

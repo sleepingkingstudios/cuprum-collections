@@ -116,11 +116,5 @@ module Cuprum::Collections::Basic::Commands
         optional: true
       keyword :where, Object, optional: true
     end
-
-    private
-
-    def build_query
-      Cuprum::Collections::Basic::Query.new(data)
-    end
   end
 end
