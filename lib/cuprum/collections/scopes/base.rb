@@ -20,6 +20,12 @@ module Cuprum::Collections::Scopes
       other.type == type
     end
 
+    # @return [Hash{String=>Object}] a JSON-compatible representation of the
+    #   scope.
+    def as_json
+      { 'type' => type }
+    end
+
     # :nocov:
 
     # @private

@@ -263,6 +263,11 @@ module Cuprum::Collections::Scopes
     end
     alias where and
 
+    # (see Cuprum::Colletions::Scopes::Base#as_json)
+    def as_json
+      super().merge({ 'criteria' => criteria })
+    end
+
     # @private
     def debug
       message = "#{super} (#{criteria.count})"

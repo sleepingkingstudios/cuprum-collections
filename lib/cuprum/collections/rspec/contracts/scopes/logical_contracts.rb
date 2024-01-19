@@ -27,6 +27,21 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
         include_contract 'should compose scopes for conjunction'
 
+        describe '#as_json' do
+          let(:expected) do
+            {
+              'scopes' => subject.scopes.map(&:as_json),
+              'type'   => subject.type
+            }
+          end
+
+          it { expect(subject.as_json).to be == expected }
+
+          wrap_context 'with scopes' do
+            it { expect(subject.as_json).to be == expected }
+          end
+        end
+
         describe '#call' do
           next if abstract
 
@@ -55,6 +70,21 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
         include_contract 'should compose scopes for disjunction'
 
+        describe '#as_json' do
+          let(:expected) do
+            {
+              'scopes' => subject.scopes.map(&:as_json),
+              'type'   => subject.type
+            }
+          end
+
+          it { expect(subject.as_json).to be == expected }
+
+          wrap_context 'with scopes' do
+            it { expect(subject.as_json).to be == expected }
+          end
+        end
+
         describe '#call' do
           next if abstract
 
@@ -82,6 +112,21 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
         include_contract 'should be a container scope'
 
         include_contract 'should compose scopes for negation'
+
+        describe '#as_json' do
+          let(:expected) do
+            {
+              'scopes' => subject.scopes.map(&:as_json),
+              'type'   => subject.type
+            }
+          end
+
+          it { expect(subject.as_json).to be == expected }
+
+          wrap_context 'with scopes' do
+            it { expect(subject.as_json).to be == expected }
+          end
+        end
 
         describe '#call' do
           next if abstract
