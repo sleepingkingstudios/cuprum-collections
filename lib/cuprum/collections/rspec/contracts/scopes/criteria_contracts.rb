@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
 require 'cuprum/collections/rspec/contracts/scopes'
+require 'cuprum/collections/rspec/contracts/scope_contracts'
 require 'cuprum/collections/rspec/contracts/scopes/composition_contracts'
 
 module Cuprum::Collections::RSpec::Contracts::Scopes
   # Contracts for asserting on criteria scope objects.
   module CriteriaContracts
+    include Cuprum::Collections::RSpec::Contracts::ScopeContracts
     include Cuprum::Collections::RSpec::Contracts::Scopes::CompositionContracts
 
     # Contract validating the behavior of a Criteria scope implementation.
@@ -19,7 +21,9 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
       #     which the contract is applied.
       #   @param abstract [Boolean] if true, the scope is abstract and does not
       #     define a #call implementation. Defaults to false.
-      contract do |abstract: false, constructor: true|
+      #   @param equality [Boolean] if false, skips the specs for the equality
+      #     operator #==. Defaults to true.
+      contract do |abstract: false, equality: true, constructor: true|
         shared_context 'with criteria' do
           let(:criteria) do
             operators = Cuprum::Collections::Queries::Operators
@@ -83,7 +87,133 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           include_contract 'should parse criteria'
         end
 
+        include_contract 'should be a scope'
+
         include_contract 'should compose scopes for criteria'
+
+        describe '#==' do
+          next unless equality
+
+          describe 'with a scope with the same class' do
+            let(:other) { described_class.new(criteria: other_criteria) }
+
+            describe 'with empty criteria' do
+              let(:other_criteria) { [] }
+
+              it { expect(subject == other).to be true }
+            end
+
+            describe 'with non-matching criteria' do
+              let(:other_criteria) do
+                operators = Cuprum::Collections::Queries::Operators
+
+                [
+                  [
+                    'ok',
+                    operators::EQUAL,
+                    true
+                  ]
+                ]
+              end
+
+              it { expect(subject == other).to be false }
+            end
+
+            wrap_context 'with criteria' do
+              describe 'with empty criteria' do
+                let(:other_criteria) { [] }
+
+                it { expect(subject == other).to be false }
+              end
+
+              describe 'with non-matching criteria' do
+                let(:other_criteria) do
+                  operators = Cuprum::Collections::Queries::Operators
+
+                  [
+                    [
+                      'ok',
+                      operators::EQUAL,
+                      true
+                    ]
+                  ]
+                end
+
+                it { expect(subject == other).to be false }
+              end
+
+              describe 'with matching criteria' do
+                let(:other_criteria) { subject.criteria }
+
+                it { expect(subject == other).to be true }
+              end
+            end
+          end
+
+          describe 'with a scope with the same type' do
+            let(:other) { Spec::CustomScope.new(criteria: other_criteria) }
+
+            # rubocop:disable Style/RedundantLineContinuation
+            example_class 'Spec::CustomScope',
+              Cuprum::Collections::Scopes::Base \
+            do |klass|
+              klass.include Cuprum::Collections::Scopes::Criteria
+            end
+            # rubocop:enable Style/RedundantLineContinuation
+
+            describe 'with empty criteria' do
+              let(:other_criteria) { [] }
+
+              it { expect(subject == other).to be true }
+            end
+
+            describe 'with non-matching criteria' do
+              let(:other_criteria) do
+                operators = Cuprum::Collections::Queries::Operators
+
+                [
+                  [
+                    'ok',
+                    operators::EQUAL,
+                    true
+                  ]
+                ]
+              end
+
+              it { expect(subject == other).to be false }
+            end
+
+            wrap_context 'with criteria' do
+              describe 'with empty criteria' do
+                let(:other_criteria) { [] }
+
+                it { expect(subject == other).to be false }
+              end
+
+              describe 'with non-matching criteria' do
+                let(:other_criteria) do
+                  operators = Cuprum::Collections::Queries::Operators
+
+                  [
+                    [
+                      'ok',
+                      operators::EQUAL,
+                      true
+                    ]
+                  ]
+                end
+
+                it { expect(subject == other).to be false }
+              end
+
+              describe 'with matching criteria' do
+                let(:other_criteria) { subject.criteria }
+
+                it { expect(subject == other).to be true }
+              end
+            end
+          end
+        end
 
         describe '#call' do
           next if abstract
@@ -98,6 +228,14 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
           wrap_context 'with criteria' do
             it { expect(subject.criteria).to be == criteria }
+          end
+        end
+
+        describe '#empty?' do
+          include_examples 'should define predicate', :empty?, true
+
+          wrap_context 'with criteria' do
+            it { expect(subject.empty?).to be false }
           end
         end
 
@@ -524,7 +662,9 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
         end
 
         describe 'with a block returning nil' do
-          let(:error_message) { 'value must be a Hash with String keys' }
+          let(:error_message) do
+            'value must be a Hash with String or Symbol keys'
+          end
 
           it 'should raise an exception' do
             expect { parse_criteria { nil } }
@@ -533,7 +673,9 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
         end
 
         describe 'with a block returning an Object' do
-          let(:error_message) { 'value must be a Hash with String keys' }
+          let(:error_message) do
+            'value must be a Hash with String or Symbol keys'
+          end
 
           it 'should raise an exception' do
             expect { parse_criteria { Object.new.freeze } }
@@ -542,7 +684,9 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
         end
 
         describe 'with a block returning a Hash with invalid keys' do
-          let(:error_message) { 'value must be a Hash with String keys' }
+          let(:error_message) do
+            'value must be a Hash with String or Symbol keys'
+          end
           let(:block)         { -> { { nil => 'invalid' } } }
 
           it 'should raise an exception' do
@@ -569,7 +713,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           it { expect(parse_criteria(&block)).to be == expected }
         end
 
-        describe 'with a Hash with many keys' do
+        describe 'with a Hash with many String keys' do
           let(:operators) { Cuprum::Collections::Queries::Operators }
           let(:block) do
             lambda do
@@ -577,6 +721,28 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
                 'title'  => 'A Wizard of Earthsea',
                 'author' => 'Ursula K. LeGuin',
                 'series' => 'Earthsea'
+              }
+            end
+          end
+          let(:expected) do
+            [
+              ['title', operators::EQUAL, 'A Wizard of Earthsea'],
+              ['author', operators::EQUAL, 'Ursula K. LeGuin'],
+              ['series', operators::EQUAL, 'Earthsea']
+            ]
+          end
+
+          it { expect(parse_criteria(&block)).to be == expected }
+        end
+
+        describe 'with a Hash with many Symbol keys' do
+          let(:operators) { Cuprum::Collections::Queries::Operators }
+          let(:block) do
+            lambda do
+              {
+                title:  'A Wizard of Earthsea',
+                author: 'Ursula K. LeGuin',
+                series: 'Earthsea'
               }
             end
           end
@@ -954,7 +1120,9 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
       #     which the contract is applied.
       contract do
         describe 'with nil' do
-          let(:error_message) { 'value must be a Hash with String keys' }
+          let(:error_message) do
+            'value must be a Hash with String or Symbol keys'
+          end
 
           it 'should raise an exception' do
             expect { parse_criteria(nil) }
@@ -963,7 +1131,9 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
         end
 
         describe 'with an Object' do
-          let(:error_message) { 'value must be a Hash with String keys' }
+          let(:error_message) do
+            'value must be a Hash with String or Symbol keys'
+          end
 
           it 'should raise an exception' do
             expect { parse_criteria(Object.new.freeze) }
@@ -972,7 +1142,9 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
         end
 
         describe 'with a Hash with invalid keys' do
-          let(:error_message) { 'value must be a Hash with String keys' }
+          let(:error_message) do
+            'value must be a Hash with String or Symbol keys'
+          end
           let(:value)         { { nil => 'invalid' } }
 
           it 'should raise an exception' do
@@ -999,13 +1171,33 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           it { expect(parse_criteria(value)).to be == expected }
         end
 
-        describe 'with a Hash with many keys' do
+        describe 'with a Hash with many String keys' do
           let(:operators) { Cuprum::Collections::Queries::Operators }
           let(:value) do
             {
               'title'  => 'A Wizard of Earthsea',
               'author' => 'Ursula K. LeGuin',
               'series' => 'Earthsea'
+            }
+          end
+          let(:expected) do
+            [
+              ['title', operators::EQUAL, 'A Wizard of Earthsea'],
+              ['author', operators::EQUAL, 'Ursula K. LeGuin'],
+              ['series', operators::EQUAL, 'Earthsea']
+            ]
+          end
+
+          it { expect(parse_criteria(value)).to be == expected }
+        end
+
+        describe 'with a Hash with many Symbol keys' do
+          let(:operators) { Cuprum::Collections::Queries::Operators }
+          let(:value) do
+            {
+              title:  'A Wizard of Earthsea',
+              author: 'Ursula K. LeGuin',
+              series: 'Earthsea'
             }
           end
           let(:expected) do

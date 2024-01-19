@@ -34,27 +34,38 @@ module Cuprum::Collections::Scopes
     end
 
     # Helper for generating criteria from hash or block inputs.
-    class Parser
+    class Parser # rubocop:disable Metrics/ClassLength
       OperatorExpression = Struct.new(:operator, :value)
       private_constant :OperatorExpression
 
       UNKNOWN = Object.new.freeze
       private_constant :UNKNOWN
 
-      # @return [Cuprum::Collections::Scopes::Criteria::Parser] a singleton
-      #   instance of the parser class.
-      def self.instance
-        @instance ||= new
-      end
+      class << self
+        # @return [Cuprum::Collections::Scopes::Criteria::Parser] a singleton
+        #   instance of the parser class.
+        def instance
+          @instance ||= new
+        end
 
-      # @private
-      def self.validate_hash(value)
-        return if value.is_a?(Hash) &&
-                  value.each_key.all? { |key| key.is_a?(String) }
+        # @private
+        def validate_hash(value)
+          return if valid_hash?(value)
 
-        raise ArgumentError,
-          'value must be a Hash with String keys',
-          caller(1..-1)
+          raise ArgumentError,
+            'value must be a Hash with String or Symbol keys',
+            caller(1..-1)
+        end
+
+        private
+
+        def valid_hash?(value)
+          return false unless value.is_a?(Hash)
+
+          value.each_key.all? do |key|
+            key.is_a?(String) || key.is_a?(Symbol)
+          end
+        end
       end
 
       # @override parse(value = nil, &block)
@@ -101,9 +112,11 @@ module Cuprum::Collections::Scopes
 
         value.map do |attribute, filter|
           if filter.is_a?(OperatorExpression)
-            [attribute, filter.operator, filter.value]
+            [attribute.to_s, filter.operator, filter.value]
           else
-            [attribute, Cuprum::Collections::Queries::Operators::EQUAL, filter]
+            operator = Cuprum::Collections::Queries::Operators::EQUAL
+
+            [attribute.to_s, operator, filter]
           end
         end
       rescue NameError => exception
@@ -118,8 +131,10 @@ module Cuprum::Collections::Scopes
       def parse_hash(value)
         Parser.validate_hash(value)
 
+        operator = Cuprum::Collections::Queries::Operators::EQUAL
+
         value.map do |attribute, filter|
-          [attribute, Cuprum::Collections::Queries::Operators::EQUAL, filter]
+          [attribute.to_s, operator, filter]
         end
       end
 
@@ -226,6 +241,44 @@ module Cuprum::Collections::Scopes
     # @return [Array] the criteria used for filtering query data.
     attr_reader :criteria
 
+    # @param other [Object] the object to compare.
+    #
+    # @return [Boolean] true if the other object is a scope with matching type
+    #   and criteria; otherwise false.
+    def ==(other)
+      return false unless super
+
+      other.criteria == criteria
+    end
+
+    # (see Cuprum::Collections::Scopes::Composition#and)
+    def and(*args, &block)
+      return self if empty_scope?(args.first)
+
+      return and_criteria_scope(args.first) if criteria_scope?(args.first)
+
+      return super if scope?(args.first)
+
+      with_criteria([*criteria, *self.class.parse(*args, &block)])
+    end
+    alias where and
+
+    # @private
+    def debug
+      message = "#{super} (#{criteria.count})"
+
+      return message if empty?
+
+      criteria.reduce("#{message}:") do |str, (attribute, operator, value)|
+        str + "\n- #{attribute.inspect} #{operator} #{value.inspect}"
+      end
+    end
+
+    # @return [Boolean] true if the scope has no criteria; otherwise false.
+    def empty?
+      @criteria.empty?
+    end
+
     # (see Cuprum::Collections::Scopes::Base#type)
     def type
       :criteria
@@ -243,5 +296,11 @@ module Cuprum::Collections::Scopes
     protected
 
     attr_writer :criteria
+
+    private
+
+    def and_criteria_scope(scope)
+      with_criteria([*criteria, *scope.criteria])
+    end
   end
 end

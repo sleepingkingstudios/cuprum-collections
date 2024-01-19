@@ -101,6 +101,11 @@ module Cuprum::Collections::Scopes
       negation_scope_class.new(scopes: scopes)
     end
 
+    # Creates a new null scope.
+    def build_null_scope
+      null_scope_class.new
+    end
+
     # Creates a new scope with the same scope type and properties.
     def transform_scope(scope:)
       validate_scope!(scope)
@@ -128,6 +133,10 @@ module Cuprum::Collections::Scopes
         return original if original.is_a?(negation_scope_class)
 
         negation_scope_class.new(scopes: transform_scopes(original.scopes))
+      when :null
+        return original if original.is_a?(null_scope_class)
+
+        null_scope_class.new
       else
         error_message =
           "#{self.class.name} cannot transform scopes of type " \
@@ -162,6 +171,13 @@ module Cuprum::Collections::Scopes
       raise AbstractBuilderError,
         "#{self.class.name} is an abstract class. Define a builder " \
         'class and implement the #negation_scope_class method.',
+        caller(1..-1)
+    end
+
+    def null_scope_class
+      raise AbstractBuilderError,
+        "#{self.class.name} is an abstract class. Define a builder " \
+        'class and implement the #null_scope_class method.',
         caller(1..-1)
     end
 

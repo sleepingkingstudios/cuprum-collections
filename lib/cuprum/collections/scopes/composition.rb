@@ -5,11 +5,6 @@ require 'cuprum/collections/scopes'
 module Cuprum::Collections::Scopes
   # Defines a fluent interface for composing scopes.
   module Composition
-    autoload :Conjunction, 'cuprum/collections/scopes/composition/conjunction'
-    autoload :Criteria,    'cuprum/collections/scopes/composition/criteria'
-    autoload :Disjunction, 'cuprum/collections/scopes/composition/disjunction'
-    autoload :Negation,    'cuprum/collections/scopes/composition/negation'
-
     # @override and(hash = nil, &block)
     #   Parses the hash or block and combines using a logical AND.
     #
@@ -17,7 +12,11 @@ module Cuprum::Collections::Scopes
     #
     # @override and(scope)
     #   Combines with the current scope using a logical AND.
+    #
+    #   Returns self if the given scope is empty.
     def and(*args, &block)
+      return self if empty_scope?(args.first)
+
       return and_conjunction_scope(args.first) if conjunction_scope?(args.first)
 
       scope = builder.build(*args, &block)
@@ -35,8 +34,14 @@ module Cuprum::Collections::Scopes
     #
     # @override not(scope)
     #   Inverts and combines with the current scope using a logical AND.
+    #
+    #   Returns self if the given scope is empty.
     def not(*args, &block)
+      return self if empty_scope?(args.first)
+
       return not_conjunction_scope(args.first) if conjunction_scope?(args.first)
+
+      return not_negation_scope(args.first) if negation_scope?(args.first)
 
       scope    = builder.build(*args, &block)
       inverted = builder.build_negation_scope(scopes: [scope], safe: false)
@@ -53,8 +58,14 @@ module Cuprum::Collections::Scopes
     #
     # @override and(scope)
     #   Combines with the current scope using a logical OR.
-    def or(...)
-      scope = builder.build(...)
+    #
+    #   Returns self if the given scope is empty.
+    def or(*args, &block)
+      return self if empty_scope?(args.first)
+
+      return or_disjunction_scope(args.first) if disjunction_scope?(args.first)
+
+      scope = builder.build(*args, &block)
 
       # We control the current and generated scopes, so we can skip validation
       # and transformation.
@@ -83,6 +94,10 @@ module Cuprum::Collections::Scopes
       scope?(value) && value.type == :disjunction
     end
 
+    def empty_scope?(value)
+      scope?(value) && value.empty?
+    end
+
     def negation_scope?(value)
       scope?(value) && value.type == :negation
     end
@@ -94,6 +109,22 @@ module Cuprum::Collections::Scopes
       inverted = builder.build_negation_scope(scopes: scopes, safe: false)
 
       builder.build_conjunction_scope(scopes: [self, inverted], safe: false)
+    end
+
+    def not_negation_scope(scope)
+      scopes = scope.scopes.map do |inner|
+        builder.transform_scope(scope: inner)
+      end
+
+      builder.build_conjunction_scope(scopes: [self, *scopes], safe: false)
+    end
+
+    def or_disjunction_scope(scope)
+      scopes = scope.scopes.map do |inner|
+        builder.transform_scope(scope: inner)
+      end
+
+      builder.build_disjunction_scope(scopes: [self, *scopes], safe: false)
     end
 
     def scope?(value)

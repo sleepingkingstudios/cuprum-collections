@@ -2,18 +2,11 @@
 
 require 'cuprum/collections/scopes'
 require 'cuprum/collections/scopes/base'
-require 'cuprum/collections/scopes/composition/conjunction'
-require 'cuprum/collections/scopes/container'
+require 'cuprum/collections/scopes/conjunction'
 
 module Cuprum::Collections::Scopes
   # Generic scope class for defining collection-independent logical AND scopes.
   class ConjunctionScope < Cuprum::Collections::Scopes::Base
-    include Cuprum::Collections::Scopes::Container
-    include Cuprum::Collections::Scopes::Composition::Conjunction
-
-    # (see Cuprum::Collections::Scopes::Base#type)
-    def type
-      :conjunction
-    end
+    include Cuprum::Collections::Scopes::Conjunction
   end
 end

@@ -38,5 +38,116 @@ RSpec.describe Cuprum::Collections::Scope do
 
   include_contract 'should be a criteria scope',
     abstract:    true,
+    equality:    false,
     constructor: false
+
+  describe '#==' do
+    describe 'with a scope with the same class' do
+      let(:other) { described_class.new(&other_block) }
+
+      describe 'with empty criteria' do
+        let(:other_block) { -> { {} } }
+
+        it { expect(scope == other).to be true }
+      end
+
+      describe 'with non-matching criteria' do
+        let(:other_block) { -> { { 'ok' => true } } }
+
+        it { expect(scope == other).to be false }
+      end
+
+      context 'when the scope has criteria' do
+        let(:constructor_block) do
+          -> { { 'title' => 'The Word for World is Forest' } }
+        end
+
+        describe 'with empty criteria' do
+          let(:other_block) { -> { {} } }
+
+          it { expect(scope == other).to be false }
+        end
+
+        describe 'with non-matching criteria' do
+          let(:other_block) { -> { { 'ok' => true } } }
+
+          it { expect(scope == other).to be false }
+        end
+
+        describe 'with matching criteria' do
+          let(:other_block) { constructor_block }
+
+          it { expect(scope == other).to be true }
+        end
+      end
+    end
+
+    describe 'with a scope with the same type' do
+      let(:other) { Spec::CustomScope.new(criteria: other_criteria) }
+
+      # rubocop:disable Style/RedundantLineContinuation
+      example_class 'Spec::CustomScope',
+        Cuprum::Collections::Scopes::Base \
+      do |klass|
+        klass.include Cuprum::Collections::Scopes::Criteria
+      end
+      # rubocop:enable Style/RedundantLineContinuation
+
+      describe 'with empty criteria' do
+        let(:other_criteria) { [] }
+
+        it { expect(scope == other).to be true }
+      end
+
+      describe 'with non-matching criteria' do
+        let(:other_criteria) do
+          operators = Cuprum::Collections::Queries::Operators
+
+          [
+            [
+              'ok',
+              operators::EQUAL,
+              true
+            ]
+          ]
+        end
+
+        it { expect(scope == other).to be false }
+      end
+
+      context 'when the scope has criteria' do
+        let(:constructor_block) do
+          -> { { 'title' => 'The Word for World is Forest' } }
+        end
+
+        describe 'with empty criteria' do
+          let(:other_criteria) { [] }
+
+          it { expect(scope == other).to be false }
+        end
+
+        describe 'with non-matching criteria' do
+          let(:other_criteria) do
+            operators = Cuprum::Collections::Queries::Operators
+
+            [
+              [
+                'ok',
+                operators::EQUAL,
+                true
+              ]
+            ]
+          end
+
+          it { expect(scope == other).to be false }
+        end
+
+        describe 'with matching criteria' do
+          let(:other_criteria) { scope.criteria }
+
+          it { expect(scope == other).to be true }
+        end
+      end
+    end
+  end
 end
