@@ -16,7 +16,8 @@ RSpec.describe Cuprum::Collections::Basic::Query do
   end
 
   let(:data)          { [] }
-  let(:expected_data) { stringify_data(matching_data) }
+  let(:filtered_data) { data }
+  let(:expected_data) { stringify_data(filtered_data) }
   let(:initial_scope) { nil }
 
   def add_item_to_collection(item)

@@ -677,8 +677,6 @@ module Cuprum::Collections::RSpec::Contracts
         include Cuprum::Collections::RSpec::Contracts::QueryContracts
 
         describe '#call' do
-          include_contract 'with query contexts'
-
           shared_examples 'should return the matching items' do
             it { expect(result).to be_a_passing_result }
 
@@ -697,7 +695,10 @@ module Cuprum::Collections::RSpec::Contracts
             it { expect(result.value[collection_name]).to be == expected_data }
           end
 
-          let(:filter) { defined?(super()) ? super() : nil }
+          let(:filter) { nil }
+          let(:limit)  { nil }
+          let(:offset) { nil }
+          let(:order)  { nil }
           let(:options) do
             opts = {}
 
@@ -708,12 +709,14 @@ module Cuprum::Collections::RSpec::Contracts
 
             opts
           end
-          let(:block)         { filter.is_a?(Proc) ? filter : nil }
-          let(:result)        { command.call(**options, &block) }
-          let(:data)          { [] }
-          let(:matching_data) { data }
+          let(:block)  { filter.is_a?(Proc) ? filter : nil }
+          let(:result) { command.call(**options, &block) }
+          let(:data)   { [] }
+          let(:filtered_data) do
+            defined?(super()) ? super() : data
+          end
           let(:expected_data) do
-            defined?(super()) ? super() : matching_data
+            defined?(super()) ? super() : filtered_data
           end
 
           it 'should validate the :envelope keyword' do
@@ -749,13 +752,6 @@ module Cuprum::Collections::RSpec::Contracts
             expect(command).to validate_parameter(:call, :where)
           end
 
-          include_examples 'should return the matching items'
-
-          include_contract 'should perform queries',
-            block: lambda {
-              include_examples 'should return the matching items'
-            }
-
           describe 'with an invalid filter block' do
             let(:block) { -> {} }
             let(:expected_error) do
@@ -767,36 +763,25 @@ module Cuprum::Collections::RSpec::Contracts
             end
           end
 
+          include_examples 'should return the matching items'
+
           describe 'with envelope: true' do
             let(:options) { super().merge(envelope: true) }
 
             include_examples 'should return the wrapped items'
-
-            include_contract 'should perform queries',
-              block: lambda {
-                include_examples 'should return the wrapped items'
-              }
           end
 
           context 'when the collection has many items' do
             let(:data) { fixtures_data }
 
-            include_examples 'should return the matching items'
+            include_contract 'should query the collection' do
+              include_examples 'should return the matching items'
 
-            include_contract 'should perform queries',
-              block: lambda {
-                include_examples 'should return the matching items'
-              }
+              describe 'with envelope: true' do
+                let(:options) { super().merge(envelope: true) }
 
-            describe 'with envelope: true' do
-              let(:options) { super().merge(envelope: true) }
-
-              include_examples 'should return the wrapped items'
-
-              include_contract 'should perform queries',
-                block: lambda {
-                  include_examples 'should return the wrapped items'
-                }
+                include_examples 'should return the wrapped items'
+              end
             end
           end
         end

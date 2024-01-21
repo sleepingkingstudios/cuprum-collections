@@ -33,7 +33,7 @@ module Cuprum::Collections::RSpec::Contracts
               { 'published_at' => less_than('1973-01-01') }
             end
           end
-          let(:matching_data) do
+          let(:filtered_data) do
             super().select { |item| item['published_at'] < '1973-01-01' }
           end
         end
@@ -44,17 +44,23 @@ module Cuprum::Collections::RSpec::Contracts
               .where { { author: 'Ursula K. LeGuin' } }
               .where { { series: not_equal('Earthsea') } }
           end
-          let(:matching_data) do
+          let(:filtered_data) do
             super()
               .select { |item| item['author'] == 'Ursula K. LeGuin' }
               .reject { |item| item['series'] == 'Earthsea' }
           end
         end
 
+        let(:filter) { nil }
+        let(:limit)  { nil }
+        let(:offset) { nil }
+        let(:order)  { nil }
         let(:scoped_query) do
           scoped =
-            if scope.is_a?(Proc)
-              subject.where(&scope)
+            if filter.is_a?(Proc)
+              subject.where(&filter)
+            elsif filter
+              subject.where(filter)
             else
               subject
             end
@@ -65,36 +71,16 @@ module Cuprum::Collections::RSpec::Contracts
           scoped
         end
 
-        include_contract 'with query contexts'
-
         it 'should be enumerable' do
           expect(described_class).to be < Enumerable
         end
 
         describe '#count' do
-          let(:data)          { [] }
-          let(:matching_data) { data }
-          let(:expected_data) do
-            defined?(super()) ? super() : matching_data
-          end
-
           it { expect(query).to respond_to(:count).with(0).arguments }
 
           next if abstract
 
-          it { expect(query.count).to be == expected_data.count }
-
-          wrap_context 'when initialized with a scope' do
-            it { expect(scoped_query.count).to be == expected_data.count }
-
-            wrap_context 'when the query has composed filters' do
-              it { expect(scoped_query.count).to be == expected_data.count }
-            end
-          end
-
-          wrap_context 'when the query has composed filters' do
-            it { expect(scoped_query.count).to be == expected_data.count }
-          end
+          it { expect(query.count).to be 0 }
 
           context 'when the collection data changes' do
             let(:item) { BOOKS_FIXTURES.first }
@@ -105,24 +91,26 @@ module Cuprum::Collections::RSpec::Contracts
               add_item_to_collection(item)
             end
 
-            it { expect(query.count).to be == expected_data.count }
+            it { expect(query.count).to be 0 }
           end
 
           context 'when the collection has many items' do
             let(:data) { BOOKS_FIXTURES }
 
-            it { expect(query.count).to be == expected_data.count }
-
-            wrap_context 'when initialized with a scope' do
+            include_contract 'should query the collection', :ignore_order do
               it { expect(scoped_query.count).to be == expected_data.count }
 
               wrap_context 'when the query has composed filters' do
                 it { expect(scoped_query.count).to be == expected_data.count }
               end
-            end
 
-            wrap_context 'when the query has composed filters' do
-              it { expect(scoped_query.count).to be == expected_data.count }
+              wrap_context 'when initialized with a scope' do
+                it { expect(scoped_query.count).to be == expected_data.count }
+
+                wrap_context 'when the query has composed filters' do
+                  it { expect(scoped_query.count).to be == expected_data.count }
+                end
+              end
             end
 
             context 'when the collection data changes' do
@@ -143,14 +131,22 @@ module Cuprum::Collections::RSpec::Contracts
         describe '#each' do
           shared_examples 'should enumerate the matching data' do
             describe 'with no arguments' do
+              let(:expected_data) do
+                defined?(super()) ? super() : data
+              end
+
               it { expect(scoped_query.each).to be_a Enumerator }
 
-              it { expect(scoped_query.each.count).to be == matching_data.size }
+              it { expect(scoped_query.each.count).to be == expected_data.size }
 
               it { expect(scoped_query.each.to_a).to deep_match expected_data }
             end
 
             describe 'with a block' do
+              let(:expected_data) do
+                defined?(super()) ? super() : data
+              end
+
               it 'should yield each matching item' do
                 expect { |block| scoped_query.each(&block) }
                   .to yield_successive_args(*expected_data)
@@ -158,32 +154,11 @@ module Cuprum::Collections::RSpec::Contracts
             end
           end
 
-          let(:data)          { [] }
-          let(:matching_data) { data }
-          let(:expected_data) do
-            defined?(super()) ? super() : matching_data
-          end
-
           next if abstract
 
           it { expect(query).to respond_to(:each).with(0).arguments }
 
           include_examples 'should enumerate the matching data'
-
-          include_contract 'should perform queries',
-            block: -> { include_examples 'should enumerate the matching data' }
-
-          wrap_context 'when initialized with a scope' do
-            include_examples 'should enumerate the matching data'
-
-            wrap_context 'when the query has composed filters' do
-              include_examples 'should enumerate the matching data'
-            end
-          end
-
-          wrap_context 'when the query has composed filters' do
-            include_examples 'should enumerate the matching data'
-          end
 
           context 'when the collection data changes' do
             let(:item) { BOOKS_FIXTURES.first }
@@ -200,23 +175,20 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when the collection has many items' do
             let(:data) { BOOKS_FIXTURES }
 
-            include_examples 'should enumerate the matching data'
-
-            include_contract 'should perform queries',
-              block: lambda {
-                include_examples 'should enumerate the matching data'
-              }
-
-            wrap_context 'when initialized with a scope' do
+            include_contract 'should query the collection' do
               include_examples 'should enumerate the matching data'
 
               wrap_context 'when the query has composed filters' do
                 include_examples 'should enumerate the matching data'
               end
-            end
 
-            wrap_context 'when the query has composed filters' do
-              include_examples 'should enumerate the matching data'
+              wrap_context 'when initialized with a scope' do
+                include_examples 'should enumerate the matching data'
+
+                wrap_context 'when the query has composed filters' do
+                  include_examples 'should enumerate the matching data'
+                end
+              end
             end
 
             context 'when the collection data changes' do
@@ -236,11 +208,11 @@ module Cuprum::Collections::RSpec::Contracts
 
         describe '#exists?' do
           shared_examples 'should check the existence of matching data' do
-            it { expect(query.exists?).to be == !matching_data.empty? }
-          end
+            let(:data)          { [] }
+            let(:expected_data) { defined?(super()) ? super() : data }
 
-          let(:data)          { [] }
-          let(:matching_data) { data }
+            it { expect(query.exists?).to be == !expected_data.empty? }
+          end
 
           next if abstract
 
@@ -248,43 +220,23 @@ module Cuprum::Collections::RSpec::Contracts
 
           include_examples 'should check the existence of matching data'
 
-          include_contract 'should perform queries',
-            block: lambda {
-              include_examples 'should check the existence of matching data'
-            }
-
-          wrap_context 'when initialized with a scope' do
-            include_examples 'should check the existence of matching data'
-
-            wrap_context 'when the query has composed filters' do
-              include_examples 'should check the existence of matching data'
-            end
-          end
-
-          wrap_context 'when the query has composed filters' do
-            include_examples 'should check the existence of matching data'
-          end
-
           context 'when the collection has many items' do
             let(:data) { BOOKS_FIXTURES }
 
-            include_examples 'should check the existence of matching data'
-
-            include_contract 'should perform queries',
-              block: lambda {
-                include_examples 'should check the existence of matching data'
-              }
-
-            wrap_context 'when initialized with a scope' do
+            include_contract 'should query the collection', :ignore_order do
               include_examples 'should check the existence of matching data'
 
               wrap_context 'when the query has composed filters' do
                 include_examples 'should check the existence of matching data'
               end
-            end
 
-            wrap_context 'when the query has composed filters' do
-              include_examples 'should check the existence of matching data'
+              wrap_context 'when initialized with a scope' do
+                include_examples 'should check the existence of matching data'
+
+                wrap_context 'when the query has composed filters' do
+                  include_examples 'should check the existence of matching data'
+                end
+              end
             end
           end
         end
@@ -475,9 +427,9 @@ module Cuprum::Collections::RSpec::Contracts
 
         describe '#reset' do
           let(:data)          { [] }
-          let(:matching_data) { data }
+          let(:filtered_data) { data }
           let(:expected_data) do
-            defined?(super()) ? super() : matching_data
+            defined?(super()) ? super() : filtered_data
           end
 
           it { expect(query).to respond_to(:reset).with(0).arguments }
@@ -492,7 +444,7 @@ module Cuprum::Collections::RSpec::Contracts
 
           context 'when the collection data changes' do
             let(:item)          { BOOKS_FIXTURES.first }
-            let(:matching_data) { [item] }
+            let(:filtered_data) { [item] }
 
             before(:example) do
               query.to_a # Cache query results.
@@ -517,7 +469,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when the collection data changes' do
               let(:data)          { BOOKS_FIXTURES[0...-1] }
               let(:item)          { BOOKS_FIXTURES.last }
-              let(:matching_data) { [*data, item] }
+              let(:filtered_data) { [*data, item] }
 
               before(:example) do
                 query.to_a # Cache query results.
@@ -581,66 +533,44 @@ module Cuprum::Collections::RSpec::Contracts
 
         describe '#to_a' do
           let(:data)          { [] }
-          let(:matching_data) { data }
-          let(:expected_data) do
-            defined?(super()) ? super() : matching_data
-          end
+          let(:queried_data)  { scoped_query.to_a }
+          let(:expected_data) { defined?(super()) ? super() : data }
 
           it { expect(query).to respond_to(:to_a).with(0).arguments }
 
           next if abstract
 
-          it { expect(query.to_a).to deep_match expected_data }
-
-          include_contract 'should perform queries',
-            block: lambda {
-              it { expect(scoped_query.to_a).to deep_match expected_data }
-            }
-
-          wrap_context 'when initialized with a scope' do
-            it { expect(scoped_query.to_a).to deep_match expected_data }
-
-            wrap_context 'when the query has composed filters' do
-              it { expect(scoped_query.to_a).to deep_match expected_data }
-            end
-          end
-
-          wrap_context 'when the query has composed filters' do
-            it { expect(scoped_query.to_a).to deep_match expected_data }
-          end
+          it { expect(queried_data).to be == [] }
 
           context 'when the collection data changes' do
             let(:item) { BOOKS_FIXTURES.first }
 
             before(:example) do
-              query.to_a # Cache query results.
+              scoped_query.to_a # Cache query results.
 
               add_item_to_collection(item)
             end
 
-            it { expect(query.to_a).to deep_match expected_data }
+            it { expect(queried_data).to be == [] }
           end
 
           context 'when the collection has many items' do
             let(:data) { BOOKS_FIXTURES }
 
-            it { expect(query.to_a).to deep_match expected_data }
-
-            include_contract 'should perform queries',
-              block: lambda {
-                it { expect(scoped_query.to_a).to deep_match expected_data }
-              }
-
-            wrap_context 'when initialized with a scope' do
-              it { expect(scoped_query.to_a).to deep_match expected_data }
+            include_contract 'should query the collection' do
+              it { expect(queried_data).to be == expected_data }
 
               wrap_context 'when the query has composed filters' do
-                it { expect(scoped_query.to_a).to deep_match expected_data }
+                it { expect(queried_data).to be == expected_data }
               end
-            end
 
-            wrap_context 'when the query has composed filters' do
-              it { expect(scoped_query.to_a).to deep_match expected_data }
+              wrap_context 'when initialized with a scope' do
+                it { expect(queried_data).to be == expected_data }
+
+                wrap_context 'when the query has composed filters' do
+                  it { expect(queried_data).to be == expected_data }
+                end
+              end
             end
 
             context 'when the collection data changes' do
@@ -648,12 +578,12 @@ module Cuprum::Collections::RSpec::Contracts
               let(:item) { BOOKS_FIXTURES.last }
 
               before(:example) do
-                query.to_a # Cache query results.
+                scoped_query.to_a # Cache query results.
 
                 add_item_to_collection(item)
               end
 
-              it { expect(query.to_a).to deep_match expected_data }
+              it { expect(queried_data).to deep_match expected_data }
             end
           end
         end
@@ -844,327 +774,165 @@ module Cuprum::Collections::RSpec::Contracts
     end
 
     # Contract validating the behavior when performing queries.
-    module ShouldPerformQueriesContract
+    module ShouldQueryTheCollectionContract
       extend RSpec::SleepingKingStudios::Contract
 
-      OPERATORS = Cuprum::Collections::Queries::Operators
-      private_constant :OPERATORS
+      contract do |*tags, &examples|
+        ignore_order = tags.include?(:ignore_order)
 
-      # @!method apply(example_group, block:, operators:)
-      #   Adds the contract to the example group.
-      #
-      #   @param example_group [RSpec::Core::ExampleGroup] the example group to
-      #     which the contract is applied.
-      #   @param block [Proc] the expectations for each query context.
-      #   @param operators [Array<Symbol>] the expected operators.
-      contract do |block:, operators: OPERATORS.values|
-        operators = Set.new(operators.map(&:to_sym))
+        # @todo
+        #
+        # Use Cases:
+        #   - A Query
+        #     - #count matches the expected data count
+        #     - #each enumerates the expected data
+        #     - #exists? returns true or false
+        #     - #to_a returns the expected data
+        #   - A FindMatching Command
+        #     - the returned data matches the expected data.
+        #
+        # Test Cases:
+        #   - Baseline check
+        #   - Query metadata
+        #     - With a limit
+        #     - With an offset
+        #     - With an order (set a default ordering? by "id"?)
+        #   - Query filtering
+        #     - With a block
+        #     - With a hash
+        #     - With a basic scope
+        #     - With a complex scope
 
-        wrap_context 'when the query has limit: value' do
-          instance_exec(&block)
+        shared_examples 'should query the collection' do
+          # :nocov:
+          if examples
+            instance_exec(&examples)
+          else
+            it { expect(queried_data).to be == expected_data }
+          end
+          # :nocov:
         end
 
-        wrap_context 'when the query has offset: value' do
-          instance_exec(&block)
-        end
+        shared_examples 'should apply limit and offset' do
+          include_examples 'should query the collection'
 
-        wrap_context 'when the query has order: a simple ordering' do
-          instance_exec(&block)
-        end
+          context 'with limit: value' do
+            let(:limit) { 3 }
 
-        wrap_context 'when the query has order: a complex ordering' do
-          instance_exec(&block)
-        end
-
-        context 'when the query has where: a block filter' do
-          context 'with a simple filter' do
-            include_context 'when the query has where: a simple block filter'
-
-            instance_exec(&block)
+            include_examples 'should query the collection'
           end
 
-          context 'with a complex filter' do
-            include_context 'when the query has where: a complex block filter'
+          context 'with offset: value' do
+            let(:offset) { 2 }
 
-            if operators.include?(OPERATORS::EQUAL) &&
-               operators.include?(OPERATORS::NOT_EQUAL)
-              instance_exec(&block)
-            else
-              # :nocov:
-              pending
-              # :nocov:
+            include_examples 'should query the collection'
+          end
+
+          describe 'with limit: value and offset: value' do
+            let(:limit)  { 3 }
+            let(:offset) { 2 }
+
+            include_examples 'should query the collection'
+          end
+        end
+
+        shared_examples 'should order the results' do
+          include_examples 'should apply limit and offset'
+
+          next if ignore_order
+
+          describe 'with a simple ordering' do
+            let(:order) { 'title' }
+            let(:ordered_data) do
+              filtered_data.sort_by { |item| item['title'] }
             end
+
+            include_examples 'should apply limit and offset'
           end
 
-          context 'with an equals filter' do
-            include_context 'when the query has where: an equal block filter'
-
-            if operators.include?(OPERATORS::EQUAL)
-              instance_exec(&block)
-            else
-              # :nocov:
-              pending
-              # :nocov:
-            end
-          end
-
-          context 'with a greater_than filter' do
-            include_context 'when the query has where: a greater_than filter'
-
-            if operators.include?(OPERATORS::GREATER_THAN)
-              instance_exec(&block)
-            else
-              # :nocov:
-              pending
-              # :nocov:
-            end
-          end
-
-          context 'with a greater_than_or_equal_to filter' do
-            include_context \
-              'when the query has where: a greater_than_or_equal_to filter'
-
-            if operators.include?(OPERATORS::GREATER_THAN_OR_EQUAL_TO)
-              instance_exec(&block)
-            else
-              # :nocov:
-              pending
-              # :nocov:
-            end
-          end
-
-          context 'with a less_than filter' do
-            include_context 'when the query has where: a less_than filter'
-
-            if operators.include?(OPERATORS::LESS_THAN)
-              instance_exec(&block)
-            else
-              # :nocov:
-              pending
-              # :nocov:
-            end
-          end
-
-          context 'with a less_than_or_equal_to filter' do
-            include_context \
-              'when the query has where: a less_than_or_equal_to filter'
-
-            if operators.include?(OPERATORS::LESS_THAN_OR_EQUAL_TO)
-              instance_exec(&block)
-            else
-              # :nocov:
-              pending
-              # :nocov:
-            end
-          end
-
-          context 'with a not_equal filter' do
-            include_context 'when the query has where: a not_equal block filter'
-
-            if operators.include?(OPERATORS::NOT_EQUAL)
-              instance_exec(&block)
-            else
-              # :nocov:
-              pending
-              # :nocov:
-            end
-          end
-
-          context 'with a not_one_of filter' do
-            include_context \
-              'when the query has where: a not_one_of block filter'
-
-            if operators.include?(OPERATORS::NOT_ONE_OF)
-              instance_exec(&block)
-            else
-              # :nocov:
-              pending
-              # :nocov:
-            end
-          end
-
-          context 'with a one_of filter' do
-            include_context 'when the query has where: a one_of block filter'
-
-            if operators.include?(OPERATORS::ONE_OF)
-              instance_exec(&block)
-            else
-              # :nocov:
-              pending
-              # :nocov:
-            end
-          end
-        end
-
-        wrap_context 'when the query has multiple query options' do
-          instance_exec(&block)
-        end
-      end
-    end
-
-    # Contract defining contexts for validating query behavior.
-    module WithQueryContextsContract
-      extend RSpec::SleepingKingStudios::Contract
-
-      # @!method apply(example_group)
-      #   Adds the contract to the example group.
-      #
-      #   @param example_group [RSpec::Core::ExampleGroup] the example group to
-      #     which the contract is applied.
-      contract do
-        let(:scope)  { nil }
-        let(:limit)  { nil }
-        let(:offset) { nil }
-        let(:order)  { nil }
-
-        shared_context 'when the query has limit: value' do
-          let(:limit)         { 3 }
-          let(:matching_data) { super()[0...limit] }
-        end
-
-        shared_context 'when the query has offset: value' do
-          let(:offset)        { 2 }
-          let(:matching_data) { super()[offset..] || [] }
-        end
-
-        shared_context 'when the query has order: a simple ordering' do
-          let(:order)         { :title }
-          let(:matching_data) { super().sort_by { |item| item['title'] } }
-        end
-
-        shared_context 'when the query has order: a complex ordering' do
-          let(:order) do
-            {
-              author: :asc,
-              title:  :desc
-            }
-          end
-          let(:matching_data) do
-            super().sort do |u, v|
-              cmp = u['author'] <=> v['author']
-
-              cmp.zero? ? (v['title'] <=> u['title']) : cmp
-            end
-          end
-        end
-
-        shared_context 'when the query has where: a simple block filter' do
-          let(:filter) { -> { { author: 'Ursula K. LeGuin' } } }
-          let(:scope)  { filter }
-          let(:matching_data) do
-            super().select { |item| item['author'] == 'Ursula K. LeGuin' }
-          end
-        end
-
-        shared_context 'when the query has where: a complex block filter' do
-          let(:filter) do
-            lambda do
+          describe 'with a complex ordering' do
+            let(:order) do
               {
-                author: equals('Ursula K. LeGuin'),
-                series: not_equal('Earthsea')
+                'author'       => :desc,
+                'published_at' => :asc
               }
             end
-          end
-          let(:scope) { filter }
-          let(:matching_data) do
-            super()
-              .select { |item| item['author'] == 'Ursula K. LeGuin' }
-              .reject { |item| item['series'] == 'Earthsea' }
+            let(:ordered_data) do
+              filtered_data.sort do |u, v|
+                compare = u['author'] <=> v['author']
+
+                next -compare unless compare.zero?
+
+                u['published_at'] <=> v['published_at']
+              end
+            end
+
+            include_examples 'should apply limit and offset'
           end
         end
 
-        shared_context 'when the query has where: a greater_than filter' do
-          let(:filter) { -> { { published_at: greater_than('1970-12-01') } } }
-          let(:scope)  { filter }
-          let(:matching_data) do
-            super().select { |item| item['published_at'] > '1970-12-01' }
-          end
+        let(:filter)        { defined?(super()) ? super() : nil }
+        let(:limit)         { defined?(super()) ? super() : nil }
+        let(:offset)        { defined?(super()) ? super() : nil }
+        let(:mapped_data)   { defined?(super()) ? super() : data }
+        let(:filtered_data) { mapped_data }
+        let(:ordered_data) do
+          attr_name = defined?(default_order) ? default_order : 'id'
+
+          filtered_data.sort_by { |item| item[attr_name] }
+        end
+        let(:expected_data) do
+          data = ordered_data
+          data = data[offset..] || [] if offset
+          data = data[...limit] || [] if limit
+
+          data
         end
 
-        shared_context 'when the query has where: a greater_than_or_equal_to ' \
-                       'filter' \
-        do
-          let(:filter) do
-            -> { { published_at: greater_than_or_equal_to('1970-12-01') } }
-          end
-          let(:scope) { filter }
-          let(:matching_data) do
-            super().select { |item| item['published_at'] >= '1970-12-01' }
-          end
-        end
+        include_examples 'should order the results'
 
-        shared_context 'when the query has where: a less_than filter' do
-          let(:filter) { -> { { published_at: less_than('1970-12-01') } } }
-          let(:scope)  { filter }
-          let(:matching_data) do
-            super().select { |item| item['published_at'] < '1970-12-01' }
-          end
-        end
-
-        shared_context 'when the query has where: a ' \
-                       'less_than_or_equal_to filter' \
-        do
-          let(:filter) do
-            -> { { published_at: less_than_or_equal_to('1970-12-01') } }
-          end
-          let(:scope) { filter }
-          let(:matching_data) do
-            super().select { |item| item['published_at'] <= '1970-12-01' }
-          end
-        end
-
-        shared_context 'when the query has where: an equal block filter' do
-          let(:filter) { -> { { author: equals('Ursula K. LeGuin') } } }
-          let(:scope)  { filter }
-          let(:matching_data) do
+        describe 'with a block filter' do
+          let(:filter) { -> { { 'author' => 'Ursula K. LeGuin' } } }
+          let(:filtered_data) do
             super().select { |item| item['author'] == 'Ursula K. LeGuin' }
           end
+
+          include_examples 'should order the results'
         end
 
-        shared_context 'when the query has where: a not_equal block filter' do
-          let(:filter) { -> { { author: not_equal('Ursula K. LeGuin') } } }
-          let(:scope)  { filter }
-          let(:matching_data) do
-            super().reject { |item| item['author'] == 'Ursula K. LeGuin' }
+        describe 'with a hash filter' do
+          let(:filter) { { 'author' => 'Ursula K. LeGuin' } }
+          let(:filtered_data) do
+            super().select { |item| item['author'] == 'Ursula K. LeGuin' }
           end
+
+          include_examples 'should order the results'
         end
 
-        shared_context 'when the query has where: a not_one_of block filter' do
+        describe 'with a basic scope filter' do
           let(:filter) do
-            -> { { series: not_one_of(['Earthsea', 'The Lord of the Rings']) } }
+            Cuprum::Collections::Scope.new({ 'author' => 'Ursula K. LeGuin' })
           end
-          let(:scope) { filter }
-          let(:matching_data) do
-            super().reject do |item|
-              ['Earthsea', 'The Lord of the Rings'].include?(item['series'])
-            end
+          let(:filtered_data) do
+            super().select { |item| item['author'] == 'Ursula K. LeGuin' }
           end
+
+          include_examples 'should order the results'
         end
 
-        shared_context 'when the query has where: a one_of block filter' do
+        describe 'with a complex scope filter' do
           let(:filter) do
-            -> { { series: one_of(['Earthsea', 'The Lord of the Rings']) } }
+            Cuprum::Collections::Scope
+              .new({ 'author' => 'Ursula K. LeGuin' })
+              .or({ 'series' => nil })
           end
-          let(:scope) { filter }
-          let(:matching_data) do
+          let(:filtered_data) do
             super().select do |item|
-              ['Earthsea', 'The Lord of the Rings'].include?(item['series'])
+              item['author'] == 'Ursula K. LeGuin' || item['series'].nil?
             end
           end
-        end
 
-        shared_context 'when the query has multiple query options' do
-          let(:filter) { -> { { author: 'Ursula K. LeGuin' } } }
-          let(:scope)  { filter }
-          let(:order)  { { title: :desc } }
-          let(:limit)  { 2 }
-          let(:offset) { 1 }
-          let(:matching_data) do
-            super()
-              .select { |item| item['author'] == 'Ursula K. LeGuin' }
-              .sort { |u, v| v['title'] <=> u['title'] }
-              .slice(1, 2) || []
-          end
+          include_examples 'should order the results'
         end
       end
     end

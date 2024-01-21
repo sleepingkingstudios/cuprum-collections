@@ -24,6 +24,8 @@ module Cuprum::Collections::Commands
     def build_scope(value, &block)
       return Cuprum::Collections::Scope.build(&block) if block_given?
 
+      return value if value.is_a?(Cuprum::Collections::Scopes::Base)
+
       Cuprum::Collections::Scope.build(value) if value
     rescue ArgumentError => exception
       error = Cuprum::Collections::Errors::InvalidQuery.new(
