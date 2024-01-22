@@ -594,9 +594,26 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
           describe 'with empty data' do
             let(:data)     { [] }
-            let(:expected) { data }
+            let(:expected) { [] }
 
-            it { expect(filtered_data).to be == expected }
+            # rubocop:disable Style/RedundantLineContinuation
+            it 'should return an empty result or raise an exception',
+              :aggregate_failures \
+            do
+              # :nocov:
+              begin
+                actual = filtered_data
+              rescue StandardError => exception
+                expect(exception).to be_a error_class
+                expect(exception.message).to be == error_message
+
+                next
+              end
+
+              expect(actual).to be == expected
+              # :nocov:
+            end
+            # rubocop:enable Style/RedundantLineContinuation
           end
 
           wrap_context 'with data' do
