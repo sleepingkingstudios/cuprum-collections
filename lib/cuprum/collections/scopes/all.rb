@@ -3,8 +3,8 @@
 require 'cuprum/collections/scopes'
 
 module Cuprum::Collections::Scopes
-  # Functionality for implementing a null scope.
-  module Null
+  # Functionality for implementing an all scope, which returns all data.
+  module All
     # @override and(hash = nil, &block)
     #   Parses the hash or block and returns the parsed scope.
     #
@@ -58,7 +58,7 @@ module Cuprum::Collections::Scopes
 
     # (see Cuprum::Collections::Scopes::Base#type)
     def type
-      :null
+      :all
     end
 
     private

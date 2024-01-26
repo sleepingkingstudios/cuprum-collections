@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require 'cuprum/collections/rspec/contracts/scope_contracts'
-require 'cuprum/collections/basic/scopes/null_scope'
+require 'cuprum/collections/basic/scopes/all_scope'
 
-RSpec.describe Cuprum::Collections::Basic::Scopes::NullScope do
+RSpec.describe Cuprum::Collections::Basic::Scopes::AllScope do
   include Cuprum::Collections::RSpec::Contracts::ScopeContracts
 
   subject(:scope) { described_class.new }
@@ -12,6 +12,16 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::NullScope do
 
   def filtered_data
     scope.call(data: data)
+  end
+
+  describe '.instance' do
+    let(:expected) { described_class.instance }
+
+    include_examples 'should define class reader', :instance
+
+    it { expect(described_class.instance).to be_a described_class }
+
+    it { expect(described_class.instance).to be expected }
   end
 
   describe '.new' do
@@ -23,7 +33,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::NullScope do
     end
   end
 
-  include_contract 'should be a null scope'
+  include_contract 'should be an all scope'
 
   describe '#match' do
     let(:item) { {} }

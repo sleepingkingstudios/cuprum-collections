@@ -254,8 +254,8 @@ module Cuprum::Collections::RSpec::Contracts
       end
     end
 
-    # Contract validating the behavior of a Null scope implementation.
-    module ShouldBeANullScopeContract
+    # Contract validating the behavior of an All scope implementation.
+    module ShouldBeAnAllScopeContract
       extend RSpec::SleepingKingStudios::Contract
 
       # @!method apply(example_group, abstract: false)
@@ -282,7 +282,7 @@ module Cuprum::Collections::RSpec::Contracts
             example_class 'Spec::CustomScope',
               Cuprum::Collections::Scopes::Base \
             do |klass|
-              klass.define_method(:type) { :null }
+              klass.define_method(:type) { :all }
             end
             # rubocop:enable Style/RedundantLineContinuation
 
@@ -316,6 +316,14 @@ module Cuprum::Collections::RSpec::Contracts
             end
 
             it { expect(subject.and(value)).to be == expected }
+          end
+
+          describe 'with an all scope' do
+            let(:original) do
+              Cuprum::Collections::Scopes::AllScope.new
+            end
+
+            it { expect(subject.and(original)).to be subject }
           end
 
           describe 'with an empty conjunction scope' do
@@ -396,14 +404,6 @@ module Cuprum::Collections::RSpec::Contracts
             end
 
             it { expect(subject.and(original)).to be == original }
-          end
-
-          describe 'with a null scope' do
-            let(:original) do
-              Cuprum::Collections::Scopes::NullScope.new
-            end
-
-            it { expect(subject.and(original)).to be subject }
           end
         end
 
@@ -466,6 +466,14 @@ module Cuprum::Collections::RSpec::Contracts
             it { expect(subject.or(value)).to be == expected }
           end
 
+          describe 'with an all scope' do
+            let(:original) do
+              Cuprum::Collections::Scopes::AllScope.new
+            end
+
+            it { expect(subject.and(original)).to be subject }
+          end
+
           describe 'with an empty conjunction scope' do
             let(:original) do
               Cuprum::Collections::Scopes::ConjunctionScope.new(scopes: [])
@@ -545,14 +553,6 @@ module Cuprum::Collections::RSpec::Contracts
 
             it { expect(subject.or(original)).to be == original }
           end
-
-          describe 'with a null scope' do
-            let(:original) do
-              Cuprum::Collections::Scopes::NullScope.new
-            end
-
-            it { expect(subject.or(original)).to be subject }
-          end
         end
 
         describe '#not' do
@@ -585,6 +585,14 @@ module Cuprum::Collections::RSpec::Contracts
             end
 
             it { expect(subject.not(value)).to be == expected }
+          end
+
+          describe 'with an all scope' do
+            let(:original) do
+              Cuprum::Collections::Scopes::AllScope.new
+            end
+
+            it { expect(subject.and(original)).to be subject }
           end
 
           describe 'with an empty conjunction scope' do
@@ -694,18 +702,10 @@ module Cuprum::Collections::RSpec::Contracts
 
             it { expect(subject.not(original)).to be == expected }
           end
-
-          describe 'with a null scope' do
-            let(:original) do
-              Cuprum::Collections::Scopes::NullScope.new
-            end
-
-            it { expect(subject.not(original)).to be subject }
-          end
         end
 
         describe '#type' do
-          it { expect(subject.type).to be :null }
+          it { expect(subject.type).to be :all }
         end
       end
     end

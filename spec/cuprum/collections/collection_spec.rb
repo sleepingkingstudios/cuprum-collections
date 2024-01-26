@@ -59,7 +59,7 @@ RSpec.describe Cuprum::Collections::Collection do
 
   describe '#scope' do
     it 'should define the default scope' do
-      expect(collection.scope).to be_a Cuprum::Collections::Scopes::NullScope
+      expect(collection.scope).to be_a Cuprum::Collections::Scopes::AllScope
     end
 
     wrap_context 'when initialized with a scope' do

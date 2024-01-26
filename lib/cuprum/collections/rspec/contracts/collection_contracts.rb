@@ -479,7 +479,7 @@ module Cuprum::Collections::RSpec::Contracts
 
         describe '#scope' do
           let(:expected) do
-            Cuprum::Collections::Scopes::NullScope.new
+            Cuprum::Collections::Scopes::AllScope.new
           end
 
           include_examples 'should define reader', :scope, -> { be == expected }

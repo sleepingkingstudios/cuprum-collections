@@ -263,6 +263,250 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
     end
   end
 
+  describe 'with an all scope' do
+    let(:scope)     { described_class::AllScope.new }
+    let(:inspected) { 'Basic::AllScope' }
+    let(:matching)  { data }
+
+    it { expect(scope.debug).to be == inspected }
+
+    it { expect(scope.call(data: data)).to be == matching }
+
+    describe '#and a block' do
+      let(:block) { -> { { 'series' => 'Earthsea' } } }
+      let(:scope) { super().and(&block) }
+      let(:inspected) do
+        <<~TEXT.strip
+          Basic::CriteriaScope (1):
+          - "series" equal "Earthsea"
+        TEXT
+      end
+      let(:matching) do
+        super().select { |book| book['series'] == 'Earthsea' }
+      end
+
+      it { expect(scope.debug).to be == inspected }
+
+      it { expect(scope.call(data: data)).to be == matching }
+    end
+
+    describe '#and a hash' do
+      let(:value) { { 'series' => 'Earthsea' } }
+      let(:scope) { super().and(value) }
+      let(:inspected) do
+        <<~TEXT.strip
+          Basic::CriteriaScope (1):
+          - "series" equal "Earthsea"
+        TEXT
+      end
+      let(:matching) do
+        super().select { |book| book['series'] == 'Earthsea' }
+      end
+
+      it { expect(scope.debug).to be == inspected }
+
+      it { expect(scope.call(data: data)).to be == matching }
+    end
+
+    describe '#and a basic scope' do
+      let(:value) { Cuprum::Collections::Scope.new({ 'series' => 'Earthsea' }) }
+      let(:scope) { super().and(value) }
+      let(:inspected) do
+        <<~TEXT.strip
+          Basic::CriteriaScope (1):
+          - "series" equal "Earthsea"
+        TEXT
+      end
+      let(:matching) do
+        super().select { |book| book['series'] == 'Earthsea' }
+      end
+
+      it { expect(scope.debug).to be == inspected }
+
+      it { expect(scope.call(data: data)).to be == matching }
+    end
+
+    describe '#and a complex scope' do
+      let(:scope) { super().and(complex_scope) }
+      let(:inspected) do
+        <<~TEXT.strip
+          Basic::ConjunctionScope (2):
+          - Basic::CriteriaScope (1):
+            - "published_at" greater_than "1973-01-01"
+          - Basic::NegationScope (1):
+            - Basic::CriteriaScope (1):
+              - "series" equal nil
+        TEXT
+      end
+      let(:matching) do
+        super()
+          .select { |book| book['published_at'] > '1973-01-01' }
+          .reject { |book| book['series'].nil? }
+      end
+
+      it { expect(scope.debug).to be == inspected }
+
+      it { expect(scope.call(data: data)).to be == matching }
+    end
+
+    describe '#or a block' do
+      let(:block) { -> { { 'series' => 'Earthsea' } } }
+      let(:scope) { super().or(&block) }
+      let(:inspected) do
+        <<~TEXT.strip
+          Basic::CriteriaScope (1):
+          - "series" equal "Earthsea"
+        TEXT
+      end
+      let(:matching) do
+        super().select { |book| book['series'] == 'Earthsea' }
+      end
+
+      it { expect(scope.debug).to be == inspected }
+
+      it { expect(scope.call(data: data)).to be == matching }
+    end
+
+    describe '#or a hash' do
+      let(:value) { { 'series' => 'Earthsea' } }
+      let(:scope) { super().or(value) }
+      let(:inspected) do
+        <<~TEXT.strip
+          Basic::CriteriaScope (1):
+          - "series" equal "Earthsea"
+        TEXT
+      end
+      let(:matching) do
+        super().select { |book| book['series'] == 'Earthsea' }
+      end
+
+      it { expect(scope.debug).to be == inspected }
+
+      it { expect(scope.call(data: data)).to be == matching }
+    end
+
+    describe '#or a basic scope' do
+      let(:value) { Cuprum::Collections::Scope.new({ 'series' => 'Earthsea' }) }
+      let(:scope) { super().or(value) }
+      let(:inspected) do
+        <<~TEXT.strip
+          Basic::CriteriaScope (1):
+          - "series" equal "Earthsea"
+        TEXT
+      end
+      let(:matching) do
+        super().select { |book| book['series'] == 'Earthsea' }
+      end
+
+      it { expect(scope.debug).to be == inspected }
+
+      it { expect(scope.call(data: data)).to be == matching }
+    end
+
+    describe '#or a complex scope' do
+      let(:scope) { super().or(complex_scope) }
+      let(:inspected) do
+        <<~TEXT.strip
+          Basic::ConjunctionScope (2):
+          - Basic::CriteriaScope (1):
+            - "published_at" greater_than "1973-01-01"
+          - Basic::NegationScope (1):
+            - Basic::CriteriaScope (1):
+              - "series" equal nil
+        TEXT
+      end
+      let(:matching) do
+        super()
+          .select { |book| book['published_at'] > '1973-01-01' }
+          .reject { |book| book['series'].nil? }
+      end
+
+      it { expect(scope.debug).to be == inspected }
+
+      it { expect(scope.call(data: data)).to be == matching }
+    end
+
+    describe '#not a block' do
+      let(:block) { -> { { 'series' => 'Earthsea' } } }
+      let(:scope) { super().not(&block) }
+      let(:inspected) do
+        <<~TEXT.strip
+          Basic::NegationScope (1):
+          - Basic::CriteriaScope (1):
+            - "series" equal "Earthsea"
+        TEXT
+      end
+      let(:matching) do
+        super().reject { |book| book['series'] == 'Earthsea' }
+      end
+
+      it { expect(scope.debug).to be == inspected }
+
+      it { expect(scope.call(data: data)).to be == matching }
+    end
+
+    describe '#not a hash' do
+      let(:value) { { 'series' => 'Earthsea' } }
+      let(:scope) { super().not(value) }
+      let(:inspected) do
+        <<~TEXT.strip
+          Basic::NegationScope (1):
+          - Basic::CriteriaScope (1):
+            - "series" equal "Earthsea"
+        TEXT
+      end
+      let(:matching) do
+        super().reject { |book| book['series'] == 'Earthsea' }
+      end
+
+      it { expect(scope.debug).to be == inspected }
+
+      it { expect(scope.call(data: data)).to be == matching }
+    end
+
+    describe '#not a basic scope' do
+      let(:value) { Cuprum::Collections::Scope.new({ 'series' => 'Earthsea' }) }
+      let(:scope) { super().not(value) }
+      let(:inspected) do
+        <<~TEXT.strip
+          Basic::NegationScope (1):
+          - Basic::CriteriaScope (1):
+            - "series" equal "Earthsea"
+        TEXT
+      end
+      let(:matching) do
+        super().reject { |book| book['series'] == 'Earthsea' }
+      end
+
+      it { expect(scope.debug).to be == inspected }
+
+      it { expect(scope.call(data: data)).to be == matching }
+    end
+
+    describe '#not a complex scope' do
+      let(:scope) { super().not(complex_scope) }
+      let(:inspected) do
+        <<~TEXT.strip
+          Basic::NegationScope (2):
+          - Basic::CriteriaScope (1):
+            - "published_at" greater_than "1973-01-01"
+          - Basic::NegationScope (1):
+            - Basic::CriteriaScope (1):
+              - "series" equal nil
+        TEXT
+      end
+      let(:matching) do
+        super().reject do |book|
+          book['published_at'] > '1973-01-01' && !book['series'].nil?
+        end
+      end
+
+      it { expect(scope.debug).to be == inspected }
+
+      it { expect(scope.call(data: data)).to be == matching }
+    end
+  end
+
   describe 'with a criteria scope' do
     let(:criteria) do
       operators = Cuprum::Collections::Queries::Operators
@@ -1522,250 +1766,6 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
             - Basic::NegationScope (1):
               - Basic::CriteriaScope (1):
                 - "series" equal nil
-        TEXT
-      end
-      let(:matching) do
-        super().reject do |book|
-          book['published_at'] > '1973-01-01' && !book['series'].nil?
-        end
-      end
-
-      it { expect(scope.debug).to be == inspected }
-
-      it { expect(scope.call(data: data)).to be == matching }
-    end
-  end
-
-  describe 'with a null scope' do
-    let(:scope)     { described_class::NullScope.new }
-    let(:inspected) { 'Basic::NullScope' }
-    let(:matching)  { data }
-
-    it { expect(scope.debug).to be == inspected }
-
-    it { expect(scope.call(data: data)).to be == matching }
-
-    describe '#and a block' do
-      let(:block) { -> { { 'series' => 'Earthsea' } } }
-      let(:scope) { super().and(&block) }
-      let(:inspected) do
-        <<~TEXT.strip
-          Basic::CriteriaScope (1):
-          - "series" equal "Earthsea"
-        TEXT
-      end
-      let(:matching) do
-        super().select { |book| book['series'] == 'Earthsea' }
-      end
-
-      it { expect(scope.debug).to be == inspected }
-
-      it { expect(scope.call(data: data)).to be == matching }
-    end
-
-    describe '#and a hash' do
-      let(:value) { { 'series' => 'Earthsea' } }
-      let(:scope) { super().and(value) }
-      let(:inspected) do
-        <<~TEXT.strip
-          Basic::CriteriaScope (1):
-          - "series" equal "Earthsea"
-        TEXT
-      end
-      let(:matching) do
-        super().select { |book| book['series'] == 'Earthsea' }
-      end
-
-      it { expect(scope.debug).to be == inspected }
-
-      it { expect(scope.call(data: data)).to be == matching }
-    end
-
-    describe '#and a basic scope' do
-      let(:value) { Cuprum::Collections::Scope.new({ 'series' => 'Earthsea' }) }
-      let(:scope) { super().and(value) }
-      let(:inspected) do
-        <<~TEXT.strip
-          Basic::CriteriaScope (1):
-          - "series" equal "Earthsea"
-        TEXT
-      end
-      let(:matching) do
-        super().select { |book| book['series'] == 'Earthsea' }
-      end
-
-      it { expect(scope.debug).to be == inspected }
-
-      it { expect(scope.call(data: data)).to be == matching }
-    end
-
-    describe '#and a complex scope' do
-      let(:scope) { super().and(complex_scope) }
-      let(:inspected) do
-        <<~TEXT.strip
-          Basic::ConjunctionScope (2):
-          - Basic::CriteriaScope (1):
-            - "published_at" greater_than "1973-01-01"
-          - Basic::NegationScope (1):
-            - Basic::CriteriaScope (1):
-              - "series" equal nil
-        TEXT
-      end
-      let(:matching) do
-        super()
-          .select { |book| book['published_at'] > '1973-01-01' }
-          .reject { |book| book['series'].nil? }
-      end
-
-      it { expect(scope.debug).to be == inspected }
-
-      it { expect(scope.call(data: data)).to be == matching }
-    end
-
-    describe '#or a block' do
-      let(:block) { -> { { 'series' => 'Earthsea' } } }
-      let(:scope) { super().or(&block) }
-      let(:inspected) do
-        <<~TEXT.strip
-          Basic::CriteriaScope (1):
-          - "series" equal "Earthsea"
-        TEXT
-      end
-      let(:matching) do
-        super().select { |book| book['series'] == 'Earthsea' }
-      end
-
-      it { expect(scope.debug).to be == inspected }
-
-      it { expect(scope.call(data: data)).to be == matching }
-    end
-
-    describe '#or a hash' do
-      let(:value) { { 'series' => 'Earthsea' } }
-      let(:scope) { super().or(value) }
-      let(:inspected) do
-        <<~TEXT.strip
-          Basic::CriteriaScope (1):
-          - "series" equal "Earthsea"
-        TEXT
-      end
-      let(:matching) do
-        super().select { |book| book['series'] == 'Earthsea' }
-      end
-
-      it { expect(scope.debug).to be == inspected }
-
-      it { expect(scope.call(data: data)).to be == matching }
-    end
-
-    describe '#or a basic scope' do
-      let(:value) { Cuprum::Collections::Scope.new({ 'series' => 'Earthsea' }) }
-      let(:scope) { super().or(value) }
-      let(:inspected) do
-        <<~TEXT.strip
-          Basic::CriteriaScope (1):
-          - "series" equal "Earthsea"
-        TEXT
-      end
-      let(:matching) do
-        super().select { |book| book['series'] == 'Earthsea' }
-      end
-
-      it { expect(scope.debug).to be == inspected }
-
-      it { expect(scope.call(data: data)).to be == matching }
-    end
-
-    describe '#or a complex scope' do
-      let(:scope) { super().or(complex_scope) }
-      let(:inspected) do
-        <<~TEXT.strip
-          Basic::ConjunctionScope (2):
-          - Basic::CriteriaScope (1):
-            - "published_at" greater_than "1973-01-01"
-          - Basic::NegationScope (1):
-            - Basic::CriteriaScope (1):
-              - "series" equal nil
-        TEXT
-      end
-      let(:matching) do
-        super()
-          .select { |book| book['published_at'] > '1973-01-01' }
-          .reject { |book| book['series'].nil? }
-      end
-
-      it { expect(scope.debug).to be == inspected }
-
-      it { expect(scope.call(data: data)).to be == matching }
-    end
-
-    describe '#not a block' do
-      let(:block) { -> { { 'series' => 'Earthsea' } } }
-      let(:scope) { super().not(&block) }
-      let(:inspected) do
-        <<~TEXT.strip
-          Basic::NegationScope (1):
-          - Basic::CriteriaScope (1):
-            - "series" equal "Earthsea"
-        TEXT
-      end
-      let(:matching) do
-        super().reject { |book| book['series'] == 'Earthsea' }
-      end
-
-      it { expect(scope.debug).to be == inspected }
-
-      it { expect(scope.call(data: data)).to be == matching }
-    end
-
-    describe '#not a hash' do
-      let(:value) { { 'series' => 'Earthsea' } }
-      let(:scope) { super().not(value) }
-      let(:inspected) do
-        <<~TEXT.strip
-          Basic::NegationScope (1):
-          - Basic::CriteriaScope (1):
-            - "series" equal "Earthsea"
-        TEXT
-      end
-      let(:matching) do
-        super().reject { |book| book['series'] == 'Earthsea' }
-      end
-
-      it { expect(scope.debug).to be == inspected }
-
-      it { expect(scope.call(data: data)).to be == matching }
-    end
-
-    describe '#not a basic scope' do
-      let(:value) { Cuprum::Collections::Scope.new({ 'series' => 'Earthsea' }) }
-      let(:scope) { super().not(value) }
-      let(:inspected) do
-        <<~TEXT.strip
-          Basic::NegationScope (1):
-          - Basic::CriteriaScope (1):
-            - "series" equal "Earthsea"
-        TEXT
-      end
-      let(:matching) do
-        super().reject { |book| book['series'] == 'Earthsea' }
-      end
-
-      it { expect(scope.debug).to be == inspected }
-
-      it { expect(scope.call(data: data)).to be == matching }
-    end
-
-    describe '#not a complex scope' do
-      let(:scope) { super().not(complex_scope) }
-      let(:inspected) do
-        <<~TEXT.strip
-          Basic::NegationScope (2):
-          - Basic::CriteriaScope (1):
-            - "published_at" greater_than "1973-01-01"
-          - Basic::NegationScope (1):
-            - Basic::CriteriaScope (1):
-              - "series" equal nil
         TEXT
       end
       let(:matching) do

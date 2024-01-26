@@ -24,6 +24,12 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
       #   @param except [Array<Symbol>] names of composition methods where the
       #     scope defines custom behavior.
       contract do |except: []|
+        shared_context 'with an all scope' do
+          let(:original) do
+            Cuprum::Collections::Scopes::AllScope.new
+          end
+        end
+
         shared_context 'with an empty conjunction scope' do
           let(:original) do
             Cuprum::Collections::Scopes::ConjunctionScope.new(scopes: [])
@@ -114,12 +120,6 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           end
         end
 
-        shared_context 'with a null scope' do
-          let(:original) do
-            Cuprum::Collections::Scopes::NullScope.new
-          end
-        end
-
         describe '#and' do
           it 'should define the method' do
             expect(subject)
@@ -156,6 +156,10 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             end
 
             it { expect(subject.and(value)).to be == expected }
+          end
+
+          wrap_context 'with an all scope' do
+            it { expect(subject.and(original)).to be subject }
           end
 
           wrap_context 'with an empty conjunction scope' do
@@ -213,10 +217,6 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
             it { expect(subject.and(original)).to be == expected }
           end
-
-          wrap_context 'with a null scope' do
-            it { expect(subject.and(original)).to be subject }
-          end
         end
 
         describe '#not' do
@@ -259,6 +259,10 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             end
 
             it { expect(subject.not(value)).to be == expected }
+          end
+
+          wrap_context 'with an all scope' do
+            it { expect(subject.and(original)).to be subject }
           end
 
           wrap_context 'with an empty conjunction scope' do
@@ -328,10 +332,6 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
             it { expect(subject.not(original)).to be == expected }
           end
-
-          wrap_context 'with a null scope' do
-            it { expect(subject.not(original)).to be subject }
-          end
         end
 
         describe '#or' do
@@ -368,6 +368,10 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             end
 
             it { expect(subject.or(value)).to be == expected }
+          end
+
+          wrap_context 'with an all scope' do
+            it { expect(subject.and(original)).to be subject }
           end
 
           wrap_context 'with an empty conjunction scope' do
@@ -424,10 +428,6 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             end
 
             it { expect(subject.or(original)).to be == expected }
-          end
-
-          wrap_context 'with a null scope' do
-            it { expect(subject.or(original)).to be subject }
           end
         end
       end
@@ -493,6 +493,10 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             end
           end
 
+          wrap_context 'with an all scope' do
+            it { expect(subject.and(original)).to be subject }
+          end
+
           wrap_context 'with an empty conjunction scope' do
             it { expect(subject.and(original)).to be subject }
           end
@@ -564,10 +568,6 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
               it { expect(subject.and(original)).to be == expected }
             end
           end
-
-          wrap_context 'with a null scope' do
-            it { expect(subject.and(original)).to be subject }
-          end
         end
 
         describe '#not' do
@@ -609,6 +609,10 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             wrap_context 'when the scope has many child scopes' do
               it { expect(subject.not(value)).to be == expected }
             end
+          end
+
+          wrap_context 'with an all scope' do
+            it { expect(subject.and(original)).to be subject }
           end
 
           wrap_context 'with an empty conjunction scope' do
@@ -693,10 +697,6 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             wrap_context 'when the scope has many child scopes' do
               it { expect(subject.not(original)).to be == expected }
             end
-          end
-
-          wrap_context 'with a null scope' do
-            it { expect(subject.not(original)).to be subject }
           end
         end
       end
@@ -783,6 +783,10 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             end
           end
 
+          wrap_context 'with an all scope' do
+            it { expect(subject.and(original)).to be subject }
+          end
+
           wrap_context 'with an empty conjunction scope' do
             it { expect(subject.and(original)).to be subject }
           end
@@ -854,10 +858,6 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
               it { expect(subject.and(original)).to be == expected }
             end
           end
-
-          wrap_context 'with a null scope' do
-            it { expect(subject.and(original)).to be subject }
-          end
         end
       end
     end
@@ -920,6 +920,10 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             wrap_context 'when the scope has many child scopes' do
               it { expect(subject.or(value)).to be == expected }
             end
+          end
+
+          wrap_context 'with an all scope' do
+            it { expect(subject.and(original)).to be subject }
           end
 
           wrap_context 'with an empty conjunction scope' do
@@ -993,10 +997,6 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
               it { expect(subject.or(original)).to be == expected }
             end
           end
-
-          wrap_context 'with a null scope' do
-            it { expect(subject.or(original)).to be subject }
-          end
         end
       end
     end
@@ -1059,6 +1059,10 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             wrap_context 'when the scope has many child scopes' do
               it { expect(subject.and(value)).to be == expected }
             end
+          end
+
+          wrap_context 'with an all scope' do
+            it { expect(subject.and(original)).to be subject }
           end
 
           wrap_context 'with an empty conjunction scope' do
@@ -1132,10 +1136,6 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
               it { expect(subject.and(original)).to be == expected }
             end
           end
-
-          wrap_context 'with a null scope' do
-            it { expect(subject.and(original)).to be subject }
-          end
         end
 
         describe '#not' do
@@ -1177,6 +1177,10 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             wrap_context 'when the scope has many child scopes' do
               it { expect(subject.not(value)).to be == expected }
             end
+          end
+
+          wrap_context 'with an all scope' do
+            it { expect(subject.and(original)).to be subject }
           end
 
           wrap_context 'with an empty conjunction scope' do
@@ -1312,10 +1316,6 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             wrap_context 'when the scope has many child scopes' do
               it { expect(subject.not(original)).to be == expected }
             end
-          end
-
-          wrap_context 'with a null scope' do
-            it { expect(subject.not(original)).to be subject }
           end
         end
       end

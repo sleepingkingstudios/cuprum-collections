@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'cuprum/collections/basic'
-require 'cuprum/collections/basic/scopes/null_scope'
+require 'cuprum/collections/basic/scopes/all_scope'
 require 'cuprum/collections/query'
 
 module Cuprum::Collections::Basic
@@ -133,7 +133,7 @@ module Cuprum::Collections::Basic
     end
 
     def default_scope
-      Cuprum::Collections::Basic::Scopes::NullScope.new
+      Cuprum::Collections::Basic::Scopes::AllScope.new
     end
 
     def scoped_data

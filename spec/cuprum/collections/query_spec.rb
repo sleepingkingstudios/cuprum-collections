@@ -23,7 +23,7 @@ RSpec.describe Cuprum::Collections::Query do
 
   describe '#scope' do
     it 'should define the default scope' do
-      expect(query.scope).to be_a Cuprum::Collections::Scopes::NullScope
+      expect(query.scope).to be_a Cuprum::Collections::Scopes::AllScope
     end
 
     wrap_context 'when initialized with a scope' do

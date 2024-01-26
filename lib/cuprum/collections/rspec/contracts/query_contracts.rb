@@ -489,7 +489,7 @@ module Cuprum::Collections::RSpec::Contracts
 
           it { expect(query.scope).to be_a Cuprum::Collections::Scopes::Base }
 
-          it { expect(query.scope.type).to be :null }
+          it { expect(query.scope.type).to be :all }
 
           wrap_context 'when initialized with a scope' do
             let(:expected) do

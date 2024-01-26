@@ -2,7 +2,7 @@
 
 require 'cuprum/collections'
 require 'cuprum/collections/queries/ordering'
-require 'cuprum/collections/scopes/null_scope'
+require 'cuprum/collections/scopes/all_scope'
 
 module Cuprum::Collections
   # Abstract base class for collection Query implementations.
@@ -215,7 +215,7 @@ module Cuprum::Collections
     private
 
     def default_scope
-      Cuprum::Collections::Scopes::NullScope.new
+      Cuprum::Collections::Scopes::AllScope.new
     end
 
     def validate_limit(count)
