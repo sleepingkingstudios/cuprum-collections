@@ -25,8 +25,17 @@ module Cuprum::Collections::RSpec::Contracts
       #     for the collection, if any.
 
       contract do |**options|
+        shared_context 'when initialized with a scope' do
+          let(:initial_scope) do
+            Cuprum::Collections::Scope.new({ 'ok' => true })
+          end
+          let(:constructor_options) do
+            super().merge(scope: initial_scope)
+          end
+        end
+
         shared_examples 'should define the command' \
-        do |command_name, command_class_name = nil|
+        do |command_name, command_class_name = nil, query: false|
           next if options[:abstract]
 
           tools           = SleepingKingStudios::Tools::Toolbelt.instance
@@ -46,7 +55,7 @@ module Cuprum::Collections::RSpec::Contracts
                   .then { |str| Object.const_get(str) }
             end
             let(:command) do
-              collection.const_get(class_name).new(**constructor_options)
+              build_command(collection)
             end
             let(:expected_options) do
               Hash
@@ -55,6 +64,10 @@ module Cuprum::Collections::RSpec::Contracts
                   collection_name: collection.name,
                   member_name:     collection.singular_name
                 )
+            end
+
+            define_method(:build_command) do |collection|
+              collection.const_get(class_name).new(**constructor_options)
             end
 
             it { expect(collection).to define_constant(class_name) }
@@ -66,6 +79,8 @@ module Cuprum::Collections::RSpec::Contracts
             end
 
             it { expect(command.options).to be >= {} }
+
+            include_examples 'should match the collection query' if query
 
             command_options.each do |option_name|
               it "should set the ##{option_name}" do
@@ -83,6 +98,8 @@ module Cuprum::Collections::RSpec::Contracts
               end
 
               it { expect(command.options).to be >= { custom_option: 'value' } }
+
+              include_examples 'should match the collection query' if query
 
               command_options.each do |option_name|
                 it "should set the ##{option_name}" do
@@ -97,7 +114,7 @@ module Cuprum::Collections::RSpec::Contracts
           describe "##{command_name}" do
             let(:constructor_options) { defined?(super()) ? super() : {} }
             let(:command) do
-              collection.send(command_name, **constructor_options)
+              build_command(collection)
             end
             let(:expected_options) do
               Hash
@@ -108,6 +125,10 @@ module Cuprum::Collections::RSpec::Contracts
                 )
             end
 
+            define_method(:build_command) do |collection|
+              collection.send(command_name, **constructor_options)
+            end
+
             it 'should define the command' do
               expect(collection)
                 .to respond_to(command_name)
@@ -116,6 +137,8 @@ module Cuprum::Collections::RSpec::Contracts
             end
 
             it { expect(command).to be_a collection.const_get(class_name) }
+
+            include_examples 'should match the collection query' if query
 
             command_options.each do |option_name|
               it "should set the ##{option_name}" do
@@ -134,6 +157,8 @@ module Cuprum::Collections::RSpec::Contracts
 
               it { expect(command.options).to be >= { custom_option: 'value' } }
 
+              include_examples 'should match the collection query' if query
+
               command_options.each do |option_name|
                 it "should set the ##{option_name}" do
                   expect(command.send(option_name)).to(
@@ -142,6 +167,34 @@ module Cuprum::Collections::RSpec::Contracts
                 end
               end
             end
+          end
+        end
+
+        shared_examples 'should match the collection query' do
+          let(:query_class) { collection.query.class }
+
+          it { expect(command.query).to be_a query_class }
+
+          it { expect(command.query.limit).to be == collection.query.limit }
+
+          it { expect(command.query.offset).to be == collection.query.offset }
+
+          it { expect(command.query.order).to be == collection.query.order }
+
+          it { expect(command.query.scope).to be == collection.query.scope }
+
+          wrap_context 'when initialized with a scope' do
+            it { expect(command.query.scope).to be == collection.query.scope }
+          end
+
+          context 'with a copy with custom scope' do
+            let(:other_scope) do
+              Cuprum::Collections::Scope.new({ 'secret' => '12345' })
+            end
+            let(:copy)    { collection.with_scope(other_scope) }
+            let(:command) { build_command(copy) }
+
+            it { expect(command.query.scope).to be == copy.query.scope }
           end
         end
 
@@ -157,11 +210,15 @@ module Cuprum::Collections::RSpec::Contracts
 
         include_examples 'should define the command', :destroy_one
 
-        include_examples 'should define the command', :find_many
+        include_examples 'should define the command',
+          :find_many,
+          query: true
 
         include_examples 'should define the command', :find_matching
 
-        include_examples 'should define the command', :find_one
+        include_examples 'should define the command',
+          :find_one,
+          query: true
 
         include_examples 'should define the command', :insert_one
 
@@ -406,13 +463,52 @@ module Cuprum::Collections::RSpec::Contracts
               end
             end
 
-            it { expect(query.criteria).to be == [] }
-
             it { expect(query.limit).to be nil }
 
             it { expect(query.offset).to be nil }
 
             it { expect(query.order).to be == default_order }
+
+            it { expect(query.scope).to be == subject.scope }
+
+            wrap_context 'when initialized with a scope' do
+              it { expect(query.scope).to be == subject.scope }
+            end
+          end
+        end
+
+        describe '#scope' do
+          let(:expected) do
+            Cuprum::Collections::Scopes::NullScope.new
+          end
+
+          include_examples 'should define reader', :scope, -> { be == expected }
+
+          wrap_context 'when initialized with a scope' do
+            it { expect(subject.scope).to be == initial_scope }
+          end
+        end
+
+        describe '#with_scope' do
+          let(:other_scope) do
+            Cuprum::Collections::Scope.new({ 'secret' => '12345' })
+          end
+          let(:copy) { subject.with_scope(other_scope) }
+
+          it { expect(subject).to respond_to(:with_scope).with(1).argument }
+
+          it { expect(copy).to be_a described_class }
+
+          it { expect(copy).not_to be subject }
+
+          it { expect(copy.scope).to be == other_scope }
+
+          wrap_context 'when initialized with a scope' do
+            let(:expected) do
+              initial_scope.and(other_scope)
+            end
+
+            it { expect(copy.scope).to be == expected }
           end
         end
       end

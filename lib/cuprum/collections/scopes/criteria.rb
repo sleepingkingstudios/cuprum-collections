@@ -52,9 +52,9 @@ module Cuprum::Collections::Scopes
         def validate_hash(value)
           return if valid_hash?(value)
 
-          raise ArgumentError,
-            'value must be a Hash with String or Symbol keys',
-            caller(1..-1)
+          message = 'value must be a Hash with String or Symbol keys'
+
+          raise ArgumentError, message, caller(1..-1)
         end
 
         private

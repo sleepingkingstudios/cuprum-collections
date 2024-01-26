@@ -16,16 +16,21 @@ RSpec.describe Cuprum::Collections::Basic::Commands::FindMatching do
     described_class.new(
       collection_name: collection_name,
       data:            data,
+      query:           query,
       **constructor_options
     )
   end
+
+  let(:data)        { [] }
+  let(:mapped_data) { data }
+  let(:query)       { Cuprum::Collections::Basic::Query.new(mapped_data) }
 
   describe '.new' do
     it 'should define the constructor' do
       expect(described_class)
         .to respond_to(:new)
         .with(0).arguments
-        .and_keywords(:collection_name, :data)
+        .and_keywords(:collection_name, :data, :query)
         .and_any_keywords
     end
   end

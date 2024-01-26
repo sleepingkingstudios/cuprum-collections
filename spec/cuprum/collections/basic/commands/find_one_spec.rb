@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'cuprum/collections/basic/commands/find_one'
+require 'cuprum/collections/basic/query'
 require 'cuprum/collections/rspec/contracts/basic/command_contracts'
 require 'cuprum/collections/rspec/contracts/command_contracts'
 
@@ -16,13 +17,18 @@ RSpec.describe Cuprum::Collections::Basic::Commands::FindOne do
     described_class.new(
       collection_name: collection_name,
       data:            mapped_data,
+      query:           query,
       **constructor_options
     )
   end
 
+  let(:data)        { [] }
+  let(:mapped_data) { data }
+  let(:query)       { Cuprum::Collections::Basic::Query.new(mapped_data) }
+
   describe '.new' do
     let(:keywords) do
-      %i[collection_name data primary_key_name primary_key_type]
+      %i[collection_name data primary_key_name primary_key_type query]
     end
 
     it 'should define the constructor' do

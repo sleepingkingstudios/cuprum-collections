@@ -362,22 +362,34 @@ module Spec::Support::Examples
       end
 
       describe '#details' do
-        let(:expected) { [[attribute_name, :equal, attribute_value]] }
+        let(:expected) do
+          criteria = [[attribute_name, :equal, attribute_value]]
+
+          {
+            'criteria' => criteria,
+            'type'     => :criteria
+          }
+        end
 
         include_examples 'should define reader', :details, -> { expected }
 
         wrap_context 'when initialized with attributes: value' do
           let(:expected) do
-            attributes.map do |attribute_name, attribute_value|
+            criteria = attributes.map do |attribute_name, attribute_value|
               [attribute_name, :equal, attribute_value]
             end
+
+            {
+              'criteria' => criteria,
+              'type'     => :criteria
+            }
           end
 
           it { expect(error.details).to be == expected }
         end
 
         wrap_context 'when initialized with query: value' do
-          let(:expected) { query.criteria }
+          let(:expected) { query.scope }
 
           it { expect(error.details).to be == expected }
         end
@@ -421,15 +433,15 @@ module Spec::Support::Examples
         # rubocop:enable RSpec/RepeatedExampleGroupBody
       end
 
-      describe '#query' do
-        include_examples 'should define reader', :query, nil
+      describe '#scope' do
+        include_examples 'should define reader', :scope, nil
 
         wrap_context 'when initialized with attributes: value' do
-          it { expect(error.query).to be nil }
+          it { expect(error.scope).to be nil }
         end
 
         wrap_context 'when initialized with query: value' do
-          it { expect(error.query).to be query }
+          it { expect(error.scope).to be query.scope }
         end
       end
     end

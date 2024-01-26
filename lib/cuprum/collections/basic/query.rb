@@ -1,24 +1,20 @@
 # frozen_string_literal: true
 
 require 'cuprum/collections/basic'
-require 'cuprum/collections/basic/query_builder'
+require 'cuprum/collections/basic/scopes/null_scope'
 require 'cuprum/collections/query'
 
 module Cuprum::Collections::Basic
   # Concrete implementation of a Query for an in-memory collection.
   class Query < Cuprum::Collections::Query
-    include Enumerable
-
     # @param data [Array<Hash>] The current data in the collection. Should be an
     #   Array of Hashes, each of which represents one item in the collection.
-    def initialize(data)
-      super()
+    # @param scope [Cuprum::Collections::Scopes::Base] the base scope for the
+    #   query. Defaults to nil.
+    def initialize(data, scope: nil)
+      super(scope: scope)
 
-      @data    = data
-      @filters = []
-      @limit   = nil
-      @offset  = nil
-      @order   = {}
+      @data = data
     end
 
     # Iterates through the collection, yielding each item matching the query.
@@ -51,7 +47,7 @@ module Cuprum::Collections::Basic
     def each(...)
       return enum_for(:each, ...) unless block_given?
 
-      filtered_data.each(...)
+      scoped_data.each(...)
     end
 
     # Checks for the presence of collection items matching the query.
@@ -62,9 +58,9 @@ module Cuprum::Collections::Basic
     #
     # @return [Boolean] true if any items match the query; otherwise false.
     def exists?
-      data.any? do |item|
-        @filters.all? { |filter| filter.call(item) }
-      end
+      return data.any? unless scope
+
+      data.any? { |item| scope.match?(item: item) }
     end
 
     # Returns an array containing each collection item matching the query.
@@ -90,23 +86,13 @@ module Cuprum::Collections::Basic
     # @see #order
     # @see #where
     def to_a
-      filtered_data
+      scoped_data
     end
 
     protected
 
-    def query_builder
-      Cuprum::Collections::Basic::QueryBuilder.new(self)
-    end
-
     def reset!
-      @filtered_data = nil
-
-      self
-    end
-
-    def with_filters(filters)
-      @filters += filters
+      @scoped_data = nil
 
       self
     end
@@ -116,12 +102,6 @@ module Cuprum::Collections::Basic
     attr_reader :data
 
     attr_reader :filters
-
-    def apply_filters(data)
-      data.select do |item|
-        @filters.all? { |filter| filter.call(item) }
-      end
-    end
 
     def apply_limit_offset(data)
       return data[@offset...(@offset + @limit)] || [] if @limit && @offset
@@ -148,10 +128,18 @@ module Cuprum::Collections::Basic
       end
     end
 
-    def filtered_data
-      @filtered_data ||=
+    def apply_scope(data)
+      scope ? scope.call(data: data) : data
+    end
+
+    def default_scope
+      Cuprum::Collections::Basic::Scopes::NullScope.new
+    end
+
+    def scoped_data
+      @scoped_data ||=
         data
-          .then { |ary| apply_filters(ary) }
+          .then { |ary| apply_scope(ary) }
           .then { |ary| apply_order(ary) }
           .then { |ary| apply_limit_offset(ary) }
           .map(&:dup)

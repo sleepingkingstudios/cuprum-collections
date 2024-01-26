@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'cuprum/collections/commands/query_command'
 require 'cuprum/collections/rspec/contracts/basic'
 
 module Cuprum::Collections::RSpec::Contracts::Basic
@@ -18,11 +19,17 @@ module Cuprum::Collections::RSpec::Contracts::Basic
         describe '.subclass' do
           let(:subclass) { described_class.subclass }
           let(:constructor_options) do
-            {
+            options = {
               collection_name: 'books',
               data:            data,
               optional_key:    'optional value'
             }
+
+            if described_class < Cuprum::Collections::Commands::QueryCommand
+              options = options.merge(query: query)
+            end
+
+            options
           end
 
           it 'should define the class method' do
@@ -66,10 +73,16 @@ module Cuprum::Collections::RSpec::Contracts::Basic
               }
             end
             let(:constructor_options) do
-              {
+              options = {
                 data:         data,
                 optional_key: 'optional value'
               }
+
+              if described_class < Cuprum::Collections::Commands::QueryCommand
+                options = options.merge(query: query)
+              end
+
+              options
             end
             let(:subclass) { described_class.subclass(**default_options) }
 
@@ -432,10 +445,6 @@ module Cuprum::Collections::RSpec::Contracts::Basic
           end
           let(:query) do
             Cuprum::Collections::Basic::Query.new(mapped_data)
-          end
-          let(:scope) do
-            Cuprum::Collections::Basic::Query
-              .new(mapped_data).where(scope_filter)
           end
         end
 

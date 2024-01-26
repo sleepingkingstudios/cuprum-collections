@@ -8,10 +8,17 @@ require 'cuprum/collections/rspec/contracts/query_contracts'
 RSpec.describe Cuprum::Collections::Basic::Query do
   include Cuprum::Collections::RSpec::Contracts::QueryContracts
 
-  subject(:query) { described_class.new(stringify_data(data)) }
+  subject(:query) do
+    described_class.new(
+      stringify_data(data),
+      scope: initial_scope
+    )
+  end
 
   let(:data)          { [] }
-  let(:expected_data) { stringify_data(matching_data) }
+  let(:filtered_data) { data }
+  let(:expected_data) { stringify_data(filtered_data) }
+  let(:initial_scope) { nil }
 
   def add_item_to_collection(item)
     tools = SleepingKingStudios::Tools::HashTools.instance
@@ -30,4 +37,17 @@ RSpec.describe Cuprum::Collections::Basic::Query do
   end
 
   include_contract 'should be a query'
+
+  describe '#scope' do
+    it 'should define the default scope' do
+      expect(query.scope).to be_a Cuprum::Collections::Basic::Scopes::NullScope
+    end
+
+    wrap_context 'when initialized with a scope' do
+      it 'should transform the scope' do
+        expect(query.scope)
+          .to be_a Cuprum::Collections::Basic::Scopes::CriteriaScope
+      end
+    end
+  end
 end
