@@ -8,38 +8,29 @@ module Cuprum::Collections::Scopes
   module Negation
     include Cuprum::Collections::Scopes::Container
 
-    # (see Cuprum::Collections::Scopes::Composition#and)
-    def and(*args, &block)
-      return self if empty_scope?(args.first)
+    # (see Cuprum::Collections::Scopes::Base#type)
+    def type
+      :negation
+    end
 
-      return super unless negation_scope?(args.first)
+    private
 
-      scopes = args.first.scopes.map do |scope|
-        builder.transform_scope(scope: scope)
+    def and_negation_scope(scope)
+      scopes = scope.scopes.map do |inner|
+        builder.transform_scope(scope: inner)
       end
 
       with_scopes([*self.scopes, *scopes])
     end
-    alias where and
 
-    # (see Cuprum::Collections::Scopes::Composition#not)
-    def not(*args, &block)
-      return self if empty_scope?(args.first)
-
-      return super unless negation_scope?(args.first)
-
-      scopes = args.first.scopes.map do |scope|
-        builder.transform_scope(scope: scope)
+    def not_negation_scope(scope)
+      scopes = scope.scopes.map do |inner|
+        builder.transform_scope(scope: inner)
       end
 
       return scopes.first if scopes.size == 1
 
       builder.build_conjunction_scope(scopes: scopes)
-    end
-
-    # (see Cuprum::Collections::Scopes::Base#type)
-    def type
-      :negation
     end
   end
 end

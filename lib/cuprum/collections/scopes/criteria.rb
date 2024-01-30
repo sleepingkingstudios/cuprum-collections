@@ -253,11 +253,9 @@ module Cuprum::Collections::Scopes
 
     # (see Cuprum::Collections::Scopes::Composition#and)
     def and(*args, &block)
-      return self if empty_scope?(args.first)
-
-      return and_criteria_scope(args.first) if criteria_scope?(args.first)
-
       return super if scope?(args.first)
+
+      return self.class.build(*args, &block) if empty?
 
       with_criteria([*criteria, *self.class.parse(*args, &block)])
     end
@@ -270,6 +268,7 @@ module Cuprum::Collections::Scopes
 
     # @private
     def debug
+      # :nocov:
       message = "#{super} (#{criteria.count})"
 
       return message if empty?
@@ -277,11 +276,24 @@ module Cuprum::Collections::Scopes
       criteria.reduce("#{message}:") do |str, (attribute, operator, value)|
         str + "\n- #{attribute.inspect} #{operator} #{value.inspect}"
       end
+      # :nocov:
     end
 
     # @return [Boolean] true if the scope has no criteria; otherwise false.
     def empty?
       @criteria.empty?
+    end
+
+    # (see Cuprum::Collections::Scopes::Composition#or)
+    def or(*args, &block)
+      return super if scope?(args.first)
+
+      return self.class.build(*args, &block) if empty?
+
+      builder.build_disjunction_scope(
+        safe:   false,
+        scopes: [self, self.class.build(*args, &block)]
+      )
     end
 
     # (see Cuprum::Collections::Scopes::Base#type)
@@ -304,8 +316,38 @@ module Cuprum::Collections::Scopes
 
     private
 
+    def and_all_scope(scope)
+      return builder.transform_scope(scope: scope) if empty?
+
+      super
+    end
+
+    def and_conjunction_scope(scope)
+      return builder.transform_scope(scope: scope) if empty?
+
+      super
+    end
+
     def and_criteria_scope(scope)
       with_criteria([*criteria, *scope.criteria])
+    end
+
+    def and_generic_scope(scope)
+      return builder.transform_scope(scope: scope) if empty?
+
+      super
+    end
+
+    def or_disjunction_scope(scope)
+      return builder.transform_scope(scope: scope) if empty?
+
+      super
+    end
+
+    def or_generic_scope(scope)
+      return builder.transform_scope(scope: scope) if empty?
+
+      super
     end
   end
 end

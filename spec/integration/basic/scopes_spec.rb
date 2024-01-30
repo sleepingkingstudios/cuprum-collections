@@ -83,8 +83,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
       let(:scope) { super().and(complex_scope) }
       let(:inspected) do
         <<~TEXT.strip
-          Basic::ConjunctionScope (3):
-          - Basic::CriteriaScope (0)
+          Basic::ConjunctionScope (2):
           - Basic::CriteriaScope (1):
             - "published_at" greater_than "1973-01-01"
           - Basic::NegationScope (1):
@@ -108,11 +107,12 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
       let(:scope) { super().or(&block) }
       let(:inspected) do
         <<~TEXT.strip
-          Basic::DisjunctionScope (2):
-          - Basic::CriteriaScope (0)
-          - Basic::CriteriaScope (1):
-            - "series" equal "Earthsea"
+          Basic::CriteriaScope (1):
+          - "series" equal "Earthsea"
         TEXT
+      end
+      let(:matching) do
+        super().select { |book| book['series'] == 'Earthsea' }
       end
 
       it { expect(scope.debug).to be == inspected }
@@ -125,11 +125,12 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
       let(:scope) { super().or(value) }
       let(:inspected) do
         <<~TEXT.strip
-          Basic::DisjunctionScope (2):
-          - Basic::CriteriaScope (0)
-          - Basic::CriteriaScope (1):
-            - "series" equal "Earthsea"
+          Basic::CriteriaScope (1):
+          - "series" equal "Earthsea"
         TEXT
+      end
+      let(:matching) do
+        super().select { |book| book['series'] == 'Earthsea' }
       end
 
       it { expect(scope.debug).to be == inspected }
@@ -142,11 +143,12 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
       let(:scope) { super().or(value) }
       let(:inspected) do
         <<~TEXT.strip
-          Basic::DisjunctionScope (2):
-          - Basic::CriteriaScope (0)
-          - Basic::CriteriaScope (1):
-            - "series" equal "Earthsea"
+          Basic::CriteriaScope (1):
+          - "series" equal "Earthsea"
         TEXT
+      end
+      let(:matching) do
+        super().select { |book| book['series'] == 'Earthsea' }
       end
 
       it { expect(scope.debug).to be == inspected }
@@ -158,15 +160,18 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
       let(:scope) { super().or(complex_scope) }
       let(:inspected) do
         <<~TEXT.strip
-          Basic::DisjunctionScope (2):
-          - Basic::CriteriaScope (0)
-          - Basic::ConjunctionScope (2):
+          Basic::ConjunctionScope (2):
+          - Basic::CriteriaScope (1):
+            - "published_at" greater_than "1973-01-01"
+          - Basic::NegationScope (1):
             - Basic::CriteriaScope (1):
-              - "published_at" greater_than "1973-01-01"
-            - Basic::NegationScope (1):
-              - Basic::CriteriaScope (1):
-                - "series" equal nil
+              - "series" equal nil
         TEXT
+      end
+      let(:matching) do
+        super()
+          .select { |book| book['published_at'] > '1973-01-01' }
+          .reject { |book| book['series'].nil? }
       end
 
       it { expect(scope.debug).to be == inspected }

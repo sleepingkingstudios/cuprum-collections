@@ -25,8 +25,10 @@ module Cuprum::Collections::Scopes
     #
     # @override or(scope)
     #   Returns the none scope.
-    def or(*, &_)
-      self
+    def or(*args, &block)
+      return super if scope?(args.first)
+
+      builder.build(*args, &block)
     end
 
     # @override not(hash = nil, &block)
@@ -41,6 +43,14 @@ module Cuprum::Collections::Scopes
     # (see Cuprum::Collections::Scopes::Base#type)
     def type
       :none
+    end
+
+    private
+
+    def or_scope(scope)
+      return self if scope.empty?
+
+      scope
     end
   end
 end

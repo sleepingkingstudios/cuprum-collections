@@ -10,9 +10,7 @@ module Cuprum::Collections::Scopes
 
     # (see Cuprum::Collections::Scopes::Composition#and)
     def and(*args, &block)
-      return self if empty_scope?(args.first)
-
-      return and_conjunction_scope(args.first) if conjunction_scope?(args.first)
+      return super if scope?(args.first)
 
       with_scopes([*scopes, builder.build(*args, &block)])
     end
@@ -20,11 +18,7 @@ module Cuprum::Collections::Scopes
 
     # (see Cuprum::Collections::Scopes::Composition#not)
     def not(*args, &block)
-      return self if empty_scope?(args.first)
-
-      return not_conjunction_scope(args.first) if conjunction_scope?(args.first)
-
-      return not_negation_scope(args.first) if negation_scope?(args.first)
+      return super if scope?(args.first)
 
       scope    = builder.build(*args, &block)
       inverted = builder.build_negation_scope(scopes: [scope], safe: false)
@@ -47,6 +41,10 @@ module Cuprum::Collections::Scopes
       with_scopes([*self.scopes, *scopes])
     end
 
+    def and_generic_scope(scope)
+      with_scopes([*scopes, builder.transform_scope(scope: scope)])
+    end
+
     def not_conjunction_scope(scope)
       scopes = scope.scopes.map do |inner|
         builder.transform_scope(scope: inner)
@@ -54,6 +52,13 @@ module Cuprum::Collections::Scopes
       inverted = builder.build_negation_scope(scopes: scopes, safe: false)
 
       with_scopes([*self.scopes, inverted])
+    end
+
+    def not_generic_scope(scope)
+      scope    = builder.transform_scope(scope: scope)
+      inverted = builder.build_negation_scope(scopes: [scope], safe: false)
+
+      with_scopes([*scopes, inverted])
     end
 
     def not_negation_scope(scope)
