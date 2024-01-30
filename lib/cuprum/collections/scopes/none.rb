@@ -1,0 +1,46 @@
+# frozen_string_literal: true
+
+require 'cuprum/collections/scopes'
+
+module Cuprum::Collections::Scopes
+  # Functionality for implementing a none scope, which returns no data.
+  module None
+    # @override and(hash = nil, &block)
+    #   Returns the none scope.
+    #
+    # @override and(scope)
+    #   Returns the none scope.
+    def and(*, &_)
+      self
+    end
+    alias where and
+
+    # @return [Boolean] false.
+    def empty?
+      false
+    end
+
+    # @override or(hash = nil, &block)
+    #   Returns the none scope.
+    #
+    # @override or(scope)
+    #   Returns the none scope.
+    def or(*, &_)
+      self
+    end
+
+    # @override not(hash = nil, &block)
+    #   Returns the none scope.
+    #
+    # @override not(scope)
+    #   Returns the none scope.
+    def not(*, &_)
+      self
+    end
+
+    # (see Cuprum::Collections::Scopes::Base#type)
+    def type
+      :none
+    end
+  end
+end

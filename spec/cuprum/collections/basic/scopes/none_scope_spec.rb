@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/basic/scopes/all_scope'
+require 'cuprum/collections/basic/scopes/none_scope'
 require 'cuprum/collections/rspec/contracts/scope_contracts'
 
-RSpec.describe Cuprum::Collections::Basic::Scopes::AllScope do
+RSpec.describe Cuprum::Collections::Basic::Scopes::NoneScope do
   include Cuprum::Collections::RSpec::Contracts::ScopeContracts
 
   subject(:scope) { described_class.new }
@@ -33,7 +33,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::AllScope do
     end
   end
 
-  include_contract 'should be an all scope'
+  include_contract 'should be a none scope'
 
   describe '#match' do
     let(:item) { {} }
@@ -70,7 +70,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::AllScope do
           .find { |book| book['title'] == 'The Silmarillion' }
       end
 
-      it { expect(scope.match?(item: item)).to be true }
+      it { expect(scope.match?(item: item)).to be false }
     end
   end
 end

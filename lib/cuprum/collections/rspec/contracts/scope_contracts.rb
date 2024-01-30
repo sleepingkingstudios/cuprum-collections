@@ -683,6 +683,7 @@ module Cuprum::Collections::RSpec::Contracts
               Cuprum::Collections::Scopes::NegationScope
                 .new(scopes: [wrapped])
             end
+
             it { expect(subject.not(original)).to be == original.scopes.first }
           end
 
@@ -706,6 +707,423 @@ module Cuprum::Collections::RSpec::Contracts
 
         describe '#type' do
           it { expect(subject.type).to be :all }
+        end
+      end
+    end
+
+    # Contract validating the behavior of a None scope implementation.
+    module ShouldBeANoneScopeContract
+      extend RSpec::SleepingKingStudios::Contract
+
+      # @!method apply(example_group, abstract: false)
+      #   Adds the contract to the example group.
+      #
+      #   @param example_group [RSpec::Core::ExampleGroup] the example group to
+      #     which the contract is applied.
+      #   @param abstract [Boolean] if true, the scope is abstract and does not
+      #     define a #call implementation. Defaults to false.
+      contract do |abstract: false|
+        include_contract 'should be a scope'
+
+        describe '#==' do
+          describe 'with a scope with the same class' do
+            let(:other) { described_class.new }
+
+            it { expect(subject == other).to be true }
+          end
+
+          describe 'with a scope with the same type' do
+            let(:other) { Spec::CustomScope.new }
+
+            # rubocop:disable Style/RedundantLineContinuation
+            example_class 'Spec::CustomScope',
+              Cuprum::Collections::Scopes::Base \
+            do |klass|
+              klass.define_method(:type) { :none }
+            end
+            # rubocop:enable Style/RedundantLineContinuation
+
+            it { expect(subject == other).to be true }
+          end
+        end
+
+        describe '#and' do
+          it 'should define the method' do
+            expect(subject)
+              .to respond_to(:and)
+              .with(0..1).arguments
+              .and_a_block
+          end
+
+          it { expect(subject).to have_aliased_method(:and).as(:where) }
+
+          describe 'with a block' do
+            let(:block) { -> { { 'title' => 'A Wizard of Earthsea' } } }
+
+            it { expect(subject.and(&block)).to be subject }
+          end
+
+          describe 'with a hash' do
+            let(:value) { { 'title' => 'A Wizard of Earthsea' } }
+
+            it { expect(subject.and(value)).to be subject }
+          end
+
+          describe 'with an all scope' do
+            let(:original) do
+              Cuprum::Collections::Scopes::AllScope.new
+            end
+
+            it { expect(subject.and(original)).to be subject }
+          end
+
+          describe 'with an empty conjunction scope' do
+            let(:original) do
+              Cuprum::Collections::Scopes::ConjunctionScope.new(scopes: [])
+            end
+
+            it { expect(subject.and(original)).to be subject }
+          end
+
+          describe 'with an empty criteria scope' do
+            let(:original) do
+              Cuprum::Collections::Scopes::CriteriaScope.new(criteria: [])
+            end
+
+            it { expect(subject.and(original)).to be subject }
+          end
+
+          describe 'with an empty disjunction scope' do
+            let(:original) do
+              Cuprum::Collections::Scopes::DisjunctionScope.new(scopes: [])
+            end
+
+            it { expect(subject.and(original)).to be subject }
+          end
+
+          describe 'with an empty negation scope' do
+            let(:original) do
+              Cuprum::Collections::Scopes::NegationScope.new(scopes: [])
+            end
+
+            it { expect(subject.and(original)).to be subject }
+          end
+
+          describe 'with a non-empty conjunction scope' do
+            let(:original) do
+              wrapped =
+                Cuprum::Collections::Scope
+                  .new({ 'title' => 'A Wizard of Earthsea' })
+
+              Cuprum::Collections::Scopes::ConjunctionScope
+                .new(scopes: [wrapped])
+            end
+
+            it { expect(subject.and(original)).to be subject }
+          end
+
+          describe 'with a non-empty criteria scope' do
+            let(:original) do
+              Cuprum::Collections::Scope
+                .new({ 'title' => 'A Wizard of Earthsea' })
+            end
+
+            it { expect(subject.and(original)).to be subject }
+          end
+
+          describe 'with a non-empty disjunction scope' do
+            let(:original) do
+              wrapped =
+                Cuprum::Collections::Scope
+                  .new({ 'title' => 'A Wizard of Earthsea' })
+
+              Cuprum::Collections::Scopes::DisjunctionScope
+                .new(scopes: [wrapped])
+            end
+
+            it { expect(subject.and(original)).to be subject }
+          end
+
+          describe 'with a non-empty negation scope' do
+            let(:original) do
+              wrapped =
+                Cuprum::Collections::Scope
+                  .new({ 'title' => 'A Wizard of Earthsea' })
+
+              Cuprum::Collections::Scopes::NegationScope
+                .new(scopes: [wrapped])
+            end
+
+            it { expect(subject.and(original)).to be subject }
+          end
+        end
+
+        describe '#as_json' do
+          let(:expected) { { 'type' => subject.type } }
+
+          it { expect(subject.as_json).to be == expected }
+        end
+
+        describe '#call' do
+          shared_context 'with data' do
+            let(:data) do
+              Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES
+            end
+          end
+
+          next if abstract
+
+          describe 'with empty data' do
+            let(:data)     { [] }
+            let(:expected) { data }
+
+            it { expect(filtered_data).to be == expected }
+          end
+
+          wrap_context 'with data' do
+            let(:expected) { [] }
+
+            it { expect(filtered_data).to be == expected }
+          end
+        end
+
+        describe '#empty?' do
+          it { expect(subject.empty?).to be false }
+        end
+
+        describe '#or' do
+          it 'should define the method' do
+            expect(subject)
+              .to respond_to(:or)
+              .with(0..1).arguments
+              .and_a_block
+          end
+
+          describe 'with a block' do
+            let(:block) { -> { { 'title' => 'A Wizard of Earthsea' } } }
+
+            it { expect(subject.or(&block)).to be subject }
+          end
+
+          describe 'with a hash' do
+            let(:value) { { 'title' => 'A Wizard of Earthsea' } }
+
+            it { expect(subject.or(value)).to be subject }
+          end
+
+          describe 'with an all scope' do
+            let(:original) do
+              Cuprum::Collections::Scopes::AllScope.new
+            end
+
+            it { expect(subject.or(original)).to be subject }
+          end
+
+          describe 'with an empty conjunction scope' do
+            let(:original) do
+              Cuprum::Collections::Scopes::ConjunctionScope.new(scopes: [])
+            end
+
+            it { expect(subject.or(original)).to be subject }
+          end
+
+          describe 'with an empty criteria scope' do
+            let(:original) do
+              Cuprum::Collections::Scopes::CriteriaScope.new(criteria: [])
+            end
+
+            it { expect(subject.or(original)).to be subject }
+          end
+
+          describe 'with an empty disjunction scope' do
+            let(:original) do
+              Cuprum::Collections::Scopes::DisjunctionScope.new(scopes: [])
+            end
+
+            it { expect(subject.or(original)).to be subject }
+          end
+
+          describe 'with an empty negation scope' do
+            let(:original) do
+              Cuprum::Collections::Scopes::NegationScope.new(scopes: [])
+            end
+
+            it { expect(subject.or(original)).to be subject }
+          end
+
+          describe 'with a non-empty conjunction scope' do
+            let(:original) do
+              wrapped =
+                Cuprum::Collections::Scope
+                  .new({ 'title' => 'A Wizard of Earthsea' })
+
+              Cuprum::Collections::Scopes::ConjunctionScope
+                .new(scopes: [wrapped])
+            end
+
+            it { expect(subject.and(original)).to be subject }
+          end
+
+          describe 'with a non-empty criteria scope' do
+            let(:original) do
+              Cuprum::Collections::Scope
+                .new({ 'title' => 'A Wizard of Earthsea' })
+            end
+
+            it { expect(subject.and(original)).to be subject }
+          end
+
+          describe 'with a non-empty disjunction scope' do
+            let(:original) do
+              wrapped =
+                Cuprum::Collections::Scope
+                  .new({ 'title' => 'A Wizard of Earthsea' })
+
+              Cuprum::Collections::Scopes::DisjunctionScope
+                .new(scopes: [wrapped])
+            end
+
+            it { expect(subject.and(original)).to be subject }
+          end
+
+          describe 'with a non-empty negation scope' do
+            let(:original) do
+              wrapped =
+                Cuprum::Collections::Scope
+                  .new({ 'title' => 'A Wizard of Earthsea' })
+
+              Cuprum::Collections::Scopes::NegationScope
+                .new(scopes: [wrapped])
+            end
+
+            it { expect(subject.and(original)).to be subject }
+          end
+        end
+
+        describe '#not' do
+          it 'should define the method' do
+            expect(subject)
+              .to respond_to(:not)
+              .with(0..1).arguments
+              .and_a_block
+          end
+
+          describe 'with a block' do
+            let(:block) { -> { { 'title' => 'A Wizard of Earthsea' } } }
+
+            it { expect(subject.not(&block)).to be subject }
+          end
+
+          describe 'with a hash' do
+            let(:value) { { 'title' => 'A Wizard of Earthsea' } }
+
+            it { expect(subject.not(value)).to be subject }
+          end
+
+          describe 'with an all scope' do
+            let(:original) do
+              Cuprum::Collections::Scopes::AllScope.new
+            end
+
+            it { expect(subject.not(original)).to be subject }
+          end
+
+          describe 'with an empty conjunction scope' do
+            let(:original) do
+              Cuprum::Collections::Scopes::ConjunctionScope.new(scopes: [])
+            end
+
+            it { expect(subject.not(original)).to be subject }
+          end
+
+          describe 'with an empty criteria scope' do
+            let(:original) do
+              Cuprum::Collections::Scopes::CriteriaScope.new(criteria: [])
+            end
+
+            it { expect(subject.not(original)).to be subject }
+          end
+
+          describe 'with an empty disjunction scope' do
+            let(:original) do
+              Cuprum::Collections::Scopes::DisjunctionScope.new(scopes: [])
+            end
+
+            it { expect(subject.not(original)).to be subject }
+          end
+
+          describe 'with an empty negation scope' do
+            let(:original) do
+              Cuprum::Collections::Scopes::NegationScope.new(scopes: [])
+            end
+
+            it { expect(subject.not(original)).to be subject }
+          end
+
+          describe 'with a non-empty conjunction scope' do
+            let(:original) do
+              wrapped =
+                Cuprum::Collections::Scope
+                  .new({ 'title' => 'A Wizard of Earthsea' })
+
+              Cuprum::Collections::Scopes::ConjunctionScope
+                .new(scopes: [wrapped])
+            end
+
+            it { expect(subject.not(original)).to be subject }
+          end
+
+          describe 'with a non-empty criteria scope' do
+            let(:original) do
+              Cuprum::Collections::Scope
+                .new({ 'title' => 'A Wizard of Earthsea' })
+            end
+
+            it { expect(subject.not(original)).to be subject }
+          end
+
+          describe 'with a non-empty disjunction scope' do
+            let(:original) do
+              wrapped =
+                Cuprum::Collections::Scope
+                  .new({ 'title' => 'A Wizard of Earthsea' })
+
+              Cuprum::Collections::Scopes::DisjunctionScope
+                .new(scopes: [wrapped])
+            end
+
+            it { expect(subject.not(original)).to be subject }
+          end
+
+          describe 'with a negation scope with one child scope' do
+            let(:original) do
+              wrapped =
+                Cuprum::Collections::Scope
+                  .new({ 'title' => 'A Wizard of Earthsea' })
+
+              Cuprum::Collections::Scopes::NegationScope
+                .new(scopes: [wrapped])
+            end
+
+            it { expect(subject.not(original)).to be subject }
+          end
+
+          describe 'with a negation scope with many child scopes' do
+            let(:original) do
+              wrapped = Array.new(3) do
+                Cuprum::Collections::Scope.new({ 'ok' => true })
+              end
+
+              Cuprum::Collections::Scopes::NegationScope
+                .new(scopes: wrapped)
+            end
+
+            it { expect(subject.not(original)).to be subject }
+          end
+        end
+
+        describe '#type' do
+          it { expect(subject.type).to be :none }
         end
       end
     end
