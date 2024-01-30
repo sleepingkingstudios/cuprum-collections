@@ -109,6 +109,11 @@ module Cuprum::Collections::Scopes
       negation_scope_class.new(scopes: scopes)
     end
 
+    # Creates a new none scope.
+    def build_none_scope
+      none_scope_class.new
+    end
+
     # Creates a new scope with the same scope type and properties.
     def transform_scope(scope:)
       validate_scope!(scope)
@@ -125,7 +130,7 @@ module Cuprum::Collections::Scopes
         caller(1..-1)
     end
 
-    def build_transformed_scope(original) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
+    def build_transformed_scope(original) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
       case original.type
       when :all
         return original if original.is_a?(all_scope_class)
@@ -159,6 +164,10 @@ module Cuprum::Collections::Scopes
           safe:   false,
           scopes: transform_scopes(original.scopes)
         )
+      when :none
+        return original if original.is_a?(none_scope_class)
+
+        build_none_scope
       else
         error_message =
           "#{self.class.name} cannot transform scopes of type " \
@@ -193,6 +202,13 @@ module Cuprum::Collections::Scopes
       raise AbstractBuilderError,
         "#{self.class.name} is an abstract class. Define a builder " \
         'class and implement the #negation_scope_class method.',
+        caller(1..-1)
+    end
+
+    def none_scope_class
+      raise AbstractBuilderError,
+        "#{self.class.name} is an abstract class. Define a builder " \
+        'class and implement the #none_scope_class method.',
         caller(1..-1)
     end
 

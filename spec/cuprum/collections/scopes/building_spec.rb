@@ -240,4 +240,19 @@ RSpec.describe Cuprum::Collections::Scopes::Building do
       end
     end
   end
+
+  describe '#build_none_scope' do
+    let(:error_class) do
+      Cuprum::Collections::Scopes::Building::AbstractBuilderError
+    end
+    let(:error_message) do
+      "#{described_class.name} is an abstract class. Define a builder " \
+        'class and implement the #none_scope_class method.'
+    end
+
+    it 'should raise an exception' do
+      expect { builder.build_none_scope }
+        .to raise_error error_class, error_message
+    end
+  end
 end

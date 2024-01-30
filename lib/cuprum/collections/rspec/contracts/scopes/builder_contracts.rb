@@ -8,6 +8,7 @@ require 'cuprum/collections/scopes/conjunction_scope'
 require 'cuprum/collections/scopes/criteria_scope'
 require 'cuprum/collections/scopes/disjunction_scope'
 require 'cuprum/collections/scopes/negation_scope'
+require 'cuprum/collections/scopes/none_scope'
 
 module Cuprum::Collections::RSpec::Contracts::Scopes
   # Contracts for asserting on scope builder objects.
@@ -37,12 +38,15 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
       #     logical OR scopes. Ignored if :abstract is true.
       #   @option options negation_class [Class] the class for returned logical
       #     NAND scopes. Ignored if :abstract is true.
+      #   @option options none_class [Class] the class for returned none scopes.
+      #     Ignored if :abstract is true.
       contract do |abstract: false, **contract_options|
         all_scope_class         = contract_options[:all_class]
         conjunction_scope_class = contract_options[:conjunction_class]
         criteria_scope_class    = contract_options[:criteria_class]
         disjunction_scope_class = contract_options[:disjunction_class]
         negation_scope_class    = contract_options[:negation_class]
+        none_scope_class        = contract_options[:none_class]
 
         shared_context 'with container scope helpers' do
           let(:scope) { build_container(scopes: scopes) }
@@ -60,6 +64,8 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
               disjunction_scope_class
             when :negation
               negation_scope_class
+            when :none
+              none_scope_class
             else
               raise "unknown scope type #{type.inspect}"
             end
@@ -234,6 +240,20 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
               should_recursively_convert_scopes(scopes, scope.scopes)
             end
           end
+        end
+
+        shared_examples 'should build a none scope' do
+          let(:scope) { build_none }
+
+          # :nocov:
+          unless none_scope_class
+            pending '(must specify :none_class option)'
+
+            next
+          end
+          # :nocov:
+
+          it { expect(scope).to be_a none_scope_class }
         end
 
         shared_examples 'should validate the criteria' do
@@ -438,6 +458,16 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             include_examples 'should build a negation scope'
           end
 
+          describe 'with a none scope' do
+            def build_none
+              original = Cuprum::Collections::Scopes::NoneScope.new
+
+              subject.build(original)
+            end
+
+            include_examples 'should build a none scope'
+          end
+
           describe 'with an all scope of matching class' do
             # :nocov:
             unless all_scope_class
@@ -513,6 +543,22 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
             let(:original) do
               negation_scope_class.new(scopes: [])
+            end
+
+            it { expect(subject.build(original)).to be original }
+          end
+
+          describe 'with a none scope of matching class' do
+            # :nocov:
+            unless none_scope_class
+              pending '(must specify :none_class option)'
+
+              next
+            end
+            # :nocov:
+
+            let(:original) do
+              none_scope_class.new
             end
 
             it { expect(subject.build(original)).to be original }
@@ -683,6 +729,22 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           end
         end
 
+        describe '#build_none_scope' do
+          def build_none
+            subject.build_none_scope
+          end
+
+          it 'should define the method' do
+            expect(subject)
+              .to respond_to(:build_none_scope)
+              .with(0).arguments
+          end
+
+          next if abstract
+
+          include_examples 'should build a none scope'
+        end
+
         describe '#transform_scope' do
           let(:scope) { subject.transform_scope(scope: original) }
 
@@ -791,6 +853,16 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             include_examples 'should build a negation scope'
           end
 
+          describe 'with a none scope' do
+            def build_none
+              original = Cuprum::Collections::Scopes::NoneScope.new
+
+              subject.transform_scope(scope: original)
+            end
+
+            include_examples 'should build a none scope'
+          end
+
           describe 'with an all scope of matching class' do
             # :nocov:
             unless all_scope_class
@@ -874,6 +946,24 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
             let(:original) do
               negation_scope_class.new(scopes: [])
+            end
+
+            it 'should return the original scope' do
+              expect(subject.transform_scope(scope: original)).to be original
+            end
+          end
+
+          describe 'with a none scope of matching class' do
+            # :nocov:
+            unless none_scope_class
+              pending '(must specify :none_class option)'
+
+              next
+            end
+            # :nocov:
+
+            let(:original) do
+              none_scope_class.new
             end
 
             it 'should return the original scope' do
