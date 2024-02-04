@@ -296,9 +296,7 @@ module Cuprum::Collections
     private
 
     def ignore_parameters(**parameters)
-      parameters
-        .reject { |key, _| ignored_parameters.include?(key) }
-        .to_h
+      parameters.except(*ignored_parameters)
     end
 
     def ignored_parameters
