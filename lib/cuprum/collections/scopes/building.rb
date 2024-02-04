@@ -46,6 +46,11 @@ module Cuprum::Collections::Scopes
       criteria_scope_class.build(*args, &block)
     end
 
+    # Creates a new all scope.
+    def build_all_scope
+      all_scope_class.new
+    end
+
     # Creates a new logical AND scope wrapping the given scopes.
     #
     # @param scopes [Array<Cuprum::Collections::Scopes::Base>] the scopes to
@@ -63,8 +68,11 @@ module Cuprum::Collections::Scopes
     end
 
     # Creates a new scope wrapping the given criteria.
-    def build_criteria_scope(criteria:)
-      validate_criteria!(criteria)
+    #
+    # @param criteria [Array] the criteria for the scope.
+    # @param safe [Boolean] if true, validates the criteria. Defaults to true.
+    def build_criteria_scope(criteria:, safe: true)
+      validate_criteria!(criteria) if safe
 
       criteria_scope_class.new(criteria: criteria)
     end
@@ -101,9 +109,9 @@ module Cuprum::Collections::Scopes
       negation_scope_class.new(scopes: scopes)
     end
 
-    # Creates a new null scope.
-    def build_null_scope
-      null_scope_class.new
+    # Creates a new none scope.
+    def build_none_scope
+      none_scope_class.new
     end
 
     # Creates a new scope with the same scope type and properties.
@@ -115,28 +123,51 @@ module Cuprum::Collections::Scopes
 
     private
 
-    def build_transformed_scope(original) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
+    def all_scope_class
+      raise AbstractBuilderError,
+        "#{self.class.name} is an abstract class. Define a builder " \
+        'class and implement the #all_scope_class method.',
+        caller(1..-1)
+    end
+
+    def build_transformed_scope(original) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
       case original.type
+      when :all
+        return original if original.is_a?(all_scope_class)
+
+        build_all_scope
       when :conjunction
         return original if original.is_a?(conjunction_scope_class)
 
-        conjunction_scope_class.new(scopes: transform_scopes(original.scopes))
+        build_conjunction_scope(
+          safe:   false,
+          scopes: transform_scopes(original.scopes)
+        )
       when :criteria
         return original if original.is_a?(criteria_scope_class)
 
-        criteria_scope_class.new(criteria: original.criteria)
+        build_criteria_scope(
+          criteria: original.criteria,
+          safe:     false
+        )
       when :disjunction
         return original if original.is_a?(disjunction_scope_class)
 
-        disjunction_scope_class.new(scopes: transform_scopes(original.scopes))
+        build_disjunction_scope(
+          safe:   false,
+          scopes: transform_scopes(original.scopes)
+        )
       when :negation
         return original if original.is_a?(negation_scope_class)
 
-        negation_scope_class.new(scopes: transform_scopes(original.scopes))
-      when :null
-        return original if original.is_a?(null_scope_class)
+        build_negation_scope(
+          safe:   false,
+          scopes: transform_scopes(original.scopes)
+        )
+      when :none
+        return original if original.is_a?(none_scope_class)
 
-        null_scope_class.new
+        build_none_scope
       else
         error_message =
           "#{self.class.name} cannot transform scopes of type " \
@@ -174,10 +205,10 @@ module Cuprum::Collections::Scopes
         caller(1..-1)
     end
 
-    def null_scope_class
+    def none_scope_class
       raise AbstractBuilderError,
         "#{self.class.name} is an abstract class. Define a builder " \
-        'class and implement the #null_scope_class method.',
+        'class and implement the #none_scope_class method.',
         caller(1..-1)
     end
 
@@ -216,7 +247,3 @@ module Cuprum::Collections::Scopes
     end
   end
 end
-
-require 'cuprum/collections/scopes/conjunction_scope'
-require 'cuprum/collections/scopes/disjunction_scope'
-require 'cuprum/collections/scopes/negation_scope'

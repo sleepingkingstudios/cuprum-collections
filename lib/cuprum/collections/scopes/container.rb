@@ -33,6 +33,7 @@ module Cuprum::Collections::Scopes
 
     # @private
     def debug
+      # :nocov:
       message = "#{super} (#{scopes.count})"
 
       return message if empty?
@@ -40,6 +41,7 @@ module Cuprum::Collections::Scopes
       scopes.reduce("#{message}:") do |str, scope|
         str + "\n- #{scope.debug.gsub("\n", "\n  ")}"
       end
+      # :nocov:
     end
 
     # @return [Boolean] true if the scope has no child scopes; otherwise false.

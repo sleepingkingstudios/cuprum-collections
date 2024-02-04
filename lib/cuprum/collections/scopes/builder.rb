@@ -10,6 +10,10 @@ module Cuprum::Collections::Scopes
 
     private
 
+    def all_scope_class
+      Cuprum::Collections::Scopes::AllScope
+    end
+
     def conjunction_scope_class
       Cuprum::Collections::Scopes::ConjunctionScope
     end
@@ -26,14 +30,15 @@ module Cuprum::Collections::Scopes
       Cuprum::Collections::Scopes::NegationScope
     end
 
-    def null_scope_class
-      Cuprum::Collections::Scopes::NullScope
+    def none_scope_class
+      Cuprum::Collections::Scopes::NoneScope
     end
   end
 end
 
+require 'cuprum/collections/scopes/all_scope'
 require 'cuprum/collections/scopes/conjunction_scope'
 require 'cuprum/collections/scopes/criteria_scope'
 require 'cuprum/collections/scopes/disjunction_scope'
 require 'cuprum/collections/scopes/negation_scope'
-require 'cuprum/collections/scopes/null_scope'
+require 'cuprum/collections/scopes/none_scope'

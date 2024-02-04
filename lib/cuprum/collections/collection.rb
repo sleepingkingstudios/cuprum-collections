@@ -4,7 +4,7 @@ require 'cuprum/command_factory'
 
 require 'cuprum/collections'
 require 'cuprum/collections/relation'
-require 'cuprum/collections/scopes/null_scope'
+require 'cuprum/collections/scopes/all_scope'
 
 module Cuprum::Collections
   # Provides a base implementation for collections.
@@ -137,7 +137,7 @@ module Cuprum::Collections
     end
 
     def default_scope
-      Cuprum::Collections::Scopes::NullScope.new
+      Cuprum::Collections::Scopes::AllScope.new
     end
 
     def ignore_parameters(**parameters)

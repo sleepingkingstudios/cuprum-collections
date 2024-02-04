@@ -94,6 +94,21 @@ RSpec.describe Cuprum::Collections::Scopes::Building do
     end
   end
 
+  describe '#build_all_scope' do
+    let(:error_class) do
+      Cuprum::Collections::Scopes::Building::AbstractBuilderError
+    end
+    let(:error_message) do
+      "#{described_class.name} is an abstract class. Define a builder " \
+        'class and implement the #all_scope_class method.'
+    end
+
+    it 'should raise an exception' do
+      expect { builder.build_all_scope }
+        .to raise_error error_class, error_message
+    end
+  end
+
   describe '#build_conjunction_scope' do
     let(:error_class) do
       Cuprum::Collections::Scopes::Building::AbstractBuilderError
@@ -226,17 +241,17 @@ RSpec.describe Cuprum::Collections::Scopes::Building do
     end
   end
 
-  describe '#build_null_scope' do
+  describe '#build_none_scope' do
     let(:error_class) do
       Cuprum::Collections::Scopes::Building::AbstractBuilderError
     end
     let(:error_message) do
       "#{described_class.name} is an abstract class. Define a builder " \
-        'class and implement the #null_scope_class method.'
+        'class and implement the #none_scope_class method.'
     end
 
     it 'should raise an exception' do
-      expect { builder.build_null_scope }
+      expect { builder.build_none_scope }
         .to raise_error error_class, error_message
     end
   end

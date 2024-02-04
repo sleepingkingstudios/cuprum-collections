@@ -4,7 +4,7 @@ require 'cuprum/command_factory'
 
 require 'cuprum/collections/basic'
 require 'cuprum/collections/basic/commands'
-require 'cuprum/collections/basic/scopes/null_scope'
+require 'cuprum/collections/basic/scopes/all_scope'
 require 'cuprum/collections/collection'
 
 module Cuprum::Collections::Basic
@@ -112,7 +112,7 @@ module Cuprum::Collections::Basic
     private
 
     def default_scope
-      Cuprum::Collections::Basic::Scopes::NullScope.new
+      Cuprum::Collections::Basic::Scopes::AllScope.new
     end
   end
 end

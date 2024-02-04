@@ -5,6 +5,8 @@ require 'cuprum/collections/basic'
 module Cuprum::Collections::Basic
   # Namespace for basic scope functionality, which filters query data.
   module Scopes
+    autoload :AllScope,
+      'cuprum/collections/basic/scopes/all_scope'
     autoload :Base,
       'cuprum/collections/basic/scopes/base'
     autoload :Builder,
@@ -17,7 +19,7 @@ module Cuprum::Collections::Basic
       'cuprum/collections/basic/scopes/disjunction_scope'
     autoload :NegationScope,
       'cuprum/collections/basic/scopes/negation_scope'
-    autoload :NullScope,
-      'cuprum/collections/basic/scopes/null_scope'
+    autoload :NoneScope,
+      'cuprum/collections/basic/scopes/none_scope'
   end
 end

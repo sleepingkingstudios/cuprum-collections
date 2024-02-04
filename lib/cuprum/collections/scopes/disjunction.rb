@@ -10,11 +10,11 @@ module Cuprum::Collections::Scopes
 
     # (see Cuprum::Collections::Scopes::Composition#or)
     def or(*args, &block)
-      return self if empty_scope?(args.first)
+      return super if scope?(args.first)
 
-      return or_disjunction_scope(args.first) if disjunction_scope?(args.first)
+      scope = builder.build(*args, &block)
 
-      with_scopes([*scopes, builder.build(*args, &block)])
+      with_scopes([*scopes, scope])
     end
 
     # (see Cuprum::Collections::Scopes::Base#type)
@@ -30,6 +30,10 @@ module Cuprum::Collections::Scopes
       end
 
       with_scopes([*self.scopes, *scopes])
+    end
+
+    def or_generic_scope(scope)
+      with_scopes([*scopes, builder.transform_scope(scope: scope)])
     end
   end
 end
