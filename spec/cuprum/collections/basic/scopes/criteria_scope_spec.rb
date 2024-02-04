@@ -6,13 +6,16 @@ require 'cuprum/collections/rspec/contracts/scopes/criteria_contracts'
 RSpec.describe Cuprum::Collections::Basic::Scopes::CriteriaScope do
   include Cuprum::Collections::RSpec::Contracts::Scopes::CriteriaContracts
 
-  subject(:scope) { described_class.new(criteria: criteria) }
+  subject(:scope) do
+    described_class.new(criteria: criteria, **constructor_options)
+  end
 
-  let(:criteria) { [] }
-  let(:data)     { [] }
+  let(:criteria)            { [] }
+  let(:data)                { [] }
+  let(:constructor_options) { {} }
 
   def filtered_data
-    scope.call(data: data)
+    subject.call(data: data)
   end
 
   include_contract 'should be a criteria scope'
@@ -346,7 +349,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::CriteriaScope do
           .find { |book| book['title'] == 'The Two Towers' }
       end
       let(:error_class) do
-        Cuprum::Collections::Scopes::Criteria::UnknownOperatorException
+        Cuprum::Collections::Queries::UnknownOperatorException
       end
       let(:error_message) do
         'unknown operator "random"'

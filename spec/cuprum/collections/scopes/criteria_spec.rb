@@ -7,9 +7,12 @@ require 'cuprum/collections/rspec/contracts/scopes/criteria_contracts'
 RSpec.describe Cuprum::Collections::Scopes::Criteria do
   include Cuprum::Collections::RSpec::Contracts::Scopes::CriteriaContracts
 
-  subject(:scope) { described_class.new(criteria: criteria) }
+  subject(:scope) do
+    described_class.new(criteria: criteria, **constructor_options)
+  end
 
-  let(:described_class) { Spec::ExampleScope }
+  let(:described_class)     { Spec::ExampleScope }
+  let(:constructor_options) { {} }
 
   example_class 'Spec::ExampleScope', Cuprum::Collections::Scopes::Base \
   do |klass|
@@ -63,44 +66,6 @@ RSpec.describe Cuprum::Collections::Scopes::Criteria do
       it { expect(parser).to respond_to(:parse_hash).with(1).argument }
 
       include_contract 'should parse criteria from a hash'
-    end
-  end
-
-  describe '::UnknownOperatorException' do
-    subject(:error) { described_class::UnknownOperatorException.new(message) }
-
-    let(:message) { 'unknown operator "random"' }
-
-    include_examples 'should define constant',
-      :UnknownOperatorException,
-      -> { be_a(Class).and(be < StandardError) }
-
-    describe '#message' do
-      include_examples 'should define reader', :message, -> { message }
-    end
-
-    describe '#name' do
-      include_examples 'should define reader', :name, nil
-
-      context 'when initialized with name: value' do
-        let(:error) do
-          described_class::UnknownOperatorException.new(message, name)
-        end
-        let(:name) { 'random' }
-
-        it { expect(error.name).to be == name }
-      end
-
-      context 'when the exception has a cause' do
-        let(:name)  { 'random' }
-        let(:cause) { NameError.new(nil, name) }
-
-        before(:example) do
-          allow(error).to receive(:cause).and_return(cause) # rubocop:disable RSpec/SubjectStub
-        end
-
-        it { expect(error.name).to be == name }
-      end
     end
   end
 

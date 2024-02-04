@@ -20,10 +20,10 @@ module Cuprum::Collections
     #   @yield the query block.
     #
     #   @yieldreturn [Hash] a Hash with String keys.
-    def initialize(...)
-      criteria = self.class.parse(...)
+    def initialize(*args, inverted: false, &block)
+      criteria = self.class.parse(*args, &block)
 
-      super(criteria: criteria)
+      super(criteria: criteria, inverted: inverted)
     end
   end
 end

@@ -120,7 +120,8 @@ module Cuprum::Collections::Scopes
           end
         end
       rescue NameError => exception
-        raise UnknownOperatorException, %(unknown operator "#{exception.name}")
+        raise Cuprum::Collections::Queries::UnknownOperatorException,
+          %(unknown operator "#{exception.name}")
       end
 
       # Converts a hash of expected keys and values to criteria.
@@ -204,22 +205,6 @@ module Cuprum::Collections::Scopes
       end
     end
 
-    # Exception raised when an invalid operator is called in a block.
-    class UnknownOperatorException < StandardError
-      # @param msg [String] the exception message.
-      # @param name [String] the name of the invalid operator.
-      def initialize(msg = nil, name = nil)
-        super(msg)
-
-        @name = name
-      end
-
-      # @return [String] the name of the invalid operator.
-      def name
-        @name || cause&.name
-      end
-    end
-
     class << self
       private
 
@@ -231,11 +216,14 @@ module Cuprum::Collections::Scopes
     end
 
     # @param criteria [Array] the criteria used for filtering query data.
+    # @param inverted [Boolean] if true, the criteria are inverted and should
+    #   match on any criterion (per DeMorgan's Laws).
     # @param options [Hash] additional options for the scope.
-    def initialize(criteria:, **options)
+    def initialize(criteria:, inverted: false, **options)
       super(**options)
 
       @criteria = criteria
+      @inverted = inverted
     end
 
     # @return [Array] the criteria used for filtering query data.
@@ -248,7 +236,7 @@ module Cuprum::Collections::Scopes
     def ==(other)
       return false unless super
 
-      other.criteria == criteria
+      other.criteria == criteria && other.inverted? == inverted?
     end
 
     # (see Cuprum::Collections::Scopes::Composition#and)
@@ -263,7 +251,7 @@ module Cuprum::Collections::Scopes
 
     # (see Cuprum::Colletions::Scopes::Base#as_json)
     def as_json
-      super().merge({ 'criteria' => criteria })
+      super().merge({ 'criteria' => criteria, 'inverted' => inverted? })
     end
 
     # @private
@@ -282,6 +270,17 @@ module Cuprum::Collections::Scopes
     # @return [Boolean] true if the scope has no criteria; otherwise false.
     def empty?
       @criteria.empty?
+    end
+
+    # @return [Cuprum::Collections::Criteria] a copy of the scope with the
+    #   #inverted? predicate flipped and the individual criteria negated.
+    def invert
+      with_criteria(invert_criteria).tap { |copy| copy.inverted = !inverted? }
+    end
+
+    # @return [Boolean] true if the scope is inverted; otherwise false.
+    def inverted?
+      @inverted
     end
 
     # (see Cuprum::Collections::Scopes::Composition#or)
@@ -314,6 +313,8 @@ module Cuprum::Collections::Scopes
 
     attr_writer :criteria
 
+    attr_writer :inverted
+
     private
 
     def and_all_scope(scope)
@@ -336,6 +337,19 @@ module Cuprum::Collections::Scopes
       return builder.transform_scope(scope: scope) if empty?
 
       super
+    end
+
+    def invert_criteria
+      criteria.map do |(attribute, operator, value)|
+        [attribute, invert_operator(operator), value]
+      end
+    end
+
+    def invert_operator(operator)
+      Cuprum::Collections::Queries::INVERTIBLE_OPERATORS.fetch(operator) do
+        raise Cuprum::Collections::Queries::UninvertibleOperatorException,
+          "uninvertible operator #{operator.inspect}"
+      end
     end
 
     def or_disjunction_scope(scope)

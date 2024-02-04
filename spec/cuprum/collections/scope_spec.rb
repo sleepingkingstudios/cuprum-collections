@@ -7,10 +7,15 @@ RSpec.describe Cuprum::Collections::Scope do
   include Cuprum::Collections::RSpec::Contracts::Scopes::CriteriaContracts
 
   subject(:scope) do
-    described_class.new(*constructor_args, &constructor_block)
+    described_class.new(
+      *constructor_args,
+      **constructor_options,
+      &constructor_block
+    )
   end
 
-  let(:constructor_args) { [] }
+  let(:constructor_args)    { [] }
+  let(:constructor_options) { {} }
   let(:constructor_block) do
     expected = criteria
 
@@ -37,9 +42,10 @@ RSpec.describe Cuprum::Collections::Scope do
   end
 
   include_contract 'should be a criteria scope',
-    abstract:    true,
-    equality:    false,
-    constructor: false
+    abstract:            true,
+    equality:            false,
+    constructor:         false,
+    ignore_uninvertible: true
 
   describe '#==' do
     describe 'with a scope with the same class' do

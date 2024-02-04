@@ -23,7 +23,18 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
       #     define a #call implementation. Defaults to false.
       #   @param equality [Boolean] if false, skips the specs for the equality
       #     operator #==. Defaults to true.
-      contract do |abstract: false, equality: true, constructor: true|
+      #   @param ignore_uninvertible [Boolean] if true, skips the specs for
+      #     uninvertible operators. Defaults to false.
+      contract do |
+        abstract:            false,
+        equality:            true,
+        constructor:         true,
+        ignore_uninvertible: false
+      |
+        shared_context 'when initialized with inverted: true' do
+          let(:constructor_options) { super().merge(inverted: true) }
+        end
+
         shared_context 'with criteria' do
           let(:criteria) do
             operators = Cuprum::Collections::Queries::Operators
@@ -44,7 +55,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             expect(described_class)
               .to be_constructible
               .with(0).arguments
-              .and_keywords(:criteria)
+              .and_keywords(:criteria, :inverted)
               .and_any_keywords
           end
         end
@@ -87,7 +98,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           include_contract 'should parse criteria'
         end
 
-        include_contract 'should be a scope'
+        include_contract 'should be a scope', invertible: true
 
         include_contract 'should compose scopes for criteria'
 
@@ -95,12 +106,25 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           next unless equality
 
           describe 'with a scope with the same class' do
-            let(:other) { described_class.new(criteria: other_criteria) }
+            let(:other_criteria) { [] }
+            let(:other_inverted) { false }
+            let(:other) do
+              described_class.new(
+                criteria: other_criteria,
+                inverted: other_inverted
+              )
+            end
 
             describe 'with empty criteria' do
               let(:other_criteria) { [] }
 
               it { expect(subject == other).to be true }
+
+              describe 'with inverted: true' do
+                let(:other_inverted) { true }
+
+                it { expect(subject == other).to be false }
+              end
             end
 
             describe 'with non-matching criteria' do
@@ -117,6 +141,12 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
               end
 
               it { expect(subject == other).to be false }
+
+              describe 'with inverted: true' do
+                let(:other_inverted) { true }
+
+                it { expect(subject == other).to be false }
+              end
             end
 
             wrap_context 'with criteria' do
@@ -124,6 +154,12 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
                 let(:other_criteria) { [] }
 
                 it { expect(subject == other).to be false }
+
+                describe 'with inverted: true' do
+                  let(:other_inverted) { true }
+
+                  it { expect(subject == other).to be false }
+                end
               end
 
               describe 'with non-matching criteria' do
@@ -140,18 +176,121 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
                 end
 
                 it { expect(subject == other).to be false }
+
+                describe 'with inverted: true' do
+                  let(:other_inverted) { true }
+
+                  it { expect(subject == other).to be false }
+                end
               end
 
               describe 'with matching criteria' do
                 let(:other_criteria) { subject.criteria }
 
                 it { expect(subject == other).to be true }
+
+                describe 'with inverted: true' do
+                  let(:other_inverted) { true }
+
+                  it { expect(subject == other).to be false }
+                end
+              end
+            end
+
+            wrap_context 'when initialized with inverted: true' do
+              describe 'with empty criteria' do
+                let(:other_criteria) { [] }
+
+                it { expect(subject == other).to be false }
+
+                describe 'with inverted: true' do
+                  let(:other_inverted) { true }
+
+                  it { expect(subject == other).to be true }
+                end
+              end
+
+              describe 'with non-matching criteria' do
+                let(:other_criteria) do
+                  operators = Cuprum::Collections::Queries::Operators
+
+                  [
+                    [
+                      'ok',
+                      operators::EQUAL,
+                      true
+                    ]
+                  ]
+                end
+
+                it { expect(subject == other).to be false }
+
+                describe 'with inverted: true' do
+                  let(:other_inverted) { true }
+
+                  it { expect(subject == other).to be false }
+                end
+              end
+
+              wrap_context 'with criteria' do
+                describe 'with empty criteria' do
+                  let(:other_criteria) { [] }
+
+                  it { expect(subject == other).to be false }
+
+                  describe 'with inverted: true' do
+                    let(:other_inverted) { true }
+
+                    it { expect(subject == other).to be false }
+                  end
+                end
+
+                describe 'with non-matching criteria' do
+                  let(:other_criteria) do
+                    operators = Cuprum::Collections::Queries::Operators
+
+                    [
+                      [
+                        'ok',
+                        operators::EQUAL,
+                        true
+                      ]
+                    ]
+                  end
+
+                  it { expect(subject == other).to be false }
+
+                  describe 'with inverted: true' do
+                    let(:other_inverted) { true }
+
+                    it { expect(subject == other).to be false }
+                  end
+                end
+
+                describe 'with matching criteria' do
+                  let(:other_criteria) { subject.criteria }
+
+                  it { expect(subject == other).to be false }
+
+                  describe 'with inverted: true' do
+                    let(:other_inverted) { true }
+
+                    it { expect(subject == other).to be true }
+                  end
+                end
               end
             end
           end
 
           describe 'with a scope with the same type' do
-            let(:other) { Spec::CustomScope.new(criteria: other_criteria) }
+            let(:other_criteria) { [] }
+            let(:other_inverted) { false }
+            let(:other) do
+              described_class.new(
+                criteria: other_criteria,
+                inverted: other_inverted
+              )
+            end
 
             # rubocop:disable Style/RedundantLineContinuation
             example_class 'Spec::CustomScope',
@@ -165,6 +304,12 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
               let(:other_criteria) { [] }
 
               it { expect(subject == other).to be true }
+
+              describe 'with inverted: true' do
+                let(:other_inverted) { true }
+
+                it { expect(subject == other).to be false }
+              end
             end
 
             describe 'with non-matching criteria' do
@@ -181,6 +326,12 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
               end
 
               it { expect(subject == other).to be false }
+
+              describe 'with inverted: true' do
+                let(:other_inverted) { true }
+
+                it { expect(subject == other).to be false }
+              end
             end
 
             wrap_context 'with criteria' do
@@ -188,6 +339,12 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
                 let(:other_criteria) { [] }
 
                 it { expect(subject == other).to be false }
+
+                describe 'with inverted: true' do
+                  let(:other_inverted) { true }
+
+                  it { expect(subject == other).to be false }
+                end
               end
 
               describe 'with non-matching criteria' do
@@ -204,12 +361,108 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
                 end
 
                 it { expect(subject == other).to be false }
+
+                describe 'with inverted: true' do
+                  let(:other_inverted) { true }
+
+                  it { expect(subject == other).to be false }
+                end
               end
 
               describe 'with matching criteria' do
                 let(:other_criteria) { subject.criteria }
 
                 it { expect(subject == other).to be true }
+
+                describe 'with inverted: true' do
+                  let(:other_inverted) { true }
+
+                  it { expect(subject == other).to be false }
+                end
+              end
+            end
+
+            wrap_context 'when initialized with inverted: true' do
+              describe 'with empty criteria' do
+                let(:other_criteria) { [] }
+
+                it { expect(subject == other).to be false }
+
+                describe 'with inverted: true' do
+                  let(:other_inverted) { true }
+
+                  it { expect(subject == other).to be true }
+                end
+              end
+
+              describe 'with non-matching criteria' do
+                let(:other_criteria) do
+                  operators = Cuprum::Collections::Queries::Operators
+
+                  [
+                    [
+                      'ok',
+                      operators::EQUAL,
+                      true
+                    ]
+                  ]
+                end
+
+                it { expect(subject == other).to be false }
+
+                describe 'with inverted: true' do
+                  let(:other_inverted) { true }
+
+                  it { expect(subject == other).to be false }
+                end
+              end
+
+              wrap_context 'with criteria' do
+                describe 'with empty criteria' do
+                  let(:other_criteria) { [] }
+
+                  it { expect(subject == other).to be false }
+
+                  describe 'with inverted: true' do
+                    let(:other_inverted) { true }
+
+                    it { expect(subject == other).to be false }
+                  end
+                end
+
+                describe 'with non-matching criteria' do
+                  let(:other_criteria) do
+                    operators = Cuprum::Collections::Queries::Operators
+
+                    [
+                      [
+                        'ok',
+                        operators::EQUAL,
+                        true
+                      ]
+                    ]
+                  end
+
+                  it { expect(subject == other).to be false }
+
+                  describe 'with inverted: true' do
+                    let(:other_inverted) { true }
+
+                    it { expect(subject == other).to be false }
+                  end
+                end
+
+                describe 'with matching criteria' do
+                  let(:other_criteria) { subject.criteria }
+
+                  it { expect(subject == other).to be false }
+
+                  describe 'with inverted: true' do
+                    let(:other_inverted) { true }
+
+                    it { expect(subject == other).to be true }
+                  end
+                end
               end
             end
           end
@@ -219,14 +472,23 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           let(:expected) do
             {
               'criteria' => subject.criteria,
+              'inverted' => subject.inverted?,
               'type'     => subject.type
             }
           end
 
           it { expect(subject.as_json).to be == expected }
 
+          wrap_context 'when initialized with inverted: true' do
+            it { expect(subject.as_json).to be == expected }
+          end
+
           wrap_context 'with criteria' do
             it { expect(subject.as_json).to be == expected }
+
+            wrap_context 'when initialized with inverted: true' do
+              it { expect(subject.as_json).to be == expected }
+            end
           end
         end
 
@@ -236,6 +498,16 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           it { expect(subject).to respond_to(:call) }
 
           include_contract 'should filter data by criteria'
+
+          context 'when the scope is inverted' do
+            subject { super().invert }
+
+            let(:matching_data) { data - filtered_data }
+
+            include_contract 'should filter data by criteria',
+              ignore_invalid: true,
+              inverted:       true
+          end
         end
 
         describe '#criteria' do
@@ -251,6 +523,262 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
           wrap_context 'with criteria' do
             it { expect(subject.empty?).to be false }
+          end
+        end
+
+        describe '#invert' do
+          shared_examples 'should invert the criteria' do
+            it { expect(copy.criteria).to be == [] }
+
+            context 'when the scope has an equality criterion' do
+              let(:criteria) do
+                described_class.parse({
+                  'title' => 'The Word for World is Forest'
+                })
+              end
+              let(:expected) do
+                operators = Cuprum::Collections::Queries::Operators
+
+                [
+                  [
+                    'title',
+                    operators::NOT_EQUAL,
+                    'The Word for World is Forest'
+                  ]
+                ]
+              end
+
+              it { expect(copy.criteria).to be == expected }
+            end
+
+            context 'when the scope has a greater than criterion' do
+              let(:criteria) do
+                described_class.parse do
+                  { 'published_at' => greater_than('1972-03-13') }
+                end
+              end
+              let(:expected) do
+                operators = Cuprum::Collections::Queries::Operators
+
+                [
+                  [
+                    'published_at',
+                    operators::LESS_THAN_OR_EQUAL_TO,
+                    '1972-03-13'
+                  ]
+                ]
+              end
+
+              it { expect(copy.criteria).to be == expected }
+            end
+
+            context 'when the scope has a greater than or equal to criterion' do
+              let(:criteria) do
+                described_class.parse do
+                  { 'published_at' => greater_than_or_equal_to('1972-03-13') }
+                end
+              end
+              let(:expected) do
+                operators = Cuprum::Collections::Queries::Operators
+
+                [
+                  [
+                    'published_at',
+                    operators::LESS_THAN,
+                    '1972-03-13'
+                  ]
+                ]
+              end
+
+              it { expect(copy.criteria).to be == expected }
+            end
+
+            context 'when the scope has a less than criterion' do
+              let(:criteria) do
+                described_class.parse do
+                  { 'published_at' => less_than('1972-03-13') }
+                end
+              end
+              let(:expected) do
+                operators = Cuprum::Collections::Queries::Operators
+
+                [
+                  [
+                    'published_at',
+                    operators::GREATER_THAN_OR_EQUAL_TO,
+                    '1972-03-13'
+                  ]
+                ]
+              end
+
+              it { expect(copy.criteria).to be == expected }
+            end
+
+            context 'when the scope has a less than or equal to criterion' do
+              let(:criteria) do
+                described_class.parse do
+                  { 'published_at' => less_than_or_equal_to('1972-03-13') }
+                end
+              end
+              let(:expected) do
+                operators = Cuprum::Collections::Queries::Operators
+
+                [
+                  [
+                    'published_at',
+                    operators::GREATER_THAN,
+                    '1972-03-13'
+                  ]
+                ]
+              end
+
+              it { expect(copy.criteria).to be == expected }
+            end
+
+            context 'when the scope has a not equal criterion' do
+              let(:criteria) do
+                described_class.parse do
+                  { 'author' => not_equal('J.R.R. Tolkien') }
+                end
+              end
+              let(:expected) do
+                operators = Cuprum::Collections::Queries::Operators
+
+                [
+                  [
+                    'author',
+                    operators::EQUAL,
+                    'J.R.R. Tolkien'
+                  ]
+                ]
+              end
+
+              it { expect(copy.criteria).to be == expected }
+            end
+
+            context 'when the scope has a not one of criterion' do
+              let(:criteria) do
+                described_class.parse do
+                  titles = ['The Fellowship Of The Ring', 'The Two Towers']
+
+                  { 'title' => not_one_of(titles) }
+                end
+              end
+              let(:expected) do
+                operators = Cuprum::Collections::Queries::Operators
+
+                [
+                  [
+                    'title',
+                    operators::ONE_OF,
+                    ['The Fellowship Of The Ring', 'The Two Towers']
+                  ]
+                ]
+              end
+
+              it { expect(copy.criteria).to be == expected }
+            end
+
+            context 'when the scope has a one of criterion' do
+              let(:criteria) do
+                described_class.parse do
+                  titles = ['The Fellowship Of The Ring', 'The Two Towers']
+
+                  { 'title' => one_of(titles) }
+                end
+              end
+              let(:expected) do
+                operators = Cuprum::Collections::Queries::Operators
+
+                [
+                  [
+                    'title',
+                    operators::NOT_ONE_OF,
+                    ['The Fellowship Of The Ring', 'The Two Towers']
+                  ]
+                ]
+              end
+
+              it { expect(copy.criteria).to be == expected }
+            end
+
+            context 'when the scope has multiple criteria' do
+              let(:criteria) do
+                described_class.parse do
+                  titles = ['The Fellowship Of The Ring', 'The Two Towers']
+
+                  {
+                    'author' => 'J.R.R. Tolkien',
+                    'title'  => not_one_of(titles)
+                  }
+                end
+              end
+              let(:expected) do
+                operators = Cuprum::Collections::Queries::Operators
+
+                [
+                  [
+                    'author',
+                    operators::NOT_EQUAL,
+                    'J.R.R. Tolkien'
+                  ],
+                  [
+                    'title',
+                    operators::ONE_OF,
+                    ['The Fellowship Of The Ring', 'The Two Towers']
+                  ]
+                ]
+              end
+
+              it { expect(copy.criteria).to be == expected }
+            end
+
+            context 'when initialized with uninvertible criteria' do
+              next if ignore_uninvertible
+
+              let(:criteria) do
+                [
+                  [
+                    'title',
+                    'random',
+                    nil
+                  ]
+                ]
+              end
+              let(:error_class) do
+                Cuprum::Collections::Queries::UninvertibleOperatorException
+              end
+              let(:error_message) { 'uninvertible operator "random"' }
+
+              it 'should raise an exception' do
+                expect { subject.invert }
+                  .to raise_error error_class, error_message
+              end
+            end
+          end
+
+          let(:copy) { subject.invert }
+
+          it { expect(copy).to be_a described_class }
+
+          it { expect(copy.inverted?).to be true }
+
+          include_examples 'should invert the criteria'
+
+          wrap_context 'when initialized with inverted: true' do
+            it { expect(copy).to be_a described_class }
+
+            it { expect(copy.inverted?).to be false }
+
+            include_examples 'should invert the criteria'
+          end
+        end
+
+        describe '#inverted?' do
+          include_examples 'should define predicate', :inverted?, false
+
+          wrap_context 'when initialized with inverted: true' do
+            it { expect(subject.inverted?).to be true }
           end
         end
 
@@ -277,6 +805,10 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
               .to be == new_criteria
           end
 
+          it 'should return an uninverted scope' do
+            expect(subject.with_criteria(new_criteria).inverted?).to be false
+          end
+
           wrap_context 'with criteria' do
             it "should not change the original scope's criteria" do
               expect { subject.with_criteria(new_criteria) }
@@ -288,6 +820,12 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
                 .to be == new_criteria
             end
           end
+
+          wrap_context 'when initialized with inverted: true' do
+            it 'should return an inverted scope' do
+              expect(subject.with_criteria(new_criteria).inverted?).to be true
+            end
+          end
         end
       end
     end
@@ -296,28 +834,37 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
     module ShouldFilterDataByCriteriaContract
       extend RSpec::SleepingKingStudios::Contract
 
-      # @!method apply(example_group)
+      # @!method apply(example_group, **options)
       #   Adds the contract to the example group.
       #
       #   @param example_group [RSpec::Core::ExampleGroup] the example group to
       #     which the contract is applied.
-      contract do
+      #   @param options [Hash] additional options for the contract.
+      #
+      #   @option options ignore_invalid [Boolean] if true, skips tests for
+      #     handling invalid operators. Defaults to false.
+      #   @option options inverted [Boolean] if true, filters data that does not
+      #     match the criteria. Defaults to false.
+      contract do |ignore_invalid: false, inverted: false|
         shared_context 'with data' do
           let(:data) do
             Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES
           end
         end
 
+        let(:matching) { data }
+        let(:expected) { inverted ? data - matching : matching }
+
         context 'when the scope has no criteria' do
           describe 'with empty data' do
             let(:data)     { [] }
-            let(:expected) { data }
+            let(:matching) { data }
 
             it { expect(filtered_data).to be == expected }
           end
 
           wrap_context 'with data' do
-            let(:expected) { data }
+            let(:matching) { data }
 
             it { expect(filtered_data).to be == expected }
           end
@@ -330,13 +877,13 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
           describe 'with empty data' do
             let(:data)     { [] }
-            let(:expected) { data }
+            let(:matching) { data }
 
             it { expect(filtered_data).to be == expected }
           end
 
           wrap_context 'with data' do
-            let(:expected) do
+            let(:matching) do
               data.select do |item|
                 item['title'] == 'The Word for World is Forest'
               end
@@ -355,13 +902,13 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
           describe 'with empty data' do
             let(:data)     { [] }
-            let(:expected) { data }
+            let(:matching) { data }
 
             it { expect(filtered_data).to be == expected }
           end
 
           wrap_context 'with data' do
-            let(:expected) do
+            let(:matching) do
               data.select do |item|
                 item['published_at'] > '1972-03-13'
               end
@@ -380,13 +927,13 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
           describe 'with empty data' do
             let(:data)     { [] }
-            let(:expected) { data }
+            let(:matching) { data }
 
             it { expect(filtered_data).to be == expected }
           end
 
           wrap_context 'with data' do
-            let(:expected) do
+            let(:matching) do
               data.select do |item|
                 item['published_at'] >= '1972-03-13'
               end
@@ -405,13 +952,13 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
           describe 'with empty data' do
             let(:data)     { [] }
-            let(:expected) { data }
+            let(:matching) { data }
 
             it { expect(filtered_data).to be == expected }
           end
 
           wrap_context 'with data' do
-            let(:expected) do
+            let(:matching) do
               data.select do |item|
                 item['published_at'] < '1972-03-13'
               end
@@ -430,13 +977,13 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
           describe 'with empty data' do
             let(:data)     { [] }
-            let(:expected) { data }
+            let(:matching) { data }
 
             it { expect(filtered_data).to be == expected }
           end
 
           wrap_context 'with data' do
-            let(:expected) do
+            let(:matching) do
               data.select do |item|
                 item['published_at'] <= '1972-03-13'
               end
@@ -455,13 +1002,13 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
           describe 'with empty data' do
             let(:data)     { [] }
-            let(:expected) { data }
+            let(:matching) { data }
 
             it { expect(filtered_data).to be == expected }
           end
 
           wrap_context 'with data' do
-            let(:expected) do
+            let(:matching) do
               data.reject do |item|
                 item['author'] == 'J.R.R. Tolkien'
               end
@@ -482,13 +1029,13 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
           describe 'with empty data' do
             let(:data)     { [] }
-            let(:expected) { data }
+            let(:matching) { data }
 
             it { expect(filtered_data).to be == expected }
           end
 
           wrap_context 'with data' do
-            let(:expected) do
+            let(:matching) do
               data.reject do |item|
                 ['The Fellowship Of The Ring', 'The Two Towers']
                   .include?(item['title'])
@@ -510,13 +1057,13 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
           describe 'with empty data' do
             let(:data)     { [] }
-            let(:expected) { data }
+            let(:matching) { data }
 
             it { expect(filtered_data).to be == expected }
           end
 
           wrap_context 'with data' do
-            let(:expected) do
+            let(:matching) do
               data.select do |item|
                 ['The Fellowship Of The Ring', 'The Two Towers']
                   .include?(item['title'])
@@ -538,13 +1085,13 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
           describe 'with empty data' do
             let(:data)     { [] }
-            let(:expected) { data }
+            let(:matching) { data }
 
             it { expect(filtered_data).to be == expected }
           end
 
           wrap_context 'with data' do
-            let(:expected) do
+            let(:matching) do
               data
                 .select { |item| item['author'] == 'J.R.R. Tolkien' }
                 .reject do |item|
@@ -567,13 +1114,13 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
           describe 'with empty data' do
             let(:data)     { [] }
-            let(:expected) { data }
+            let(:matching) { data }
 
             it { expect(filtered_data).to be == expected }
           end
 
           wrap_context 'with data' do
-            let(:expected) do
+            let(:matching) do
               data
                 .select { |item| item['author'] == 'J.R.R. Tolkien' }
                 .select { |item| item['series'] == 'The Lord of the Rings' }
@@ -583,10 +1130,38 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           end
         end
 
-        context 'when the scope has invalid criteria' do
+        context 'when the scope has non-overlapping criteria' do
+          let(:criteria) do
+            described_class.parse({
+              'author' => 'J.R.R. Tolkien',
+              'series' => 'Earthsea'
+            })
+          end
+
+          describe 'with empty data' do
+            let(:data)     { [] }
+            let(:matching) { data }
+
+            it { expect(filtered_data).to be == expected }
+          end
+
+          wrap_context 'with data' do
+            let(:matching) do
+              data
+                .select { |item| item['author'] == 'J.R.R. Tolkien' }
+                .select { |item| item['series'] == 'Earthsea' }
+            end
+
+            it { expect(filtered_data).to be == expected }
+          end
+        end
+
+        context 'when the scope has invalid operators' do
+          next if ignore_invalid
+
           let(:criteria) { [['title', :random, nil]] }
           let(:error_class) do
-            Cuprum::Collections::Scopes::Criteria::UnknownOperatorException
+            Cuprum::Collections::Queries::UnknownOperatorException
           end
           let(:error_message) do
             'unknown operator "random"'
@@ -1051,7 +1626,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
         describe 'with a Hash with an unknown operator' do
           let(:error_class) do
-            Cuprum::Collections::Scopes::Criteria::UnknownOperatorException
+            Cuprum::Collections::Queries::UnknownOperatorException
           end
           let(:error_message) do
             'unknown operator "random"'

@@ -17,8 +17,14 @@ module Cuprum::Collections::Basic::Scopes
     def match?(item:)
       super
 
-      criteria.all? do |(attribute, operator, value)|
-        filter_for(operator).call(item, attribute, value)
+      if inverted?
+        criteria.any? do |(attribute, operator, value)|
+          filter_for(operator).call(item, attribute, value)
+        end
+      else
+        criteria.all? do |(attribute, operator, value)|
+          filter_for(operator).call(item, attribute, value)
+        end
       end
     end
     alias matches? match?
@@ -46,8 +52,7 @@ module Cuprum::Collections::Basic::Scopes
         @in_filter ||=
           ->(item, attribute, value) { value.include?(item[attribute]) }
       else
-        error_class =
-          Cuprum::Collections::Scopes::Criteria::UnknownOperatorException
+        error_class = Cuprum::Collections::Queries::UnknownOperatorException
         message     = %(unknown operator "#{operator}")
 
         raise error_class.new(message, operator)
