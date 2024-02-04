@@ -24,6 +24,12 @@ module Cuprum::Collections::Scopes
       false
     end
 
+    # @return [Cuprum::Collections::Scopes::None] a none scope for the current
+    #   collection.
+    def invert
+      builder.build_none_scope
+    end
+
     # @override or(hash = nil, &block)
     #   Parses the hash or block and returns the parsed scope.
     #

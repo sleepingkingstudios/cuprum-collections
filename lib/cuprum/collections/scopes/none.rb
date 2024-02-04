@@ -20,6 +20,12 @@ module Cuprum::Collections::Scopes
       false
     end
 
+    # @return [Cuprum::Collections::Scopes::All] an all scope for the current
+    #   collection.
+    def invert
+      builder.build_all_scope
+    end
+
     # @override or(hash = nil, &block)
     #   Returns the none scope.
     #

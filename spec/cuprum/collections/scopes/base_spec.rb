@@ -10,6 +10,12 @@ RSpec.describe Cuprum::Collections::Scopes::Base do
 
   let(:scope) { described_class.new }
 
+  describe '::UninvertibleScopeException' do
+    include_examples 'should define constant',
+      :UninvertibleScopeException,
+      -> { be_a(Class).and(be < StandardError) }
+  end
+
   describe '.new' do
     it 'should define the constructor' do
       expect(described_class)

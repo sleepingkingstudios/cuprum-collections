@@ -11,12 +11,14 @@ module Cuprum::Collections::RSpec::Contracts
     module ShouldBeAScopeContract
       extend RSpec::SleepingKingStudios::Contract
 
-      # @!method apply(example_group)
+      # @!method apply(example_group, invertible: false)
       #   Adds the contract to the example group.
       #
       #   @param example_group [RSpec::Core::ExampleGroup] the example group to
       #     which the contract is applied.
-      contract do
+      #   @param invertible [Boolean] if true, the scope defines an
+      #     implementation of the #invert method. Defaults to false.
+      contract do |invertible: false|
         describe '#==' do
           it { expect(subject == nil).to be false } # rubocop:disable Style/NilComparison
 
@@ -47,6 +49,23 @@ module Cuprum::Collections::RSpec::Contracts
 
         describe '#empty?' do
           include_examples 'should define predicate', :empty?, -> { be_boolean }
+        end
+
+        describe '#invert' do
+          let(:error_class) do
+            Cuprum::Collections::Scopes::Base::UninvertibleScopeException
+          end
+          let(:error_message) do
+            "Scope class #{described_class} does not implement #invert"
+          end
+
+          it { expect(subject).to respond_to(:invert).with(0).arguments }
+
+          next if invertible
+
+          it 'should raise an exception' do
+            expect { subject.invert }.to raise_error error_class, error_message
+          end
         end
 
         describe '#type' do
@@ -266,7 +285,7 @@ module Cuprum::Collections::RSpec::Contracts
       #   @param abstract [Boolean] if true, the scope is abstract and does not
       #     define a #call implementation. Defaults to false.
       contract do |abstract: false|
-        include_contract 'should be a scope'
+        include_contract 'should be a scope', invertible: true
 
         describe '#==' do
           describe 'with a scope with the same class' do
@@ -446,6 +465,12 @@ module Cuprum::Collections::RSpec::Contracts
 
         describe '#empty?' do
           it { expect(subject.empty?).to be false }
+        end
+
+        describe '#invert' do
+          let(:expected) { Cuprum::Collections::Scopes::NoneScope.new }
+
+          it { expect(subject.invert).to be == expected }
         end
 
         describe '#not' do
@@ -742,7 +767,7 @@ module Cuprum::Collections::RSpec::Contracts
       #   @param abstract [Boolean] if true, the scope is abstract and does not
       #     define a #call implementation. Defaults to false.
       contract do |abstract: false|
-        include_contract 'should be a scope'
+        include_contract 'should be a scope', invertible: true
 
         describe '#==' do
           describe 'with a scope with the same class' do
@@ -916,6 +941,12 @@ module Cuprum::Collections::RSpec::Contracts
 
         describe '#empty?' do
           it { expect(subject.empty?).to be false }
+        end
+
+        describe '#invert' do
+          let(:expected) { Cuprum::Collections::Scopes::AllScope.new }
+
+          it { expect(subject.invert).to be == expected }
         end
 
         describe '#not' do

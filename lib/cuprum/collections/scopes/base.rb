@@ -8,6 +8,9 @@ module Cuprum::Collections::Scopes
   class Base
     include Cuprum::Collections::Scopes::Composition
 
+    # Exception raised when inverting an uninvertible scope.
+    class UninvertibleScopeException < StandardError; end
+
     def initialize(**); end
 
     # @param other [Object] the object to compare.
@@ -39,6 +42,15 @@ module Cuprum::Collections::Scopes
     # @return [Boolean] false.
     def empty?
       false
+    end
+
+    # Generates and returns an inverted copy of the scope.
+    #
+    # @raise [UninvertibleScopeException] if the scope does not implement
+    #   #invert.
+    def invert
+      raise UninvertibleScopeException,
+        "Scope class #{self.class.name} does not implement #invert"
     end
 
     # @return [Symbol] the scope type.
