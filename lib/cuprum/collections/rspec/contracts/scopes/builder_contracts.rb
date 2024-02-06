@@ -131,7 +131,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           end
         end
 
-        shared_examples 'should build a criteria scope' do
+        shared_examples 'should build a criteria scope' do |inverted: false|
           let(:scope) { build_criteria(criteria: criteria) }
 
           # :nocov:
@@ -148,6 +148,8 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             it { expect(scope).to be_a criteria_scope_class }
 
             it { expect(scope.criteria).to be == criteria }
+
+            it { expect(scope.inverted?).to be inverted }
           end
 
           describe 'with criteria: an Array of criteria' do
@@ -171,6 +173,8 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             it { expect(scope).to be_a criteria_scope_class }
 
             it { expect(scope.criteria).to be == criteria }
+
+            it { expect(scope.inverted?).to be inverted }
           end
         end
 
@@ -625,15 +629,17 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
         end
 
         describe '#build_criteria_scope' do
+          let(:inverted) { false }
+
           def build_criteria(criteria:)
-            subject.build_criteria_scope(criteria: criteria)
+            subject.build_criteria_scope(criteria: criteria, inverted: inverted)
           end
 
           it 'should define the method' do
             expect(subject)
               .to respond_to(:build_criteria_scope)
               .with(0).arguments
-              .and_keywords(:criteria)
+              .and_keywords(:criteria, :inverted)
           end
 
           include_examples 'should validate the criteria'
@@ -641,6 +647,12 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           next if abstract
 
           include_examples 'should build a criteria scope'
+
+          context 'with inverted: true' do
+            let(:inverted) { true }
+
+            include_examples 'should build a criteria scope', inverted: true
+          end
         end
 
         describe '#build_disjunction_scope' do
@@ -818,15 +830,23 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           end
 
           describe 'with a criteria scope' do
+            let(:inverted) { false }
+
             def build_criteria(criteria:)
               original =
                 Cuprum::Collections::Scopes::CriteriaScope
-                  .new(criteria: criteria)
+                  .new(criteria: criteria, inverted: inverted)
 
               subject.transform_scope(scope: original)
             end
 
             include_examples 'should build a criteria scope'
+
+            context 'when the scope is inverted' do
+              let(:inverted) { true }
+
+              include_examples 'should build a criteria scope', inverted: true
+            end
           end
 
           describe 'with a disjunction scope' do

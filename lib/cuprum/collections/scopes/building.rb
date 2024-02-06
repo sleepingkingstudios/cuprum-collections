@@ -70,11 +70,12 @@ module Cuprum::Collections::Scopes
     # Creates a new scope wrapping the given criteria.
     #
     # @param criteria [Array] the criteria for the scope.
+    # @param inverted [Boolean] true if the criteria scope is inverted.
     # @param safe [Boolean] if true, validates the criteria. Defaults to true.
-    def build_criteria_scope(criteria:, safe: true)
+    def build_criteria_scope(criteria:, inverted: false, safe: true)
       validate_criteria!(criteria) if safe
 
-      criteria_scope_class.new(criteria: criteria)
+      criteria_scope_class.new(criteria: criteria, inverted: inverted)
     end
 
     # Creates a new logical OR scope wrapping the given scopes.
@@ -148,6 +149,7 @@ module Cuprum::Collections::Scopes
 
         build_criteria_scope(
           criteria: original.criteria,
+          inverted: original.inverted?,
           safe:     false
         )
       when :disjunction
