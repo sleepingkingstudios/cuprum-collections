@@ -24,6 +24,12 @@ module Cuprum::Collections::Scopes
       false
     end
 
+    # @return [Cuprum::Collections::Scopes::None] a none scope for the current
+    #   collection.
+    def invert
+      builder.build_none_scope
+    end
+
     # @override or(hash = nil, &block)
     #   Parses the hash or block and returns the parsed scope.
     #
@@ -37,50 +43,9 @@ module Cuprum::Collections::Scopes
       builder.build(*args, &block)
     end
 
-    # @override not(hash = nil, &block)
-    #   Parses and inverts the hash or block and returns the inverted scope.
-    #
-    #   @see Cuprum::Collections::Scopes::Criteria::Parser#parse.
-    #
-    # @override not(scope)
-    #   Inverts and returns the given scope.
-    def not(*args, &block)
-      return super if scope?(args.first)
-
-      scope = builder.build(*args, &block)
-
-      builder.build_negation_scope(scopes: [scope], safe: false)
-    end
-
     # (see Cuprum::Collections::Scopes::Base#type)
     def type
       :all
-    end
-
-    private
-
-    def not_conjunction_scope(scope)
-      scopes = scope.scopes.map do |inner|
-        builder.transform_scope(scope: inner)
-      end
-
-      builder.build_negation_scope(scopes: scopes, safe: false)
-    end
-
-    def not_generic_scope(scope)
-      scope = builder.transform_scope(scope: scope)
-
-      builder.build_negation_scope(scopes: [scope], safe: false)
-    end
-
-    def not_negation_scope(scope)
-      scopes = scope.scopes.map do |inner|
-        builder.transform_scope(scope: inner)
-      end
-
-      return scopes.first if scopes.size == 1
-
-      builder.build_conjunction_scope(scopes: scopes, safe: false)
     end
   end
 end

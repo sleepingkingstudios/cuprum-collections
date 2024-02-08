@@ -19,6 +19,37 @@ module Cuprum::Collections
       ONE_OF:                   :one_of
     ).freeze
 
+    # Exception raised when trying to invert an operator with no inverse.
+    class UninvertibleOperatorException < StandardError; end
+
+    # Exception raised when an invalid operator is referenced.
+    class UnknownOperatorException < StandardError
+      # @param msg [String] the exception message.
+      # @param name [String] the name of the invalid operator.
+      def initialize(msg = nil, name = nil)
+        super(msg)
+
+        @name = name
+      end
+
+      # @return [String] the name of the invalid operator.
+      def name
+        @name || cause&.name
+      end
+    end
+
+    # Defines the negated operator corresponding to each operator.
+    INVERTIBLE_OPERATORS = {
+      Operators::EQUAL                    => Operators::NOT_EQUAL,
+      Operators::GREATER_THAN             => Operators::LESS_THAN_OR_EQUAL_TO,
+      Operators::GREATER_THAN_OR_EQUAL_TO => Operators::LESS_THAN,
+      Operators::LESS_THAN                => Operators::GREATER_THAN_OR_EQUAL_TO, # rubocop:disable Layout/LineLength
+      Operators::LESS_THAN_OR_EQUAL_TO    => Operators::GREATER_THAN,
+      Operators::NOT_EQUAL                => Operators::EQUAL,
+      Operators::NOT_ONE_OF               => Operators::ONE_OF,
+      Operators::ONE_OF                   => Operators::NOT_ONE_OF
+    }.freeze
+
     # Enumerates the valid operators as a Set for performant lookup.
     VALID_OPERATORS = Set.new(Operators.values).freeze
   end

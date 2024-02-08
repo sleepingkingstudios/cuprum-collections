@@ -70,11 +70,12 @@ module Cuprum::Collections::Scopes
     # Creates a new scope wrapping the given criteria.
     #
     # @param criteria [Array] the criteria for the scope.
+    # @param inverted [Boolean] true if the criteria scope is inverted.
     # @param safe [Boolean] if true, validates the criteria. Defaults to true.
-    def build_criteria_scope(criteria:, safe: true)
+    def build_criteria_scope(criteria:, inverted: false, safe: true)
       validate_criteria!(criteria) if safe
 
-      criteria_scope_class.new(criteria: criteria)
+      criteria_scope_class.new(criteria: criteria, inverted: inverted)
     end
 
     # Creates a new logical OR scope wrapping the given scopes.
@@ -91,22 +92,6 @@ module Cuprum::Collections::Scopes
       end
 
       disjunction_scope_class.new(scopes: scopes)
-    end
-
-    # Creates a new logical NAND scope wrapping the given scopes.
-    #
-    # @param scopes [Array<Cuprum::Collections::Scopes::Base>] the scopes to
-    #   wrap in an AND scope.
-    # @param safe [Boolean] if true, validates and converts the scopes to match
-    #   the builder's scope classes. Defaults to true.
-    def build_negation_scope(scopes:, safe: true)
-      if safe
-        validate_scopes!(scopes)
-
-        scopes = transform_scopes(scopes)
-      end
-
-      negation_scope_class.new(scopes: scopes)
     end
 
     # Creates a new none scope.
@@ -130,7 +115,7 @@ module Cuprum::Collections::Scopes
         caller(1..-1)
     end
 
-    def build_transformed_scope(original) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
+    def build_transformed_scope(original) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
       case original.type
       when :all
         return original if original.is_a?(all_scope_class)
@@ -148,19 +133,13 @@ module Cuprum::Collections::Scopes
 
         build_criteria_scope(
           criteria: original.criteria,
+          inverted: original.inverted?,
           safe:     false
         )
       when :disjunction
         return original if original.is_a?(disjunction_scope_class)
 
         build_disjunction_scope(
-          safe:   false,
-          scopes: transform_scopes(original.scopes)
-        )
-      when :negation
-        return original if original.is_a?(negation_scope_class)
-
-        build_negation_scope(
           safe:   false,
           scopes: transform_scopes(original.scopes)
         )
@@ -195,13 +174,6 @@ module Cuprum::Collections::Scopes
       raise AbstractBuilderError,
         "#{self.class.name} is an abstract class. Define a builder " \
         'class and implement the #disjunction_scope_class method.',
-        caller(1..-1)
-    end
-
-    def negation_scope_class
-      raise AbstractBuilderError,
-        "#{self.class.name} is an abstract class. Define a builder " \
-        'class and implement the #negation_scope_class method.',
         caller(1..-1)
     end
 

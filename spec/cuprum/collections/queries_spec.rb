@@ -48,6 +48,71 @@ RSpec.describe Cuprum::Collections::Queries do
     end
   end
 
+  describe '::UninvertibleOperatorException' do
+    include_examples 'should define constant',
+      :UninvertibleOperatorException,
+      -> { be_a(Class).and(be < StandardError) }
+  end
+
+  describe '::UnknownOperatorException' do
+    subject(:error) { described_class::UnknownOperatorException.new(message) }
+
+    let(:message) { 'unknown operator "random"' }
+
+    include_examples 'should define constant',
+      :UnknownOperatorException,
+      -> { be_a(Class).and(be < StandardError) }
+
+    describe '#message' do
+      include_examples 'should define reader', :message, -> { message }
+    end
+
+    describe '#name' do
+      include_examples 'should define reader', :name, nil
+
+      context 'when initialized with name: value' do
+        let(:error) do
+          described_class::UnknownOperatorException.new(message, name)
+        end
+        let(:name) { 'random' }
+
+        it { expect(error.name).to be == name }
+      end
+
+      context 'when the exception has a cause' do
+        let(:name)  { 'random' }
+        let(:cause) { NameError.new(nil, name) }
+
+        before(:example) do
+          allow(error).to receive(:cause).and_return(cause) # rubocop:disable RSpec/SubjectStub
+        end
+
+        it { expect(error.name).to be == name }
+      end
+    end
+  end
+
+  describe '::INVERTIBLE_OPERATORS' do
+    let(:expected) do
+      op = described_class::Operators
+
+      {
+        op::EQUAL                    => op::NOT_EQUAL,
+        op::GREATER_THAN             => op::LESS_THAN_OR_EQUAL_TO,
+        op::GREATER_THAN_OR_EQUAL_TO => op::LESS_THAN,
+        op::LESS_THAN                => op::GREATER_THAN_OR_EQUAL_TO,
+        op::LESS_THAN_OR_EQUAL_TO    => op::GREATER_THAN,
+        op::NOT_EQUAL                => op::EQUAL,
+        op::NOT_ONE_OF               => op::ONE_OF,
+        op::ONE_OF                   => op::NOT_ONE_OF
+      }
+    end
+
+    include_examples 'should define immutable constant',
+      :INVERTIBLE_OPERATORS,
+      -> { be == expected }
+  end
+
   describe '::VALID_OPERATORS' do
     let(:expected_operators) { described_class::Operators.values }
 

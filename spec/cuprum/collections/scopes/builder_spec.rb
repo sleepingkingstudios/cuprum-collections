@@ -6,7 +6,6 @@ require 'cuprum/collections/scopes/builder'
 require 'cuprum/collections/scopes/conjunction_scope'
 require 'cuprum/collections/scopes/criteria_scope'
 require 'cuprum/collections/scopes/disjunction_scope'
-require 'cuprum/collections/scopes/negation_scope'
 require 'cuprum/collections/scopes/none_scope'
 
 RSpec.describe Cuprum::Collections::Scopes::Builder do
@@ -23,6 +22,5 @@ RSpec.describe Cuprum::Collections::Scopes::Builder do
     conjunction_class: Cuprum::Collections::Scopes::ConjunctionScope,
     criteria_class:    Cuprum::Collections::Scopes::CriteriaScope,
     disjunction_class: Cuprum::Collections::Scopes::DisjunctionScope,
-    negation_class:    Cuprum::Collections::Scopes::NegationScope,
     none_class:        Cuprum::Collections::Scopes::NoneScope
 end

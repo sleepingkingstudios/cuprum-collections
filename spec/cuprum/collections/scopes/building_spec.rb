@@ -213,34 +213,6 @@ RSpec.describe Cuprum::Collections::Scopes::Building do
     end
   end
 
-  describe '#build_negation_scope' do
-    let(:error_class) do
-      Cuprum::Collections::Scopes::Building::AbstractBuilderError
-    end
-    let(:error_message) do
-      "#{described_class.name} is an abstract class. Define a builder " \
-        'class and implement the #negation_scope_class method.'
-    end
-
-    describe 'with scopes: an empty Array' do
-      let(:scopes) { [] }
-
-      it 'should raise an exception' do
-        expect { builder.build_negation_scope(scopes: []) }
-          .to raise_error error_class, error_message
-      end
-    end
-
-    describe 'with scopes: an Array of Scopes' do
-      let(:scopes) { Array.new(3) { build_scope } }
-
-      it 'should raise an exception' do
-        expect { builder.build_negation_scope(scopes: []) }
-          .to raise_error error_class, error_message
-      end
-    end
-  end
-
   describe '#build_none_scope' do
     let(:error_class) do
       Cuprum::Collections::Scopes::Building::AbstractBuilderError

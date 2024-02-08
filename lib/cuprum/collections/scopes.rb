@@ -17,8 +17,6 @@ module Cuprum::Collections
     autoload :CriteriaScope,    'cuprum/collections/scopes/criteria_scope'
     autoload :Disjunction,      'cuprum/collections/scopes/disjunction'
     autoload :DisjunctionScope, 'cuprum/collections/scopes/disjunction_scope'
-    autoload :Negation,         'cuprum/collections/scopes/negation'
-    autoload :NegationScope,    'cuprum/collections/scopes/negation_scope'
     autoload :None,             'cuprum/collections/scopes/none'
     autoload :NoneScope,        'cuprum/collections/scopes/none_scope'
   end

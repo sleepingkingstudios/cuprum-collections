@@ -7,7 +7,6 @@ require 'cuprum/collections/scopes/all_scope'
 require 'cuprum/collections/scopes/conjunction_scope'
 require 'cuprum/collections/scopes/criteria_scope'
 require 'cuprum/collections/scopes/disjunction_scope'
-require 'cuprum/collections/scopes/negation_scope'
 require 'cuprum/collections/scopes/none_scope'
 
 module Cuprum::Collections::RSpec::Contracts::Scopes
@@ -36,8 +35,6 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
       #     scopes. Ignored if :abstract is true.
       #   @option options disjunction_class [Class] the class for returned
       #     logical OR scopes. Ignored if :abstract is true.
-      #   @option options negation_class [Class] the class for returned logical
-      #     NAND scopes. Ignored if :abstract is true.
       #   @option options none_class [Class] the class for returned none scopes.
       #     Ignored if :abstract is true.
       contract do |abstract: false, **contract_options|
@@ -45,7 +42,6 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
         conjunction_scope_class = contract_options[:conjunction_class]
         criteria_scope_class    = contract_options[:criteria_class]
         disjunction_scope_class = contract_options[:disjunction_class]
-        negation_scope_class    = contract_options[:negation_class]
         none_scope_class        = contract_options[:none_class]
 
         shared_context 'with container scope helpers' do
@@ -62,8 +58,6 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
               criteria_scope_class
             when :disjunction
               disjunction_scope_class
-            when :negation
-              negation_scope_class
             when :none
               none_scope_class
             else
@@ -77,7 +71,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
               if scope.type == :criteria
                 expect(scope.criteria).to be == original.criteria
-              elsif %i[conjunction disjunction negation].include?(scope.type)
+              elsif %i[conjunction disjunction].include?(scope.type)
                 should_recursively_convert_scopes(original.scopes, scope.scopes)
               end
             end
@@ -131,7 +125,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           end
         end
 
-        shared_examples 'should build a criteria scope' do
+        shared_examples 'should build a criteria scope' do |inverted: false|
           let(:scope) { build_criteria(criteria: criteria) }
 
           # :nocov:
@@ -148,6 +142,8 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             it { expect(scope).to be_a criteria_scope_class }
 
             it { expect(scope.criteria).to be == criteria }
+
+            it { expect(scope.inverted?).to be inverted }
           end
 
           describe 'with criteria: an Array of criteria' do
@@ -171,6 +167,8 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             it { expect(scope).to be_a criteria_scope_class }
 
             it { expect(scope.criteria).to be == criteria }
+
+            it { expect(scope.inverted?).to be inverted }
           end
         end
 
@@ -199,40 +197,6 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             let(:scopes) { Array.new(3) { build_scope } }
 
             it { expect(scope).to be_a disjunction_scope_class }
-
-            it { expect(scope.scopes.size).to be == scopes.size }
-
-            it 'should convert the scopes', :aggregate_failures do
-              should_recursively_convert_scopes(scopes, scope.scopes)
-            end
-          end
-        end
-
-        shared_examples 'should build a negation scope' do
-          include_context 'with container scope helpers'
-
-          let(:scope) { build_container(scopes: scopes) }
-
-          # :nocov:
-          unless negation_scope_class
-            pending '(must specify :negation_class option)'
-
-            next
-          end
-          # :nocov:
-
-          describe 'with scopes: an empty Array' do
-            let(:scopes) { [] }
-
-            it { expect(scope).to be_a negation_scope_class }
-
-            it { expect(scope.scopes).to be == scopes }
-          end
-
-          describe 'with scopes: an Array of Scopes' do
-            let(:scopes) { Array.new(3) { build_scope } }
-
-            it { expect(scope).to be_a negation_scope_class }
 
             it { expect(scope.scopes.size).to be == scopes.size }
 
@@ -446,18 +410,6 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             include_examples 'should build a disjunction scope'
           end
 
-          describe 'with a negation scope' do
-            def build_container(scopes:)
-              original =
-                Cuprum::Collections::Scopes::NegationScope
-                  .new(scopes: scopes)
-
-              subject.build(original)
-            end
-
-            include_examples 'should build a negation scope'
-          end
-
           describe 'with a none scope' do
             def build_none
               original = Cuprum::Collections::Scopes::NoneScope.new
@@ -527,22 +479,6 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
             let(:original) do
               disjunction_scope_class.new(scopes: [])
-            end
-
-            it { expect(subject.build(original)).to be original }
-          end
-
-          describe 'with a negation scope of matching class' do
-            # :nocov:
-            unless negation_scope_class
-              pending '(must specify :negation_scope_class option)'
-
-              next
-            end
-            # :nocov:
-
-            let(:original) do
-              negation_scope_class.new(scopes: [])
             end
 
             it { expect(subject.build(original)).to be original }
@@ -625,15 +561,17 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
         end
 
         describe '#build_criteria_scope' do
+          let(:inverted) { false }
+
           def build_criteria(criteria:)
-            subject.build_criteria_scope(criteria: criteria)
+            subject.build_criteria_scope(criteria: criteria, inverted: inverted)
           end
 
           it 'should define the method' do
             expect(subject)
               .to respond_to(:build_criteria_scope)
               .with(0).arguments
-              .and_keywords(:criteria)
+              .and_keywords(:criteria, :inverted)
           end
 
           include_examples 'should validate the criteria'
@@ -641,6 +579,12 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           next if abstract
 
           include_examples 'should build a criteria scope'
+
+          context 'with inverted: true' do
+            let(:inverted) { true }
+
+            include_examples 'should build a criteria scope', inverted: true
+          end
         end
 
         describe '#build_disjunction_scope' do
@@ -680,49 +624,6 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
               let(:scopes) { Array.new(3) { build_scope } }
 
               it { expect(scope).to be_a disjunction_scope_class }
-
-              it { expect(scope.scopes).to be == scopes }
-            end
-          end
-        end
-
-        describe '#build_negation_scope' do
-          let(:scope) { subject.build_negation_scope(scopes: scopes) }
-
-          def build_container(scopes:)
-            subject.build_negation_scope(scopes: scopes)
-          end
-
-          it 'should define the method' do
-            expect(subject)
-              .to respond_to(:build_negation_scope)
-              .with(0).arguments
-              .and_keywords(:safe, :scopes)
-          end
-
-          include_examples 'should validate the scopes'
-
-          next if abstract
-
-          include_examples 'should build a negation scope'
-
-          describe 'with safe: false' do
-            let(:scope) do
-              subject.build_negation_scope(scopes: scopes, safe: false)
-            end
-
-            describe 'with scopes: an empty Array' do
-              let(:scopes) { [] }
-
-              it { expect(scope).to be_a negation_scope_class }
-
-              it { expect(scope.scopes).to be == scopes }
-            end
-
-            describe 'with scopes: an Array of Scopes' do
-              let(:scopes) { Array.new(3) { build_scope } }
-
-              it { expect(scope).to be_a negation_scope_class }
 
               it { expect(scope.scopes).to be == scopes }
             end
@@ -818,15 +719,23 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           end
 
           describe 'with a criteria scope' do
+            let(:inverted) { false }
+
             def build_criteria(criteria:)
               original =
                 Cuprum::Collections::Scopes::CriteriaScope
-                  .new(criteria: criteria)
+                  .new(criteria: criteria, inverted: inverted)
 
               subject.transform_scope(scope: original)
             end
 
             include_examples 'should build a criteria scope'
+
+            context 'when the scope is inverted' do
+              let(:inverted) { true }
+
+              include_examples 'should build a criteria scope', inverted: true
+            end
           end
 
           describe 'with a disjunction scope' do
@@ -839,18 +748,6 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             end
 
             include_examples 'should build a disjunction scope'
-          end
-
-          describe 'with a negation scope' do
-            def build_container(scopes:)
-              original =
-                Cuprum::Collections::Scopes::NegationScope
-                  .new(scopes: scopes)
-
-              subject.transform_scope(scope: original)
-            end
-
-            include_examples 'should build a negation scope'
           end
 
           describe 'with a none scope' do
@@ -928,24 +825,6 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
             let(:original) do
               disjunction_scope_class.new(scopes: [])
-            end
-
-            it 'should return the original scope' do
-              expect(subject.transform_scope(scope: original)).to be original
-            end
-          end
-
-          describe 'with a negation scope of matching class' do
-            # :nocov:
-            unless negation_scope_class
-              pending '(must specify :negation_scope_class option)'
-
-              next
-            end
-            # :nocov:
-
-            let(:original) do
-              negation_scope_class.new(scopes: [])
             end
 
             it 'should return the original scope' do

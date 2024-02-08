@@ -8,6 +8,12 @@ module Cuprum::Collections::Scopes
   module Disjunction
     include Cuprum::Collections::Scopes::Container
 
+    # @return [Cuprum::Collections::Disjunction] a logical AND scope with the
+    #   constituent scopes inverted.
+    def invert
+      builder.build_conjunction_scope(scopes: scopes.map(&:invert))
+    end
+
     # (see Cuprum::Collections::Scopes::Composition#or)
     def or(*args, &block)
       return super if scope?(args.first)
