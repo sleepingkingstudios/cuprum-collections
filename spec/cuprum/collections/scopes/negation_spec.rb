@@ -22,7 +22,9 @@ RSpec.describe Cuprum::Collections::Scopes::Negation do
     scope_class = Cuprum::Collections::Scopes::CriteriaScope
 
     if block_given?
+      # :nocov:
       scope_class.build(&block)
+      # :nocov:
     else
       scope_class.build(filters)
     end

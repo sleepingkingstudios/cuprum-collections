@@ -486,10 +486,7 @@ module Cuprum::Collections::RSpec::Contracts
           describe 'with a block' do
             let(:block) { -> { { 'title' => 'A Wizard of Earthsea' } } }
             let(:expected) do
-              wrapped = Cuprum::Collections::Scope.new(&block)
-
-              Cuprum::Collections::Scopes::NegationScope
-                .new(scopes: [wrapped])
+              Cuprum::Collections::Scope.new(&block).invert
             end
 
             it { expect(subject.not(&block)).to be == expected }
@@ -498,10 +495,7 @@ module Cuprum::Collections::RSpec::Contracts
           describe 'with a hash' do
             let(:value) { { 'title' => 'A Wizard of Earthsea' } }
             let(:expected) do
-              wrapped = Cuprum::Collections::Scope.new(value)
-
-              Cuprum::Collections::Scopes::NegationScope
-                .new(scopes: [wrapped])
+              Cuprum::Collections::Scope.new(value).invert
             end
 
             it { expect(subject.not(value)).to be == expected }
@@ -523,7 +517,7 @@ module Cuprum::Collections::RSpec::Contracts
               Cuprum::Collections::Scopes::NoneScope.new
             end
 
-            it { expect(subject.not(original)).to be subject }
+            it { expect(subject.not(original)).to be == subject }
           end
 
           describe 'with an empty conjunction scope' do
@@ -554,8 +548,11 @@ module Cuprum::Collections::RSpec::Contracts
             let(:original) do
               Cuprum::Collections::Scopes::NegationScope.new(scopes: [])
             end
+            let(:error_class) do
+              Cuprum::Collections::Scopes::Base::UninvertibleScopeException
+            end
 
-            it { expect(subject.not(original)).to be subject }
+            it { expect { subject.not(original) }.to raise_error error_class }
           end
 
           describe 'with a non-empty conjunction scope' do
@@ -567,12 +564,8 @@ module Cuprum::Collections::RSpec::Contracts
               Cuprum::Collections::Scopes::ConjunctionScope
                 .new(scopes: [wrapped])
             end
-            let(:expected) do
-              Cuprum::Collections::Scopes::NegationScope
-                .new(scopes: original.scopes)
-            end
 
-            it { expect(subject.not(original)).to be == expected }
+            it { expect(subject.not(original)).to be == original.invert }
           end
 
           describe 'with a non-empty criteria scope' do
@@ -580,12 +573,8 @@ module Cuprum::Collections::RSpec::Contracts
               Cuprum::Collections::Scope
                 .new({ 'title' => 'A Wizard of Earthsea' })
             end
-            let(:expected) do
-              Cuprum::Collections::Scopes::NegationScope
-                .new(scopes: [original])
-            end
 
-            it { expect(subject.not(original)).to be == expected }
+            it { expect(subject.not(original)).to be == original.invert }
           end
 
           describe 'with a non-empty disjunction scope' do
@@ -597,15 +586,11 @@ module Cuprum::Collections::RSpec::Contracts
               Cuprum::Collections::Scopes::DisjunctionScope
                 .new(scopes: [wrapped])
             end
-            let(:expected) do
-              Cuprum::Collections::Scopes::NegationScope
-                .new(scopes: [original])
-            end
 
-            it { expect(subject.not(original)).to be == expected }
+            it { expect(subject.not(original)).to be == original.invert }
           end
 
-          describe 'with a negation scope with one child scope' do
+          describe 'with a negation scope' do
             let(:original) do
               wrapped =
                 Cuprum::Collections::Scope
@@ -614,25 +599,11 @@ module Cuprum::Collections::RSpec::Contracts
               Cuprum::Collections::Scopes::NegationScope
                 .new(scopes: [wrapped])
             end
-
-            it { expect(subject.not(original)).to be == original.scopes.first }
-          end
-
-          describe 'with a negation scope with many child scopes' do
-            let(:original) do
-              wrapped = Array.new(3) do
-                Cuprum::Collections::Scope.new({ 'ok' => true })
-              end
-
-              Cuprum::Collections::Scopes::NegationScope
-                .new(scopes: wrapped)
-            end
-            let(:expected) do
-              Cuprum::Collections::Scopes::ConjunctionScope
-                .new(scopes: original.scopes)
+            let(:error_class) do
+              Cuprum::Collections::Scopes::Base::UninvertibleScopeException
             end
 
-            it { expect(subject.not(original)).to be == expected }
+            it { expect { subject.not(original) }.to raise_error error_class }
           end
         end
 

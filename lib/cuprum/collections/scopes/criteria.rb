@@ -163,7 +163,7 @@ module Cuprum::Collections::Scopes
     def and_criteria_scope(scope)
       return builder.transform_scope(scope: scope) if empty?
 
-      if inverted? == scope.inverted?
+      unless inverted? || scope.inverted?
         return with_criteria([*criteria, *scope.criteria])
       end
 

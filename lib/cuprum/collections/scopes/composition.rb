@@ -36,17 +36,10 @@ module Cuprum::Collections::Scopes
     #   Inverts and combines with the current scope using a logical AND.
     #
     #   Returns self if the given scope is empty.
-    def not(*args, &block)
-      if scope?(args.first)
-        return not_scope(args.first) || not_generic_scope(args.first)
-      end
+    def not(...)
+      scope = builder.build(...).invert
 
-      scope    = builder.build(*args, &block)
-      inverted = builder.build_negation_scope(scopes: [scope], safe: false)
-
-      # We control the current and generated scopes, so we can skip validation
-      # and transformation.
-      builder.build_conjunction_scope(scopes: [self, inverted], safe: false)
+      self.and(scope)
     end
 
     # @override and(hash = nil, &block)
@@ -120,63 +113,6 @@ module Cuprum::Collections::Scopes
         and_negation_scope(scope)
       when :none
         scope
-      end
-    end
-
-    def not_all_scope(_)
-      builder.build_none_scope
-    end
-
-    def not_conjunction_scope(scope)
-      scopes = scope.scopes.map do |inner|
-        builder.transform_scope(scope: inner)
-      end
-      inverted = builder.build_negation_scope(scopes: scopes, safe: false)
-
-      builder.build_conjunction_scope(scopes: [self, inverted], safe: false)
-    end
-
-    def not_criteria_scope(scope)
-      not_generic_scope(scope)
-    end
-
-    def not_disjunction_scope(scope)
-      not_generic_scope(scope)
-    end
-
-    def not_generic_scope(scope)
-      scope    = builder.transform_scope(scope: scope)
-      inverted = builder.build_negation_scope(scopes: [scope], safe: false)
-
-      # We control the current and generated scopes, so we can skip validation
-      # and transformation.
-      builder.build_conjunction_scope(scopes: [self, inverted], safe: false)
-    end
-
-    def not_negation_scope(scope)
-      scopes = scope.scopes.map do |inner|
-        builder.transform_scope(scope: inner)
-      end
-
-      builder.build_conjunction_scope(scopes: [self, *scopes], safe: false)
-    end
-
-    def not_scope(scope) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/MethodLength
-      return self if scope.empty?
-
-      case scope.type
-      when :all
-        not_all_scope(scope)
-      when :conjunction
-        not_conjunction_scope(scope)
-      when :criteria
-        not_criteria_scope(scope)
-      when :disjunction
-        not_disjunction_scope(scope)
-      when :negation
-        not_negation_scope(scope)
-      when :none
-        self
       end
     end
 

@@ -22,15 +22,5 @@ module Cuprum::Collections::Scopes
 
       with_scopes([*self.scopes, *scopes])
     end
-
-    def not_negation_scope(scope)
-      scopes = scope.scopes.map do |inner|
-        builder.transform_scope(scope: inner)
-      end
-
-      return scopes.first if scopes.size == 1
-
-      builder.build_conjunction_scope(scopes: scopes)
-    end
   end
 end

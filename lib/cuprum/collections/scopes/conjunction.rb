@@ -22,16 +22,6 @@ module Cuprum::Collections::Scopes
       builder.build_disjunction_scope(scopes: scopes.map(&:invert))
     end
 
-    # (see Cuprum::Collections::Scopes::Composition#not)
-    def not(*args, &block)
-      return super if scope?(args.first)
-
-      scope    = builder.build(*args, &block)
-      inverted = builder.build_negation_scope(scopes: [scope], safe: false)
-
-      with_scopes([*scopes, inverted])
-    end
-
     # (see Cuprum::Collections::Scopes::Base#type)
     def type
       :conjunction
@@ -49,30 +39,6 @@ module Cuprum::Collections::Scopes
 
     def and_generic_scope(scope)
       with_scopes([*scopes, builder.transform_scope(scope: scope)])
-    end
-
-    def not_conjunction_scope(scope)
-      scopes = scope.scopes.map do |inner|
-        builder.transform_scope(scope: inner)
-      end
-      inverted = builder.build_negation_scope(scopes: scopes, safe: false)
-
-      with_scopes([*self.scopes, inverted])
-    end
-
-    def not_generic_scope(scope)
-      scope    = builder.transform_scope(scope: scope)
-      inverted = builder.build_negation_scope(scopes: [scope], safe: false)
-
-      with_scopes([*scopes, inverted])
-    end
-
-    def not_negation_scope(scope)
-      scopes = scope.scopes.map do |inner|
-        builder.transform_scope(scope: inner)
-      end
-
-      with_scopes([*self.scopes, *scopes])
     end
   end
 end

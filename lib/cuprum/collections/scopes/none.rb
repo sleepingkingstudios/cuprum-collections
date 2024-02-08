@@ -56,7 +56,7 @@ module Cuprum::Collections::Scopes
     def or_scope(scope)
       return self if scope.empty?
 
-      scope
+      builder.transform_scope(scope: scope)
     end
   end
 end
