@@ -26,10 +26,6 @@ module Cuprum::Collections::Scopes
       Cuprum::Collections::Scopes::DisjunctionScope
     end
 
-    def negation_scope_class
-      Cuprum::Collections::Scopes::NegationScope
-    end
-
     def none_scope_class
       Cuprum::Collections::Scopes::NoneScope
     end
@@ -40,5 +36,4 @@ require 'cuprum/collections/scopes/all_scope'
 require 'cuprum/collections/scopes/conjunction_scope'
 require 'cuprum/collections/scopes/criteria_scope'
 require 'cuprum/collections/scopes/disjunction_scope'
-require 'cuprum/collections/scopes/negation_scope'
 require 'cuprum/collections/scopes/none_scope'

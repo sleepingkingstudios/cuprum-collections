@@ -4,7 +4,7 @@ require 'cuprum/collections/scopes'
 
 module Cuprum::Collections::Scopes
   # Defines a fluent interface for composing scopes.
-  module Composition # rubocop:disable Metrics/ModuleLength
+  module Composition
     # @override and(hash = nil, &block)
     #   Parses the hash or block and combines using a logical AND.
     #
@@ -93,11 +93,7 @@ module Cuprum::Collections::Scopes
       builder.build_conjunction_scope(scopes: [self, scope], safe: false)
     end
 
-    def and_negation_scope(scope)
-      and_generic_scope(scope)
-    end
-
-    def and_scope(scope) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/MethodLength
+    def and_scope(scope) # rubocop:disable Metrics/MethodLength
       return self if scope.empty?
 
       case scope.type
@@ -109,8 +105,6 @@ module Cuprum::Collections::Scopes
         and_criteria_scope(scope)
       when :disjunction
         and_disjunction_scope(scope)
-      when :negation
-        and_negation_scope(scope)
       when :none
         scope
       end
@@ -144,11 +138,7 @@ module Cuprum::Collections::Scopes
       builder.build_disjunction_scope(scopes: [self, scope], safe: false)
     end
 
-    def or_negation_scope(scope)
-      or_generic_scope(scope)
-    end
-
-    def or_scope(scope) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/MethodLength
+    def or_scope(scope) # rubocop:disable Metrics/MethodLength
       return self if scope.empty?
 
       case scope.type
@@ -160,8 +150,6 @@ module Cuprum::Collections::Scopes
         or_criteria_scope(scope)
       when :disjunction
         or_disjunction_scope(scope)
-      when :negation
-        or_negation_scope(scope)
       when :none
         self
       end

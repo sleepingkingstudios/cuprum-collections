@@ -3,7 +3,6 @@
 require 'cuprum/collections/basic/scopes/conjunction_scope'
 require 'cuprum/collections/basic/scopes/criteria_scope'
 require 'cuprum/collections/basic/scopes/disjunction_scope'
-require 'cuprum/collections/basic/scopes/negation_scope'
 require 'cuprum/collections/rspec/fixtures'
 require 'cuprum/collections/queries'
 require 'cuprum/collections/scope'

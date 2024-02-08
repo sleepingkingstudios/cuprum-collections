@@ -7,7 +7,6 @@ require 'cuprum/collections/scopes/builder'
 require 'cuprum/collections/scopes/conjunction_scope'
 require 'cuprum/collections/scopes/criteria_scope'
 require 'cuprum/collections/scopes/disjunction_scope'
-require 'cuprum/collections/scopes/negation_scope'
 require 'cuprum/collections/scopes/none_scope'
 
 module Cuprum::Collections::RSpec::Contracts::Scopes
@@ -52,12 +51,6 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
         shared_context 'with an empty disjunction scope' do
           let(:original) do
             Cuprum::Collections::Scopes::DisjunctionScope.new(scopes: [])
-          end
-        end
-
-        shared_context 'with an empty negation scope' do
-          let(:original) do
-            Cuprum::Collections::Scopes::NegationScope.new(scopes: [])
           end
         end
 
@@ -107,23 +100,6 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
               Cuprum::Collections::Scopes::CriteriaScope.new(criteria: criteria)
 
             Cuprum::Collections::Scopes::DisjunctionScope.new(scopes: [wrapped])
-          end
-        end
-
-        shared_context 'with a non-empty negation scope' do
-          let(:original) do
-            operators = Cuprum::Collections::Queries::Operators
-            criteria  = [
-              [
-                'category',
-                operators::EQUAL,
-                'Science Fiction and Fantasy'
-              ]
-            ]
-            wrapped =
-              Cuprum::Collections::Scopes::CriteriaScope.new(criteria: criteria)
-
-            Cuprum::Collections::Scopes::NegationScope.new(scopes: [wrapped])
           end
         end
 
@@ -185,10 +161,6 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             it { expect(subject.and(original)).to be subject }
           end
 
-          wrap_context 'with an empty negation scope' do
-            it { expect(subject.and(original)).to be subject }
-          end
-
           wrap_context 'with a non-empty conjunction scope' do
             let(:expected) do
               Cuprum::Collections::Scopes::ConjunctionScope.new(
@@ -210,16 +182,6 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           end
 
           wrap_context 'with a non-empty disjunction scope' do
-            let(:expected) do
-              Cuprum::Collections::Scopes::ConjunctionScope.new(
-                scopes: [subject, original]
-              )
-            end
-
-            it { expect(subject.and(original)).to be == expected }
-          end
-
-          wrap_context 'with a non-empty negation scope' do
             let(:expected) do
               Cuprum::Collections::Scopes::ConjunctionScope.new(
                 scopes: [subject, original]
@@ -289,14 +251,6 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             it { expect(subject.not(original)).to be subject }
           end
 
-          wrap_context 'with an empty negation scope' do
-            let(:error_class) do
-              Cuprum::Collections::Scopes::Base::UninvertibleScopeException
-            end
-
-            it { expect { subject.not(original) }.to raise_error error_class }
-          end
-
           wrap_context 'with a non-empty conjunction scope' do
             let(:expected) do
               Cuprum::Collections::Scopes::ConjunctionScope.new(
@@ -325,14 +279,6 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             end
 
             it { expect(subject.not(original)).to be == expected }
-          end
-
-          wrap_context 'with a non-empty negation scope' do
-            let(:error_class) do
-              Cuprum::Collections::Scopes::Base::UninvertibleScopeException
-            end
-
-            it { expect { subject.not(original) }.to raise_error error_class }
           end
         end
 
@@ -392,10 +338,6 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             it { expect(subject.or(original)).to be subject }
           end
 
-          wrap_context 'with an empty negation scope' do
-            it { expect(subject.or(original)).to be subject }
-          end
-
           wrap_context 'with a non-empty conjunction scope' do
             let(:expected) do
               Cuprum::Collections::Scopes::DisjunctionScope.new(
@@ -420,16 +362,6 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             let(:expected) do
               Cuprum::Collections::Scopes::DisjunctionScope.new(
                 scopes: [subject, *original.scopes]
-              )
-            end
-
-            it { expect(subject.or(original)).to be == expected }
-          end
-
-          wrap_context 'with a non-empty negation scope' do
-            let(:expected) do
-              Cuprum::Collections::Scopes::DisjunctionScope.new(
-                scopes: [subject, original]
               )
             end
 
@@ -515,10 +447,6 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             it { expect(subject.and(original)).to be subject }
           end
 
-          wrap_context 'with an empty negation scope' do
-            it { expect(subject.and(original)).to be subject }
-          end
-
           wrap_context 'with a non-empty conjunction scope' do
             let(:expected) do
               Cuprum::Collections::Scopes::ConjunctionScope.new(
@@ -548,20 +476,6 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           end
 
           wrap_context 'with a non-empty disjunction scope' do
-            let(:expected) do
-              Cuprum::Collections::Scopes::ConjunctionScope.new(
-                scopes: [*subject.scopes, original]
-              )
-            end
-
-            it { expect(subject.and(original)).to be == expected }
-
-            wrap_context 'when the scope has many child scopes' do
-              it { expect(subject.and(original)).to be == expected }
-            end
-          end
-
-          wrap_context 'with a non-empty negation scope' do
             let(:expected) do
               Cuprum::Collections::Scopes::ConjunctionScope.new(
                 scopes: [*subject.scopes, original]
@@ -633,14 +547,6 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             it { expect(subject.not(original)).to be subject }
           end
 
-          wrap_context 'with an empty negation scope' do
-            let(:error_class) do
-              Cuprum::Collections::Scopes::Base::UninvertibleScopeException
-            end
-
-            it { expect { subject.not(original) }.to raise_error error_class }
-          end
-
           wrap_context 'with a non-empty conjunction scope' do
             let(:expected) do
               Cuprum::Collections::Scopes::ConjunctionScope.new(
@@ -681,14 +587,6 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             wrap_context 'when the scope has many child scopes' do
               it { expect(subject.not(original)).to be == expected }
             end
-          end
-
-          wrap_context 'with a non-empty negation scope' do
-            let(:error_class) do
-              Cuprum::Collections::Scopes::Base::UninvertibleScopeException
-            end
-
-            it { expect { subject.not(original) }.to raise_error error_class }
           end
         end
       end
@@ -827,14 +725,6 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             end
           end
 
-          wrap_context 'with an empty negation scope' do
-            it { expect(subject.and(original)).to be subject }
-
-            wrap_context 'when the scope has multiple criteria' do
-              it { expect(subject.and(original)).to be subject }
-            end
-          end
-
           wrap_context 'with a non-empty conjunction scope' do
             it { expect(subject.and(original)).to be == original }
 
@@ -882,20 +772,6 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           end
 
           wrap_context 'with a non-empty disjunction scope' do
-            it { expect(subject.and(original)).to be == original }
-
-            wrap_context 'when the scope has multiple criteria' do
-              let(:expected) do
-                Cuprum::Collections::Scopes::ConjunctionScope.new(
-                  scopes: [subject, original]
-                )
-              end
-
-              it { expect(subject.and(original)).to be == expected }
-            end
-          end
-
-          wrap_context 'with a non-empty negation scope' do
             it { expect(subject.and(original)).to be == original }
 
             wrap_context 'when the scope has multiple criteria' do
@@ -1397,14 +1273,6 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             end
           end
 
-          wrap_context 'with an empty negation scope' do
-            it { expect(subject.or(original)).to be subject }
-
-            wrap_context 'when the scope has multiple criteria' do
-              it { expect(subject.or(original)).to be subject }
-            end
-          end
-
           wrap_context 'with a non-empty conjunction scope' do
             it { expect(subject.or(original)).to be == original }
 
@@ -1440,20 +1308,6 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
               let(:expected) do
                 Cuprum::Collections::Scopes::DisjunctionScope.new(
                   scopes: [subject, *original.scopes]
-                )
-              end
-
-              it { expect(subject.or(original)).to be == expected }
-            end
-          end
-
-          wrap_context 'with a non-empty negation scope' do
-            it { expect(subject.or(original)).to be == original }
-
-            wrap_context 'when the scope has multiple criteria' do
-              let(:expected) do
-                Cuprum::Collections::Scopes::DisjunctionScope.new(
-                  scopes: [subject, original]
                 )
               end
 
@@ -1536,10 +1390,6 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             it { expect(subject.or(original)).to be subject }
           end
 
-          wrap_context 'with an empty negation scope' do
-            it { expect(subject.or(original)).to be subject }
-          end
-
           wrap_context 'with a non-empty conjunction scope' do
             let(:expected) do
               Cuprum::Collections::Scopes::DisjunctionScope.new(
@@ -1572,123 +1422,6 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             wrap_context 'when the scope has many child scopes' do
               it { expect(subject.or(original)).to be == expected }
             end
-          end
-
-          wrap_context 'with a non-empty negation scope' do
-            let(:expected) do
-              Cuprum::Collections::Scopes::DisjunctionScope.new(
-                scopes: [*subject.scopes, original]
-              )
-            end
-
-            it { expect(subject.or(original)).to be == expected }
-          end
-        end
-      end
-    end
-
-    # Contract validating scope composition for negation scopes.
-    module ShouldComposeScopesForNegationContract
-      extend  RSpec::SleepingKingStudios::Contract
-      include Cuprum::Collections::RSpec::Contracts::Scopes::CompositionContracts # rubocop:disable Layout/LineLength
-
-      # @!method apply(example_group)
-      #   Adds the contract to the example group.
-      #
-      #   @param example_group [RSpec::Core::ExampleGroup] the example group to
-      #     which the contract is applied.
-      contract do
-        include_contract 'should compose scopes', except: %i[and not]
-
-        describe '#and' do
-          describe 'with a block' do
-            let(:block) { -> { { 'title' => 'A Wizard of Earthsea' } } }
-            let(:expected) do
-              wrapped = Cuprum::Collections::Scope.new(&block)
-
-              Cuprum::Collections::Scopes::ConjunctionScope.new(
-                scopes: [subject, wrapped]
-              )
-            end
-
-            it { expect(subject.and(&block)).to be == expected }
-          end
-
-          describe 'with a hash' do
-            let(:value) { { 'title' => 'A Wizard of Earthsea' } }
-            let(:expected) do
-              wrapped = Cuprum::Collections::Scope.new(value)
-
-              Cuprum::Collections::Scopes::ConjunctionScope.new(
-                scopes: [subject, wrapped]
-              )
-            end
-
-            it { expect(subject.and(value)).to be == expected }
-          end
-
-          wrap_context 'with an all scope' do
-            it { expect(subject.and(original)).to be subject }
-          end
-
-          wrap_context 'with a none scope' do
-            it { expect(subject.and(original)).to be == original }
-          end
-
-          wrap_context 'with an empty conjunction scope' do
-            it { expect(subject.and(original)).to be subject }
-          end
-
-          wrap_context 'with an empty criteria scope' do
-            it { expect(subject.and(original)).to be subject }
-          end
-
-          wrap_context 'with an empty disjunction scope' do
-            it { expect(subject.and(original)).to be subject }
-          end
-
-          wrap_context 'with an empty negation scope' do
-            it { expect(subject.and(original)).to be subject }
-          end
-
-          wrap_context 'with a non-empty conjunction scope' do
-            let(:expected) do
-              Cuprum::Collections::Scopes::ConjunctionScope.new(
-                scopes: [subject, *original.scopes]
-              )
-            end
-
-            it { expect(subject.and(original)).to be == expected }
-          end
-
-          wrap_context 'with a non-empty criteria scope' do
-            let(:expected) do
-              Cuprum::Collections::Scopes::ConjunctionScope.new(
-                scopes: [subject, original]
-              )
-            end
-
-            it { expect(subject.and(original)).to be == expected }
-          end
-
-          wrap_context 'with a non-empty disjunction scope' do
-            let(:expected) do
-              Cuprum::Collections::Scopes::ConjunctionScope.new(
-                scopes: [subject, original]
-              )
-            end
-
-            it { expect(subject.and(original)).to be == expected }
-          end
-
-          wrap_context 'with a non-empty negation scope' do
-            let(:expected) do
-              Cuprum::Collections::Scopes::NegationScope.new(
-                scopes: [*subject.scopes, *original.scopes]
-              )
-            end
-
-            it { expect(subject.and(original)).to be == expected }
           end
         end
       end
