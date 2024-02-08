@@ -5,10 +5,10 @@ require 'cuprum/collections/scopes'
 module Cuprum::Collections::Scopes
   # Functionality for implementing a none scope, which returns no data.
   module None
-    # @override and(hash = nil, &block)
+    # @overload and(hash = nil, &block)
     #   Returns the none scope.
     #
-    # @override and(scope)
+    # @overload and(scope)
     #   Returns the none scope.
     def and(*, &_)
       self
@@ -26,10 +26,10 @@ module Cuprum::Collections::Scopes
       builder.build_all_scope
     end
 
-    # @override or(hash = nil, &block)
+    # @overload or(hash = nil, &block)
     #   Returns the none scope.
     #
-    # @override or(scope)
+    # @overload or(scope)
     #   Returns the none scope.
     def or(*args, &block)
       return super if scope?(args.first)
@@ -37,10 +37,10 @@ module Cuprum::Collections::Scopes
       builder.build(*args, &block)
     end
 
-    # @override not(hash = nil, &block)
+    # @overload not(hash = nil, &block)
     #   Returns the none scope.
     #
-    # @override not(scope)
+    # @overload not(scope)
     #   Returns the none scope.
     def not(*, &_)
       self

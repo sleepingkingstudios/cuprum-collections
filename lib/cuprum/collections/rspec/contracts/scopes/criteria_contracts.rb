@@ -14,7 +14,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
     module ShouldBeACriteriaScopeContract
       extend RSpec::SleepingKingStudios::Contract
 
-      # @!method apply(example_group, abstract: false, constructor: true)
+      # @!method apply(example_group, abstract: false, constructor: true, equality: true, ignore_uninvertible: false)
       #   Adds the contract to the example group.
       #
       #   @param example_group [RSpec::Core::ExampleGroup] the example group to

@@ -6,13 +6,13 @@ require 'cuprum/collections/scopes/criteria_scope'
 module Cuprum::Collections
   # Generic scope class for defining collection-independent criteria scopes.
   class Scope < Cuprum::Collections::Scopes::CriteriaScope
-    # @override build(value = nil, &block)
+    # @overload build(value = nil, &block)
     #   (see Cuprum::Collections::Scopes::Criteria::ClassMethods.build)
     def self.build(...)
       new(...)
     end
 
-    # @override initialize(value = nil, &block)
+    # @overload initialize(value = nil, &block)
     #   @param value [Hash, nil] the keys and values to parse.
     #
     #   @return [Array] the generated criteria.

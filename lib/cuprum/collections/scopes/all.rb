@@ -5,12 +5,12 @@ require 'cuprum/collections/scopes'
 module Cuprum::Collections::Scopes
   # Functionality for implementing an all scope, which returns all data.
   module All
-    # @override and(hash = nil, &block)
+    # @overload and(hash = nil, &block)
     #   Parses the hash or block and returns the parsed scope.
     #
     #   @see Cuprum::Collections::Scopes::Criteria::Parser#parse.
     #
-    # @override and(scope)
+    # @overload and(scope)
     #   Returns the given scope.
     def and(*args, &block)
       return self if scope?(args.first) && args.first.empty?
@@ -30,12 +30,12 @@ module Cuprum::Collections::Scopes
       builder.build_none_scope
     end
 
-    # @override or(hash = nil, &block)
+    # @overload or(hash = nil, &block)
     #   Parses the hash or block and returns the parsed scope.
     #
     #   @see Cuprum::Collections::Scopes::Criteria::Parser#parse.
     #
-    # @override or(scope)
+    # @overload or(scope)
     #   Returns the given scope.
     def or(*args, &block)
       return self if scope?(args.first) && args.first.empty?
