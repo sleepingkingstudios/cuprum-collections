@@ -17,5 +17,9 @@ RSpec.describe Cuprum::Collections::Scopes::Container do
     klass.include Cuprum::Collections::Scopes::Container # rubocop:disable RSpec/DescribedClass
   end
 
+  def build_scope(...)
+    Cuprum::Collections::Scope.new(...)
+  end
+
   include_contract 'should be a container scope'
 end

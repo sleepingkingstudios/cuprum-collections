@@ -18,14 +18,8 @@ RSpec.describe Cuprum::Collections::Scopes::Conjunction do
     klass.include Cuprum::Collections::Scopes::Conjunction # rubocop:disable RSpec/DescribedClass
   end
 
-  def build_scope(filters = nil, &block)
-    scope_class = Cuprum::Collections::Scopes::CriteriaScope
-
-    if block_given?
-      scope_class.build(&block)
-    else
-      scope_class.build(filters)
-    end
+  def build_scope(...)
+    Cuprum::Collections::Scope.new(...)
   end
 
   include_contract 'should be a conjunction scope', abstract: true

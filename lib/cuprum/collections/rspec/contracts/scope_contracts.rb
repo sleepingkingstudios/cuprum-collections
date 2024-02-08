@@ -78,18 +78,20 @@ module Cuprum::Collections::RSpec::Contracts
     module ShouldBeAContainerScopeContract
       extend RSpec::SleepingKingStudios::Contract
 
-      # @!method apply(example_group)
+      # @!method apply(example_group, invertible: false)
       #   Adds the contract to the example group.
       #
       #   @param example_group [RSpec::Core::ExampleGroup] the example group to
       #     which the contract is applied.
-      contract do
+      #   @param invertible [Boolean] if true, the scope defines an
+      #     implementation of the #invert method. Defaults to false.
+      contract do |invertible: false|
         shared_context 'with scopes' do
           let(:scopes) do
             [
-              described_class.new(scopes: []),
-              described_class.new(scopes: []),
-              described_class.new(scopes: [])
+              build_scope({ 'title'    => 'J.R.R. Tolkien' }),
+              build_scope({ 'series'   => 'The Lord of the Rings' }),
+              build_scope({ 'category' => 'Science Fiction and Fantasy' })
             ]
           end
         end
@@ -104,7 +106,7 @@ module Cuprum::Collections::RSpec::Contracts
           end
         end
 
-        include_contract 'should be a scope'
+        include_contract 'should be a scope', invertible: invertible
 
         describe '#==' do
           describe 'with a scope with the same class' do

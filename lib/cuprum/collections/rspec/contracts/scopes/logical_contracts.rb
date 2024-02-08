@@ -23,7 +23,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
       #   @param abstract [Boolean] if true, the scope is abstract and does not
       #     define a #call implementation. Defaults to false.
       contract do |abstract: false|
-        include_contract 'should be a container scope'
+        include_contract 'should be a container scope', invertible: true
 
         include_contract 'should compose scopes for conjunction'
 
@@ -48,6 +48,20 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           include_contract 'should filter data by logical and'
         end
 
+        describe '#invert' do
+          let(:expected) do
+            Cuprum::Collections::Scopes::DisjunctionScope.new(
+              scopes: subject.scopes.map(&:invert)
+            )
+          end
+
+          it { expect(subject.invert).to be == expected }
+
+          wrap_context 'with scopes' do
+            it { expect(subject.invert).to be == expected }
+          end
+        end
+
         describe '#type' do
           include_examples 'should define reader', :type, :conjunction
         end
@@ -66,7 +80,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
       #   @param abstract [Boolean] if true, the scope is abstract and does not
       #     define a #call implementation. Defaults to false.
       contract do |abstract: false|
-        include_contract 'should be a container scope'
+        include_contract 'should be a container scope', invertible: true
 
         include_contract 'should compose scopes for disjunction'
 
@@ -89,6 +103,20 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           next if abstract
 
           include_contract 'should filter data by logical or'
+        end
+
+        describe '#invert' do
+          let(:expected) do
+            Cuprum::Collections::Scopes::ConjunctionScope.new(
+              scopes: subject.scopes.map(&:invert)
+            )
+          end
+
+          it { expect(subject.invert).to be == expected }
+
+          wrap_context 'with scopes' do
+            it { expect(subject.invert).to be == expected }
+          end
         end
 
         describe '#type' do

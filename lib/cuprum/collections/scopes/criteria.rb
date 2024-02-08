@@ -88,6 +88,7 @@ module Cuprum::Collections::Scopes
     def debug
       # :nocov:
       message = "#{super} (#{criteria.count})"
+      message += ' (inverted)' if inverted?
 
       return message if empty?
 

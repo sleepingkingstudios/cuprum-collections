@@ -16,6 +16,12 @@ module Cuprum::Collections::Scopes
     end
     alias where and
 
+    # @return [Cuprum::Collections::Disjunction] a logical OR scope with the
+    #   constituent scopes inverted.
+    def invert
+      builder.build_disjunction_scope(scopes: scopes.map(&:invert))
+    end
+
     # (see Cuprum::Collections::Scopes::Composition#not)
     def not(*args, &block)
       return super if scope?(args.first)
