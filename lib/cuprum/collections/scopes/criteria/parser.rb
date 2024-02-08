@@ -38,7 +38,7 @@ module Cuprum::Collections::Scopes::Criteria
       end
     end
 
-    # @override parse(value = nil, &block)
+    # @overload parse(value = nil, &block)
     #   Converts a valid query hash and/or block to criteria.
     #
     #   The block must return a Hash with String keys. The hash values must

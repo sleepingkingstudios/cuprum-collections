@@ -5,12 +5,12 @@ require 'cuprum/collections/scopes'
 module Cuprum::Collections::Scopes
   # Defines a fluent interface for composing scopes.
   module Composition
-    # @override and(hash = nil, &block)
+    # @overload and(hash = nil, &block)
     #   Parses the hash or block and combines using a logical AND.
     #
     #   @see Cuprum::Collections::Scopes::Criteria::Parser#parse.
     #
-    # @override and(scope)
+    # @overload and(scope)
     #   Combines with the current scope using a logical AND.
     #
     #   Returns self if the given scope is empty.
@@ -27,12 +27,12 @@ module Cuprum::Collections::Scopes
     end
     alias where and
 
-    # @override not(hash = nil, &block)
+    # @overload not(hash = nil, &block)
     #   Parses and inverts the hash or block and combines using a logical AND.
     #
     #   @see Cuprum::Collections::Scopes::Criteria::Parser#parse.
     #
-    # @override not(scope)
+    # @overload not(scope)
     #   Inverts and combines with the current scope using a logical AND.
     #
     #   Returns self if the given scope is empty.
@@ -42,12 +42,12 @@ module Cuprum::Collections::Scopes
       self.and(scope)
     end
 
-    # @override and(hash = nil, &block)
+    # @overload and(hash = nil, &block)
     #   Parses the hash or block and combines using a logical OR.
     #
     #   @see Cuprum::Collections::Scopes::Criteria::Parser#parse.
     #
-    # @override and(scope)
+    # @overload and(scope)
     #   Combines with the current scope using a logical OR.
     #
     #   Returns self if the given scope is empty.

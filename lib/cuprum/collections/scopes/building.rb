@@ -31,12 +31,12 @@ module Cuprum::Collections::Scopes
       end
     end
 
-    # @override build(hash = nil, &block)
+    # @overload build(hash = nil, &block)
     #   Parses the hash or block and returns a criteria scope.
     #
     #   @see Cuprum::Collections::Scopes::Criteria::Parser#parse.
     #
-    # @override build(scope)
+    # @overload build(scope)
     #   Returns a new scope with the same scope type and properties.
     def build(*args, &block)
       if args.first.is_a?(Cuprum::Collections::Scopes::Base)

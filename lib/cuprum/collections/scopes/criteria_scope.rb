@@ -5,6 +5,7 @@ require 'cuprum/collections/scopes/base'
 require 'cuprum/collections/scopes/criteria'
 
 module Cuprum::Collections::Scopes
+  # Generic scope class for defining criteria scopes.
   class CriteriaScope < Cuprum::Collections::Scopes::Base
     include Cuprum::Collections::Scopes::Criteria
   end

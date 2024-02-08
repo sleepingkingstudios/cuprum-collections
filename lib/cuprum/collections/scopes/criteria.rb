@@ -8,7 +8,7 @@ module Cuprum::Collections::Scopes
   module Criteria # rubocop:disable Metrics/ModuleLength
     # Class methods to extend when including the module.
     module ClassMethods
-      # @override build(value = nil, &block)
+      # @overload build(value = nil, &block)
       #   Initializes a new criteria scope with the parsed criteria.
       #
       #   @param value [Hash, nil] the keys and values to parse.
@@ -24,7 +24,7 @@ module Cuprum::Collections::Scopes
         new(criteria: criteria)
       end
 
-      # @override parse(value = nil, &block)
+      # @overload parse(value = nil, &block)
       #   (see Cuprum::Collections::Scopes::Criteria::Parser#parse)
       def parse(*args, &block)
         parser = Cuprum::Collections::Scopes::Criteria::Parser.instance
@@ -79,7 +79,7 @@ module Cuprum::Collections::Scopes
     end
     alias where and
 
-    # (see Cuprum::Colletions::Scopes::Base#as_json)
+    # (see Cuprum::Collections::Scopes::Base#as_json)
     def as_json
       super().merge({ 'criteria' => criteria, 'inverted' => inverted? })
     end
