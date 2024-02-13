@@ -2,6 +2,37 @@
 
 ## 0.5.0
 
+Major refactoring of Query scopes. This update is **not** backwards compatible.
+
+### Queries
+
+Query result filtering now uses composable scopes.
+
+- Implemented `Query#scope`.
+- Implemented composable methods `Query#and`, `Query#or`, `Query#not`.
+
+### Scopes
+
+Implemented `Cuprum::Collections::Scopes`. A scope object represents a filter that can be used to select a subset of a collection.
+
+`Cuprum::Collections` defines generic scope classes for defining scopes in a collection-independant fashion. Each collection must also implement the filtering behavior for each scope type.
+
+#### Criteria Scopes
+
+Criteria scopes use a list of criteria to filter data. Each criterion has an attribute name, an operator (such as "equals", "greater than" or "not in"), and an expected value.
+
+#### Logical Scopes
+
+Conjunction scopes wrap one or more other scopes with a logical AND operation.
+
+Disjunction scopes wrap one or more other scopes with a logical OR operation.
+
+#### Scope Inversion
+
+Scopes are responsible for defining their own inverse. An inverted scope should match on a collection item if and only if the base scope does not match that item.
+
+### Other Changes
+
 Remove deprecations from previous versions:
 
 - Removed `Cuprum::Collections::Relation::Disambiguation`.
