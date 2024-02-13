@@ -101,8 +101,6 @@ module Cuprum::Collections::Basic
 
     attr_reader :data
 
-    attr_reader :filters
-
     def apply_limit_offset(data)
       return data[@offset...(@offset + @limit)] || [] if @limit && @offset
       return data[0...@limit] if @limit
@@ -133,7 +131,7 @@ module Cuprum::Collections::Basic
     end
 
     def default_scope
-      Cuprum::Collections::Basic::Scopes::AllScope.new
+      Cuprum::Collections::Basic::Scopes::AllScope.instance
     end
 
     def scoped_data

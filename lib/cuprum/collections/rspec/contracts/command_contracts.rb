@@ -715,8 +715,11 @@ module Cuprum::Collections::RSpec::Contracts
           let(:filtered_data) do
             defined?(super()) ? super() : data
           end
-          let(:expected_data) do
+          let(:matching_data) do
             defined?(super()) ? super() : filtered_data
+          end
+          let(:expected_data) do
+            defined?(super()) ? super() : matching_data
           end
 
           it 'should validate the :envelope keyword' do

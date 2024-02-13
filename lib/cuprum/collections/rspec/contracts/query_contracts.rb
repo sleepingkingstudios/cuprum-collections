@@ -131,10 +131,6 @@ module Cuprum::Collections::RSpec::Contracts
         describe '#each' do
           shared_examples 'should enumerate the matching data' do
             describe 'with no arguments' do
-              let(:expected_data) do
-                defined?(super()) ? super() : data
-              end
-
               it { expect(scoped_query.each).to be_a Enumerator }
 
               it { expect(scoped_query.each.count).to be == expected_data.size }
@@ -143,10 +139,6 @@ module Cuprum::Collections::RSpec::Contracts
             end
 
             describe 'with a block' do
-              let(:expected_data) do
-                defined?(super()) ? super() : data
-              end
-
               it 'should yield each matching item' do
                 expect { |block| scoped_query.each(&block) }
                   .to yield_successive_args(*expected_data)
@@ -427,9 +419,9 @@ module Cuprum::Collections::RSpec::Contracts
 
         describe '#reset' do
           let(:data)          { [] }
-          let(:filtered_data) { data }
+          let(:matching_data) { data }
           let(:expected_data) do
-            defined?(super()) ? super() : filtered_data
+            defined?(super()) ? super() : matching_data
           end
 
           it { expect(query).to respond_to(:reset).with(0).arguments }
@@ -444,7 +436,7 @@ module Cuprum::Collections::RSpec::Contracts
 
           context 'when the collection data changes' do
             let(:item)          { BOOKS_FIXTURES.first }
-            let(:filtered_data) { [item] }
+            let(:matching_data) { [item] }
 
             before(:example) do
               query.to_a # Cache query results.
@@ -469,7 +461,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when the collection data changes' do
               let(:data)          { BOOKS_FIXTURES[0...-1] }
               let(:item)          { BOOKS_FIXTURES.last }
-              let(:filtered_data) { [*data, item] }
+              let(:matching_data) { [*data, item] }
 
               before(:example) do
                 query.to_a # Cache query results.
@@ -780,29 +772,6 @@ module Cuprum::Collections::RSpec::Contracts
       contract do |*tags, &examples|
         ignore_order = tags.include?(:ignore_order)
 
-        # @todo
-        #
-        # Use Cases:
-        #   - A Query
-        #     - #count matches the expected data count
-        #     - #each enumerates the expected data
-        #     - #exists? returns true or false
-        #     - #to_a returns the expected data
-        #   - A FindMatching Command
-        #     - the returned data matches the expected data.
-        #
-        # Test Cases:
-        #   - Baseline check
-        #   - Query metadata
-        #     - With a limit
-        #     - With an offset
-        #     - With an order (set a default ordering? by "id"?)
-        #   - Query filtering
-        #     - With a block
-        #     - With a hash
-        #     - With a basic scope
-        #     - With a complex scope
-
         shared_examples 'should query the collection' do
           # :nocov:
           if examples
@@ -877,16 +846,21 @@ module Cuprum::Collections::RSpec::Contracts
         let(:mapped_data)   { defined?(super()) ? super() : data }
         let(:filtered_data) { mapped_data }
         let(:ordered_data) do
+          return super() if defined?(super())
+
           attr_name = defined?(default_order) ? default_order : 'id'
 
           filtered_data.sort_by { |item| item[attr_name] }
         end
-        let(:expected_data) do
+        let(:matching_data) do
           data = ordered_data
           data = data[offset..] || [] if offset
           data = data[...limit] || [] if limit
 
           data
+        end
+        let(:expected_data) do
+          defined?(super()) ? super() : matching_data
         end
 
         include_examples 'should order the results'
