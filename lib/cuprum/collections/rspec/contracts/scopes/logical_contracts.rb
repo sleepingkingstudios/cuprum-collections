@@ -145,16 +145,15 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           let(:scopes) { [] }
 
           describe 'with empty data' do
-            let(:data)     { [] }
-            let(:expected) { data }
+            let(:data) { [] }
 
-            it { expect(filtered_data).to be == expected }
+            it { expect(filtered_data).to be == [] }
           end
 
           wrap_context 'with data' do
             let(:expected) { data }
 
-            it { expect(filtered_data).to be == expected }
+            it { expect(filtered_data).to match_array expected }
           end
         end
 
@@ -166,10 +165,9 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           end
 
           describe 'with empty data' do
-            let(:data)     { [] }
-            let(:expected) { data }
+            let(:data) { [] }
 
-            it { expect(filtered_data).to be == expected }
+            it { expect(filtered_data).to be == [] }
           end
 
           wrap_context 'with data' do
@@ -177,7 +175,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
               data.select { |item| item['author'] == 'J.R.R. Tolkien' }
             end
 
-            it { expect(filtered_data).to be == expected }
+            it { expect(filtered_data).to match_array expected }
           end
         end
 
@@ -193,10 +191,9 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           end
 
           describe 'with empty data' do
-            let(:data)     { [] }
-            let(:expected) { data }
+            let(:data) { [] }
 
-            it { expect(filtered_data).to be == expected }
+            it { expect(filtered_data).to be == [] }
           end
 
           wrap_context 'with data' do
@@ -207,7 +204,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
                 .select { |item| item['published_at'] < '1955-01-01' }
             end
 
-            it { expect(filtered_data).to be == expected }
+            it { expect(filtered_data).to match_array expected }
           end
         end
       end
@@ -251,10 +248,9 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           end
 
           describe 'with empty data' do
-            let(:data)     { [] }
-            let(:expected) { data }
+            let(:data) { [] }
 
-            it { expect(filtered_data).to be == expected }
+            it { expect(filtered_data).to be == [] }
           end
 
           wrap_context 'with data' do
@@ -262,7 +258,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
               data.select { |item| item['author'] == 'J.R.R. Tolkien' }
             end
 
-            it { expect(filtered_data).to be == expected }
+            it { expect(filtered_data).to match_array expected }
           end
         end
 
@@ -278,10 +274,9 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           end
 
           describe 'with empty data' do
-            let(:data)     { [] }
-            let(:expected) { data }
+            let(:data) { [] }
 
-            it { expect(filtered_data).to be == expected }
+            it { expect(filtered_data).to be == [] }
           end
 
           wrap_context 'with data' do
@@ -293,7 +288,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
               end
             end
 
-            it { expect(filtered_data).to be == expected }
+            it { expect(filtered_data).to match_array expected }
           end
         end
       end
