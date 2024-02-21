@@ -857,16 +857,15 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
         context 'when the scope has no criteria' do
           describe 'with empty data' do
-            let(:data)     { [] }
-            let(:matching) { data }
+            let(:data) { [] }
 
-            it { expect(filtered_data).to be == expected }
+            it { expect(filtered_data).to be == [] }
           end
 
           wrap_context 'with data' do
             let(:matching) { data }
 
-            it { expect(filtered_data).to be == expected }
+            it { expect(filtered_data).to match_array expected }
           end
         end
 
@@ -876,10 +875,9 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           end
 
           describe 'with empty data' do
-            let(:data)     { [] }
-            let(:matching) { data }
+            let(:data) { [] }
 
-            it { expect(filtered_data).to be == expected }
+            it { expect(filtered_data).to be == [] }
           end
 
           wrap_context 'with data' do
@@ -889,7 +887,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
               end
             end
 
-            it { expect(filtered_data).to be == expected }
+            it { expect(filtered_data).to match_array expected }
           end
         end
 
@@ -901,10 +899,9 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           end
 
           describe 'with empty data' do
-            let(:data)     { [] }
-            let(:matching) { data }
+            let(:data) { [] }
 
-            it { expect(filtered_data).to be == expected }
+            it { expect(filtered_data).to be == [] }
           end
 
           wrap_context 'with data' do
@@ -914,7 +911,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
               end
             end
 
-            it { expect(filtered_data).to be == expected }
+            it { expect(filtered_data).to match_array expected }
           end
         end
 
@@ -926,10 +923,9 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           end
 
           describe 'with empty data' do
-            let(:data)     { [] }
-            let(:matching) { data }
+            let(:data) { [] }
 
-            it { expect(filtered_data).to be == expected }
+            it { expect(filtered_data).to be == [] }
           end
 
           wrap_context 'with data' do
@@ -939,7 +935,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
               end
             end
 
-            it { expect(filtered_data).to be == expected }
+            it { expect(filtered_data).to match_array expected }
           end
         end
 
@@ -951,10 +947,9 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           end
 
           describe 'with empty data' do
-            let(:data)     { [] }
-            let(:matching) { data }
+            let(:data) { [] }
 
-            it { expect(filtered_data).to be == expected }
+            it { expect(filtered_data).to be == [] }
           end
 
           wrap_context 'with data' do
@@ -964,7 +959,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
               end
             end
 
-            it { expect(filtered_data).to be == expected }
+            it { expect(filtered_data).to match_array expected }
           end
         end
 
@@ -976,10 +971,9 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           end
 
           describe 'with empty data' do
-            let(:data)     { [] }
-            let(:matching) { data }
+            let(:data) { [] }
 
-            it { expect(filtered_data).to be == expected }
+            it { expect(filtered_data).to be == [] }
           end
 
           wrap_context 'with data' do
@@ -989,7 +983,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
               end
             end
 
-            it { expect(filtered_data).to be == expected }
+            it { expect(filtered_data).to match_array expected }
           end
         end
 
@@ -1001,10 +995,9 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           end
 
           describe 'with empty data' do
-            let(:data)     { [] }
-            let(:matching) { data }
+            let(:data) { [] }
 
-            it { expect(filtered_data).to be == expected }
+            it { expect(filtered_data).to be == [] }
           end
 
           wrap_context 'with data' do
@@ -1014,7 +1007,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
               end
             end
 
-            it { expect(filtered_data).to be == expected }
+            it { expect(filtered_data).to match_array expected }
           end
         end
 
@@ -1028,10 +1021,9 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           end
 
           describe 'with empty data' do
-            let(:data)     { [] }
-            let(:matching) { data }
+            let(:data) { [] }
 
-            it { expect(filtered_data).to be == expected }
+            it { expect(filtered_data).to be == [] }
           end
 
           wrap_context 'with data' do
@@ -1042,7 +1034,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
               end
             end
 
-            it { expect(filtered_data).to be == expected }
+            it { expect(filtered_data).to match_array expected }
           end
         end
 
@@ -1056,10 +1048,9 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           end
 
           describe 'with empty data' do
-            let(:data)     { [] }
-            let(:matching) { data }
+            let(:data) { [] }
 
-            it { expect(filtered_data).to be == expected }
+            it { expect(filtered_data).to be == [] }
           end
 
           wrap_context 'with data' do
@@ -1070,7 +1061,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
               end
             end
 
-            it { expect(filtered_data).to be == expected }
+            it { expect(filtered_data).to match_array expected }
           end
         end
 
@@ -1084,10 +1075,9 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           end
 
           describe 'with empty data' do
-            let(:data)     { [] }
-            let(:matching) { data }
+            let(:data) { [] }
 
-            it { expect(filtered_data).to be == expected }
+            it { expect(filtered_data).to be == [] }
           end
 
           wrap_context 'with data' do
@@ -1100,7 +1090,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
                 end
             end
 
-            it { expect(filtered_data).to be == expected }
+            it { expect(filtered_data).to match_array expected }
           end
         end
 
@@ -1113,10 +1103,9 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           end
 
           describe 'with empty data' do
-            let(:data)     { [] }
-            let(:matching) { data }
+            let(:data) { [] }
 
-            it { expect(filtered_data).to be == expected }
+            it { expect(filtered_data).to be == [] }
           end
 
           wrap_context 'with data' do
@@ -1126,7 +1115,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
                 .select { |item| item['series'] == 'The Lord of the Rings' }
             end
 
-            it { expect(filtered_data).to be == expected }
+            it { expect(filtered_data).to match_array expected }
           end
         end
 
@@ -1139,10 +1128,9 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           end
 
           describe 'with empty data' do
-            let(:data)     { [] }
-            let(:matching) { data }
+            let(:data) { [] }
 
-            it { expect(filtered_data).to be == expected }
+            it { expect(filtered_data).to be == [] }
           end
 
           wrap_context 'with data' do
@@ -1152,7 +1140,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
                 .select { |item| item['series'] == 'Earthsea' }
             end
 
-            it { expect(filtered_data).to be == expected }
+            it { expect(filtered_data).to match_array expected }
           end
         end
 
@@ -1168,8 +1156,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           end
 
           describe 'with empty data' do
-            let(:data)     { [] }
-            let(:expected) { [] }
+            let(:data) { [] }
 
             # rubocop:disable Style/RedundantLineContinuation
             it 'should return an empty result or raise an exception',
@@ -1185,7 +1172,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
                 next
               end
 
-              expect(actual).to be == expected
+              expect(actual).to be == []
               # :nocov:
             end
             # rubocop:enable Style/RedundantLineContinuation
