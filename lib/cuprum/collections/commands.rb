@@ -8,6 +8,7 @@ module Cuprum::Collections
     autoload :Associations,    'cuprum/collections/commands/associations'
     autoload :Create,          'cuprum/collections/commands/create'
     autoload :FindOneMatching, 'cuprum/collections/commands/find_one_matching'
+    autoload :QueryCommand,    'cuprum/collections/commands/query_command'
     autoload :Update,          'cuprum/collections/commands/update'
     autoload :Upsert,          'cuprum/collections/commands/upsert'
   end

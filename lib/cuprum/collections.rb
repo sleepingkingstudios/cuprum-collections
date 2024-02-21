@@ -11,6 +11,7 @@ module Cuprum
     autoload :Basic,        'cuprum/collections/basic'
     autoload :Collection,   'cuprum/collections/collection'
     autoload :Command,      'cuprum/collections/command'
+    autoload :Commands,     'cuprum/collections/commands'
     autoload :Errors,       'cuprum/collections/errors'
     autoload :Relation,     'cuprum/collections/relation'
     autoload :Repository,   'cuprum/collections/repository'
