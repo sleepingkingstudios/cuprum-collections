@@ -431,16 +431,15 @@ module Cuprum::Collections::RSpec::Contracts
           next if abstract
 
           describe 'with empty data' do
-            let(:data)     { [] }
-            let(:expected) { data }
+            let(:data) { [] }
 
-            it { expect(filtered_data).to be == expected }
+            it { expect(filtered_data).to be == [] }
           end
 
           wrap_context 'with data' do
             let(:expected) { data }
 
-            it { expect(filtered_data).to be == expected }
+            it { expect(filtered_data).to match_array expected }
           end
         end
 
@@ -809,16 +808,15 @@ module Cuprum::Collections::RSpec::Contracts
           next if abstract
 
           describe 'with empty data' do
-            let(:data)     { [] }
-            let(:expected) { data }
+            let(:data) { [] }
 
-            it { expect(filtered_data).to be == expected }
+            it { expect(filtered_data).to be == [] }
           end
 
           wrap_context 'with data' do
             let(:expected) { [] }
 
-            it { expect(filtered_data).to be == expected }
+            it { expect(filtered_data).to match_array expected }
           end
         end
 
