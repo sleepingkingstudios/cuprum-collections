@@ -2,7 +2,11 @@
 
 ## 0.5.0
 
-Major refactoring of Query scopes. This update is **not** backwards compatible.
+Major refactoring of Queries. This update is **not** backwards compatible.
+
+### Collections
+
+Collection commands no longer define the command subclass, e.g. `rockets_collection::Launch`. Instances of the command can still be created using `rockets_collection#launch`.
 
 ### Queries
 

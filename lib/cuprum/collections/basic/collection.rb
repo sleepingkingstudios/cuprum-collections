@@ -42,49 +42,43 @@ module Cuprum::Collections::Basic
     # @return [Array<Hash>] the current data in the collection.
     attr_reader :data
 
-    command_class :assign_one do
-      Cuprum::Collections::Basic::Commands::AssignOne
-        .subclass(**command_options)
+    command :assign_one do
+      Cuprum::Collections::Basic::Commands::AssignOne.new(**command_options)
     end
 
-    command_class :build_one do
-      Cuprum::Collections::Basic::Commands::BuildOne
-        .subclass(**command_options)
+    command :build_one do
+      Cuprum::Collections::Basic::Commands::BuildOne.new(**command_options)
     end
 
-    command_class :destroy_one do
-      Cuprum::Collections::Basic::Commands::DestroyOne
-        .subclass(**command_options)
+    command :destroy_one do
+      Cuprum::Collections::Basic::Commands::DestroyOne.new(**command_options)
     end
 
-    command_class :find_many do
+    command :find_many do
       Cuprum::Collections::Basic::Commands::FindMany
-        .subclass(query: query, **command_options)
+        .new(query: query, **command_options)
     end
 
-    command_class :find_matching do
+    command :find_matching do
       Cuprum::Collections::Basic::Commands::FindMatching
-        .subclass(query: query, **command_options)
+        .new(query: query, **command_options)
     end
 
-    command_class :find_one do
+    command :find_one do
       Cuprum::Collections::Basic::Commands::FindOne
-        .subclass(query: query, **command_options)
+        .new(query: query, **command_options)
     end
 
-    command_class :insert_one do
-      Cuprum::Collections::Basic::Commands::InsertOne
-        .subclass(**command_options)
+    command :insert_one do
+      Cuprum::Collections::Basic::Commands::InsertOne.new(**command_options)
     end
 
-    command_class :update_one do
-      Cuprum::Collections::Basic::Commands::UpdateOne
-        .subclass(**command_options)
+    command :update_one do
+      Cuprum::Collections::Basic::Commands::UpdateOne.new(**command_options)
     end
 
-    command_class :validate_one do
-      Cuprum::Collections::Basic::Commands::ValidateOne
-        .subclass(**command_options)
+    command :validate_one do
+      Cuprum::Collections::Basic::Commands::ValidateOne.new(**command_options)
     end
 
     # @return [Stannum::Constraints::Base, nil] the #   default contract for
