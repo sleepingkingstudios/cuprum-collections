@@ -47,74 +47,15 @@ module Cuprum::Collections::RSpec::Contracts
             primary_key_type
           ] + options.fetch(:command_options, []).map(&:intern)
 
-          describe "::#{class_name}" do
-            let(:constructor_options) { defined?(super()) ? super() : {} }
-            let(:command_class) do
-              command_class_name ||
-                "#{options[:commands_namespace]}::#{class_name}"
-                  .then { |str| Object.const_get(str) }
-            end
-            let(:command) do
-              build_command(collection)
-            end
-            let(:expected_options) do
-              Hash
-                .new { |_, key| collection.send(key) }
-                .merge(
-                  collection_name: collection.name,
-                  member_name:     collection.singular_name
-                )
-            end
-
-            define_method(:build_command) do |collection|
-              collection.const_get(class_name).new(**constructor_options)
-            end
-
-            it { expect(collection).to define_constant(class_name) }
-
-            it { expect(collection.const_get(class_name)).to be_a Class }
-
-            it 'should be an instance of the command class' do
-              expect(collection.const_get(class_name)).to be < command_class
-            end
-
-            it { expect(command.options).to be >= {} }
-
-            include_examples 'should match the collection query' if query
-
-            command_options.each do |option_name|
-              it "should set the ##{option_name}" do
-                expect(command.send(option_name))
-                  .to be == expected_options[option_name]
-              end
-            end
-
-            describe 'with options' do
-              let(:constructor_options) do
-                super().merge(
-                  custom_option: 'value',
-                  singular_name: 'tome'
-                )
-              end
-
-              it { expect(command.options).to be >= { custom_option: 'value' } }
-
-              include_examples 'should match the collection query' if query
-
-              command_options.each do |option_name|
-                it "should set the ##{option_name}" do
-                  expect(command.send(option_name)).to(
-                    be == expected_options[option_name]
-                  )
-                end
-              end
-            end
-          end
-
           describe "##{command_name}" do
             let(:constructor_options) { defined?(super()) ? super() : {} }
-            let(:command) do
-              build_command(collection)
+            let(:command)             { build_command(collection) }
+            let(:command_class) do
+              (
+                command_class_name ||
+                "#{options[:commands_namespace]}::#{class_name}"
+              )
+                .then { |str| Object.const_get(str) }
             end
             let(:expected_options) do
               Hash
@@ -136,7 +77,7 @@ module Cuprum::Collections::RSpec::Contracts
                 .and_any_keywords
             end
 
-            it { expect(command).to be_a collection.const_get(class_name) }
+            it { expect(command).to be_a command_class }
 
             include_examples 'should match the collection query' if query
 
@@ -195,6 +136,12 @@ module Cuprum::Collections::RSpec::Contracts
             let(:command) { build_command(copy) }
 
             it { expect(command.query.scope).to be == copy.query.scope }
+
+            context 'when the original command has been generated' do
+              before(:example) { build_command(collection) }
+
+              it { expect(command.query.scope).to be == copy.query.scope }
+            end
           end
         end
 
@@ -214,7 +161,9 @@ module Cuprum::Collections::RSpec::Contracts
           :find_many,
           query: true
 
-        include_examples 'should define the command', :find_matching
+        include_examples 'should define the command',
+          :find_matching,
+          query: true
 
         include_examples 'should define the command',
           :find_one,
