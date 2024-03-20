@@ -16,8 +16,8 @@ group :development, :test do
   gem 'rspec', '~> 3.12'
   gem 'rspec-sleeping_king_studios', '~> 2.7'
 
-  gem 'rubocop', '~> 1.60', '>= 1.60.2'
-  gem 'rubocop-rspec', '~> 2.26', '>= 2.26.1'
+  gem 'rubocop', '~> 1.62', '>= 1.62.1'
+  gem 'rubocop-rspec', '~> 2.27', '>= 2.27.1'
 
   gem 'simplecov', '~> 0.22'
 end
