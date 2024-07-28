@@ -13,11 +13,11 @@ end
 group :development, :test do
   gem 'byebug', '~> 11.0'
 
-  gem 'rspec', '~> 3.12'
+  gem 'rspec', '~> 3.13'
   gem 'rspec-sleeping_king_studios', '~> 2.7'
 
-  gem 'rubocop', '~> 1.62', '>= 1.62.1'
-  gem 'rubocop-rspec', '~> 2.27', '>= 2.27.1'
+  gem 'rubocop', '~> 1.65'
+  gem 'rubocop-rspec', '~> 3.0'
 
   gem 'simplecov', '~> 0.22'
 end

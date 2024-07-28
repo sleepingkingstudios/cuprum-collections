@@ -97,7 +97,7 @@ module Cuprum::Collections::Basic
     protected
 
     def command_options
-      super().merge(
+      super.merge(
         data:             data,
         default_contract: default_contract
       )

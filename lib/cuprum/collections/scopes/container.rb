@@ -28,7 +28,7 @@ module Cuprum::Collections::Scopes
 
     # (see Cuprum::Collections::Scopes::Base#as_json)
     def as_json
-      super().merge({ 'scopes' => scopes.map(&:as_json) })
+      super.merge({ 'scopes' => scopes.map(&:as_json) })
     end
 
     # @private

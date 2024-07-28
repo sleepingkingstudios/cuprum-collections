@@ -81,7 +81,7 @@ module Cuprum::Collections::Scopes
 
     # (see Cuprum::Collections::Scopes::Base#as_json)
     def as_json
-      super().merge({ 'criteria' => criteria, 'inverted' => inverted? })
+      super.merge({ 'criteria' => criteria, 'inverted' => inverted? })
     end
 
     # @private

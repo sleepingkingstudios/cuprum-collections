@@ -33,7 +33,7 @@ module Cuprum::Collections
     def initialize(**params)
       @inverse = params.delete(:inverse)
 
-      super(**params)
+      super
     end
 
     # @return [Cuprum::Collections::Resource] the inverse association, if any.

@@ -27,6 +27,6 @@ Gem::Specification.new do |gem|
 
   gem.required_ruby_version = '~> 3.0'
 
-  gem.add_runtime_dependency 'cuprum',  '~> 1.1'
-  gem.add_runtime_dependency 'stannum', '~> 0.3'
+  gem.add_dependency 'cuprum',  '~> 1.1'
+  gem.add_dependency 'stannum', '~> 0.3'
 end
