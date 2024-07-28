@@ -3,7 +3,7 @@
 require 'cuprum/collections/errors/unknown_operator'
 
 RSpec.describe Cuprum::Collections::Errors::UnknownOperator do
-  subject(:error) { described_class.new(operator: operator) }
+  subject(:error) { described_class.new(operator:) }
 
   let(:operator) { :neq }
 

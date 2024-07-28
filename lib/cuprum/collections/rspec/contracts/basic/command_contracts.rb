@@ -21,12 +21,12 @@ module Cuprum::Collections::RSpec::Contracts::Basic
           let(:constructor_options) do
             options = {
               collection_name: 'books',
-              data:            data,
+              data:,
               optional_key:    'optional value'
             }
 
             if described_class < Cuprum::Collections::Commands::QueryCommand
-              options = options.merge(query: query)
+              options = options.merge(query:)
             end
 
             options
@@ -74,12 +74,12 @@ module Cuprum::Collections::RSpec::Contracts::Basic
             end
             let(:constructor_options) do
               options = {
-                data:         data,
+                data:,
                 optional_key: 'optional value'
               }
 
               if described_class < Cuprum::Collections::Commands::QueryCommand
-                options = options.merge(query: query)
+                options = options.merge(query:)
               end
 
               options
@@ -139,7 +139,7 @@ module Cuprum::Collections::RSpec::Contracts::Basic
           context 'when initialized with a default contract' do
             let(:default_contract) { Stannum::Contract.new }
             let(:constructor_options) do
-              super().merge(default_contract: default_contract)
+              super().merge(default_contract:)
             end
 
             it { expect(command.default_contract).to be default_contract }
@@ -167,7 +167,7 @@ module Cuprum::Collections::RSpec::Contracts::Basic
           context 'when initialized with member_name: string' do
             let(:member_name) { 'tome' }
             let(:constructor_options) do
-              super().merge(member_name: member_name)
+              super().merge(member_name:)
             end
 
             it 'should return the singular collection name' do
@@ -178,7 +178,7 @@ module Cuprum::Collections::RSpec::Contracts::Basic
           context 'when initialized with member_name: symbol' do
             let(:member_name) { :tome }
             let(:constructor_options) do
-              super().merge(member_name: member_name)
+              super().merge(member_name:)
             end
 
             it 'should return the singular collection name' do
@@ -210,7 +210,7 @@ module Cuprum::Collections::RSpec::Contracts::Basic
           context 'when initialized with a primary key name' do
             let(:primary_key_name) { :uuid }
             let(:constructor_options) do
-              super().merge({ primary_key_name: primary_key_name })
+              super().merge({ primary_key_name: })
             end
 
             it { expect(command.primary_key_name).to be == primary_key_name }
@@ -223,7 +223,7 @@ module Cuprum::Collections::RSpec::Contracts::Basic
           context 'when initialized with a primary key type' do
             let(:primary_key_type) { String }
             let(:constructor_options) do
-              super().merge({ primary_key_type: primary_key_type })
+              super().merge({ primary_key_type: })
             end
 
             it { expect(command.primary_key_type).to be == primary_key_type }
@@ -246,8 +246,8 @@ module Cuprum::Collections::RSpec::Contracts::Basic
             )
 
             Cuprum::Collections::Errors::InvalidParameters.new(
-              command: command,
-              errors:  errors
+              command:,
+              errors:
             )
           end
 
@@ -291,7 +291,7 @@ module Cuprum::Collections::RSpec::Contracts::Basic
           context 'when initialized with a primary key type' do
             let(:primary_key_type) { String }
             let(:constructor_options) do
-              super().merge({ primary_key_type: primary_key_type })
+              super().merge({ primary_key_type: })
             end
 
             describe 'with an Integer' do
@@ -324,13 +324,13 @@ module Cuprum::Collections::RSpec::Contracts::Basic
               {
                 arguments: [],
                 block:     nil,
-                keywords:  { primary_keys: primary_keys }
+                keywords:  { primary_keys: }
               }
             )
 
             Cuprum::Collections::Errors::InvalidParameters.new(
-              command: command,
-              errors:  errors
+              command:,
+              errors:
             )
           end
 
@@ -453,8 +453,8 @@ module Cuprum::Collections::RSpec::Contracts::Basic
           let(:primary_key_type) { String }
           let(:constructor_options) do
             super().merge(
-              primary_key_name: primary_key_name,
-              primary_key_type: primary_key_type
+              primary_key_name:,
+              primary_key_type:
             )
           end
           let(:mapped_data) do

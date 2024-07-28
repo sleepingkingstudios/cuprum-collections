@@ -9,8 +9,8 @@ RSpec.describe Cuprum::Collections::Basic do
     let(:options) { { key: 'value' } }
     let(:constructor_options) do
       {
-        name: name,
-        data: data,
+        name:,
+        data:,
         **options
       }
     end

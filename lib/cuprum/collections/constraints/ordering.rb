@@ -47,8 +47,8 @@ module Cuprum::Collections::Constraints
       super(
         *ordering_constraints,
         **resolve_required_option(
-          optional: optional,
-          required: required,
+          optional:,
+          required:,
           **options
         )
       )

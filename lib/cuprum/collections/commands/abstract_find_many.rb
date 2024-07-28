@@ -26,16 +26,14 @@ module Cuprum::Collections::Commands
     end
 
     def build_result_list(results, allow_partial:, envelope:)
-      unless envelope
-        return Cuprum::ResultList.new(*results, allow_partial: allow_partial)
-      end
+      return Cuprum::ResultList.new(*results, allow_partial:) unless envelope
 
       value = envelope ? wrap_items(results.map(&:value)) : nil
 
       Cuprum::ResultList.new(
         *results,
-        allow_partial: allow_partial,
-        value:         value
+        allow_partial:,
+        value:
       )
     end
 
@@ -49,20 +47,20 @@ module Cuprum::Collections::Commands
       Cuprum::Collections::Errors::NotFound.new(
         attribute_name:  primary_key_name,
         attribute_value: primary_key_value,
-        collection_name: collection_name,
+        collection_name:,
         primary_key:     true
       )
     end
 
     def process(primary_keys:, allow_partial: false, envelope: false)
-      query   = apply_query(primary_keys: primary_keys)
+      query   = apply_query(primary_keys:)
       items   = items_with_primary_keys(items: query.to_a)
-      results = build_results(items: items, primary_keys: primary_keys)
+      results = build_results(items:, primary_keys:)
 
       build_result_list(
         results,
-        allow_partial: allow_partial,
-        envelope:      envelope
+        allow_partial:,
+        envelope:
       )
     end
 

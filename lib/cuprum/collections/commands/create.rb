@@ -50,11 +50,11 @@ module Cuprum::Collections::Commands
     private
 
     def process(attributes:)
-      entity = step { collection.build_one.call(attributes: attributes) }
+      entity = step { collection.build_one.call(attributes:) }
 
-      step { collection.validate_one.call(contract: contract, entity: entity) }
+      step { collection.validate_one.call(contract:, entity:) }
 
-      collection.insert_one.call(entity: entity)
+      collection.insert_one.call(entity:)
     end
   end
 end

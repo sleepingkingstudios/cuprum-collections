@@ -101,7 +101,7 @@ module Cuprum::Collections
     def create(force: false, **options)
       collection = build_collection(**options)
 
-      add(collection, force: force)
+      add(collection, force:)
 
       collection
     end

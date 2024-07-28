@@ -7,7 +7,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::CriteriaScope do
   include Cuprum::Collections::RSpec::Contracts::Scopes::CriteriaContracts
 
   subject(:scope) do
-    described_class.new(criteria: criteria, **constructor_options)
+    described_class.new(criteria:, **constructor_options)
   end
 
   let(:criteria)            { [] }
@@ -15,7 +15,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::CriteriaScope do
   let(:constructor_options) { {} }
 
   def filtered_data
-    subject.call(data: data)
+    subject.call(data:)
   end
 
   include_contract 'should be a criteria scope'
@@ -82,7 +82,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::CriteriaScope do
             .find { |book| book['title'] == 'The Silmarillion' }
         end
 
-        it { expect(scope.match?(item: item)).to be true }
+        it { expect(scope.match?(item:)).to be true }
       end
     end
 
@@ -97,7 +97,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::CriteriaScope do
             .find { |book| book['title'] == 'The Silmarillion' }
         end
 
-        it { expect(scope.match?(item: item)).to be false }
+        it { expect(scope.match?(item:)).to be false }
       end
 
       describe 'with a matching item' do
@@ -108,7 +108,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::CriteriaScope do
             end
         end
 
-        it { expect(scope.match?(item: item)).to be true }
+        it { expect(scope.match?(item:)).to be true }
       end
     end
 
@@ -127,7 +127,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::CriteriaScope do
             end
         end
 
-        it { expect(scope.match?(item: item)).to be false }
+        it { expect(scope.match?(item:)).to be false }
       end
 
       describe 'with a matching item' do
@@ -138,7 +138,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::CriteriaScope do
             end
         end
 
-        it { expect(scope.match?(item: item)).to be true }
+        it { expect(scope.match?(item:)).to be true }
       end
     end
 
@@ -157,7 +157,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::CriteriaScope do
             end
         end
 
-        it { expect(scope.match?(item: item)).to be false }
+        it { expect(scope.match?(item:)).to be false }
       end
 
       describe 'with a matching item' do
@@ -168,7 +168,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::CriteriaScope do
             end
         end
 
-        it { expect(scope.match?(item: item)).to be true }
+        it { expect(scope.match?(item:)).to be true }
       end
     end
 
@@ -187,7 +187,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::CriteriaScope do
             end
         end
 
-        it { expect(scope.match?(item: item)).to be false }
+        it { expect(scope.match?(item:)).to be false }
       end
 
       describe 'with a matching item' do
@@ -198,7 +198,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::CriteriaScope do
             end
         end
 
-        it { expect(scope.match?(item: item)).to be true }
+        it { expect(scope.match?(item:)).to be true }
       end
     end
 
@@ -217,7 +217,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::CriteriaScope do
             end
         end
 
-        it { expect(scope.match?(item: item)).to be false }
+        it { expect(scope.match?(item:)).to be false }
       end
 
       describe 'with a matching item' do
@@ -228,7 +228,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::CriteriaScope do
             end
         end
 
-        it { expect(scope.match?(item: item)).to be true }
+        it { expect(scope.match?(item:)).to be true }
       end
     end
 
@@ -245,7 +245,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::CriteriaScope do
             .find { |book| book['title'] == 'The Silmarillion' }
         end
 
-        it { expect(scope.match?(item: item)).to be false }
+        it { expect(scope.match?(item:)).to be false }
       end
 
       describe 'with a matching item' do
@@ -254,7 +254,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::CriteriaScope do
             .find { |book| book['title'] == 'A Wizard of Earthsea' }
         end
 
-        it { expect(scope.match?(item: item)).to be true }
+        it { expect(scope.match?(item:)).to be true }
       end
     end
 
@@ -273,7 +273,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::CriteriaScope do
             .find { |book| book['title'] == 'The Two Towers' }
         end
 
-        it { expect(scope.match?(item: item)).to be false }
+        it { expect(scope.match?(item:)).to be false }
       end
 
       describe 'with a matching item' do
@@ -282,7 +282,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::CriteriaScope do
             .find { |book| book['title'] == 'The Return of the King' }
         end
 
-        it { expect(scope.match?(item: item)).to be true }
+        it { expect(scope.match?(item:)).to be true }
       end
     end
 
@@ -301,7 +301,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::CriteriaScope do
             .find { |book| book['title'] == 'The Return of the King' }
         end
 
-        it { expect(scope.match?(item: item)).to be false }
+        it { expect(scope.match?(item:)).to be false }
       end
 
       describe 'with a matching item' do
@@ -310,7 +310,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::CriteriaScope do
             .find { |book| book['title'] == 'The Two Towers' }
         end
 
-        it { expect(scope.match?(item: item)).to be true }
+        it { expect(scope.match?(item:)).to be true }
       end
     end
 
@@ -329,7 +329,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::CriteriaScope do
             .find { |book| book['title'] == 'The Two Towers' }
         end
 
-        it { expect(scope.match?(item: item)).to be false }
+        it { expect(scope.match?(item:)).to be false }
       end
 
       describe 'with a matching item' do
@@ -338,7 +338,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::CriteriaScope do
             .find { |book| book['title'] == 'The Return of the King' }
         end
 
-        it { expect(scope.match?(item: item)).to be true }
+        it { expect(scope.match?(item:)).to be true }
       end
     end
 
@@ -356,7 +356,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::CriteriaScope do
       end
 
       it 'should raise an exception' do
-        expect { scope.match?(item: item) }
+        expect { scope.match?(item:) }
           .to raise_error error_class, error_message
       end
     end

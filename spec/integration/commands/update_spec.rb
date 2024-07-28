@@ -18,7 +18,7 @@ RSpec.describe Spec::Support::Commands::Update do
   let(:collection_options) do
     {
       name: collection_name,
-      data: data
+      data:
     }
   end
   let(:collection) do
@@ -31,9 +31,9 @@ RSpec.describe Spec::Support::Commands::Update do
     let(:contract)    { nil }
     let(:result) do
       command.call(
-        attributes:  attributes,
-        contract:    contract,
-        primary_key: primary_key
+        attributes:,
+        contract:,
+        primary_key:
       )
     end
 
@@ -43,7 +43,7 @@ RSpec.describe Spec::Support::Commands::Update do
         Cuprum::Collections::Errors::NotFound.new(
           attribute_name:  'id',
           attribute_value: primary_key,
-          collection_name: collection_name,
+          collection_name:,
           primary_key:     true
         )
       end
@@ -67,7 +67,7 @@ RSpec.describe Spec::Support::Commands::Update do
           end
         end
         let(:collection_options) do
-          super().merge(default_contract: default_contract)
+          super().merge(default_contract:)
         end
         let(:entity) do
           data
@@ -91,7 +91,7 @@ RSpec.describe Spec::Support::Commands::Update do
           end
         end
         let(:collection_options) do
-          super().merge(default_contract: default_contract)
+          super().merge(default_contract:)
         end
         let(:entity) do
           data
@@ -103,11 +103,11 @@ RSpec.describe Spec::Support::Commands::Update do
 
         it 'should update the collection item' do # rubocop:disable RSpec/ExampleLength
           command.call(
-            attributes:  attributes,
-            contract:    contract,
-            primary_key: primary_key
+            attributes:,
+            contract:,
+            primary_key:
           )
-          item = collection.find_one.call(primary_key: primary_key).value
+          item = collection.find_one.call(primary_key:).value
 
           expect(item).to be == entity
         end
@@ -151,11 +151,11 @@ RSpec.describe Spec::Support::Commands::Update do
 
       it 'should update the collection item' do # rubocop:disable RSpec/ExampleLength
         command.call(
-          attributes:  attributes,
-          contract:    contract,
-          primary_key: primary_key
+          attributes:,
+          contract:,
+          primary_key:
         )
-        item = collection.find_one.call(primary_key: primary_key).value
+        item = collection.find_one.call(primary_key:).value
 
         expect(item).to be == entity
       end

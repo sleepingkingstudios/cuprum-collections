@@ -7,7 +7,7 @@ require 'cuprum/collections/scopes/disjunction_scope'
 RSpec.describe Cuprum::Collections::Scopes::DisjunctionScope do
   include Cuprum::Collections::RSpec::Contracts::Scopes::LogicalContracts
 
-  subject(:scope) { described_class.new(scopes: scopes) }
+  subject(:scope) { described_class.new(scopes:) }
 
   let(:scopes) { [] }
 

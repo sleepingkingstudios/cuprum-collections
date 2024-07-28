@@ -5,7 +5,7 @@ require 'cuprum/collections/commands/query_command'
 require 'cuprum/collections/query'
 
 RSpec.describe Cuprum::Collections::Commands::QueryCommand do
-  subject(:command) { described_class.new(query: query, **options) }
+  subject(:command) { described_class.new(query:, **options) }
 
   let(:described_class) { Spec::ExampleCommand }
   let(:query)           { Struct.new(:call).new([]) }

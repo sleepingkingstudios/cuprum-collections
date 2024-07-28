@@ -9,7 +9,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::ConjunctionScope do
   include Cuprum::Collections::RSpec::Contracts::ScopeContracts
   include Cuprum::Collections::RSpec::Contracts::Scopes::LogicalContracts
 
-  subject(:scope) { described_class.new(scopes: scopes) }
+  subject(:scope) { described_class.new(scopes:) }
 
   let(:scopes) { [] }
   let(:data) { [] }
@@ -25,7 +25,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::ConjunctionScope do
   end
 
   def filtered_data
-    scope.call(data: data)
+    scope.call(data:)
   end
 
   include_contract 'should be a conjunction scope'
@@ -92,7 +92,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::ConjunctionScope do
             .find { |book| book['title'] == 'The Silmarillion' }
         end
 
-        it { expect(scope.match?(item: item)).to be true }
+        it { expect(scope.match?(item:)).to be true }
       end
     end
 
@@ -109,7 +109,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::ConjunctionScope do
             .find { |book| book['title'] == 'A Wizard of Earthsea' }
         end
 
-        it { expect(scope.match?(item: item)).to be false }
+        it { expect(scope.match?(item:)).to be false }
       end
 
       describe 'with an item that matches the scope' do
@@ -118,7 +118,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::ConjunctionScope do
             .find { |book| book['title'] == 'The Silmarillion' }
         end
 
-        it { expect(scope.match?(item: item)).to be true }
+        it { expect(scope.match?(item:)).to be true }
       end
     end
 
@@ -139,7 +139,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::ConjunctionScope do
             .find { |book| book['title'] == 'A Wizard of Earthsea' }
         end
 
-        it { expect(scope.match?(item: item)).to be false }
+        it { expect(scope.match?(item:)).to be false }
       end
 
       describe 'with an item that matches some of the scopes' do
@@ -148,7 +148,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::ConjunctionScope do
             .find { |book| book['title'] == 'The Hobbit' }
         end
 
-        it { expect(scope.match?(item: item)).to be false }
+        it { expect(scope.match?(item:)).to be false }
       end
 
       describe 'with an item that matches all of the scopes' do
@@ -157,7 +157,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::ConjunctionScope do
             .find { |book| book['title'] == 'The Fellowship of the Ring' }
         end
 
-        it { expect(scope.match?(item: item)).to be true }
+        it { expect(scope.match?(item:)).to be true }
       end
     end
   end

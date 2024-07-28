@@ -15,7 +15,7 @@ RSpec.describe Cuprum::Collections::Basic::Commands::UpdateOne do
 
   subject(:command) do
     described_class.new(
-      collection_name: collection_name,
+      collection_name:,
       data:            mapped_data,
       **constructor_options
     )

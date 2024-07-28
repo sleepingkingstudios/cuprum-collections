@@ -18,7 +18,7 @@ module Spec::Support::Commands
     attr_reader :collection
 
     def process(primary_key:)
-      collection.destroy_one.call(primary_key: primary_key)
+      collection.destroy_one.call(primary_key:)
     end
   end
 end

@@ -15,7 +15,7 @@ RSpec.describe Spec::Support::Commands::Index do
   let(:collection_options) do
     {
       name: collection_name,
-      data: data
+      data:
     }
   end
   let(:collection) do
@@ -52,9 +52,9 @@ RSpec.describe Spec::Support::Commands::Index do
       let(:order)  { :title }
       let(:parameters) do
         {
-          limit:  limit,
-          offset: offset,
-          order:  order,
+          limit:,
+          offset:,
+          order:,
           where:  filter
         }
       end

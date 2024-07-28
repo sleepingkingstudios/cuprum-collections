@@ -14,7 +14,7 @@ RSpec.describe Cuprum::Collections::Basic::Collection do
 
   subject(:collection) do
     described_class.new(
-      data: data,
+      data:,
       **constructor_options
     )
   end
@@ -26,9 +26,9 @@ RSpec.describe Cuprum::Collections::Basic::Collection do
 
   let(:name)                { 'books' }
   let(:data)                { [] }
-  let(:constructor_options) { { name: name } }
+  let(:constructor_options) { { name: } }
   let(:query_class)         { Cuprum::Collections::Basic::Query }
-  let(:query_options)       { { data: data } }
+  let(:query_options)       { { data: } }
 
   describe '.new' do
     it 'should define the constructor' do
@@ -55,7 +55,7 @@ RSpec.describe Cuprum::Collections::Basic::Collection do
     context 'when initialized with default_contract: value' do
       let(:default_contract) { Stannum::Contract.new }
       let(:constructor_options) do
-        super().merge(default_contract: default_contract)
+        super().merge(default_contract:)
       end
 
       it { expect(collection.default_contract).to be default_contract }

@@ -17,7 +17,7 @@ module Cuprum::Collections::Errors
 
       super(
         message: message || default_message,
-        query:   query
+        query:
       )
     end
 

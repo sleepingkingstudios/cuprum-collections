@@ -18,7 +18,7 @@ RSpec.describe Spec::Support::Commands::Create do
   let(:collection_options) do
     {
       name: collection_name,
-      data: data
+      data:
     }
   end
   let(:collection) do
@@ -33,7 +33,7 @@ RSpec.describe Spec::Support::Commands::Create do
     let(:attributes)  { { 'id' => primary_key, 'title' => '' } }
     let(:contract)    { nil }
     let(:result) do
-      command.call(attributes: attributes, contract: contract)
+      command.call(attributes:, contract:)
     end
 
     describe 'with contract: nil' do
@@ -52,7 +52,7 @@ RSpec.describe Spec::Support::Commands::Create do
           end
         end
         let(:collection_options) do
-          super().merge(default_contract: default_contract)
+          super().merge(default_contract:)
         end
         let(:entity) { attributes }
         let(:expected_error) do
@@ -72,7 +72,7 @@ RSpec.describe Spec::Support::Commands::Create do
           end
         end
         let(:collection_options) do
-          super().merge(default_contract: default_contract)
+          super().merge(default_contract:)
         end
         let(:entity) { attributes }
 
@@ -82,7 +82,7 @@ RSpec.describe Spec::Support::Commands::Create do
             Cuprum::Collections::Errors::AlreadyExists.new(
               attribute_name:  'id',
               attribute_value: primary_key,
-              collection_name: collection_name,
+              collection_name:,
               primary_key:     true
             )
           end
@@ -98,8 +98,8 @@ RSpec.describe Spec::Support::Commands::Create do
           it 'should add an item to the collection' do # rubocop:disable RSpec/ExampleLength
             expect do
               command.call(
-                attributes: attributes,
-                contract:   contract
+                attributes:,
+                contract:
               )
             end
               .to change { query.reset.count }
@@ -108,10 +108,10 @@ RSpec.describe Spec::Support::Commands::Create do
 
           it 'should insert the entity into the collection' do # rubocop:disable RSpec/ExampleLength
             command.call(
-              attributes: attributes,
-              contract:   contract
+              attributes:,
+              contract:
             )
-            item = collection.find_one.call(primary_key: primary_key).value
+            item = collection.find_one.call(primary_key:).value
 
             expect(item).to be == entity
           end
@@ -150,7 +150,7 @@ RSpec.describe Spec::Support::Commands::Create do
           Cuprum::Collections::Errors::AlreadyExists.new(
             attribute_name:  'id',
             attribute_value: primary_key,
-            collection_name: collection_name,
+            collection_name:,
             primary_key:     true
           )
         end
@@ -166,8 +166,8 @@ RSpec.describe Spec::Support::Commands::Create do
         it 'should add an item to the collection' do # rubocop:disable RSpec/ExampleLength
           expect do
             command.call(
-              attributes: attributes,
-              contract:   contract
+              attributes:,
+              contract:
             )
           end
             .to change { query.reset.count }
@@ -176,10 +176,10 @@ RSpec.describe Spec::Support::Commands::Create do
 
         it 'should insert the entity into the collection' do # rubocop:disable RSpec/ExampleLength
           command.call(
-            attributes: attributes,
-            contract:   contract
+            attributes:,
+            contract:
           )
-          item = collection.find_one.call(primary_key: primary_key).value
+          item = collection.find_one.call(primary_key:).value
 
           expect(item).to be == entity
         end

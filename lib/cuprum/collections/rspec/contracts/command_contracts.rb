@@ -28,7 +28,7 @@ module Cuprum::Collections::RSpec::Contracts
 
           let(:attributes) { {} }
           let(:result) do
-            command.call(attributes: attributes, entity: entity)
+            command.call(attributes:, entity:)
           end
           let(:expected_attributes) do
             initial_attributes.merge(attributes)
@@ -96,7 +96,7 @@ module Cuprum::Collections::RSpec::Contracts
                 Cuprum::Collections::Errors::ExtraAttributes.new(
                   entity_class:     entity.class,
                   extra_attributes: %w[audiobook],
-                  valid_attributes: valid_attributes
+                  valid_attributes:
                 )
               end
 
@@ -162,7 +162,7 @@ module Cuprum::Collections::RSpec::Contracts
                   Cuprum::Collections::Errors::ExtraAttributes.new(
                     entity_class:     entity.class,
                     extra_attributes: %w[audiobook],
-                    valid_attributes: valid_attributes
+                    valid_attributes:
                   )
                 end
 
@@ -201,7 +201,7 @@ module Cuprum::Collections::RSpec::Contracts
           end
 
           let(:attributes) { {} }
-          let(:result)     { command.call(attributes: attributes) }
+          let(:result)     { command.call(attributes:) }
           let(:expected_attributes) do
             attributes
           end
@@ -261,7 +261,7 @@ module Cuprum::Collections::RSpec::Contracts
                 Cuprum::Collections::Errors::ExtraAttributes.new(
                   entity_class:     entity_type,
                   extra_attributes: %w[audiobook],
-                  valid_attributes: valid_attributes
+                  valid_attributes:
                 )
               end
 
@@ -310,19 +310,19 @@ module Cuprum::Collections::RSpec::Contracts
               Cuprum::Collections::Errors::NotFound.new(
                 attribute_name:  primary_key_name,
                 attribute_value: primary_key,
-                collection_name: collection_name,
+                collection_name:,
                 primary_key:     true
               )
             end
 
             it 'should return a failing result' do
-              expect(command.call(primary_key: primary_key))
+              expect(command.call(primary_key:))
                 .to be_a_failing_result
                 .with_error(expected_error)
             end
 
             it 'should not remove an entity from the collection' do
-              expect { command.call(primary_key: primary_key) }
+              expect { command.call(primary_key:) }
                 .not_to(change { query.reset.count })
             end
           end
@@ -344,19 +344,19 @@ module Cuprum::Collections::RSpec::Contracts
                 Cuprum::Collections::Errors::NotFound.new(
                   attribute_name:  primary_key_name,
                   attribute_value: primary_key,
-                  collection_name: collection_name,
+                  collection_name:,
                   primary_key:     true
                 )
               end
 
               it 'should return a failing result' do
-                expect(command.call(primary_key: primary_key))
+                expect(command.call(primary_key:))
                   .to be_a_failing_result
                   .with_error(expected_error)
               end
 
               it 'should not remove an entity from the collection' do
-                expect { command.call(primary_key: primary_key) }
+                expect { command.call(primary_key:) }
                   .not_to(change { query.reset.count })
               end
             end
@@ -365,20 +365,20 @@ module Cuprum::Collections::RSpec::Contracts
               let(:primary_key) { valid_primary_key_value }
 
               it 'should return a passing result' do
-                expect(command.call(primary_key: primary_key))
+                expect(command.call(primary_key:))
                   .to be_a_passing_result
                   .with_value(expected_data)
               end
 
               it 'should remove an entity from the collection' do
-                expect { command.call(primary_key: primary_key) }
+                expect { command.call(primary_key:) }
                   .to(
                     change { query.reset.count }.by(-1)
                   )
               end
 
               it 'should remove the entity from the collection' do
-                command.call(primary_key: primary_key)
+                command.call(primary_key:)
 
                 expect(query.map { |item| item[primary_key_name.to_s] })
                   .not_to include primary_key
@@ -457,7 +457,7 @@ module Cuprum::Collections::RSpec::Contracts
             end
 
             it 'should return a failing result' do
-              expect(command.call(primary_keys: primary_keys))
+              expect(command.call(primary_keys:))
                 .to be_a_failing_result
                 .with_error(expected_error)
             end
@@ -491,7 +491,7 @@ module Cuprum::Collections::RSpec::Contracts
               end
 
               it 'should return a failing result' do
-                expect(command.call(primary_keys: primary_keys))
+                expect(command.call(primary_keys:))
                   .to be_a_failing_result
                   .with_error(expected_error)
               end
@@ -519,7 +519,7 @@ module Cuprum::Collections::RSpec::Contracts
               end
 
               it 'should return a failing result' do
-                expect(command.call(primary_keys: primary_keys))
+                expect(command.call(primary_keys:))
                   .to be_a_failing_result
                   .with_error(expected_error)
               end
@@ -529,7 +529,7 @@ module Cuprum::Collections::RSpec::Contracts
               let(:primary_keys) { valid_primary_key_values }
 
               it 'should return a passing result' do
-                expect(command.call(primary_keys: primary_keys))
+                expect(command.call(primary_keys:))
                   .to be_a_passing_result
                   .with_value(expected_data)
               end
@@ -538,7 +538,7 @@ module Cuprum::Collections::RSpec::Contracts
                 let(:primary_keys) { valid_primary_key_values.reverse }
 
                 it 'should return a passing result' do
-                  expect(command.call(primary_keys: primary_keys))
+                  expect(command.call(primary_keys:))
                     .to be_a_passing_result
                     .with_value(expected_data)
                 end
@@ -562,7 +562,7 @@ module Cuprum::Collections::RSpec::Contracts
                 end
 
                 it 'should return a failing result' do
-                  expect(command.call(primary_keys: primary_keys))
+                  expect(command.call(primary_keys:))
                     .to be_a_failing_result
                     .with_error(expected_error)
                 end
@@ -592,7 +592,7 @@ module Cuprum::Collections::RSpec::Contracts
                 it 'should return a passing result' do
                   expect(
                     command.call(
-                      primary_keys:  primary_keys,
+                      primary_keys:,
                       allow_partial: true
                     )
                   )
@@ -608,7 +608,7 @@ module Cuprum::Collections::RSpec::Contracts
                 it 'should return a passing result' do
                   expect(
                     command.call(
-                      primary_keys:  primary_keys,
+                      primary_keys:,
                       allow_partial: true
                     )
                   )
@@ -622,7 +622,7 @@ module Cuprum::Collections::RSpec::Contracts
                   it 'should return a passing result' do
                     expect(
                       command.call(
-                        primary_keys:  primary_keys,
+                        primary_keys:,
                         allow_partial: true
                       )
                     )
@@ -639,7 +639,7 @@ module Cuprum::Collections::RSpec::Contracts
 
                 it 'should return a passing result' do
                   expect(
-                    command.call(primary_keys: primary_keys, envelope: true)
+                    command.call(primary_keys:, envelope: true)
                   )
                     .to be_a_passing_result
                     .with_value({ collection_name => expected_data })
@@ -650,7 +650,7 @@ module Cuprum::Collections::RSpec::Contracts
 
                   it 'should return a passing result' do
                     expect(
-                      command.call(primary_keys: primary_keys, envelope: true)
+                      command.call(primary_keys:, envelope: true)
                     )
                       .to be_a_passing_result
                       .with_value({ collection_name => expected_data })
@@ -842,7 +842,7 @@ module Cuprum::Collections::RSpec::Contracts
             end
 
             it 'should return a failing result' do
-              expect(command.call(primary_key: primary_key))
+              expect(command.call(primary_key:))
                 .to be_a_failing_result
                 .with_error(expected_error)
             end
@@ -870,7 +870,7 @@ module Cuprum::Collections::RSpec::Contracts
               end
 
               it 'should return a failing result' do
-                expect(command.call(primary_key: primary_key))
+                expect(command.call(primary_key:))
                   .to be_a_failing_result
                   .with_error(expected_error)
               end
@@ -880,7 +880,7 @@ module Cuprum::Collections::RSpec::Contracts
               let(:primary_key) { valid_primary_key_value }
 
               it 'should return a passing result' do
-                expect(command.call(primary_key: primary_key))
+                expect(command.call(primary_key:))
                   .to be_a_passing_result
                   .with_value(expected_data)
               end
@@ -893,7 +893,7 @@ module Cuprum::Collections::RSpec::Contracts
                 let(:primary_key) { valid_primary_key_value }
 
                 it 'should return a passing result' do
-                  expect(command.call(primary_key: primary_key, envelope: true))
+                  expect(command.call(primary_key:, envelope: true))
                     .to be_a_passing_result
                     .with_value({ member_name => expected_data })
                 end
@@ -944,13 +944,13 @@ module Cuprum::Collections::RSpec::Contracts
 
           context 'when the item does not exist in the collection' do
             it 'should return a passing result' do
-              expect(command.call(entity: entity))
+              expect(command.call(entity:))
                 .to be_a_passing_result
                 .with_value(be == expected_data)
             end
 
             it 'should append an item to the collection' do
-              expect { command.call(entity: entity) }
+              expect { command.call(entity:) }
                 .to(
                   change { query.reset.count }
                   .by(1)
@@ -958,13 +958,13 @@ module Cuprum::Collections::RSpec::Contracts
             end
 
             it 'should add the entity to the collection' do
-              expect { command.call(entity: entity) }
+              expect { command.call(entity:) }
                 .to change(scoped, :exists?)
                 .to be true
             end
 
             it 'should set the attributes' do
-              command.call(entity: entity)
+              command.call(entity:)
 
               expect(scoped.to_a.first).to be == expected_data
             end
@@ -979,19 +979,19 @@ module Cuprum::Collections::RSpec::Contracts
                   primary_key_name.to_s,
                   attributes[primary_key_name.intern]
                 ),
-                collection_name: collection_name,
+                collection_name:,
                 primary_key:     true
               )
             end
 
             it 'should return a failing result' do
-              expect(command.call(entity: entity))
+              expect(command.call(entity:))
                 .to be_a_failing_result
                 .with_error(expected_error)
             end
 
             it 'should not append an item to the collection' do
-              expect { command.call(entity: entity) }
+              expect { command.call(entity:) }
                 .not_to(change { query.reset.count })
             end
           end
@@ -1041,20 +1041,20 @@ module Cuprum::Collections::RSpec::Contracts
                   primary_key_name.to_s,
                   attributes[primary_key_name.intern]
                 ),
-                collection_name: collection_name,
+                collection_name:,
                 primary_key:     true
               )
             end
             let(:matching_data) { mapped_data.first }
 
             it 'should return a failing result' do
-              expect(command.call(entity: entity))
+              expect(command.call(entity:))
                 .to be_a_failing_result
                 .with_error(expected_error)
             end
 
             it 'should not append an item to the collection' do
-              expect { command.call(entity: entity) }
+              expect { command.call(entity:) }
                 .not_to(change { query.reset.count })
             end
           end
@@ -1066,18 +1066,18 @@ module Cuprum::Collections::RSpec::Contracts
             end
 
             it 'should return a passing result' do
-              expect(command.call(entity: entity))
+              expect(command.call(entity:))
                 .to be_a_passing_result
                 .with_value(be == expected_data)
             end
 
             it 'should not append an item to the collection' do
-              expect { command.call(entity: entity) }
+              expect { command.call(entity:) }
                 .not_to(change { query.reset.count })
             end
 
             it 'should set the attributes' do
-              command.call(entity: entity)
+              command.call(entity:)
 
               expect(scoped.to_a.first).to be == expected_data
             end
@@ -1125,7 +1125,7 @@ module Cuprum::Collections::RSpec::Contracts
                 end
 
                 it 'should return a failing result' do
-                  expect(command.call(entity: entity))
+                  expect(command.call(entity:))
                     .to be_a_failing_result
                     .with_error(expected_error)
                 end
@@ -1135,7 +1135,7 @@ module Cuprum::Collections::RSpec::Contracts
                 let(:attributes) { valid_default_attributes }
 
                 it 'should return a passing result' do
-                  expect(command.call(entity: entity))
+                  expect(command.call(entity:))
                     .to be_a_passing_result
                     .with_value(entity)
                 end
@@ -1149,7 +1149,7 @@ module Cuprum::Collections::RSpec::Contracts
               end
 
               it 'should return a failing result' do
-                expect(command.call(entity: entity))
+                expect(command.call(entity:))
                   .to be_a_failing_result
                   .with_error(expected_error)
               end
@@ -1163,12 +1163,12 @@ module Cuprum::Collections::RSpec::Contracts
               let(:expected_error) do
                 Cuprum::Collections::Errors::FailedValidation.new(
                   entity_class: entity.class,
-                  errors:       errors
+                  errors:
                 )
               end
 
               it 'should return a failing result' do
-                expect(command.call(contract: contract, entity: entity))
+                expect(command.call(contract:, entity:))
                   .to be_a_failing_result
                   .with_error(expected_error)
               end
@@ -1178,7 +1178,7 @@ module Cuprum::Collections::RSpec::Contracts
               let(:attributes) { valid_attributes }
 
               it 'should return a passing result' do
-                expect(command.call(contract: contract, entity: entity))
+                expect(command.call(contract:, entity:))
                   .to be_a_passing_result
                   .with_value(entity)
               end

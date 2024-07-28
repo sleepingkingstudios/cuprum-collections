@@ -9,14 +9,14 @@ require 'cuprum/collections/scope'
 
 RSpec.describe Cuprum::Collections::Basic::Scopes do
   shared_examples 'should filter the data' do
-    it { expect(scope.call(data: data)).to match_array matching }
+    it { expect(scope.call(data:)).to match_array matching }
 
     context 'when the scope is inverted' do
       let(:matching) do
         data - super()
       end
 
-      it { expect(scope.invert.call(data: data)).to match_array matching }
+      it { expect(scope.invert.call(data:)).to match_array matching }
     end
   end
 
@@ -815,7 +815,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
         ]
       ]
     end
-    let(:scope) { described_class::CriteriaScope.new(criteria: criteria) }
+    let(:scope) { described_class::CriteriaScope.new(criteria:) }
     let(:inspected) do
       <<~TEXT.strip
         Basic::CriteriaScope (1):
@@ -1008,7 +1008,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
 
       it { expect(scope.debug).to be == inspected }
 
-      it { expect(scope.call(data: data)).to match_array matching }
+      it { expect(scope.call(data:)).to match_array matching }
     end
 
     describe '#or a complex scope' do
@@ -1152,7 +1152,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
       ]
     end
     let(:scope) do
-      described_class::CriteriaScope.new(criteria: criteria, inverted: true)
+      described_class::CriteriaScope.new(criteria:, inverted: true)
     end
     let(:inspected) do
       <<~TEXT.strip
@@ -1298,7 +1298,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
 
       it { expect(scope.debug).to be == inspected }
 
-      it { expect(scope.call(data: data)).to match_array matching }
+      it { expect(scope.call(data:)).to match_array matching }
     end
 
     describe '#or a hash' do
@@ -1669,7 +1669,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
 
       it { expect(scope.debug).to be == inspected }
 
-      it { expect(scope.call(data: data)).to match_array(matching) }
+      it { expect(scope.call(data:)).to match_array(matching) }
     end
 
     describe '#or a hash' do
@@ -1693,7 +1693,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
 
       it { expect(scope.debug).to be == inspected }
 
-      it { expect(scope.call(data: data)).to match_array(matching) }
+      it { expect(scope.call(data:)).to match_array(matching) }
     end
 
     describe '#or a basic scope' do
@@ -1717,7 +1717,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
 
       it { expect(scope.debug).to be == inspected }
 
-      it { expect(scope.call(data: data)).to match_array(matching) }
+      it { expect(scope.call(data:)).to match_array(matching) }
     end
 
     describe '#or an inverted scope' do
@@ -1741,7 +1741,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
 
       it { expect(scope.debug).to be == inspected }
 
-      it { expect(scope.call(data: data)).to match_array(matching) }
+      it { expect(scope.call(data:)).to match_array(matching) }
     end
 
     describe '#or a complex scope' do
@@ -1773,7 +1773,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
 
       it { expect(scope.debug).to be == inspected }
 
-      it { expect(scope.call(data: data)).to match_array(matching) }
+      it { expect(scope.call(data:)).to match_array(matching) }
     end
 
     describe '#not a block' do
@@ -1922,7 +1922,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
 
     it { expect(scope.debug).to be == inspected }
 
-    it { expect(scope.call(data: data)).to match_array(matching) }
+    it { expect(scope.call(data:)).to match_array(matching) }
 
     describe '#and a block' do
       let(:block) { -> { { 'series' => 'Earthsea' } } }
@@ -2044,7 +2044,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
 
       it { expect(scope.debug).to be == inspected }
 
-      it { expect(scope.call(data: data)).to match_array(matching) }
+      it { expect(scope.call(data:)).to match_array(matching) }
     end
 
     describe '#or a block' do
@@ -2064,7 +2064,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
 
       it { expect(scope.debug).to be == inspected }
 
-      it { expect(scope.call(data: data)).to match_array(matching) }
+      it { expect(scope.call(data:)).to match_array(matching) }
     end
 
     describe '#or a hash' do
@@ -2084,7 +2084,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
 
       it { expect(scope.debug).to be == inspected }
 
-      it { expect(scope.call(data: data)).to match_array(matching) }
+      it { expect(scope.call(data:)).to match_array(matching) }
     end
 
     describe '#or a basic scope' do
@@ -2104,7 +2104,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
 
       it { expect(scope.debug).to be == inspected }
 
-      it { expect(scope.call(data: data)).to match_array(matching) }
+      it { expect(scope.call(data:)).to match_array(matching) }
     end
 
     describe '#or a complex scope' do
@@ -2134,7 +2134,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
 
       it { expect(scope.debug).to be == inspected }
 
-      it { expect(scope.call(data: data)).to match_array(matching) }
+      it { expect(scope.call(data:)).to match_array(matching) }
     end
 
     describe '#not a block' do
@@ -2158,7 +2158,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
 
       it { expect(scope.debug).to be == inspected }
 
-      it { expect(scope.call(data: data)).to match_array(matching) }
+      it { expect(scope.call(data:)).to match_array(matching) }
     end
 
     describe '#not a hash' do
@@ -2182,7 +2182,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
 
       it { expect(scope.debug).to be == inspected }
 
-      it { expect(scope.call(data: data)).to match_array(matching) }
+      it { expect(scope.call(data:)).to match_array(matching) }
     end
 
     describe '#not a basic scope' do
@@ -2206,7 +2206,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
 
       it { expect(scope.debug).to be == inspected }
 
-      it { expect(scope.call(data: data)).to match_array(matching) }
+      it { expect(scope.call(data:)).to match_array(matching) }
     end
 
     describe '#not an inverted scope' do
@@ -2230,7 +2230,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
 
       it { expect(scope.debug).to be == inspected }
 
-      it { expect(scope.call(data: data)).to match_array(matching) }
+      it { expect(scope.call(data:)).to match_array(matching) }
     end
 
     describe '#not a complex scope' do
@@ -2258,7 +2258,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
 
       it { expect(scope.debug).to be == inspected }
 
-      it { expect(scope.call(data: data)).to match_array(matching) }
+      it { expect(scope.call(data:)).to match_array(matching) }
     end
   end
 end

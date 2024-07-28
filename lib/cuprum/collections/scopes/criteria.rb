@@ -21,15 +21,15 @@ module Cuprum::Collections::Scopes
       def build(...)
         criteria = parse(...)
 
-        new(criteria: criteria)
+        new(criteria:)
       end
 
       # @overload parse(value = nil, &block)
       #   (see Cuprum::Collections::Scopes::Criteria::Parser#parse)
-      def parse(*args, &block)
+      def parse(*args, &)
         parser = Cuprum::Collections::Scopes::Criteria::Parser.instance
 
-        args.empty? ? parser.parse(&block) : parser.parse(args.first, &block)
+        args.empty? ? parser.parse(&) : parser.parse(args.first, &)
       end
     end
 
@@ -68,14 +68,14 @@ module Cuprum::Collections::Scopes
     end
 
     # (see Cuprum::Collections::Scopes::Composition#and)
-    def and(*args, &block)
+    def and(*args, &)
       return super if scope?(args.first)
 
-      return self.class.build(*args, &block) if empty?
+      return self.class.build(*args, &) if empty?
 
       return super if inverted?
 
-      with_criteria([*criteria, *self.class.parse(*args, &block)])
+      with_criteria([*criteria, *self.class.parse(*args, &)])
     end
     alias where and
 
@@ -115,14 +115,14 @@ module Cuprum::Collections::Scopes
     end
 
     # (see Cuprum::Collections::Scopes::Composition#or)
-    def or(*args, &block)
+    def or(*args, &)
       return super if scope?(args.first)
 
-      return self.class.build(*args, &block) if empty?
+      return self.class.build(*args, &) if empty?
 
       builder.build_disjunction_scope(
         safe:   false,
-        scopes: [self, self.class.build(*args, &block)]
+        scopes: [self, self.class.build(*args, &)]
       )
     end
 
@@ -149,19 +149,19 @@ module Cuprum::Collections::Scopes
     private
 
     def and_all_scope(scope)
-      return builder.transform_scope(scope: scope) if empty?
+      return builder.transform_scope(scope:) if empty?
 
       super
     end
 
     def and_conjunction_scope(scope)
-      return builder.transform_scope(scope: scope) if empty?
+      return builder.transform_scope(scope:) if empty?
 
       super
     end
 
     def and_criteria_scope(scope)
-      return builder.transform_scope(scope: scope) if empty?
+      return builder.transform_scope(scope:) if empty?
 
       unless inverted? || scope.inverted?
         return with_criteria([*criteria, *scope.criteria])
@@ -171,7 +171,7 @@ module Cuprum::Collections::Scopes
     end
 
     def and_generic_scope(scope)
-      return builder.transform_scope(scope: scope) if empty?
+      return builder.transform_scope(scope:) if empty?
 
       super
     end
@@ -190,13 +190,13 @@ module Cuprum::Collections::Scopes
     end
 
     def or_disjunction_scope(scope)
-      return builder.transform_scope(scope: scope) if empty?
+      return builder.transform_scope(scope:) if empty?
 
       super
     end
 
     def or_generic_scope(scope)
-      return builder.transform_scope(scope: scope) if empty?
+      return builder.transform_scope(scope:) if empty?
 
       super
     end

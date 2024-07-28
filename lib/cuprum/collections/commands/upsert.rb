@@ -100,8 +100,8 @@ module Cuprum::Collections::Commands
 
     def create_entity(attributes:)
       Cuprum::Collections::Commands::Create
-        .new(collection: collection, contract: contract)
-        .call(attributes: attributes)
+        .new(collection:, contract:)
+        .call(attributes:)
     end
 
     def filter_attributes(attributes:)
@@ -112,10 +112,10 @@ module Cuprum::Collections::Commands
     end
 
     def find_entity(attributes:)
-      filtered = filter_attributes(attributes: attributes)
+      filtered = filter_attributes(attributes:)
       result   =
         Cuprum::Collections::Commands::FindOneMatching
-          .new(collection: collection)
+          .new(collection:)
           .call(attributes: filtered)
 
       return if result.error.is_a?(Cuprum::Collections::Errors::NotFound)
@@ -140,12 +140,12 @@ module Cuprum::Collections::Commands
     end
 
     def process(attributes:)
-      entity = step { find_entity(attributes: attributes) }
+      entity = step { find_entity(attributes:) }
 
       if entity
-        update_entity(attributes: attributes, entity: entity)
+        update_entity(attributes:, entity:)
       else
-        create_entity(attributes: attributes)
+        create_entity(attributes:)
       end
     end
 
@@ -155,8 +155,8 @@ module Cuprum::Collections::Commands
 
     def update_entity(attributes:, entity:)
       Cuprum::Collections::Commands::Update
-        .new(collection: collection, contract: contract)
-        .call(attributes: attributes, entity: entity)
+        .new(collection:, contract:)
+        .call(attributes:, entity:)
     end
   end
 end

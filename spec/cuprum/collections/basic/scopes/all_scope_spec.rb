@@ -11,7 +11,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::AllScope do
   let(:data) { [] }
 
   def filtered_data
-    scope.call(data: data)
+    scope.call(data:)
   end
 
   describe '.instance' do
@@ -70,7 +70,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::AllScope do
           .find { |book| book['title'] == 'The Silmarillion' }
       end
 
-      it { expect(scope.match?(item: item)).to be true }
+      it { expect(scope.match?(item:)).to be true }
     end
   end
 end

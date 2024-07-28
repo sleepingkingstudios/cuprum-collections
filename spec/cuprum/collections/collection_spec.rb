@@ -15,7 +15,7 @@ RSpec.describe Cuprum::Collections::Collection do
   end
 
   let(:name)                { 'books' }
-  let(:constructor_options) { { name: name } }
+  let(:constructor_options) { { name: } }
 
   describe '::AbstractCollectionError' do
     include_examples 'should define constant', :AbstractCollectionError

@@ -12,10 +12,10 @@ module Cuprum::Collections::Scopes
     #
     # @overload and(scope)
     #   Returns the given scope.
-    def and(*args, &block)
+    def and(*args, &)
       return self if scope?(args.first) && args.first.empty?
 
-      builder.build(*args, &block)
+      builder.build(*args, &)
     end
     alias where and
 
@@ -37,10 +37,10 @@ module Cuprum::Collections::Scopes
     #
     # @overload or(scope)
     #   Returns the given scope.
-    def or(*args, &block)
+    def or(*args, &)
       return self if scope?(args.first) && args.first.empty?
 
-      builder.build(*args, &block)
+      builder.build(*args, &)
     end
 
     # (see Cuprum::Collections::Scopes::Base#type)

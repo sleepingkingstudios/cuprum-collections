@@ -34,14 +34,14 @@ module Cuprum::Collections::Basic::Commands
       error = Cuprum::Collections::Errors::NotFound.new(
         attribute_name:  primary_key_name,
         attribute_value: entity[primary_key_name.to_s],
-        collection_name: collection_name,
+        collection_name:,
         primary_key:     true
       )
       failure(error)
     end
 
     def process(entity:)
-      index = step { find_existing(entity: entity) }
+      index = step { find_existing(entity:) }
 
       entity = data[index].merge(entity)
 

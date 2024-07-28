@@ -8,7 +8,7 @@ RSpec.describe Cuprum::Collections::Scopes::Criteria do
   include Cuprum::Collections::RSpec::Contracts::Scopes::CriteriaContracts
 
   subject(:scope) do
-    described_class.new(criteria: criteria, **constructor_options)
+    described_class.new(criteria:, **constructor_options)
   end
 
   let(:described_class)     { Spec::ExampleScope }

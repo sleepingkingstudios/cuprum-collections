@@ -17,8 +17,8 @@ module Spec::Support::Examples
       end
       let(:constructor_options) do
         {
-          attributes:      attributes,
-          collection_name: collection_name
+          attributes:,
+          collection_name:
         }
       end
     end
@@ -38,8 +38,8 @@ module Spec::Support::Examples
       end
       let(:constructor_options) do
         {
-          collection_name: collection_name,
-          query:           query
+          collection_name:,
+          query:
         }
       end
     end
@@ -84,7 +84,7 @@ module Spec::Support::Examples
           end
 
           it 'should raise an exception' do
-            expect { described_class.new(collection_name: collection_name) }
+            expect { described_class.new(collection_name:) }
               .to raise_error ArgumentError, error_message
           end
         end
@@ -96,7 +96,7 @@ module Spec::Support::Examples
                 'title'  => 'Gideon the Ninth',
                 'author' => 'Tamsyn Muir'
               },
-              collection_name: collection_name
+              collection_name:
             }
           end
 
@@ -150,7 +150,7 @@ module Spec::Support::Examples
             {
               attribute_name:  'name',
               attribute_value: 'Alan Bradley',
-              collection_name: collection_name
+              collection_name:
             }
           end
 
@@ -200,8 +200,8 @@ module Spec::Support::Examples
           end
           let(:keywords) do
             {
-              collection_name: collection_name,
-              query:           query
+              collection_name:,
+              query:
             }
           end
 

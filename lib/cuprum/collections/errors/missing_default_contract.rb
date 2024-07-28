@@ -15,7 +15,7 @@ module Cuprum::Collections::Errors
       @entity_class = entity_class
 
       super(
-        entity_class: entity_class,
+        entity_class:,
         message:      default_message
       )
     end

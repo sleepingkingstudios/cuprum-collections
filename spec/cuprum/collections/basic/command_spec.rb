@@ -9,8 +9,8 @@ RSpec.describe Cuprum::Collections::Basic::Command do
 
   subject(:command) do
     described_class.new(
-      collection_name: collection_name,
-      data:            data,
+      collection_name:,
+      data:,
       **constructor_options
     )
   end

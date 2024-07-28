@@ -18,7 +18,7 @@ module Cuprum::Collections
 
       error = Cuprum::Collections::Errors::InvalidParameters.new(
         command: self,
-        errors:  errors
+        errors:
       )
       failure(error)
     end

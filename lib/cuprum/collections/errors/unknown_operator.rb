@@ -15,7 +15,7 @@ module Cuprum::Collections::Errors
 
       super(
         message:  generate_message,
-        operator: operator
+        operator:
       )
     end
 

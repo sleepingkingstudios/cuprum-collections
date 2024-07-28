@@ -23,7 +23,7 @@ module Cuprum::Collections
     def initialize(*args, inverted: false, &block)
       criteria = self.class.parse(*args, &block)
 
-      super(criteria: criteria, inverted: inverted)
+      super(criteria:, inverted:)
     end
   end
 end

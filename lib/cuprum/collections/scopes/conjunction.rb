@@ -9,10 +9,10 @@ module Cuprum::Collections::Scopes
     include Cuprum::Collections::Scopes::Container
 
     # (see Cuprum::Collections::Scopes::Composition#and)
-    def and(*args, &block)
+    def and(*args, &)
       return super if scope?(args.first)
 
-      with_scopes([*scopes, builder.build(*args, &block)])
+      with_scopes([*scopes, builder.build(*args, &)])
     end
     alias where and
 
@@ -38,7 +38,7 @@ module Cuprum::Collections::Scopes
     end
 
     def and_generic_scope(scope)
-      with_scopes([*scopes, builder.transform_scope(scope: scope)])
+      with_scopes([*scopes, builder.transform_scope(scope:)])
     end
   end
 end

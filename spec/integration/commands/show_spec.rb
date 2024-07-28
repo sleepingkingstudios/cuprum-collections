@@ -15,7 +15,7 @@ RSpec.describe Spec::Support::Commands::Show do
   let(:collection_options) do
     {
       name: collection_name,
-      data: data
+      data:
     }
   end
   let(:collection) do
@@ -24,7 +24,7 @@ RSpec.describe Spec::Support::Commands::Show do
 
   describe '#call' do
     let(:primary_key) { 0 }
-    let(:result)      { command.call(primary_key: primary_key) }
+    let(:result)      { command.call(primary_key:) }
 
     describe 'with an invalid primary key' do
       let(:primary_key) { 100 }
@@ -32,7 +32,7 @@ RSpec.describe Spec::Support::Commands::Show do
         Cuprum::Collections::Errors::NotFound.new(
           attribute_name:  'id',
           attribute_value: primary_key,
-          collection_name: collection_name,
+          collection_name:,
           primary_key:     true
         )
       end

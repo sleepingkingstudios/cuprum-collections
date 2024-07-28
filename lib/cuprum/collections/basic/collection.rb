@@ -31,8 +31,8 @@ module Cuprum::Collections::Basic
       end
 
       super(
-        entity_class:   entity_class,
-        qualified_name: qualified_name,
+        entity_class:,
+        qualified_name:,
         **parameters
       )
 
@@ -56,17 +56,17 @@ module Cuprum::Collections::Basic
 
     command :find_many do
       Cuprum::Collections::Basic::Commands::FindMany
-        .new(query: query, **command_options)
+        .new(query:, **command_options)
     end
 
     command :find_matching do
       Cuprum::Collections::Basic::Commands::FindMatching
-        .new(query: query, **command_options)
+        .new(query:, **command_options)
     end
 
     command :find_one do
       Cuprum::Collections::Basic::Commands::FindOne
-        .new(query: query, **command_options)
+        .new(query:, **command_options)
     end
 
     command :insert_one do
@@ -91,15 +91,15 @@ module Cuprum::Collections::Basic
     #
     # @return [Cuprum::Collections::Basic::Query] the query.
     def query
-      Cuprum::Collections::Basic::Query.new(data, scope: scope)
+      Cuprum::Collections::Basic::Query.new(data, scope:)
     end
 
     protected
 
     def command_options
       super.merge(
-        data:             data,
-        default_contract: default_contract
+        data:,
+        default_contract:
       )
     end
 

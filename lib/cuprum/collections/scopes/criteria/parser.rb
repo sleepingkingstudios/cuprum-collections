@@ -52,11 +52,11 @@ module Cuprum::Collections::Scopes::Criteria
     #   @yield the query block.
     #
     #   @yieldreturn [Hash] a Hash with String keys.
-    def parse(value = UNKNOWN, &block)
+    def parse(value = UNKNOWN, &)
       if block_given? && value != UNKNOWN
-        parse_hash(value) + parse_block(&block)
+        parse_hash(value) + parse_block(&)
       elsif value == UNKNOWN
-        parse_block(&block)
+        parse_block(&)
       else
         parse_hash(value)
       end

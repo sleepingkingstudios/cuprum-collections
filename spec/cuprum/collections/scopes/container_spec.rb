@@ -7,7 +7,7 @@ require 'cuprum/collections/rspec/contracts/scope_contracts'
 RSpec.describe Cuprum::Collections::Scopes::Container do
   include Cuprum::Collections::RSpec::Contracts::ScopeContracts
 
-  subject(:scope) { described_class.new(scopes: scopes) }
+  subject(:scope) { described_class.new(scopes:) }
 
   let(:described_class) { Spec::ExampleScope }
   let(:scopes)          { [] }

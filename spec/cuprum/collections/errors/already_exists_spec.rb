@@ -14,9 +14,9 @@ RSpec.describe Cuprum::Collections::Errors::AlreadyExists do
   let(:collection_name) { 'books' }
   let(:constructor_options) do
     {
-      attribute_name:  attribute_name,
-      attribute_value: attribute_value,
-      collection_name: collection_name
+      attribute_name:,
+      attribute_value:,
+      collection_name:
     }
   end
 

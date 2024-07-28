@@ -10,7 +10,7 @@ module Cuprum::Collections::Scopes
     #
     # @overload and(scope)
     #   Returns the none scope.
-    def and(*, &_)
+    def and(*, &)
       self
     end
     alias where and
@@ -31,10 +31,10 @@ module Cuprum::Collections::Scopes
     #
     # @overload or(scope)
     #   Returns the none scope.
-    def or(*args, &block)
+    def or(*args, &)
       return super if scope?(args.first)
 
-      builder.build(*args, &block)
+      builder.build(*args, &)
     end
 
     # @overload not(hash = nil, &block)
@@ -42,7 +42,7 @@ module Cuprum::Collections::Scopes
     #
     # @overload not(scope)
     #   Returns the none scope.
-    def not(*, &_)
+    def not(*, &)
       self
     end
 
@@ -56,7 +56,7 @@ module Cuprum::Collections::Scopes
     def or_scope(scope)
       return self if scope.empty?
 
-      builder.transform_scope(scope: scope)
+      builder.transform_scope(scope:)
     end
   end
 end

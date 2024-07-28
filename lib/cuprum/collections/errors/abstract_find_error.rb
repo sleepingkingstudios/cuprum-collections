@@ -35,12 +35,12 @@ module Cuprum::Collections::Errors
       resolve_options(**options)
 
       super(
-        attribute_name:  attribute_name,
-        attribute_value: attribute_value,
-        attributes:      attributes,
-        collection_name: collection_name,
+        attribute_name:,
+        attribute_value:,
+        attributes:,
+        collection_name:,
         message:         generate_message,
-        scope:           scope
+        scope:
       )
     end
 

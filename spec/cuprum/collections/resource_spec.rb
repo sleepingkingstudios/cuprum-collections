@@ -13,7 +13,7 @@ RSpec.describe Cuprum::Collections::Resource do
   subject(:resource) { described_class.new(**constructor_options) }
 
   let(:name)                { 'books' }
-  let(:constructor_options) { { name: name } }
+  let(:constructor_options) { { name: } }
 
   include_contract 'should be a relation',
     cardinality: true

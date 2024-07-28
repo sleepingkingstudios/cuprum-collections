@@ -65,7 +65,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
               ]
             ]
             wrapped =
-              Cuprum::Collections::Scopes::CriteriaScope.new(criteria: criteria)
+              Cuprum::Collections::Scopes::CriteriaScope.new(criteria:)
 
             Cuprum::Collections::Scopes::ConjunctionScope.new(scopes: [wrapped])
           end
@@ -82,7 +82,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
               ]
             ]
 
-            Cuprum::Collections::Scopes::CriteriaScope.new(criteria: criteria)
+            Cuprum::Collections::Scopes::CriteriaScope.new(criteria:)
           end
         end
 
@@ -97,7 +97,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
               ]
             ]
             wrapped =
-              Cuprum::Collections::Scopes::CriteriaScope.new(criteria: criteria)
+              Cuprum::Collections::Scopes::CriteriaScope.new(criteria:)
 
             Cuprum::Collections::Scopes::DisjunctionScope.new(scopes: [wrapped])
           end

@@ -47,9 +47,9 @@ module Cuprum::Collections::Basic::Commands
 
     def process(entity:, contract: nil)
       contract =
-        step { contract_or_default(contract: contract, entity: entity) }
+        step { contract_or_default(contract:, entity:) }
 
-      step { validate_entity(contract: contract, entity: entity) }
+      step { validate_entity(contract:, entity:) }
 
       entity
     end
@@ -61,7 +61,7 @@ module Cuprum::Collections::Basic::Commands
 
       error = Cuprum::Collections::Errors::FailedValidation.new(
         entity_class: entity.class,
-        errors:       errors
+        errors:
       )
       failure(error)
     end

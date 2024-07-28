@@ -30,10 +30,10 @@ module Cuprum::Collections::Basic::Commands
       error = Cuprum::Collections::Errors::NotFound.new(
         attribute_name:  primary_key_name,
         attribute_value: primary_key,
-        collection_name: collection_name,
+        collection_name:,
         primary_key:     true
       )
-      Cuprum::Result.new(error: error)
+      Cuprum::Result.new(error:)
     end
 
     def process(primary_key:)
@@ -41,7 +41,7 @@ module Cuprum::Collections::Basic::Commands
 
       index = data.index { |item| item[primary_key_name.to_s] == primary_key }
 
-      step { handle_missing_item(index: index, primary_key: primary_key) }
+      step { handle_missing_item(index:, primary_key:) }
 
       data.delete_at(index)
     end

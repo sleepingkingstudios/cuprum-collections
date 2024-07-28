@@ -12,7 +12,7 @@ module Cuprum::Collections::Basic
     # @param scope [Cuprum::Collections::Scopes::Base] the base scope for the
     #   query. Defaults to nil.
     def initialize(data, scope: nil)
-      super(scope: scope)
+      super(scope:)
 
       @data = data
     end
@@ -60,7 +60,7 @@ module Cuprum::Collections::Basic
     def exists?
       return data.any? unless scope
 
-      data.any? { |item| scope.match?(item: item) }
+      data.any? { |item| scope.match?(item:) }
     end
 
     # Returns an array containing each collection item matching the query.
@@ -127,7 +127,7 @@ module Cuprum::Collections::Basic
     end
 
     def apply_scope(data)
-      scope ? scope.call(data: data) : data
+      scope ? scope.call(data:) : data
     end
 
     def default_scope

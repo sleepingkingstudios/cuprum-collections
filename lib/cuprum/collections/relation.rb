@@ -77,17 +77,17 @@ module Cuprum::Collections
 
           entity_class   = entity_class_from(**params)
           class_name     = entity_class_name(entity_class)
-          name           = relation_name_from(**params, class_name: class_name)
-          plural_name    = plural_name_from(**params, name: name)
-          qualified_name = qualified_name_from(**params, class_name: class_name)
-          singular_name  = singular_name_from(**params, name: name)
+          name           = relation_name_from(**params, class_name:)
+          plural_name    = plural_name_from(**params, name:)
+          qualified_name = qualified_name_from(**params, class_name:)
+          singular_name  = singular_name_from(**params, name:)
 
           {
-            entity_class:   entity_class,
-            name:           name,
-            plural_name:    plural_name,
-            qualified_name: qualified_name,
-            singular_name:  singular_name
+            entity_class:,
+            name:,
+            plural_name:,
+            qualified_name:,
+            singular_name:
           }
         end
 
@@ -182,7 +182,7 @@ module Cuprum::Collections
         end
 
         def validate_parameter(value, as:)
-          tools.assertions.validate_name(value, as: as)
+          tools.assertions.validate_name(value, as:)
 
           value.to_s
         end

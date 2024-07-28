@@ -45,7 +45,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
         none_scope_class        = contract_options[:none_class]
 
         shared_context 'with container scope helpers' do
-          let(:scope) { build_container(scopes: scopes) }
+          let(:scope) { build_container(scopes:) }
 
           # :nocov:
           define_method :expected_class_for do |type| # rubocop:disable Metrics/MethodLength
@@ -126,7 +126,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
         end
 
         shared_examples 'should build a criteria scope' do |inverted: false|
-          let(:scope) { build_criteria(criteria: criteria) }
+          let(:scope) { build_criteria(criteria:) }
 
           # :nocov:
           unless criteria_scope_class
@@ -175,7 +175,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
         shared_examples 'should build a disjunction scope' do
           include_context 'with container scope helpers'
 
-          let(:scope) { build_container(scopes: scopes) }
+          let(:scope) { build_container(scopes:) }
 
           # :nocov:
           unless disjunction_scope_class
@@ -378,7 +378,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             def build_container(scopes:)
               original =
                 Cuprum::Collections::Scopes::ConjunctionScope
-                  .new(scopes: scopes)
+                  .new(scopes:)
 
               subject.build(original)
             end
@@ -390,7 +390,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             def build_criteria(criteria:)
               original =
                 Cuprum::Collections::Scopes::CriteriaScope
-                  .new(criteria: criteria)
+                  .new(criteria:)
 
               subject.build(original)
             end
@@ -402,7 +402,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             def build_container(scopes:)
               original =
                 Cuprum::Collections::Scopes::DisjunctionScope
-                  .new(scopes: scopes)
+                  .new(scopes:)
 
               subject.build(original)
             end
@@ -518,10 +518,10 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
         end
 
         describe '#build_conjunction_scope' do
-          let(:scope) { subject.build_conjunction_scope(scopes: scopes) }
+          let(:scope) { subject.build_conjunction_scope(scopes:) }
 
           def build_container(scopes:)
-            subject.build_conjunction_scope(scopes: scopes)
+            subject.build_conjunction_scope(scopes:)
           end
 
           it 'should define the method' do
@@ -539,7 +539,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
           describe 'with safe: false' do
             let(:scope) do
-              subject.build_conjunction_scope(scopes: scopes, safe: false)
+              subject.build_conjunction_scope(scopes:, safe: false)
             end
 
             describe 'with scopes: an empty Array' do
@@ -564,7 +564,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           let(:inverted) { false }
 
           def build_criteria(criteria:)
-            subject.build_criteria_scope(criteria: criteria, inverted: inverted)
+            subject.build_criteria_scope(criteria:, inverted:)
           end
 
           it 'should define the method' do
@@ -588,10 +588,10 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
         end
 
         describe '#build_disjunction_scope' do
-          let(:scope) { subject.build_disjunction_scope(scopes: scopes) }
+          let(:scope) { subject.build_disjunction_scope(scopes:) }
 
           def build_container(scopes:)
-            subject.build_disjunction_scope(scopes: scopes)
+            subject.build_disjunction_scope(scopes:)
           end
 
           it 'should define the method' do
@@ -609,7 +609,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
           describe 'with safe: false' do
             let(:scope) do
-              subject.build_disjunction_scope(scopes: scopes, safe: false)
+              subject.build_disjunction_scope(scopes:, safe: false)
             end
 
             describe 'with scopes: an empty Array' do
@@ -710,7 +710,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             def build_container(scopes:)
               original =
                 Cuprum::Collections::Scopes::ConjunctionScope
-                  .new(scopes: scopes)
+                  .new(scopes:)
 
               subject.transform_scope(scope: original)
             end
@@ -724,7 +724,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             def build_criteria(criteria:)
               original =
                 Cuprum::Collections::Scopes::CriteriaScope
-                  .new(criteria: criteria, inverted: inverted)
+                  .new(criteria:, inverted:)
 
               subject.transform_scope(scope: original)
             end
@@ -742,7 +742,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             def build_container(scopes:)
               original =
                 Cuprum::Collections::Scopes::DisjunctionScope
-                  .new(scopes: scopes)
+                  .new(scopes:)
 
               subject.transform_scope(scope: original)
             end

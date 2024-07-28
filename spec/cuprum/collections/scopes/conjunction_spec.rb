@@ -8,7 +8,7 @@ require 'cuprum/collections/scopes/criteria_scope'
 RSpec.describe Cuprum::Collections::Scopes::Conjunction do
   include Cuprum::Collections::RSpec::Contracts::Scopes::LogicalContracts
 
-  subject(:scope) { described_class.new(scopes: scopes) }
+  subject(:scope) { described_class.new(scopes:) }
 
   let(:described_class) { Spec::ExampleScope }
   let(:scopes)          { [] }

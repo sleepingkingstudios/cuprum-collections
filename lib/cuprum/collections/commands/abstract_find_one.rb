@@ -23,17 +23,17 @@ module Cuprum::Collections::Commands
       error = Cuprum::Collections::Errors::NotFound.new(
         attribute_name:  primary_key_name,
         attribute_value: primary_key,
-        collection_name: collection_name,
+        collection_name:,
         primary_key:     true
       )
-      Cuprum::Result.new(error: error)
+      Cuprum::Result.new(error:)
     end
 
     def process(envelope:, primary_key:)
-      query = apply_query(primary_key: primary_key)
+      query = apply_query(primary_key:)
       item  = query.to_a.first
 
-      step { handle_missing_item(item: item, primary_key: primary_key) }
+      step { handle_missing_item(item:, primary_key:) }
 
       envelope ? wrap_item(item) : item
     end

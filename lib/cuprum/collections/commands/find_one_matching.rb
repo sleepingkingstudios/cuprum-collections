@@ -96,20 +96,20 @@ module Cuprum::Collections::Commands
         if block_given?
           { query: collection.query.where(&block) }
         else
-          { attributes: attributes }
+          { attributes: }
         end
       )
     end
 
     def not_found_error(attributes: nil, &block)
       Cuprum::Collections::Errors::NotFound.new(
-        **error_params_for(attributes: attributes, &block)
+        **error_params_for(attributes:, &block)
       )
     end
 
     def not_unique_error(attributes: nil, &block)
       Cuprum::Collections::Errors::NotUnique.new(
-        **error_params_for(attributes: attributes, &block)
+        **error_params_for(attributes:, &block)
       )
     end
 
@@ -117,17 +117,17 @@ module Cuprum::Collections::Commands
       query    = block || -> { attributes }
       entities = step { collection.find_matching.call(limit: 2, &query) }
 
-      require_one_entity(attributes: attributes, entities: entities, &block)
+      require_one_entity(attributes:, entities:, &block)
     end
 
     def require_one_entity(attributes:, entities:, &block)
       case entities.count
       when 0
-        failure(not_found_error(attributes: attributes, &block))
+        failure(not_found_error(attributes:, &block))
       when 1
         entities.first
       when 2
-        failure(not_unique_error(attributes: attributes, &block))
+        failure(not_unique_error(attributes:, &block))
       end
     end
   end

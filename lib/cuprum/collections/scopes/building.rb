@@ -38,12 +38,12 @@ module Cuprum::Collections::Scopes
     #
     # @overload build(scope)
     #   Returns a new scope with the same scope type and properties.
-    def build(*args, &block)
+    def build(*args, &)
       if args.first.is_a?(Cuprum::Collections::Scopes::Base)
         return transform_scope(scope: args.first)
       end
 
-      criteria_scope_class.build(*args, &block)
+      criteria_scope_class.build(*args, &)
     end
 
     # Creates a new all scope.
@@ -64,7 +64,7 @@ module Cuprum::Collections::Scopes
         scopes = transform_scopes(scopes)
       end
 
-      conjunction_scope_class.new(scopes: scopes)
+      conjunction_scope_class.new(scopes:)
     end
 
     # Creates a new scope wrapping the given criteria.
@@ -75,7 +75,7 @@ module Cuprum::Collections::Scopes
     def build_criteria_scope(criteria:, inverted: false, safe: true)
       validate_criteria!(criteria) if safe
 
-      criteria_scope_class.new(criteria: criteria, inverted: inverted)
+      criteria_scope_class.new(criteria:, inverted:)
     end
 
     # Creates a new logical OR scope wrapping the given scopes.
@@ -91,7 +91,7 @@ module Cuprum::Collections::Scopes
         scopes = transform_scopes(scopes)
       end
 
-      disjunction_scope_class.new(scopes: scopes)
+      disjunction_scope_class.new(scopes:)
     end
 
     # Creates a new none scope.

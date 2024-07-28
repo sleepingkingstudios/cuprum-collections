@@ -22,7 +22,7 @@ RSpec.describe Cuprum::Collections::Constraints::Ordering do
   let(:constructor_options) { {} }
   let(:expected_options) do
     {
-      expected_constraints: expected_constraints,
+      expected_constraints:,
       required:             true
     }
   end

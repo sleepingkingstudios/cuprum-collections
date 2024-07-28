@@ -132,9 +132,9 @@ module Cuprum::Collections::Commands::Associations
 
       values = step do
         perform_query(
-          association:   association,
-          expected_keys: expected_keys,
-          plural:        plural
+          association:,
+          expected_keys:,
+          plural:
         )
       end
 
