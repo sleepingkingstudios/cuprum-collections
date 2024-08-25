@@ -26,7 +26,7 @@ RSpec.describe Cuprum::Collections::Basic do
       let(:primary_keys) { [0, 1] }
 
       it 'should return a failing result' do
-        expect(command.call(primary_keys: primary_keys))
+        expect(command.call(primary_keys:))
           .to be_a_failing_result
           .with_error(an_instance_of(Cuprum::Errors::MultipleErrors))
       end
@@ -43,7 +43,7 @@ RSpec.describe Cuprum::Collections::Basic do
       end
 
       it 'should return a passing result' do
-        expect(command.call(primary_keys: primary_keys))
+        expect(command.call(primary_keys:))
           .to be_a_passing_result
           .with_value(expected_value)
       end
@@ -88,7 +88,7 @@ RSpec.describe Cuprum::Collections::Basic do
       let(:primary_key) { 0 }
 
       it 'should return a failing result' do
-        expect(command.call(primary_key: primary_key))
+        expect(command.call(primary_key:))
           .to be_a_failing_result
           .with_error(an_instance_of(Cuprum::Collections::Errors::NotFound))
       end
@@ -103,7 +103,7 @@ RSpec.describe Cuprum::Collections::Basic do
       end
 
       it 'should return a passing result' do
-        expect(command.call(primary_key: primary_key))
+        expect(command.call(primary_key:))
           .to be_a_passing_result
           .with_value(expected_value)
       end

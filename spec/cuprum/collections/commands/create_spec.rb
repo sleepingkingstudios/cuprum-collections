@@ -15,7 +15,7 @@ RSpec.describe Cuprum::Collections::Commands::Create do
         key 'title', Stannum::Constraints::Presence.new
       end
     end
-    let(:constructor_options) { super().merge(contract: contract) }
+    let(:constructor_options) { super().merge(contract:) }
   end
 
   shared_context 'when the collection defines a default contract' do
@@ -35,7 +35,7 @@ RSpec.describe Cuprum::Collections::Commands::Create do
     )
   end
   let(:collection_options)  { {} }
-  let(:constructor_options) { { collection: collection } }
+  let(:constructor_options) { { collection: } }
 
   describe '.new' do
     it 'should define the constructor' do
@@ -73,18 +73,18 @@ RSpec.describe Cuprum::Collections::Commands::Create do
 
           Cuprum::Collections::Errors::FailedValidation.new(
             entity_class: Hash,
-            errors:       errors
+            errors:
           )
         end
 
         it 'should return a failing result' do
-          expect(command.call(attributes: attributes))
+          expect(command.call(attributes:))
             .to be_a_failing_result
             .with_error(expected_error)
         end
 
         it 'should not add an entity to the collection' do
-          expect { command.call(attributes: attributes) }
+          expect { command.call(attributes:) }
             .not_to(change { collection.query.count })
         end
       end
@@ -94,13 +94,13 @@ RSpec.describe Cuprum::Collections::Commands::Create do
         let(:expected_value) { attributes }
 
         it 'should return a passing result' do
-          expect(command.call(attributes: attributes))
+          expect(command.call(attributes:))
             .to be_a_passing_result
             .with_value(expected_value)
         end
 
         it 'should add an entity to the collection' do
-          expect { command.call(attributes: attributes) }
+          expect { command.call(attributes:) }
             .to(
               change { collection.query.count }
               .by(1)
@@ -108,7 +108,7 @@ RSpec.describe Cuprum::Collections::Commands::Create do
         end
 
         it 'should create the entity' do # rubocop:disable RSpec/ExampleLength
-          command.call(attributes: attributes)
+          command.call(attributes:)
 
           expect(
             collection
@@ -128,18 +128,18 @@ RSpec.describe Cuprum::Collections::Commands::Create do
 
           Cuprum::Collections::Errors::FailedValidation.new(
             entity_class: Hash,
-            errors:       errors
+            errors:
           )
         end
 
         it 'should return a failing result' do
-          expect(command.call(attributes: attributes))
+          expect(command.call(attributes:))
             .to be_a_failing_result
             .with_error(expected_error)
         end
 
         it 'should not add an entity to the collection' do
-          expect { command.call(attributes: attributes) }
+          expect { command.call(attributes:) }
             .not_to(change { collection.query.count })
         end
       end
@@ -149,13 +149,13 @@ RSpec.describe Cuprum::Collections::Commands::Create do
         let(:expected_value) { attributes }
 
         it 'should return a passing result' do
-          expect(command.call(attributes: attributes))
+          expect(command.call(attributes:))
             .to be_a_passing_result
             .with_value(expected_value)
         end
 
         it 'should add an entity to the collection' do
-          expect { command.call(attributes: attributes) }
+          expect { command.call(attributes:) }
             .to(
               change { collection.query.count }
               .by(1)
@@ -163,7 +163,7 @@ RSpec.describe Cuprum::Collections::Commands::Create do
         end
 
         it 'should create the entity' do # rubocop:disable RSpec/ExampleLength
-          command.call(attributes: attributes)
+          command.call(attributes:)
 
           expect(
             collection

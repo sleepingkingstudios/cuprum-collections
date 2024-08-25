@@ -100,8 +100,8 @@ module Cuprum::Collections::RSpec::Contracts
 
           it 'should set the collection options' do
             expect(collection).to have_attributes(
-              primary_key_name: primary_key_name,
-              primary_key_type: primary_key_type
+              primary_key_name:,
+              primary_key_type:
             )
           end
         end
@@ -309,12 +309,12 @@ module Cuprum::Collections::RSpec::Contracts
           def create_collection(force: false, safe: true, **options)
             if safe
               begin
-                repository.create(force: force, **collection_options, **options)
+                repository.create(force:, **collection_options, **options)
               rescue StandardError
                 # Do nothing.
               end
             else
-              repository.create(force: force, **collection_options, **options)
+              repository.create(force:, **collection_options, **options)
             end
           end
 
@@ -341,7 +341,7 @@ module Cuprum::Collections::RSpec::Contracts
           describe 'with entity_class: a Class' do
             let(:entity_class) { Book }
             let(:collection_options) do
-              super().merge(entity_class: entity_class)
+              super().merge(entity_class:)
             end
 
             include_examples 'should create the collection'
@@ -350,7 +350,7 @@ module Cuprum::Collections::RSpec::Contracts
           describe 'with entity_class: a String' do
             let(:entity_class) { 'Book' }
             let(:collection_options) do
-              super().merge(entity_class: entity_class)
+              super().merge(entity_class:)
             end
 
             include_examples 'should create the collection'
@@ -380,8 +380,8 @@ module Cuprum::Collections::RSpec::Contracts
             let(:collection_options) do
               super().merge(
                 name:             collection_name,
-                primary_key_name: primary_key_name,
-                primary_key_type: primary_key_type
+                primary_key_name:,
+                primary_key_type:
               )
             end
 
@@ -480,7 +480,7 @@ module Cuprum::Collections::RSpec::Contracts
           describe 'with entity_class: a Class' do
             let(:entity_class) { Book }
             let(:collection_options) do
-              super().merge(entity_class: entity_class)
+              super().merge(entity_class:)
             end
 
             include_examples 'should create the collection'
@@ -489,7 +489,7 @@ module Cuprum::Collections::RSpec::Contracts
           describe 'with entity_class: a String' do
             let(:entity_class) { Book }
             let(:collection_options) do
-              super().merge(entity_class: entity_class)
+              super().merge(entity_class:)
             end
 
             include_examples 'should create the collection'
@@ -520,9 +520,9 @@ module Cuprum::Collections::RSpec::Contracts
             let(:collection_options) do
               super().merge(
                 name:             collection_name,
-                primary_key_name: primary_key_name,
-                primary_key_type: primary_key_type,
-                qualified_name:   qualified_name
+                primary_key_name:,
+                primary_key_type:,
+                qualified_name:
               )
             end
 

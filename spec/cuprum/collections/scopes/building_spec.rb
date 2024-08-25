@@ -80,7 +80,7 @@ RSpec.describe Cuprum::Collections::Scopes::Building do
       let(:value) do
         scopes = Array.new(3) { build_scope }
 
-        Cuprum::Collections::Scopes::ConjunctionScope.new(scopes: scopes)
+        Cuprum::Collections::Scopes::ConjunctionScope.new(scopes:)
       end
       let(:error_message) do
         "#{described_class.name} is an abstract class. Define a builder " \
@@ -179,7 +179,7 @@ RSpec.describe Cuprum::Collections::Scopes::Building do
       end
 
       it 'should raise an exception' do
-        expect { builder.build_criteria_scope(criteria: criteria) }
+        expect { builder.build_criteria_scope(criteria:) }
           .to raise_error error_class, error_message
       end
     end

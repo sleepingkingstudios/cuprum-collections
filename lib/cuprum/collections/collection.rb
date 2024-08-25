@@ -116,10 +116,10 @@ module Cuprum::Collections
 
     def comparable_options
       command_options.merge(
-        name:           name,
-        qualified_name: qualified_name,
-        scope:          scope,
-        singular_name:  singular_name
+        name:,
+        qualified_name:,
+        scope:,
+        singular_name:
       )
     end
 
@@ -128,10 +128,10 @@ module Cuprum::Collections
     def command_options
       @command_options ||= {
         collection_name:  name,
-        entity_class:     entity_class,
+        entity_class:,
         member_name:      singular_name,
-        primary_key_name: primary_key_name,
-        primary_key_type: primary_key_type,
+        primary_key_name:,
+        primary_key_type:,
         **options
       }
     end

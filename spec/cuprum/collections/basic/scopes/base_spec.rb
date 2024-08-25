@@ -49,7 +49,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::Base do
     describe 'with an empty Array' do
       let(:data) { [] }
 
-      it { expect(scope.call(data: data)).to be == data }
+      it { expect(scope.call(data:)).to be == data }
     end
 
     describe 'with data' do
@@ -57,7 +57,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::Base do
         Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES
       end
 
-      it { expect(scope.call(data: data)).to be == data }
+      it { expect(scope.call(data:)).to be == data }
     end
   end
 
@@ -96,7 +96,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::Base do
           .find { |book| book['title'] == 'The Silmarillion' }
       end
 
-      it { expect(scope.match?(item: item)).to be true }
+      it { expect(scope.match?(item:)).to be true }
     end
   end
 
@@ -117,7 +117,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::Base do
       describe 'with an empty Array' do
         let(:data) { [] }
 
-        it { expect(scope.call(data: data)).to be == data }
+        it { expect(scope.call(data:)).to be == data }
       end
 
       describe 'with data' do
@@ -130,7 +130,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::Base do
           end
         end
 
-        it { expect(scope.call(data: data)).to be == expected }
+        it { expect(scope.call(data:)).to be == expected }
       end
     end
   end

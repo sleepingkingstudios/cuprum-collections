@@ -351,7 +351,7 @@ module Cuprum::Collections::RSpec::Contracts
             let(:constructor_options) do
               super()
                 .tap { |hsh| hsh.delete(:name) }
-                .merge(entity_class: entity_class)
+                .merge(entity_class:)
             end
 
             it { expect(subject.entity_class).to be Grimoire }
@@ -362,7 +362,7 @@ module Cuprum::Collections::RSpec::Contracts
             let(:constructor_options) do
               super()
                 .tap { |hsh| hsh.delete(:name) }
-                .merge(entity_class: entity_class)
+                .merge(entity_class:)
             end
 
             it { expect(subject.entity_class).to be Spec::ScopedBook }
@@ -373,7 +373,7 @@ module Cuprum::Collections::RSpec::Contracts
             let(:constructor_options) do
               super()
                 .tap { |hsh| hsh.delete(:name) }
-                .merge(entity_class: entity_class)
+                .merge(entity_class:)
             end
 
             it { expect(subject.entity_class).to be Grimoire }
@@ -384,7 +384,7 @@ module Cuprum::Collections::RSpec::Contracts
             let(:constructor_options) do
               super()
                 .tap { |hsh| hsh.delete(:name) }
-                .merge(entity_class: entity_class)
+                .merge(entity_class:)
             end
 
             it { expect(subject.entity_class).to be Spec::ScopedBook }
@@ -393,7 +393,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when initialized with name: a String' do
             let(:name) { 'books' }
             let(:constructor_options) do
-              super().merge(name: name)
+              super().merge(name:)
             end
             let(:expected) { options[:default_entity_class] || Book }
 
@@ -404,7 +404,7 @@ module Cuprum::Collections::RSpec::Contracts
               let(:constructor_options) do
                 super()
                   .tap { |hsh| hsh.delete(:name) }
-                  .merge(entity_class: entity_class)
+                  .merge(entity_class:)
               end
 
               it { expect(subject.entity_class).to be Grimoire }
@@ -413,7 +413,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with qualified_name: value' do
               let(:qualified_name) { 'spec/scoped_books' }
               let(:constructor_options) do
-                super().merge(qualified_name: qualified_name)
+                super().merge(qualified_name:)
               end
               let(:expected) do
                 options[:default_entity_class] || Spec::ScopedBook
@@ -426,7 +426,7 @@ module Cuprum::Collections::RSpec::Contracts
                 let(:constructor_options) do
                   super()
                     .tap { |hsh| hsh.delete(:name) }
-                    .merge(entity_class: entity_class)
+                    .merge(entity_class:)
                 end
 
                 it { expect(subject.entity_class).to be Grimoire }
@@ -437,7 +437,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when initialized with name: a Symbol' do
             let(:name) { 'books' }
             let(:constructor_options) do
-              super().merge(name: name)
+              super().merge(name:)
             end
             let(:expected) { options[:default_entity_class] || Book }
 
@@ -448,7 +448,7 @@ module Cuprum::Collections::RSpec::Contracts
               let(:constructor_options) do
                 super()
                   .tap { |hsh| hsh.delete(:name) }
-                  .merge(entity_class: entity_class)
+                  .merge(entity_class:)
               end
 
               it { expect(subject.entity_class).to be Grimoire }
@@ -457,7 +457,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with qualified_name: value' do
               let(:qualified_name) { 'spec/scoped_books' }
               let(:constructor_options) do
-                super().merge(qualified_name: qualified_name)
+                super().merge(qualified_name:)
               end
               let(:expected) do
                 options[:default_entity_class] || Spec::ScopedBook
@@ -470,7 +470,7 @@ module Cuprum::Collections::RSpec::Contracts
                 let(:constructor_options) do
                   super()
                     .tap { |hsh| hsh.delete(:name) }
-                    .merge(entity_class: entity_class)
+                    .merge(entity_class:)
                 end
 
                 it { expect(subject.entity_class).to be Grimoire }
@@ -481,7 +481,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when initialized with qualified_name: a String' do
             let(:qualified_name) { 'spec/scoped_books' }
             let(:constructor_options) do
-              super().merge(qualified_name: qualified_name)
+              super().merge(qualified_name:)
             end
             let(:expected) do
               options[:default_entity_class] || Spec::ScopedBook
@@ -494,7 +494,7 @@ module Cuprum::Collections::RSpec::Contracts
               let(:constructor_options) do
                 super()
                   .tap { |hsh| hsh.delete(:name) }
-                  .merge(entity_class: entity_class)
+                  .merge(entity_class:)
               end
 
               it { expect(subject.entity_class).to be Grimoire }
@@ -504,7 +504,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when initialized with qualified_name: a Symbol' do
             let(:qualified_name) { :'spec/scoped_books' }
             let(:constructor_options) do
-              super().merge(qualified_name: qualified_name)
+              super().merge(qualified_name:)
             end
             let(:expected) do
               options[:default_entity_class] || Spec::ScopedBook
@@ -517,7 +517,7 @@ module Cuprum::Collections::RSpec::Contracts
               let(:constructor_options) do
                 super()
                   .tap { |hsh| hsh.delete(:name) }
-                  .merge(entity_class: entity_class)
+                  .merge(entity_class:)
               end
 
               it { expect(subject.entity_class).to be Grimoire }
@@ -533,7 +533,7 @@ module Cuprum::Collections::RSpec::Contracts
             let(:constructor_options) do
               super()
                 .tap { |hsh| hsh.delete(:name) }
-                .merge(entity_class: entity_class)
+                .merge(entity_class:)
             end
 
             it { expect(subject.plural_name).to be == 'grimoires' }
@@ -541,7 +541,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with plural_name: value' do
               let(:plural_name) { 'books' }
               let(:constructor_options) do
-                super().merge(plural_name: plural_name)
+                super().merge(plural_name:)
               end
 
               it { expect(subject.plural_name).to be == plural_name }
@@ -553,7 +553,7 @@ module Cuprum::Collections::RSpec::Contracts
             let(:constructor_options) do
               super()
                 .tap { |hsh| hsh.delete(:name) }
-                .merge(entity_class: entity_class)
+                .merge(entity_class:)
             end
 
             it { expect(subject.plural_name).to be == 'scoped_books' }
@@ -561,7 +561,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with plural_name: value' do
               let(:plural_name) { 'books' }
               let(:constructor_options) do
-                super().merge(plural_name: plural_name)
+                super().merge(plural_name:)
               end
 
               it { expect(subject.plural_name).to be == plural_name }
@@ -573,7 +573,7 @@ module Cuprum::Collections::RSpec::Contracts
             let(:constructor_options) do
               super()
                 .tap { |hsh| hsh.delete(:name) }
-                .merge(entity_class: entity_class)
+                .merge(entity_class:)
             end
 
             it { expect(subject.plural_name).to be == 'grimoires' }
@@ -581,7 +581,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with plural_name: value' do
               let(:plural_name) { 'books' }
               let(:constructor_options) do
-                super().merge(plural_name: plural_name)
+                super().merge(plural_name:)
               end
 
               it { expect(subject.plural_name).to be == plural_name }
@@ -593,7 +593,7 @@ module Cuprum::Collections::RSpec::Contracts
             let(:constructor_options) do
               super()
                 .tap { |hsh| hsh.delete(:name) }
-                .merge(entity_class: entity_class)
+                .merge(entity_class:)
             end
 
             it { expect(subject.plural_name).to be == 'scoped_books' }
@@ -601,7 +601,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with plural_name: value' do
               let(:plural_name) { 'books' }
               let(:constructor_options) do
-                super().merge(plural_name: plural_name)
+                super().merge(plural_name:)
               end
 
               it { expect(subject.plural_name).to be == plural_name }
@@ -611,7 +611,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when initialized with name: a String' do
             let(:name) { 'grimoires' }
             let(:constructor_options) do
-              super().merge(name: name)
+              super().merge(name:)
             end
 
             it { expect(subject.plural_name).to be == 'grimoires' }
@@ -619,7 +619,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with plural_name: value' do
               let(:plural_name) { 'books' }
               let(:constructor_options) do
-                super().merge(plural_name: plural_name)
+                super().merge(plural_name:)
               end
 
               it { expect(subject.plural_name).to be == plural_name }
@@ -629,7 +629,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when initialized with name: a Symbol' do
             let(:name) { :grimoires }
             let(:constructor_options) do
-              super().merge(name: name)
+              super().merge(name:)
             end
 
             it { expect(subject.plural_name).to be == 'grimoires' }
@@ -637,7 +637,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with plural_name: value' do
               let(:plural_name) { 'books' }
               let(:constructor_options) do
-                super().merge(plural_name: plural_name)
+                super().merge(plural_name:)
               end
 
               it { expect(subject.plural_name).to be == plural_name }
@@ -653,7 +653,7 @@ module Cuprum::Collections::RSpec::Contracts
             let(:constructor_options) do
               super()
                 .tap { |hsh| hsh.delete(:name) }
-                .merge(entity_class: entity_class)
+                .merge(entity_class:)
             end
 
             it { expect(subject.singular_name).to be == 'grimoire' }
@@ -661,7 +661,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with singular_name: value' do
               let(:singular_name) { 'book' }
               let(:constructor_options) do
-                super().merge(singular_name: singular_name)
+                super().merge(singular_name:)
               end
 
               it { expect(subject.singular_name).to be == singular_name }
@@ -673,7 +673,7 @@ module Cuprum::Collections::RSpec::Contracts
             let(:constructor_options) do
               super()
                 .tap { |hsh| hsh.delete(:name) }
-                .merge(entity_class: entity_class)
+                .merge(entity_class:)
             end
 
             it { expect(subject.singular_name).to be == 'scoped_book' }
@@ -681,7 +681,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with singular_name: value' do
               let(:singular_name) { 'book' }
               let(:constructor_options) do
-                super().merge(singular_name: singular_name)
+                super().merge(singular_name:)
               end
 
               it { expect(subject.singular_name).to be == singular_name }
@@ -693,7 +693,7 @@ module Cuprum::Collections::RSpec::Contracts
             let(:constructor_options) do
               super()
                 .tap { |hsh| hsh.delete(:name) }
-                .merge(entity_class: entity_class)
+                .merge(entity_class:)
             end
 
             it { expect(subject.singular_name).to be == 'grimoire' }
@@ -701,7 +701,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with singular_name: value' do
               let(:singular_name) { 'book' }
               let(:constructor_options) do
-                super().merge(singular_name: singular_name)
+                super().merge(singular_name:)
               end
 
               it { expect(subject.singular_name).to be == singular_name }
@@ -713,7 +713,7 @@ module Cuprum::Collections::RSpec::Contracts
             let(:constructor_options) do
               super()
                 .tap { |hsh| hsh.delete(:name) }
-                .merge(entity_class: entity_class)
+                .merge(entity_class:)
             end
 
             it { expect(subject.singular_name).to be == 'scoped_book' }
@@ -721,7 +721,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with singular_name: value' do
               let(:singular_name) { 'book' }
               let(:constructor_options) do
-                super().merge(singular_name: singular_name)
+                super().merge(singular_name:)
               end
 
               it { expect(subject.singular_name).to be == singular_name }
@@ -731,7 +731,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when initialized with name: a String' do
             let(:name) { 'grimoires' }
             let(:constructor_options) do
-              super().merge(name: name)
+              super().merge(name:)
             end
 
             it { expect(subject.singular_name).to be == 'grimoire' }
@@ -739,7 +739,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with singular_name: value' do
               let(:singular_name) { 'book' }
               let(:constructor_options) do
-                super().merge(singular_name: singular_name)
+                super().merge(singular_name:)
               end
 
               it { expect(subject.singular_name).to be == singular_name }
@@ -749,7 +749,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when initialized with name: a Symbol' do
             let(:name) { :grimoires }
             let(:constructor_options) do
-              super().merge(name: name)
+              super().merge(name:)
             end
 
             it { expect(subject.singular_name).to be == 'grimoire' }
@@ -757,7 +757,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with singular_name: value' do
               let(:singular_name) { 'book' }
               let(:constructor_options) do
-                super().merge(singular_name: singular_name)
+                super().merge(singular_name:)
               end
 
               it { expect(subject.singular_name).to be == singular_name }
@@ -773,7 +773,7 @@ module Cuprum::Collections::RSpec::Contracts
             let(:constructor_options) do
               super()
                 .tap { |hsh| hsh.delete(:name) }
-                .merge(entity_class: entity_class)
+                .merge(entity_class:)
             end
 
             it { expect(subject.name).to be == 'grimoires' }
@@ -781,7 +781,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with name: value' do
               let(:name) { 'books' }
               let(:constructor_options) do
-                super().merge(name: name)
+                super().merge(name:)
               end
 
               it { expect(subject.name).to be == name }
@@ -793,7 +793,7 @@ module Cuprum::Collections::RSpec::Contracts
             let(:constructor_options) do
               super()
                 .tap { |hsh| hsh.delete(:name) }
-                .merge(entity_class: entity_class)
+                .merge(entity_class:)
             end
 
             it { expect(subject.name).to be == 'scoped_books' }
@@ -801,7 +801,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with name: value' do
               let(:name) { 'books' }
               let(:constructor_options) do
-                super().merge(name: name)
+                super().merge(name:)
               end
 
               it { expect(subject.name).to be == name }
@@ -813,7 +813,7 @@ module Cuprum::Collections::RSpec::Contracts
             let(:constructor_options) do
               super()
                 .tap { |hsh| hsh.delete(:name) }
-                .merge(entity_class: entity_class)
+                .merge(entity_class:)
             end
 
             it { expect(subject.name).to be == 'grimoires' }
@@ -821,7 +821,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with name: value' do
               let(:name) { 'books' }
               let(:constructor_options) do
-                super().merge(name: name)
+                super().merge(name:)
               end
 
               it { expect(subject.name).to be == name }
@@ -833,7 +833,7 @@ module Cuprum::Collections::RSpec::Contracts
             let(:constructor_options) do
               super()
                 .tap { |hsh| hsh.delete(:name) }
-                .merge(entity_class: entity_class)
+                .merge(entity_class:)
             end
 
             it { expect(subject.name).to be == 'scoped_books' }
@@ -841,7 +841,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with name: value' do
               let(:name) { 'books' }
               let(:constructor_options) do
-                super().merge(name: name)
+                super().merge(name:)
               end
 
               it { expect(subject.name).to be == name }
@@ -851,7 +851,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when initialized with name: a String' do
             let(:name) { 'books' }
             let(:constructor_options) do
-              super().merge(name: name)
+              super().merge(name:)
             end
 
             it { expect(subject.name).to be == name }
@@ -860,7 +860,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when initialized with name: a Symbol' do
             let(:name) { :books }
             let(:constructor_options) do
-              super().merge(name: name)
+              super().merge(name:)
             end
 
             it { expect(subject.name).to be == name.to_s }
@@ -875,7 +875,7 @@ module Cuprum::Collections::RSpec::Contracts
             let(:constructor_options) do
               super()
                 .tap { |hsh| hsh.delete(:name) }
-                .merge(entity_class: entity_class)
+                .merge(entity_class:)
             end
 
             it { expect(subject.options).to be == {} }
@@ -884,7 +884,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when initialized with singular_name: value' do
             let(:singular_name) { 'book' }
             let(:constructor_options) do
-              super().merge(singular_name: singular_name)
+              super().merge(singular_name:)
             end
 
             it { expect(subject.options).to be == {} }
@@ -893,7 +893,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when initialized with name: value' do
             let(:name) { 'books' }
             let(:constructor_options) do
-              super().merge(name: name)
+              super().merge(name:)
             end
 
             it { expect(subject.options).to be == {} }
@@ -902,7 +902,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when initialized with qualified_name: value' do
             let(:qualified_name) { 'spec/scoped_books' }
             let(:constructor_options) do
-              super().merge(qualified_name: qualified_name)
+              super().merge(qualified_name:)
             end
 
             it { expect(subject.options).to be == {} }
@@ -926,7 +926,7 @@ module Cuprum::Collections::RSpec::Contracts
             let(:constructor_options) do
               super()
                 .tap { |hsh| hsh.delete(:name) }
-                .merge(entity_class: entity_class)
+                .merge(entity_class:)
             end
 
             it { expect(subject.qualified_name).to be == 'grimoires' }
@@ -934,7 +934,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with qualified_name: value' do
               let(:qualified_name) { 'path/to/books' }
               let(:constructor_options) do
-                super().merge(qualified_name: qualified_name)
+                super().merge(qualified_name:)
               end
 
               it { expect(subject.qualified_name).to be == qualified_name }
@@ -946,7 +946,7 @@ module Cuprum::Collections::RSpec::Contracts
             let(:constructor_options) do
               super()
                 .tap { |hsh| hsh.delete(:name) }
-                .merge(entity_class: entity_class)
+                .merge(entity_class:)
             end
 
             it { expect(subject.qualified_name).to be == 'spec/scoped_books' }
@@ -954,7 +954,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with qualified_name: value' do
               let(:qualified_name) { 'path/to/books' }
               let(:constructor_options) do
-                super().merge(qualified_name: qualified_name)
+                super().merge(qualified_name:)
               end
 
               it { expect(subject.qualified_name).to be == qualified_name }
@@ -966,7 +966,7 @@ module Cuprum::Collections::RSpec::Contracts
             let(:constructor_options) do
               super()
                 .tap { |hsh| hsh.delete(:name) }
-                .merge(entity_class: entity_class)
+                .merge(entity_class:)
             end
 
             it { expect(subject.qualified_name).to be == 'grimoires' }
@@ -974,7 +974,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with qualified_name: value' do
               let(:qualified_name) { 'path/to/books' }
               let(:constructor_options) do
-                super().merge(qualified_name: qualified_name)
+                super().merge(qualified_name:)
               end
 
               it { expect(subject.qualified_name).to be == qualified_name }
@@ -986,7 +986,7 @@ module Cuprum::Collections::RSpec::Contracts
             let(:constructor_options) do
               super()
                 .tap { |hsh| hsh.delete(:name) }
-                .merge(entity_class: entity_class)
+                .merge(entity_class:)
             end
 
             it { expect(subject.qualified_name).to be == 'spec/scoped_books' }
@@ -994,7 +994,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with qualified_name: value' do
               let(:qualified_name) { 'path/to/books' }
               let(:constructor_options) do
-                super().merge(qualified_name: qualified_name)
+                super().merge(qualified_name:)
               end
 
               it { expect(subject.qualified_name).to be == qualified_name }
@@ -1004,7 +1004,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when initialized with name: a String' do
             let(:name) { 'books' }
             let(:constructor_options) do
-              super().merge(name: name)
+              super().merge(name:)
             end
 
             it { expect(subject.qualified_name).to be == name }
@@ -1012,7 +1012,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with qualified_name: value' do
               let(:qualified_name) { 'path/to/books' }
               let(:constructor_options) do
-                super().merge(qualified_name: qualified_name)
+                super().merge(qualified_name:)
               end
 
               it { expect(subject.qualified_name).to be == qualified_name }
@@ -1022,7 +1022,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when initialized with name: a Symbol' do
             let(:name) { :books }
             let(:constructor_options) do
-              super().merge(name: name)
+              super().merge(name:)
             end
 
             it { expect(subject.qualified_name).to be == name.to_s }
@@ -1030,7 +1030,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with qualified_name: value' do
               let(:qualified_name) { 'path/to/books' }
               let(:constructor_options) do
-                super().merge(qualified_name: qualified_name)
+                super().merge(qualified_name:)
               end
 
               it { expect(subject.qualified_name).to be == qualified_name }
@@ -1040,7 +1040,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when initialized with qualified_name: a String' do
             let(:qualified_name) { 'path/to/books' }
             let(:constructor_options) do
-              super().merge(qualified_name: qualified_name)
+              super().merge(qualified_name:)
             end
 
             it { expect(subject.qualified_name).to be == qualified_name }
@@ -1049,7 +1049,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when initialized with qualified_name: a Symbol' do
             let(:qualified_name) { :'path/to/books' }
             let(:constructor_options) do
-              super().merge(qualified_name: qualified_name)
+              super().merge(qualified_name:)
             end
 
             it { expect(subject.qualified_name).to be == qualified_name.to_s }
@@ -1217,7 +1217,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when initialized with primary_key_name: a String' do
             let(:primary_key_name) { 'uuid' }
             let(:constructor_options) do
-              super().merge(primary_key_name: primary_key_name)
+              super().merge(primary_key_name:)
             end
 
             it { expect(subject.primary_key_name).to be == primary_key_name }
@@ -1226,7 +1226,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when initialized with primary_key_name: a Symbol' do
             let(:primary_key_name) { :uuid }
             let(:constructor_options) do
-              super().merge(primary_key_name: primary_key_name)
+              super().merge(primary_key_name:)
             end
 
             it 'should set the primary key name' do
@@ -1249,7 +1249,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when initialized with primary_key_type: value' do
             let(:primary_key_type) { String }
             let(:constructor_options) do
-              super().merge(primary_key_type: primary_key_type)
+              super().merge(primary_key_type:)
             end
 
             it { expect(subject.primary_key_type).to be == primary_key_type }

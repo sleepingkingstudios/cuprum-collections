@@ -25,8 +25,8 @@ Gem::Specification.new do |gem|
   gem.require_path = 'lib'
   gem.files        = Dir['lib/**/*.rb', 'LICENSE', '*.md']
 
-  gem.required_ruby_version = '~> 3.0'
+  gem.required_ruby_version = '~> 3.1'
 
-  gem.add_runtime_dependency 'cuprum',  '~> 1.1'
-  gem.add_runtime_dependency 'stannum', '~> 0.3'
+  gem.add_dependency 'cuprum',  '~> 1.1'
+  gem.add_dependency 'stannum', '~> 0.3'
 end

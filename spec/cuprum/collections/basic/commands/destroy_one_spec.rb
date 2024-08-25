@@ -14,7 +14,7 @@ RSpec.describe Cuprum::Collections::Basic::Commands::DestroyOne do
 
   subject(:command) do
     described_class.new(
-      collection_name: collection_name,
+      collection_name:,
       data:            mapped_data,
       **constructor_options
     )

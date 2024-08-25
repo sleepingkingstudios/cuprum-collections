@@ -2,7 +2,7 @@ require:
   - rubocop-rspec
 
 AllCops:
-  TargetRubyVersion: 3.0
+  TargetRubyVersion: 3.1
   NewCops: enable
   Exclude:
     - tmp/**/*
@@ -76,9 +76,6 @@ RSpec/Eq:
   Enabled: false
 
 RSpec/ExampleWording:
-  Enabled: false
-
-RSpec/FilePath:
   Enabled: false
 
 RSpec/HookArgument:

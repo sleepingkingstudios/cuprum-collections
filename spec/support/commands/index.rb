@@ -21,7 +21,7 @@ module Spec::Support::Commands
     def process(envelope: false, **parameters)
       step do
         collection.find_matching.call(
-          envelope: envelope,
+          envelope:,
           **parameters
         )
       end

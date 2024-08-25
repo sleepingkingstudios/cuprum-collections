@@ -54,7 +54,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when initialized with inverse: value' do
             let(:inverse) { described_class.new(name: 'authors') }
             let(:constructor_options) do
-              super().merge(inverse: inverse)
+              super().merge(inverse:)
             end
 
             it { expect(subject.inverse).to be == inverse }
@@ -70,7 +70,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with inverse: value' do
               let(:inverse) { described_class.new(name: 'authors') }
               let(:constructor_options) do
-                super().merge(inverse: inverse)
+                super().merge(inverse:)
               end
 
               it { expect(subject.inverse).to be == new_inverse }
@@ -84,7 +84,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when initialized with inverse: value' do
             let(:inverse) { described_class.new(name: 'authors') }
             let(:constructor_options) do
-              super().merge(inverse: inverse)
+              super().merge(inverse:)
             end
 
             it { expect(subject.inverse_class).to be == Author }
@@ -150,7 +150,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with inverse: value' do
               let(:inverse) { described_class.new(name: 'authors') }
               let(:constructor_options) do
-                super().merge(inverse: inverse)
+                super().merge(inverse:)
               end
 
               it { expect(subject.inverse_class).to be == Chapter }
@@ -168,7 +168,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when initialized with inverse: value' do
             let(:inverse) { described_class.new(name: 'authors') }
             let(:constructor_options) do
-              super().merge(inverse: inverse)
+              super().merge(inverse:)
             end
 
             it { expect(subject.inverse_name).to be == 'authors' }
@@ -218,7 +218,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with inverse: value' do
               let(:inverse) { described_class.new(name: 'authors') }
               let(:constructor_options) do
-                super().merge(inverse: inverse)
+                super().merge(inverse:)
               end
 
               it { expect(subject.inverse_name).to be == 'chapters' }
@@ -255,7 +255,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when initialized with inverse: value' do
             let(:inverse) { described_class.new(name: 'authors') }
             let(:constructor_options) do
-              super().merge(inverse: inverse)
+              super().merge(inverse:)
             end
 
             it { expect(subject.options).to be == {} }
@@ -280,7 +280,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when initialized with inverse: value' do
             let(:inverse) { described_class.new(name: 'authors') }
             let(:constructor_options) do
-              super().merge(inverse: inverse)
+              super().merge(inverse:)
             end
 
             it { expect(subject.singular_inverse_name).to be == 'author' }
@@ -288,7 +288,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with singular_inverse_name: a String' do
               let(:singular_inverse_name) { 'writer' }
               let(:constructor_options) do
-                super().merge(singular_inverse_name: singular_inverse_name)
+                super().merge(singular_inverse_name:)
               end
 
               it { expect(subject.singular_inverse_name).to be == 'writer' }
@@ -297,7 +297,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with singular_inverse_name: a Symbol' do
               let(:singular_inverse_name) { :writer }
               let(:constructor_options) do
-                super().merge(singular_inverse_name: singular_inverse_name)
+                super().merge(singular_inverse_name:)
               end
 
               it { expect(subject.singular_inverse_name).to be == 'writer' }
@@ -307,7 +307,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when initialized with inverse_name: value' do
             let(:inverse_name) { 'authors' }
             let(:constructor_options) do
-              super().merge(inverse_name: inverse_name)
+              super().merge(inverse_name:)
             end
 
             it { expect(subject.singular_inverse_name).to be == 'author' }
@@ -315,7 +315,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with singular_inverse_name: a String' do
               let(:singular_inverse_name) { 'writer' }
               let(:constructor_options) do
-                super().merge(singular_inverse_name: singular_inverse_name)
+                super().merge(singular_inverse_name:)
               end
 
               it { expect(subject.singular_inverse_name).to be == 'writer' }
@@ -324,7 +324,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with singular_inverse_name: a Symbol' do
               let(:singular_inverse_name) { :writer }
               let(:constructor_options) do
-                super().merge(singular_inverse_name: singular_inverse_name)
+                super().merge(singular_inverse_name:)
               end
 
               it { expect(subject.singular_inverse_name).to be == 'writer' }
@@ -334,7 +334,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when initialized with singular_inverse_name: a String' do
             let(:singular_inverse_name) { 'writer' }
             let(:constructor_options) do
-              super().merge(singular_inverse_name: singular_inverse_name)
+              super().merge(singular_inverse_name:)
             end
 
             it { expect(subject.singular_inverse_name).to be == 'writer' }
@@ -343,7 +343,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when initialized with singular_inverse_name: a Symbol' do
             let(:singular_inverse_name) { :writer }
             let(:constructor_options) do
-              super().merge(singular_inverse_name: singular_inverse_name)
+              super().merge(singular_inverse_name:)
             end
 
             it { expect(subject.singular_inverse_name).to be == 'writer' }
@@ -361,7 +361,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with inverse: value' do
               let(:inverse) { described_class.new(name: 'authors') }
               let(:constructor_options) do
-                super().merge(inverse: inverse)
+                super().merge(inverse:)
               end
 
               it { expect(subject.singular_inverse_name).to be == 'chapter' }
@@ -370,7 +370,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with inverse_name: value' do
               let(:inverse_name) { 'authors' }
               let(:constructor_options) do
-                super().merge(inverse_name: inverse_name)
+                super().merge(inverse_name:)
               end
 
               it { expect(subject.singular_inverse_name).to be == 'chapter' }
@@ -378,7 +378,7 @@ module Cuprum::Collections::RSpec::Contracts
               context 'when initialized with singular_inverse_name: a String' do
                 let(:singular_inverse_name) { 'writer' }
                 let(:constructor_options) do
-                  super().merge(singular_inverse_name: singular_inverse_name)
+                  super().merge(singular_inverse_name:)
                 end
 
                 it { expect(subject.singular_inverse_name).to be == 'writer' }
@@ -387,7 +387,7 @@ module Cuprum::Collections::RSpec::Contracts
               context 'when initialized with singular_inverse_name: a Symbol' do
                 let(:singular_inverse_name) { :writer }
                 let(:constructor_options) do
-                  super().merge(singular_inverse_name: singular_inverse_name)
+                  super().merge(singular_inverse_name:)
                 end
 
                 it { expect(subject.singular_inverse_name).to be == 'writer' }
@@ -397,7 +397,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with singular_inverse_name: a String' do
               let(:singular_inverse_name) { 'writer' }
               let(:constructor_options) do
-                super().merge(singular_inverse_name: singular_inverse_name)
+                super().merge(singular_inverse_name:)
               end
 
               it { expect(subject.singular_inverse_name).to be == 'writer' }
@@ -406,7 +406,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with singular_inverse_name: a Symbol' do
               let(:singular_inverse_name) { :writer }
               let(:constructor_options) do
-                super().merge(singular_inverse_name: singular_inverse_name)
+                super().merge(singular_inverse_name:)
               end
 
               it { expect(subject.singular_inverse_name).to be == 'writer' }
@@ -715,7 +715,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when initialized with foreign_key_name: a String' do
             let(:foreign_key_name) { 'writer_id' }
             let(:constructor_options) do
-              super().merge(foreign_key_name: foreign_key_name)
+              super().merge(foreign_key_name:)
             end
 
             it { expect(subject.foreign_key_name).to be == 'writer_id' }
@@ -724,7 +724,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when initialized with foreign_key_name: a String' do
             let(:foreign_key_name) { :writer_id }
             let(:constructor_options) do
-              super().merge(foreign_key_name: foreign_key_name)
+              super().merge(foreign_key_name:)
             end
 
             it { expect(subject.foreign_key_name).to be == 'writer_id' }
@@ -733,7 +733,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when initialized with singular_name: value' do
             let(:singular_name) { 'author' }
             let(:constructor_options) do
-              super().merge(singular_name: singular_name)
+              super().merge(singular_name:)
             end
 
             it { expect(subject.foreign_key_name).to be == 'author_id' }
@@ -741,7 +741,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with foreign_key_name: a String' do
               let(:foreign_key_name) { 'writer_id' }
               let(:constructor_options) do
-                super().merge(foreign_key_name: foreign_key_name)
+                super().merge(foreign_key_name:)
               end
 
               it { expect(subject.foreign_key_name).to be == 'writer_id' }
@@ -750,7 +750,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with foreign_key_name: a String' do
               let(:foreign_key_name) { :writer_id }
               let(:constructor_options) do
-                super().merge(foreign_key_name: foreign_key_name)
+                super().merge(foreign_key_name:)
               end
 
               it { expect(subject.foreign_key_name).to be == 'writer_id' }
@@ -770,7 +770,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when initialized with foreign_key_name: a String' do
             let(:foreign_key_name) { 'writer_id' }
             let(:constructor_options) do
-              super().merge(foreign_key_name: foreign_key_name)
+              super().merge(foreign_key_name:)
             end
 
             it { expect(subject.inverse_key_name).to be == 'writer_id' }
@@ -779,7 +779,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when initialized with foreign_key_name: a String' do
             let(:foreign_key_name) { :writer_id }
             let(:constructor_options) do
-              super().merge(foreign_key_name: foreign_key_name)
+              super().merge(foreign_key_name:)
             end
 
             it { expect(subject.inverse_key_name).to be == 'writer_id' }
@@ -788,7 +788,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when initialized with singular_name: value' do
             let(:singular_name) { 'author' }
             let(:constructor_options) do
-              super().merge(singular_name: singular_name)
+              super().merge(singular_name:)
             end
 
             it { expect(subject.inverse_key_name).to be == 'author_id' }
@@ -796,7 +796,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with foreign_key_name: a String' do
               let(:foreign_key_name) { 'writer_id' }
               let(:constructor_options) do
-                super().merge(foreign_key_name: foreign_key_name)
+                super().merge(foreign_key_name:)
               end
 
               it { expect(subject.inverse_key_name).to be == 'writer_id' }
@@ -805,7 +805,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with foreign_key_name: a String' do
               let(:foreign_key_name) { :writer_id }
               let(:constructor_options) do
-                super().merge(foreign_key_name: foreign_key_name)
+                super().merge(foreign_key_name:)
               end
 
               it { expect(subject.inverse_key_name).to be == 'writer_id' }
@@ -1121,7 +1121,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when initialized with primary_key_name: a String' do
             let(:primary_key_name) { 'uuid' }
             let(:constructor_options) do
-              super().merge(primary_key_name: primary_key_name)
+              super().merge(primary_key_name:)
             end
 
             it { expect(subject.query_key_name).to be == primary_key_name }
@@ -1130,7 +1130,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when initialized with primary_key_name: a Symbol' do
             let(:primary_key_name) { :uuid }
             let(:constructor_options) do
-              super().merge(primary_key_name: primary_key_name)
+              super().merge(primary_key_name:)
             end
 
             it 'should set the primary key name' do
@@ -1194,7 +1194,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when initialized with foreign_key_name: value' do
             let(:foreign_key_name) { 'author_id' }
             let(:constructor_options) do
-              super().merge(foreign_key_name: foreign_key_name)
+              super().merge(foreign_key_name:)
             end
 
             describe 'with no entities' do
@@ -1373,7 +1373,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when initialized with foreign_key_name: value' do
             let(:foreign_key_name) { 'author_id' }
             let(:constructor_options) do
-              super().merge(foreign_key_name: foreign_key_name)
+              super().merge(foreign_key_name:)
             end
 
             describe 'with no keys' do
@@ -1449,7 +1449,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when initialized with foreign_key_name: a String' do
             let(:foreign_key_name) { 'writer_id' }
             let(:constructor_options) do
-              super().merge(foreign_key_name: foreign_key_name)
+              super().merge(foreign_key_name:)
             end
 
             it { expect(subject.foreign_key_name).to be == 'writer_id' }
@@ -1458,7 +1458,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when initialized with foreign_key_name: a String' do
             let(:foreign_key_name) { :writer_id }
             let(:constructor_options) do
-              super().merge(foreign_key_name: foreign_key_name)
+              super().merge(foreign_key_name:)
             end
 
             it { expect(subject.foreign_key_name).to be == 'writer_id' }
@@ -1467,7 +1467,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when initialized with inverse: value' do
             let(:inverse) { described_class.new(name: 'authors') }
             let(:constructor_options) do
-              super().merge(inverse: inverse)
+              super().merge(inverse:)
             end
 
             it { expect(subject.foreign_key_name).to be == 'author_id' }
@@ -1475,7 +1475,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with foreign_key_name: a String' do
               let(:foreign_key_name) { 'writer_id' }
               let(:constructor_options) do
-                super().merge(foreign_key_name: foreign_key_name)
+                super().merge(foreign_key_name:)
               end
 
               it { expect(subject.foreign_key_name).to be == 'writer_id' }
@@ -1484,7 +1484,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with foreign_key_name: a String' do
               let(:foreign_key_name) { :writer_id }
               let(:constructor_options) do
-                super().merge(foreign_key_name: foreign_key_name)
+                super().merge(foreign_key_name:)
               end
 
               it { expect(subject.foreign_key_name).to be == 'writer_id' }
@@ -1493,7 +1493,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with inverse_name: value' do
               let(:inverse_name) { 'writers' }
               let(:constructor_options) do
-                super().merge(inverse_name: inverse_name)
+                super().merge(inverse_name:)
               end
 
               it { expect(subject.foreign_key_name).to be == 'author_id' }
@@ -1502,7 +1502,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with singular_inverse_name: value' do
               let(:singular_inverse_name) { 'writer' }
               let(:constructor_options) do
-                super().merge(singular_inverse_name: singular_inverse_name)
+                super().merge(singular_inverse_name:)
               end
 
               it { expect(subject.foreign_key_name).to be == 'writer_id' }
@@ -1512,7 +1512,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when initialized with inverse_name: value' do
             let(:inverse_name) { 'authors' }
             let(:constructor_options) do
-              super().merge(inverse_name: inverse_name)
+              super().merge(inverse_name:)
             end
 
             it { expect(subject.foreign_key_name).to be == 'author_id' }
@@ -1520,7 +1520,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with foreign_key_name: a String' do
               let(:foreign_key_name) { 'writer_id' }
               let(:constructor_options) do
-                super().merge(foreign_key_name: foreign_key_name)
+                super().merge(foreign_key_name:)
               end
 
               it { expect(subject.foreign_key_name).to be == 'writer_id' }
@@ -1529,7 +1529,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with foreign_key_name: a String' do
               let(:foreign_key_name) { :writer_id }
               let(:constructor_options) do
-                super().merge(foreign_key_name: foreign_key_name)
+                super().merge(foreign_key_name:)
               end
 
               it { expect(subject.foreign_key_name).to be == 'writer_id' }
@@ -1539,7 +1539,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when initialized with singular_inverse_name: value' do
             let(:singular_inverse_name) { 'author' }
             let(:constructor_options) do
-              super().merge(singular_inverse_name: singular_inverse_name)
+              super().merge(singular_inverse_name:)
             end
 
             it { expect(subject.foreign_key_name).to be == 'author_id' }
@@ -1547,7 +1547,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with foreign_key_name: a String' do
               let(:foreign_key_name) { 'writer_id' }
               let(:constructor_options) do
-                super().merge(foreign_key_name: foreign_key_name)
+                super().merge(foreign_key_name:)
               end
 
               it { expect(subject.foreign_key_name).to be == 'writer_id' }
@@ -1556,7 +1556,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with foreign_key_name: a String' do
               let(:foreign_key_name) { :writer_id }
               let(:constructor_options) do
-                super().merge(foreign_key_name: foreign_key_name)
+                super().merge(foreign_key_name:)
               end
 
               it { expect(subject.foreign_key_name).to be == 'writer_id' }
@@ -1575,7 +1575,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with foreign_key_name: a String' do
               let(:foreign_key_name) { 'writer_id' }
               let(:constructor_options) do
-                super().merge(foreign_key_name: foreign_key_name)
+                super().merge(foreign_key_name:)
               end
 
               it { expect(subject.foreign_key_name).to be == 'writer_id' }
@@ -1584,7 +1584,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with foreign_key_name: a String' do
               let(:foreign_key_name) { :writer_id }
               let(:constructor_options) do
-                super().merge(foreign_key_name: foreign_key_name)
+                super().merge(foreign_key_name:)
               end
 
               it { expect(subject.foreign_key_name).to be == 'writer_id' }
@@ -1593,7 +1593,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with inverse: value' do
               let(:inverse) { described_class.new(name: 'authors') }
               let(:constructor_options) do
-                super().merge(inverse: inverse)
+                super().merge(inverse:)
               end
 
               it { expect(subject.foreign_key_name).to be == 'chapter_id' }
@@ -1602,7 +1602,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with inverse_name: value' do
               let(:inverse_name) { 'authors' }
               let(:constructor_options) do
-                super().merge(inverse_name: inverse_name)
+                super().merge(inverse_name:)
               end
 
               it { expect(subject.foreign_key_name).to be == 'chapter_id' }
@@ -1611,7 +1611,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with singular_inverse_name: value' do
               let(:singular_inverse_name) { 'author' }
               let(:constructor_options) do
-                super().merge(singular_inverse_name: singular_inverse_name)
+                super().merge(singular_inverse_name:)
               end
 
               it { expect(subject.foreign_key_name).to be == 'author_id' }
@@ -1625,7 +1625,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when initialized with primary_key_name: a String' do
             let(:primary_key_name) { 'uuid' }
             let(:constructor_options) do
-              super().merge(primary_key_name: primary_key_name)
+              super().merge(primary_key_name:)
             end
 
             it { expect(subject.inverse_key_name).to be == primary_key_name }
@@ -1634,7 +1634,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when initialized with primary_key_name: a Symbol' do
             let(:primary_key_name) { :uuid }
             let(:constructor_options) do
-              super().merge(primary_key_name: primary_key_name)
+              super().merge(primary_key_name:)
             end
 
             it 'should set the primary key name' do
@@ -1949,7 +1949,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when initialized with foreign_key_name: a String' do
             let(:foreign_key_name) { 'writer_id' }
             let(:constructor_options) do
-              super().merge(foreign_key_name: foreign_key_name)
+              super().merge(foreign_key_name:)
             end
 
             it { expect(subject.query_key_name).to be == 'writer_id' }
@@ -1958,7 +1958,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when initialized with foreign_key_name: a String' do
             let(:foreign_key_name) { :writer_id }
             let(:constructor_options) do
-              super().merge(foreign_key_name: foreign_key_name)
+              super().merge(foreign_key_name:)
             end
 
             it { expect(subject.query_key_name).to be == 'writer_id' }
@@ -1967,7 +1967,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when initialized with inverse: value' do
             let(:inverse) { described_class.new(name: 'authors') }
             let(:constructor_options) do
-              super().merge(inverse: inverse)
+              super().merge(inverse:)
             end
 
             it { expect(subject.query_key_name).to be == 'author_id' }
@@ -1975,7 +1975,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with foreign_key_name: a String' do
               let(:foreign_key_name) { 'writer_id' }
               let(:constructor_options) do
-                super().merge(foreign_key_name: foreign_key_name)
+                super().merge(foreign_key_name:)
               end
 
               it { expect(subject.query_key_name).to be == 'writer_id' }
@@ -1984,7 +1984,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with foreign_key_name: a String' do
               let(:foreign_key_name) { :writer_id }
               let(:constructor_options) do
-                super().merge(foreign_key_name: foreign_key_name)
+                super().merge(foreign_key_name:)
               end
 
               it { expect(subject.query_key_name).to be == 'writer_id' }
@@ -1993,7 +1993,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with inverse_name: value' do
               let(:inverse_name) { 'writers' }
               let(:constructor_options) do
-                super().merge(inverse_name: inverse_name)
+                super().merge(inverse_name:)
               end
 
               it { expect(subject.query_key_name).to be == 'author_id' }
@@ -2002,7 +2002,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with singular_inverse_name: value' do
               let(:singular_inverse_name) { 'writer' }
               let(:constructor_options) do
-                super().merge(singular_inverse_name: singular_inverse_name)
+                super().merge(singular_inverse_name:)
               end
 
               it { expect(subject.query_key_name).to be == 'writer_id' }
@@ -2012,7 +2012,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when initialized with inverse_name: value' do
             let(:inverse_name) { 'authors' }
             let(:constructor_options) do
-              super().merge(inverse_name: inverse_name)
+              super().merge(inverse_name:)
             end
 
             it { expect(subject.query_key_name).to be == 'author_id' }
@@ -2020,7 +2020,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with foreign_key_name: a String' do
               let(:foreign_key_name) { 'writer_id' }
               let(:constructor_options) do
-                super().merge(foreign_key_name: foreign_key_name)
+                super().merge(foreign_key_name:)
               end
 
               it { expect(subject.query_key_name).to be == 'writer_id' }
@@ -2029,7 +2029,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with foreign_key_name: a String' do
               let(:foreign_key_name) { :writer_id }
               let(:constructor_options) do
-                super().merge(foreign_key_name: foreign_key_name)
+                super().merge(foreign_key_name:)
               end
 
               it { expect(subject.query_key_name).to be == 'writer_id' }
@@ -2039,7 +2039,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when initialized with singular_inverse_name: value' do
             let(:singular_inverse_name) { 'author' }
             let(:constructor_options) do
-              super().merge(singular_inverse_name: singular_inverse_name)
+              super().merge(singular_inverse_name:)
             end
 
             it { expect(subject.query_key_name).to be == 'author_id' }
@@ -2047,7 +2047,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with foreign_key_name: a String' do
               let(:foreign_key_name) { 'writer_id' }
               let(:constructor_options) do
-                super().merge(foreign_key_name: foreign_key_name)
+                super().merge(foreign_key_name:)
               end
 
               it { expect(subject.query_key_name).to be == 'writer_id' }
@@ -2056,7 +2056,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with foreign_key_name: a String' do
               let(:foreign_key_name) { :writer_id }
               let(:constructor_options) do
-                super().merge(foreign_key_name: foreign_key_name)
+                super().merge(foreign_key_name:)
               end
 
               it { expect(subject.query_key_name).to be == 'writer_id' }
@@ -2075,7 +2075,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with foreign_key_name: a String' do
               let(:foreign_key_name) { 'writer_id' }
               let(:constructor_options) do
-                super().merge(foreign_key_name: foreign_key_name)
+                super().merge(foreign_key_name:)
               end
 
               it { expect(subject.query_key_name).to be == 'writer_id' }
@@ -2084,7 +2084,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with foreign_key_name: a String' do
               let(:foreign_key_name) { :writer_id }
               let(:constructor_options) do
-                super().merge(foreign_key_name: foreign_key_name)
+                super().merge(foreign_key_name:)
               end
 
               it { expect(subject.query_key_name).to be == 'writer_id' }
@@ -2093,7 +2093,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with inverse: value' do
               let(:inverse) { described_class.new(name: 'authors') }
               let(:constructor_options) do
-                super().merge(inverse: inverse)
+                super().merge(inverse:)
               end
 
               it { expect(subject.query_key_name).to be == 'chapter_id' }
@@ -2102,7 +2102,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with inverse_name: value' do
               let(:inverse_name) { 'authors' }
               let(:constructor_options) do
-                super().merge(inverse_name: inverse_name)
+                super().merge(inverse_name:)
               end
 
               it { expect(subject.query_key_name).to be == 'chapter_id' }
@@ -2111,7 +2111,7 @@ module Cuprum::Collections::RSpec::Contracts
             context 'when initialized with singular_inverse_name: value' do
               let(:singular_inverse_name) { 'author' }
               let(:constructor_options) do
-                super().merge(singular_inverse_name: singular_inverse_name)
+                super().merge(singular_inverse_name:)
               end
 
               it { expect(subject.query_key_name).to be == 'author_id' }

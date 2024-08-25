@@ -176,7 +176,7 @@ module Cuprum::Collections::RSpec::Contracts
         include_examples 'should define the command', :validate_one
 
         describe '#==' do
-          let(:other_options)    { { name: name } }
+          let(:other_options)    { { name: } }
           let(:other_collection) { described_class.new(**other_options) }
 
           describe 'with nil' do
@@ -312,7 +312,7 @@ module Cuprum::Collections::RSpec::Contracts
           describe 'with partially-matching options' do
             let(:other_options) do
               {
-                name:          name,
+                name:,
                 singular_name: 'grimoire'
               }
             end

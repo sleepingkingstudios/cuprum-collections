@@ -21,8 +21,8 @@ module Cuprum::Collections::Commands
       success(query)
     end
 
-    def build_scope(value, &block)
-      return Cuprum::Collections::Scope.build(&block) if block_given?
+    def build_scope(value, &)
+      return Cuprum::Collections::Scope.build(&) if block_given?
 
       return value if value.is_a?(Cuprum::Collections::Scopes::Base)
 
@@ -47,10 +47,10 @@ module Cuprum::Collections::Commands
       scope = step { build_scope(where, &block) }
       query = step do
         apply_query(
-          limit:  limit,
-          offset: offset,
-          order:  order,
-          scope:  scope
+          limit:,
+          offset:,
+          order:,
+          scope:
         )
       end
 

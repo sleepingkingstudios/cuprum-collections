@@ -27,7 +27,7 @@ module Cuprum::Collections::Basic
 
       data ||= @data.fetch(qualified_name, [])
 
-      Cuprum::Collections::Basic.new(data: data, **parameters)
+      Cuprum::Collections::Basic.new(data:, **parameters)
     end
 
     def valid_collection?(collection)

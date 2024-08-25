@@ -15,7 +15,7 @@ RSpec.describe Cuprum::Collections::Commands::Upsert do
         key 'series', Stannum::Constraints::Presence.new
       end
     end
-    let(:constructor_options) { super().merge(contract: contract) }
+    let(:constructor_options) { super().merge(contract:) }
   end
 
   shared_context 'when the collection defines a default contract' do
@@ -35,7 +35,7 @@ RSpec.describe Cuprum::Collections::Commands::Upsert do
     )
   end
   let(:collection_options)  { {} }
-  let(:constructor_options) { { collection: collection } }
+  let(:constructor_options) { { collection: } }
 
   describe '.new' do
     it 'should define the constructor' do
@@ -65,7 +65,7 @@ RSpec.describe Cuprum::Collections::Commands::Upsert do
         "invalid attribute name #{attribute_names.inspect}"
       end
       let(:constructor_options) do
-        super().merge(attribute_names: attribute_names)
+        super().merge(attribute_names:)
       end
 
       it 'should raise an exception' do
@@ -109,7 +109,7 @@ RSpec.describe Cuprum::Collections::Commands::Upsert do
     context 'when initialized with attribute_names: an Array of Strings' do
       let(:attribute_names) { %w[title author] }
       let(:constructor_options) do
-        super().merge(attribute_names: attribute_names)
+        super().merge(attribute_names:)
       end
 
       it { expect(command.attribute_names).to be == Set.new(attribute_names) }
@@ -119,7 +119,7 @@ RSpec.describe Cuprum::Collections::Commands::Upsert do
       let(:attribute_names) { %i[title author] }
       let(:expected)        { attribute_names.map(&:to_s) }
       let(:constructor_options) do
-        super().merge(attribute_names: attribute_names)
+        super().merge(attribute_names:)
       end
 
       it { expect(command.attribute_names).to be == Set.new(expected) }
@@ -136,18 +136,18 @@ RSpec.describe Cuprum::Collections::Commands::Upsert do
 
             Cuprum::Collections::Errors::FailedValidation.new(
               entity_class: Hash,
-              errors:       errors
+              errors:
             )
           end
 
           it 'should return a failing result' do
-            expect(command.call(attributes: attributes))
+            expect(command.call(attributes:))
               .to be_a_failing_result
               .with_error(expected_error)
           end
 
           it 'should not add an entity to the collection' do
-            expect { command.call(attributes: attributes) }
+            expect { command.call(attributes:) }
               .not_to(change { collection.query.count })
           end
         end
@@ -157,13 +157,13 @@ RSpec.describe Cuprum::Collections::Commands::Upsert do
           let(:expected_value) { attributes }
 
           it 'should return a passing result' do
-            expect(command.call(attributes: attributes))
+            expect(command.call(attributes:))
               .to be_a_passing_result
               .with_value(expected_value)
           end
 
           it 'should add an entity to the collection' do
-            expect { command.call(attributes: attributes) }
+            expect { command.call(attributes:) }
               .to(
                 change { collection.query.count }
                 .by(1)
@@ -173,7 +173,7 @@ RSpec.describe Cuprum::Collections::Commands::Upsert do
           it 'should create the entity' do # rubocop:disable RSpec/ExampleLength
             expected_attributes = attributes
 
-            command.call(attributes: attributes)
+            command.call(attributes:)
 
             expect(
               collection
@@ -195,18 +195,18 @@ RSpec.describe Cuprum::Collections::Commands::Upsert do
 
             Cuprum::Collections::Errors::FailedValidation.new(
               entity_class: Hash,
-              errors:       errors
+              errors:
             )
           end
 
           it 'should return a failing result' do
-            expect(command.call(attributes: attributes))
+            expect(command.call(attributes:))
               .to be_a_failing_result
               .with_error(expected_error)
           end
 
           it 'should not update the attributes' do
-            expect { command.call(attributes: attributes) }
+            expect { command.call(attributes:) }
               .not_to(change { reload_attributes })
           end
         end
@@ -216,13 +216,13 @@ RSpec.describe Cuprum::Collections::Commands::Upsert do
           let(:expected_value) { matching_entity.merge(attributes) }
 
           it 'should return a passing result' do
-            expect(command.call(attributes: attributes))
+            expect(command.call(attributes:))
               .to be_a_passing_result
               .with_value(expected_value)
           end
 
           it 'should update the attributes' do
-            expect { command.call(attributes: attributes) }
+            expect { command.call(attributes:) }
               .to(
                 change { reload_attributes }
                 .to be == expected_value
@@ -349,7 +349,7 @@ RSpec.describe Cuprum::Collections::Commands::Upsert do
           end
 
           it 'should return a failing result' do
-            expect(command.call(attributes: attributes))
+            expect(command.call(attributes:))
               .to be_a_failing_result
               .with_error(expected_error)
           end
@@ -398,7 +398,7 @@ RSpec.describe Cuprum::Collections::Commands::Upsert do
           end
 
           it 'should return a failing result' do
-            expect(command.call(attributes: attributes))
+            expect(command.call(attributes:))
               .to be_a_failing_result
               .with_error(expected_error)
           end
@@ -470,7 +470,7 @@ RSpec.describe Cuprum::Collections::Commands::Upsert do
           end
 
           it 'should return a failing result' do
-            expect(command.call(attributes: attributes))
+            expect(command.call(attributes:))
               .to be_a_failing_result
               .with_error(expected_error)
           end
@@ -521,7 +521,7 @@ RSpec.describe Cuprum::Collections::Commands::Upsert do
           end
 
           it 'should return a failing result' do
-            expect(command.call(attributes: attributes))
+            expect(command.call(attributes:))
               .to be_a_failing_result
               .with_error(expected_error)
           end

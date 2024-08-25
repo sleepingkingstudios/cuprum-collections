@@ -18,8 +18,8 @@ module Cuprum::Collections::Errors
       @errors  = errors
 
       super(
-        command: command,
-        errors:  errors,
+        command:,
+        errors:,
         message: "invalid parameters for command #{command.class}"
       )
     end

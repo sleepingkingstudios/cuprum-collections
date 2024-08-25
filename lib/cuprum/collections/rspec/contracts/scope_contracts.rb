@@ -106,7 +106,7 @@ module Cuprum::Collections::RSpec::Contracts
           end
         end
 
-        include_contract 'should be a scope', invertible: invertible
+        include_contract('should be a scope', invertible:)
 
         describe '#==' do
           describe 'with a scope with the same class' do

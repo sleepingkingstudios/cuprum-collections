@@ -5,14 +5,14 @@ require 'cuprum/collections/commands/find_one_matching'
 require 'cuprum/collections/rspec/fixtures'
 
 RSpec.describe Cuprum::Collections::Commands::FindOneMatching do
-  subject(:command) { described_class.new(collection: collection) }
+  subject(:command) { described_class.new(collection:) }
 
   let(:data) { [] }
   let(:name) { 'books' }
   let(:collection) do
     Cuprum::Collections::Basic::Collection.new(
-      name: name,
-      data: data
+      name:,
+      data:
     )
   end
 
@@ -38,13 +38,13 @@ RSpec.describe Cuprum::Collections::Commands::FindOneMatching do
       let(:attributes) { { 'author' => 'Jules Verne' } }
       let(:expected_error) do
         Cuprum::Collections::Errors::NotFound.new(
-          attributes:      attributes,
+          attributes:,
           collection_name: name
         )
       end
 
       it 'should return a failing result' do
-        expect(command.call(attributes: attributes))
+        expect(command.call(attributes:))
           .to be_a_failing_result
           .with_error(expected_error)
       end
@@ -59,7 +59,7 @@ RSpec.describe Cuprum::Collections::Commands::FindOneMatching do
       let(:expected_error) do
         Cuprum::Collections::Errors::NotFound.new(
           collection_name: name,
-          query:           query
+          query:
         )
       end
 
@@ -77,13 +77,13 @@ RSpec.describe Cuprum::Collections::Commands::FindOneMatching do
         let(:attributes) { { 'author' => 'Jules Verne' } }
         let(:expected_error) do
           Cuprum::Collections::Errors::NotFound.new(
-            attributes:      attributes,
+            attributes:,
             collection_name: name
           )
         end
 
         it 'should return a failing result' do
-          expect(command.call(attributes: attributes))
+          expect(command.call(attributes:))
             .to be_a_failing_result
             .with_error(expected_error)
         end
@@ -100,7 +100,7 @@ RSpec.describe Cuprum::Collections::Commands::FindOneMatching do
         end
 
         it 'should return a passing result' do
-          expect(command.call(attributes: attributes))
+          expect(command.call(attributes:))
             .to be_a_passing_result
             .with_value(matching_entity)
         end
@@ -110,13 +110,13 @@ RSpec.describe Cuprum::Collections::Commands::FindOneMatching do
         let(:attributes) { { 'author' => 'Ursula K. LeGuin' } }
         let(:expected_error) do
           Cuprum::Collections::Errors::NotUnique.new(
-            attributes:      attributes,
+            attributes:,
             collection_name: name
           )
         end
 
         it 'should return a failing result' do
-          expect(command.call(attributes: attributes))
+          expect(command.call(attributes:))
             .to be_a_failing_result
             .with_error(expected_error)
         end
@@ -132,7 +132,7 @@ RSpec.describe Cuprum::Collections::Commands::FindOneMatching do
         let(:expected_error) do
           Cuprum::Collections::Errors::NotFound.new(
             collection_name: name,
-            query:           query
+            query:
           )
         end
 
@@ -186,7 +186,7 @@ RSpec.describe Cuprum::Collections::Commands::FindOneMatching do
         let(:expected_error) do
           Cuprum::Collections::Errors::NotUnique.new(
             collection_name: name,
-            query:           query
+            query:
           )
         end
 

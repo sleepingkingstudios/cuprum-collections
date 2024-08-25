@@ -8,7 +8,7 @@ RSpec.describe Cuprum::Collections::Errors::InvalidQuery do
   subject(:error) { described_class.new(**keywords) }
 
   let(:query)    { %w[invalid query] }
-  let(:keywords) { { query: query } }
+  let(:keywords) { { query: } }
 
   describe '::TYPE' do
     include_examples 'should define immutable constant',
@@ -46,7 +46,7 @@ RSpec.describe Cuprum::Collections::Errors::InvalidQuery do
 
     context 'when the error is initialized with message: value' do
       let(:message)  { 'the query is full of eels' }
-      let(:keywords) { super().merge(message: message) }
+      let(:keywords) { super().merge(message:) }
 
       it { expect(error.message).to be == message }
     end

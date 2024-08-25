@@ -10,9 +10,9 @@ RSpec.describe Cuprum::Collections::Errors::ExtraAttributes do
   let(:valid_attributes) { %w[cost mass type volume] }
   let(:keywords) do
     {
-      entity_class:     entity_class,
-      extra_attributes: extra_attributes,
-      valid_attributes: valid_attributes
+      entity_class:,
+      extra_attributes:,
+      valid_attributes:
     }
   end
 

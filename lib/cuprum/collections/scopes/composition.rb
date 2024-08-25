@@ -14,12 +14,12 @@ module Cuprum::Collections::Scopes
     #   Combines with the current scope using a logical AND.
     #
     #   Returns self if the given scope is empty.
-    def and(*args, &block)
+    def and(*args, &)
       if scope?(args.first)
         return and_scope(args.first) || and_generic_scope(args.first)
       end
 
-      scope = builder.build(*args, &block)
+      scope = builder.build(*args, &)
 
       # We control the current and generated scopes, so we can skip validation
       # and transformation.
@@ -51,12 +51,12 @@ module Cuprum::Collections::Scopes
     #   Combines with the current scope using a logical OR.
     #
     #   Returns self if the given scope is empty.
-    def or(*args, &block)
+    def or(*args, &)
       if scope?(args.first)
         return or_scope(args.first) || or_generic_scope(args.first)
       end
 
-      scope = builder.build(*args, &block)
+      scope = builder.build(*args, &)
 
       # We control the current and generated scopes, so we can skip validation
       # and transformation.
@@ -86,7 +86,7 @@ module Cuprum::Collections::Scopes
     end
 
     def and_generic_scope(scope)
-      scope = builder.transform_scope(scope: scope)
+      scope = builder.transform_scope(scope:)
 
       # We control the current and generated scopes, so we can skip validation
       # and transformation.
@@ -111,7 +111,7 @@ module Cuprum::Collections::Scopes
     end
 
     def or_all_scope(scope)
-      builder.transform_scope(scope: scope)
+      builder.transform_scope(scope:)
     end
 
     def or_conjunction_scope(scope)
@@ -131,7 +131,7 @@ module Cuprum::Collections::Scopes
     end
 
     def or_generic_scope(scope)
-      scope = builder.transform_scope(scope: scope)
+      scope = builder.transform_scope(scope:)
 
       # We control the current and generated scopes, so we can skip validation
       # and transformation.

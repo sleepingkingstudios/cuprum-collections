@@ -13,7 +13,7 @@ RSpec.describe Cuprum::Collections::Association do
   subject(:association) { described_class.new(**constructor_options) }
 
   let(:name)                { 'books' }
-  let(:constructor_options) { { name: name } }
+  let(:constructor_options) { { name: } }
 
   include_contract 'should be a has association'
 

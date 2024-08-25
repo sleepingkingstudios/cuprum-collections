@@ -33,7 +33,7 @@ module Cuprum::Collections
     def initialize(**params)
       @inverse = params.delete(:inverse)
 
-      super(**params)
+      super
     end
 
     # @return [Cuprum::Collections::Resource] the inverse association, if any.
@@ -52,12 +52,12 @@ module Cuprum::Collections
       keys =
         map_entities_to_keys(
           *entities,
-          allow_nil:   allow_nil,
-          deduplicate: deduplicate,
+          allow_nil:,
+          deduplicate:,
           strict:      true
         )
 
-      build_keys_query(*keys, allow_nil: allow_nil, deduplicate: false)
+      build_keys_query(*keys, allow_nil:, deduplicate: false)
     end
 
     # Generates a query for finding matching items by key.
@@ -135,7 +135,7 @@ module Cuprum::Collections
     )
       entities
         .compact
-        .map { |entity| map_entity_to_key(entity, strict: strict) }
+        .map { |entity| map_entity_to_key(entity, strict:) }
         .then { |keys| allow_nil ? keys : keys.compact }
         .then { |keys| deduplicate ? keys.uniq : keys }
     end

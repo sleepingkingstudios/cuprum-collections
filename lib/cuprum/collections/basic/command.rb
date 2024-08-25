@@ -96,7 +96,7 @@ module Cuprum::Collections::Basic
     def validate_primary_key(primary_key)
       match_parameters_to_contract(
         contract:    primary_key_contract,
-        keywords:    { primary_key: primary_key },
+        keywords:    { primary_key: },
         method_name: :call
       )
     end
@@ -104,7 +104,7 @@ module Cuprum::Collections::Basic
     def validate_primary_keys(primary_keys)
       match_parameters_to_contract(
         contract:    primary_keys_contract,
-        keywords:    { primary_keys: primary_keys },
+        keywords:    { primary_keys: },
         method_name: :call
       )
     end

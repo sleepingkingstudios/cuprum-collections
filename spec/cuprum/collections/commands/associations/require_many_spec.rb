@@ -8,9 +8,9 @@ require 'cuprum/collections/resource'
 RSpec.describe Cuprum::Collections::Commands::Associations::RequireMany do
   subject(:command) do
     described_class.new(
-      association: association,
-      repository:  repository,
-      resource:    resource
+      association:,
+      repository:,
+      resource:
     )
   end
 
@@ -230,7 +230,7 @@ RSpec.describe Cuprum::Collections::Commands::Associations::RequireMany do
     end
 
     describe 'with entities: an Array of Objects' do
-      let(:params) { { entities: entities } }
+      let(:params) { { entities: } }
 
       include_examples 'should require the association for many entities'
     end

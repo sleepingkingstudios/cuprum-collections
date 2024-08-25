@@ -15,7 +15,7 @@ RSpec.describe Cuprum::Collections::Commands::Update do
         key 'series', Stannum::Constraints::Presence.new
       end
     end
-    let(:constructor_options) { super().merge(contract: contract) }
+    let(:constructor_options) { super().merge(contract:) }
   end
 
   shared_context 'when the collection defines a default contract' do
@@ -35,7 +35,7 @@ RSpec.describe Cuprum::Collections::Commands::Update do
     )
   end
   let(:collection_options)  { {} }
-  let(:constructor_options) { { collection: collection } }
+  let(:constructor_options) { { collection: } }
 
   describe '.new' do
     it 'should define the constructor' do
@@ -73,7 +73,7 @@ RSpec.describe Cuprum::Collections::Commands::Update do
     end
 
     before(:example) do
-      collection.insert_one.call(entity: entity)
+      collection.insert_one.call(entity:)
     end
 
     it 'should define the method' do
@@ -84,7 +84,7 @@ RSpec.describe Cuprum::Collections::Commands::Update do
     end
 
     it 'should return a failing result' do
-      expect(command.call(attributes: {}, entity: entity))
+      expect(command.call(attributes: {}, entity:))
         .to be_a_failing_result
         .with_error(expected_error)
     end
@@ -97,18 +97,18 @@ RSpec.describe Cuprum::Collections::Commands::Update do
 
           Cuprum::Collections::Errors::FailedValidation.new(
             entity_class: Hash,
-            errors:       errors
+            errors:
           )
         end
 
         it 'should return a failing result' do
-          expect(command.call(attributes: attributes, entity: entity))
+          expect(command.call(attributes:, entity:))
             .to be_a_failing_result
             .with_error(expected_error)
         end
 
         it 'should not update the attributes' do
-          expect { command.call(attributes: attributes, entity: entity) }
+          expect { command.call(attributes:, entity:) }
             .not_to(change { reload_attributes })
         end
       end
@@ -118,13 +118,13 @@ RSpec.describe Cuprum::Collections::Commands::Update do
         let(:expected_value) { entity.merge(attributes) }
 
         it 'should return a passing result' do
-          expect(command.call(attributes: attributes, entity: entity))
+          expect(command.call(attributes:, entity:))
             .to be_a_passing_result
             .with_value(expected_value)
         end
 
         it 'should update the attributes' do
-          expect { command.call(attributes: attributes, entity: entity) }
+          expect { command.call(attributes:, entity:) }
             .to(
               change { reload_attributes }
               .to be == expected_value
@@ -141,18 +141,18 @@ RSpec.describe Cuprum::Collections::Commands::Update do
 
           Cuprum::Collections::Errors::FailedValidation.new(
             entity_class: Hash,
-            errors:       errors
+            errors:
           )
         end
 
         it 'should return a failing result' do
-          expect(command.call(attributes: attributes, entity: entity))
+          expect(command.call(attributes:, entity:))
             .to be_a_failing_result
             .with_error(expected_error)
         end
 
         it 'should not update the attributes' do
-          expect { command.call(attributes: attributes, entity: entity) }
+          expect { command.call(attributes:, entity:) }
             .not_to(change { reload_attributes })
         end
       end
@@ -162,13 +162,13 @@ RSpec.describe Cuprum::Collections::Commands::Update do
         let(:expected_value) { entity.merge(attributes) }
 
         it 'should return a passing result' do
-          expect(command.call(attributes: attributes, entity: entity))
+          expect(command.call(attributes:, entity:))
             .to be_a_passing_result
             .with_value(expected_value)
         end
 
         it 'should update the attributes' do
-          expect { command.call(attributes: attributes, entity: entity) }
+          expect { command.call(attributes:, entity:) }
             .to(
               change { reload_attributes }
               .to be == expected_value

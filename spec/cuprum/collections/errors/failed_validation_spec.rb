@@ -19,8 +19,8 @@ RSpec.describe Cuprum::Collections::Errors::FailedValidation do
   end
   let(:keywords) do
     {
-      entity_class: entity_class,
-      errors:       errors
+      entity_class:,
+      errors:
     }
   end
 

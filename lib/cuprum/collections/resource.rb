@@ -26,7 +26,7 @@ module Cuprum::Collections
     def initialize(**params)
       @plural = resolve_plurality(**params)
 
-      super(**params)
+      super
     end
   end
 end

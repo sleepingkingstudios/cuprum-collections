@@ -18,8 +18,8 @@ module Cuprum::Collections::Errors
       @errors       = errors
 
       super(
-        entity_class: entity_class,
-        errors:       errors,
+        entity_class:,
+        errors:,
         message:      default_message
       )
     end

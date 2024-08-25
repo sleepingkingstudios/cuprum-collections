@@ -14,9 +14,9 @@ RSpec.describe Cuprum::Collections::Basic::Commands::FindMany do
 
   subject(:command) do
     described_class.new(
-      collection_name: collection_name,
+      collection_name:,
       data:            mapped_data,
-      query:           query,
+      query:,
       **constructor_options
     )
   end

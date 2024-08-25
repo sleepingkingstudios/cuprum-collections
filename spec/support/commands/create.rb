@@ -21,11 +21,11 @@ module Spec::Support::Commands
     attr_reader :collection
 
     def process(attributes:, contract: nil)
-      entity = step { collection.build_one.call(attributes: attributes) }
+      entity = step { collection.build_one.call(attributes:) }
 
-      step { collection.validate_one.call(contract: contract, entity: entity) }
+      step { collection.validate_one.call(contract:, entity:) }
 
-      step { collection.insert_one.call(entity: entity) }
+      step { collection.insert_one.call(entity:) }
     end
   end
 end

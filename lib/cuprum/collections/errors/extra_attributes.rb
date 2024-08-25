@@ -21,10 +21,10 @@ module Cuprum::Collections::Errors
       @valid_attributes = valid_attributes
 
       super(
-        entity_class:     entity_class,
-        extra_attributes: extra_attributes,
+        entity_class:,
+        extra_attributes:,
         message:          default_message,
-        valid_attributes: valid_attributes
+        valid_attributes:
       )
     end
 

@@ -46,8 +46,8 @@ RSpec.describe Cuprum::Collections::Command do
     def handle_invalid_parameters
       command.send(
         :handle_invalid_parameters,
-        errors:      errors,
-        method_name: method_name
+        errors:,
+        method_name:
       )
     end
 
@@ -62,8 +62,8 @@ RSpec.describe Cuprum::Collections::Command do
       let(:method_name) { :call }
       let(:expected_error) do
         Cuprum::Collections::Errors::InvalidParameters.new(
-          command: command,
-          errors:  errors
+          command:,
+          errors:
         )
       end
 

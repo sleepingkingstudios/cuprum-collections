@@ -13,7 +13,7 @@ module Cuprum::Collections::Basic::Scopes
     def match?(item:)
       super
 
-      scopes.all? { |scope| scope.match?(item: item) }
+      scopes.all? { |scope| scope.match?(item:) }
     end
     alias matches? match?
   end

@@ -9,9 +9,9 @@ require 'cuprum/collections/resource'
 RSpec.describe Cuprum::Collections::Commands::Associations::FindMany do
   subject(:command) do
     described_class.new(
-      association: association,
-      repository:  repository,
-      resource:    resource
+      association:,
+      repository:,
+      resource:
     )
   end
 
@@ -251,7 +251,7 @@ RSpec.describe Cuprum::Collections::Commands::Associations::FindMany do
     end
 
     describe 'with entities: an Array of Objects' do
-      let(:params) { { entities: entities } }
+      let(:params) { { entities: } }
 
       include_examples 'should find the plural association for many entities'
     end
@@ -332,7 +332,7 @@ RSpec.describe Cuprum::Collections::Commands::Associations::FindMany do
       end
 
       describe 'with entities: an Array of Objects' do
-        let(:params) { { entities: entities } }
+        let(:params) { { entities: } }
 
         include_examples \
           'should find the singular association for many entities'
@@ -404,7 +404,7 @@ RSpec.describe Cuprum::Collections::Commands::Associations::FindMany do
       end
 
       describe 'with entities: an Array of Objects' do
-        let(:params) { { entities: entities } }
+        let(:params) { { entities: } }
 
         include_examples \
           'should find the singular association for many entities'

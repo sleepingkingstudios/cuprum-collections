@@ -13,7 +13,7 @@ RSpec.describe Cuprum::Collections::Constraints::Order::SortDirection do
     %w[asc ascending desc descending] + %i[asc ascending desc descending]
   end
   let(:constructor_options) { {} }
-  let(:expected_options)    { { expected_values: expected_values } }
+  let(:expected_options)    { { expected_values: } }
 
   describe '::NEGATED_TYPE' do
     include_examples 'should define frozen constant',

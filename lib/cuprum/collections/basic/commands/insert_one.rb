@@ -34,14 +34,14 @@ module Cuprum::Collections::Basic::Commands
       error = Cuprum::Collections::Errors::AlreadyExists.new(
         attribute_name:  primary_key_name,
         attribute_value: value,
-        collection_name: collection_name,
+        collection_name:,
         primary_key:     true
       )
       failure(error)
     end
 
     def process(entity:)
-      step { find_existing(entity: entity) }
+      step { find_existing(entity:) }
 
       data << tools.hash_tools.deep_dup(entity)
 

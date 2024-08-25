@@ -3,7 +3,7 @@
 require 'cuprum/collections/errors/missing_default_contract'
 
 RSpec.describe Cuprum::Collections::Errors::MissingDefaultContract do
-  subject(:error) { described_class.new(entity_class: entity_class) }
+  subject(:error) { described_class.new(entity_class:) }
 
   let(:entity_class) { Spec::FuelTank }
 

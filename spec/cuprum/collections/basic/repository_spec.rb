@@ -96,7 +96,7 @@ RSpec.describe Cuprum::Collections::Basic::Repository do
       let(:data) do
         Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES.dup
       end
-      let(:collection_options) { super().merge(data: data) }
+      let(:collection_options) { super().merge(data:) }
 
       it { expect(collection.count).to be data.size }
     end
@@ -105,7 +105,7 @@ RSpec.describe Cuprum::Collections::Basic::Repository do
       let(:data) do
         { 'books' => Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES.dup }
       end
-      let(:constructor_options) { super().merge(data: data) }
+      let(:constructor_options) { super().merge(data:) }
 
       it { expect(collection.count).to be data['books'].size }
     end
@@ -143,7 +143,7 @@ RSpec.describe Cuprum::Collections::Basic::Repository do
       let(:data) do
         Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES.dup
       end
-      let(:collection_options) { super().merge(data: data) }
+      let(:collection_options) { super().merge(data:) }
 
       it { expect(collection.count).to be data.size }
     end
@@ -152,7 +152,7 @@ RSpec.describe Cuprum::Collections::Basic::Repository do
       let(:data) do
         { 'books' => Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES.dup }
       end
-      let(:constructor_options) { super().merge(data: data) }
+      let(:constructor_options) { super().merge(data:) }
 
       it { expect(collection.count).to be data['books'].size }
     end

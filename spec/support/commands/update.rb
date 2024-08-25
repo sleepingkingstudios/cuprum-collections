@@ -22,14 +22,14 @@ module Spec::Support::Commands
     attr_reader :collection
 
     def process(attributes:, primary_key:, contract: nil)
-      entity = step { collection.find_one.call(primary_key: primary_key) }
+      entity = step { collection.find_one.call(primary_key:) }
       entity = step do
-        collection.assign_one.call(attributes: attributes, entity: entity)
+        collection.assign_one.call(attributes:, entity:)
       end
 
-      step { collection.validate_one.call(contract: contract, entity: entity) }
+      step { collection.validate_one.call(contract:, entity:) }
 
-      step { collection.update_one.call(entity: entity) }
+      step { collection.update_one.call(entity:) }
 
       entity
     end
