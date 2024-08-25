@@ -882,11 +882,11 @@ query.each.map(&:author).uniq
 The simplest way to filter results is by passing a `Hash` to `#where`. The keys of the Hash should be the names of the attributes to filter by, and the values the expected value of that attribute. However, passing a Hash directly only supports equality comparisons. To use advanced operators, use the block form:
 
 ```ruby
-query = collection.query.where do
+query = collection.query.where do |scope|
   {
     author:       'Ursula K. LeGuin',
-    series:       equal('Earthsea'),
-    published_at: greater_than('1970-01-01')
+    series:       scope.equal('Earthsea'),
+    published_at: scope.greater_than('1970-01-01')
   }
 end
 query.count
