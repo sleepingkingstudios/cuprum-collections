@@ -29,10 +29,10 @@ module Spec::Support::Examples
 
     shared_context 'when initialized with query: value' do
       let(:query) do
-        Cuprum::Collections::Basic::Query.new([]).where do
+        Cuprum::Collections::Basic::Query.new([]).where do |scope|
           {
             'author'       => 'Tamsyn Muir',
-            'published_at' => less_than('2020-08-04')
+            'published_at' => scope.less_than('2020-08-04')
           }
         end
       end
@@ -191,10 +191,10 @@ module Spec::Support::Examples
 
         describe 'with query:' do
           let(:query) do
-            Cuprum::Collections::Basic::Query.new([]).where do
+            Cuprum::Collections::Basic::Query.new([]).where do |scope|
               {
                 'author'       => 'Tamsyn Muir',
-                'published_at' => less_than('2020-08-04')
+                'published_at' => scope.less_than('2020-08-04')
               }
             end
           end

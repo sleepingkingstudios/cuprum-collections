@@ -19,9 +19,9 @@ RSpec.describe Cuprum::Collections::Scope do
   let(:constructor_block) do
     expected = criteria
 
-    lambda do
+    lambda do |scope|
       expected.to_h do |(attribute, operator, value)|
-        [attribute, send(operator, value)]
+        [attribute, scope.send(operator, value)]
       end
     end
   end

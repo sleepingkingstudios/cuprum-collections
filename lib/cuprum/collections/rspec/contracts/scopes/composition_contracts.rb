@@ -387,8 +387,8 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             [
               build_scope({ 'author' => 'J.R.R. Tolkien' }),
               build_scope({ 'series' => 'The Lord of the Rings' }),
-              build_scope do
-                { 'published_at' => less_than('1955-01-01') }
+              build_scope do |scope|
+                { 'published_at' => scope.less_than('1955-01-01') }
               end
             ]
           end
@@ -626,7 +626,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
         describe '#and' do
           describe 'with a block' do
-            let(:block) { -> { { 'title' => 'A Wizard of Earthsea' } } }
+            let(:block) { ->(_) { { 'title' => 'A Wizard of Earthsea' } } }
             let(:expected) do
               operators = Cuprum::Collections::Queries::Operators
               criteria  = [
@@ -1334,8 +1334,8 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
             [
               build_scope({ 'author' => 'J.R.R. Tolkien' }),
               build_scope({ 'series' => 'The Lord of the Rings' }),
-              build_scope do
-                { 'published_at' => less_than('1955-01-01') }
+              build_scope do |scope|
+                { 'published_at' => scope.less_than('1955-01-01') }
               end
             ]
           end

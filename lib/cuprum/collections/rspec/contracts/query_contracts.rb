@@ -29,8 +29,8 @@ module Cuprum::Collections::RSpec::Contracts
 
         shared_context 'when initialized with a scope' do
           let(:initial_scope) do
-            Cuprum::Collections::Scope.new do
-              { 'published_at' => less_than('1973-01-01') }
+            Cuprum::Collections::Scope.new do |scope|
+              { 'published_at' => scope.less_than('1973-01-01') }
             end
           end
           let(:filtered_data) do
@@ -42,7 +42,7 @@ module Cuprum::Collections::RSpec::Contracts
           let(:scoped_query) do
             super()
               .where { { author: 'Ursula K. LeGuin' } }
-              .where { { series: not_equal('Earthsea') } }
+              .where { |scope| { series: scope.not_equal('Earthsea') } }
           end
           let(:filtered_data) do
             super()
@@ -485,9 +485,9 @@ module Cuprum::Collections::RSpec::Contracts
 
           wrap_context 'when initialized with a scope' do
             let(:expected) do
-              Cuprum::Collections::Scope.new do
+              Cuprum::Collections::Scope.new do |scope|
                 {
-                  'published_at' => less_than('1973-01-01')
+                  'published_at' => scope.less_than('1973-01-01')
                 }
               end
             end
@@ -496,11 +496,11 @@ module Cuprum::Collections::RSpec::Contracts
 
             wrap_context 'when the query has composed filters' do
               let(:expected) do
-                Cuprum::Collections::Scope.new do
+                Cuprum::Collections::Scope.new do |scope|
                   {
-                    'published_at' => less_than('1973-01-01'),
+                    'published_at' => scope.less_than('1973-01-01'),
                     'author'       => 'Ursula K. LeGuin',
-                    'series'       => not_equal('Earthsea')
+                    'series'       => scope.not_equal('Earthsea')
                   }
                 end
               end
@@ -511,10 +511,10 @@ module Cuprum::Collections::RSpec::Contracts
 
           wrap_context 'when the query has composed filters' do
             let(:expected) do
-              Cuprum::Collections::Scope.new do
+              Cuprum::Collections::Scope.new do |scope|
                 {
                   'author' => 'Ursula K. LeGuin',
-                  'series' => not_equal('Earthsea')
+                  'series' => scope.not_equal('Earthsea')
                 }
               end
             end

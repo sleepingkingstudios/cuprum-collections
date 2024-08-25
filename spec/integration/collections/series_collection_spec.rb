@@ -14,8 +14,8 @@ RSpec.describe Cuprum::Collections::Basic do
   end
 
   let(:series_scope) do
-    Cuprum::Collections::Scope.new do
-      { series: not_equal(nil) }
+    Cuprum::Collections::Scope.new do |scope|
+      { series: scope.not_equal(nil) }
     end
   end
 

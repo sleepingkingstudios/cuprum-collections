@@ -145,11 +145,11 @@ RSpec.describe Cuprum::Collections::Commands::FindOneMatching do
 
       describe 'with a block that matches one entity' do
         let(:block) do
-          lambda do
+          lambda do |scope|
             {
               'author'       => 'Ursula K. LeGuin',
               'series'       => 'Earthsea',
-              'published_at' => greater_than('1972-01-01')
+              'published_at' => scope.greater_than('1972-01-01')
             }
           end
         end
@@ -170,11 +170,11 @@ RSpec.describe Cuprum::Collections::Commands::FindOneMatching do
 
       describe 'with a block that matches multiple entities' do
         let(:block) do
-          lambda do
+          lambda do |scope|
             {
               'author'       => 'Ursula K. LeGuin',
               'series'       => 'Earthsea',
-              'published_at' => greater_than('1970-01-01')
+              'published_at' => scope.greater_than('1970-01-01')
             }
           end
         end

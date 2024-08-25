@@ -459,7 +459,7 @@ module Cuprum::Collections::RSpec::Contracts
             association.build_entities_query(*entities, **options)
           end
           let(:evaluated) do
-            Spec::QueryBuilder.new.instance_exec(&query)
+            query.call(Spec::QueryBuilder.new)
           end
 
           example_class 'Spec::Entity' do |klass|
@@ -630,7 +630,7 @@ module Cuprum::Collections::RSpec::Contracts
             association.build_keys_query(*keys, **options)
           end
           let(:evaluated) do
-            Spec::QueryBuilder.new.instance_exec(&query)
+            query.call(Spec::QueryBuilder.new)
           end
 
           example_class 'Spec::QueryBuilder' do |klass|
@@ -1163,7 +1163,7 @@ module Cuprum::Collections::RSpec::Contracts
             association.build_entities_query(*entities, **options)
           end
           let(:evaluated) do
-            Spec::QueryBuilder.new.instance_exec(&query)
+            query.call(Spec::QueryBuilder.new)
           end
 
           example_class 'Spec::Entity' do |klass|
@@ -1352,7 +1352,7 @@ module Cuprum::Collections::RSpec::Contracts
             association.build_keys_query(*keys, **options)
           end
           let(:evaluated) do
-            Spec::QueryBuilder.new.instance_exec(&query)
+            query.call(Spec::QueryBuilder.new)
           end
 
           example_class 'Spec::QueryBuilder' do |klass|

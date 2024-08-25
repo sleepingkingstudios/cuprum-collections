@@ -114,8 +114,8 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::CriteriaScope do
 
     context 'when the scope has a greater than criterion' do
       let(:criteria) do
-        described_class.parse do
-          { 'published_at' => greater_than('1972-03-13') }
+        described_class.parse do |scope|
+          { 'published_at' => scope.greater_than('1972-03-13') }
         end
       end
 
@@ -144,8 +144,8 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::CriteriaScope do
 
     context 'when the scope has a greater than or equal to criterion' do
       let(:criteria) do
-        described_class.parse do
-          { 'published_at' => greater_than_or_equal_to('1972-03-13') }
+        described_class.parse do |scope|
+          { 'published_at' => scope.greater_than_or_equal_to('1972-03-13') }
         end
       end
 
@@ -174,8 +174,8 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::CriteriaScope do
 
     context 'when the scope has a less than criterion' do
       let(:criteria) do
-        described_class.parse do
-          { 'published_at' => less_than('1972-03-13') }
+        described_class.parse do |scope|
+          { 'published_at' => scope.less_than('1972-03-13') }
         end
       end
 
@@ -204,8 +204,8 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::CriteriaScope do
 
     context 'when the scope has a less than or equal to criterion' do
       let(:criteria) do
-        described_class.parse do
-          { 'published_at' => less_than_or_equal_to('1972-03-13') }
+        described_class.parse do |scope|
+          { 'published_at' => scope.less_than_or_equal_to('1972-03-13') }
         end
       end
 
@@ -234,8 +234,8 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::CriteriaScope do
 
     context 'when the scope has a not equal criterion' do
       let(:criteria) do
-        described_class.parse do
-          { 'author' => not_equal('J.R.R. Tolkien') }
+        described_class.parse do |scope|
+          { 'author' => scope.not_equal('J.R.R. Tolkien') }
         end
       end
 
@@ -260,10 +260,10 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::CriteriaScope do
 
     context 'when the scope has a not one of criterion' do
       let(:criteria) do
-        described_class.parse do
+        described_class.parse do |scope|
           titles = ['The Fellowship Of The Ring', 'The Two Towers']
 
-          { 'title' => not_one_of(titles) }
+          { 'title' => scope.not_one_of(titles) }
         end
       end
 
@@ -288,10 +288,10 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::CriteriaScope do
 
     context 'when the scope has a one of criterion' do
       let(:criteria) do
-        described_class.parse do
+        described_class.parse do |scope|
           titles = ['The Fellowship Of The Ring', 'The Two Towers']
 
-          { 'title' => one_of(titles) }
+          { 'title' => scope.one_of(titles) }
         end
       end
 
@@ -316,10 +316,13 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::CriteriaScope do
 
     context 'when the scope has multiple criteria' do
       let(:criteria) do
-        described_class.parse do
+        described_class.parse do |scope|
           titles = ['The Fellowship Of The Ring', 'The Two Towers']
 
-          { 'author' => 'J.R.R. Tolkien', 'title' => not_one_of(titles) }
+          {
+            'author' => 'J.R.R. Tolkien',
+            'title'  => scope.not_one_of(titles)
+          }
         end
       end
 
