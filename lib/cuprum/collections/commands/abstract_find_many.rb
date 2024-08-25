@@ -14,7 +14,7 @@ module Cuprum::Collections::Commands
     def apply_query(primary_keys:)
       key = primary_key_name
 
-      query.where { { key => one_of(primary_keys) } }
+      query.where { |scope| { key => scope.one_of(primary_keys) } }
     end
 
     def build_results(items:, primary_keys:)

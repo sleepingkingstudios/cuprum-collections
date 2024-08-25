@@ -126,8 +126,8 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::DisjunctionScope do
         [
           build_scope({ 'author' => 'J.R.R. Tolkien' }),
           build_scope({ 'series' => 'The Lord of the Rings' }),
-          build_scope do
-            { 'published_at' => less_than('1955-01-01') }
+          build_scope do |scope|
+            { 'published_at' => scope.less_than('1955-01-01') }
           end
         ]
       end

@@ -1,10 +1,128 @@
 # frozen_string_literal: true
 
+require 'forwardable'
+
 require 'cuprum/collections/scopes/criteria'
 
 module Cuprum::Collections::Scopes::Criteria
   # Helper for generating criteria from hash or block inputs.
-  class Parser # rubocop:disable Metrics/ClassLength
+  class Parser
+    # Utility class for parsing block operators.
+    class BlockParser
+      # @return [BlockParser] a memoized class instance.
+      def self.instance
+        @instance ||= new
+      end
+
+      def equals(value)
+        OperatorExpression.new(
+          Cuprum::Collections::Queries::Operators::EQUAL,
+          value
+        )
+      end
+      alias equal equals
+      alias eq equals
+
+      def greater_than(value)
+        OperatorExpression.new(
+          Cuprum::Collections::Queries::Operators::GREATER_THAN,
+          value
+        )
+      end
+      alias gt greater_than
+
+      def greater_than_or_equal_to(value)
+        OperatorExpression.new(
+          Cuprum::Collections::Queries::Operators::GREATER_THAN_OR_EQUAL_TO,
+          value
+        )
+      end
+      alias gte greater_than_or_equal_to
+
+      def less_than(value)
+        OperatorExpression.new(
+          Cuprum::Collections::Queries::Operators::LESS_THAN,
+          value
+        )
+      end
+      alias lt less_than
+
+      def less_than_or_equal_to(value)
+        OperatorExpression.new(
+          Cuprum::Collections::Queries::Operators::LESS_THAN_OR_EQUAL_TO,
+          value
+        )
+      end
+      alias lte less_than_or_equal_to
+
+      def not_equal(value)
+        OperatorExpression.new(
+          Cuprum::Collections::Queries::Operators::NOT_EQUAL,
+          value
+        )
+      end
+      alias ne not_equal
+
+      def not_one_of(*values)
+        OperatorExpression.new(
+          Cuprum::Collections::Queries::Operators::NOT_ONE_OF,
+          values.flatten
+        )
+      end
+
+      def one_of(*values)
+        OperatorExpression.new(
+          Cuprum::Collections::Queries::Operators::ONE_OF,
+          values.flatten
+        )
+      end
+    end
+
+    # @todo v0.5.0 Implicit receivers are deprecated. Remove this class when
+    #   removing the functionality.
+    class ImplicitReceiver
+      ERROR_MESSAGE =
+        'Pass a block with one parameter to #parse: { |scope| { ' \
+        'scope.%s: value } }'
+      private_constant :ERROR_MESSAGE
+
+      OPERATORS = %i[
+        eq
+        equal
+        equals
+        greater_than
+        greater_than_or_equal_to
+        gt
+        gte
+        less_than
+        less_than_or_equal_to
+        lt
+        lte
+        ne
+        not_equal
+        not_one_of
+        one_of
+      ].freeze
+      private_constant :OPERATORS
+
+      OPERATORS.each do |operator|
+        define_method(operator) do |*args, **kwargs, &block|
+          tools.core_tools.deprecate(
+            '#parse with implicit receiver',
+            message: format(ERROR_MESSAGE, operator)
+          )
+
+          BlockParser.instance.send(operator, *args, **kwargs, &block)
+        end
+      end
+
+      private
+
+      def tools
+        SleepingKingStudios::Tools::Toolbelt.instance
+      end
+    end
+
     OperatorExpression = Struct.new(:operator, :value)
     private_constant :OperatorExpression
 
@@ -76,7 +194,7 @@ module Cuprum::Collections::Scopes::Criteria
     def parse_block(...) # rubocop:disable Metrics/MethodLength
       raise ArgumentError, 'no block given' unless block_given?
 
-      value = instance_exec(...)
+      value = evaluate_block(...)
 
       Parser.validate_hash(value)
 
@@ -111,67 +229,13 @@ module Cuprum::Collections::Scopes::Criteria
 
     private
 
-    def equals(value)
-      OperatorExpression.new(
-        Cuprum::Collections::Queries::Operators::EQUAL,
-        value
-      )
-    end
-    alias equal equals
-    alias eq equals
+    # @todo v0.5.0 Implicit receivers are deprecated.
+    def evaluate_block(&block)
+      receiver = ImplicitReceiver.new
 
-    def greater_than(value)
-      OperatorExpression.new(
-        Cuprum::Collections::Queries::Operators::GREATER_THAN,
-        value
-      )
-    end
-    alias gt greater_than
+      return receiver.instance_exec(&block) if block.arity.zero?
 
-    def greater_than_or_equal_to(value)
-      OperatorExpression.new(
-        Cuprum::Collections::Queries::Operators::GREATER_THAN_OR_EQUAL_TO,
-        value
-      )
-    end
-    alias gte greater_than_or_equal_to
-
-    def less_than(value)
-      OperatorExpression.new(
-        Cuprum::Collections::Queries::Operators::LESS_THAN,
-        value
-      )
-    end
-    alias lt less_than
-
-    def less_than_or_equal_to(value)
-      OperatorExpression.new(
-        Cuprum::Collections::Queries::Operators::LESS_THAN_OR_EQUAL_TO,
-        value
-      )
-    end
-    alias lte less_than_or_equal_to
-
-    def not_equal(value)
-      OperatorExpression.new(
-        Cuprum::Collections::Queries::Operators::NOT_EQUAL,
-        value
-      )
-    end
-    alias ne not_equal
-
-    def not_one_of(*values)
-      OperatorExpression.new(
-        Cuprum::Collections::Queries::Operators::NOT_ONE_OF,
-        values.flatten
-      )
-    end
-
-    def one_of(*values)
-      OperatorExpression.new(
-        Cuprum::Collections::Queries::Operators::ONE_OF,
-        values.flatten
-      )
+      receiver.instance_exec(BlockParser.instance, &block)
     end
   end
 end

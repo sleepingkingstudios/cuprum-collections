@@ -15,6 +15,14 @@ Query result filtering now uses composable scopes.
 - Implemented `Query#scope`.
 - Implemented composable methods `Query#and`, `Query#or`, `Query#not`.
 
+Performing block queries with an implicit receiver is now deprecated. Instead of:
+
+`where { { author: eq('J.R.R. Tolkien) } }`
+
+An explicit receiver must be passed to be block in order to use operators:
+
+`where { |query| { author: query.eq('J.R.R. Tolkien) } }`
+
 ### Scopes
 
 Implemented `Cuprum::Collections::Scopes`. A scope object represents a filter that can be used to select a subset of a collection.

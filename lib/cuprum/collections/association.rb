@@ -75,11 +75,11 @@ module Cuprum::Collections
       hash_key = query_key_name
 
       if keys.empty?
-        -> { {} }
+        ->(_) { {} }
       elsif keys.size == 1
-        -> { { hash_key => keys.first } }
+        ->(_) { { hash_key => keys.first } }
       else
-        -> { { hash_key => one_of(keys) } }
+        ->(scope) { { hash_key => scope.one_of(keys) } }
       end
     end
 

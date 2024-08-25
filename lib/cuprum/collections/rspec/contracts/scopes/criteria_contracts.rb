@@ -553,8 +553,8 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
             context 'when the scope has a greater than criterion' do
               let(:criteria) do
-                described_class.parse do
-                  { 'published_at' => greater_than('1972-03-13') }
+                described_class.parse do |scope|
+                  { 'published_at' => scope.greater_than('1972-03-13') }
                 end
               end
               let(:expected) do
@@ -574,8 +574,12 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
             context 'when the scope has a greater than or equal to criterion' do
               let(:criteria) do
-                described_class.parse do
-                  { 'published_at' => greater_than_or_equal_to('1972-03-13') }
+                described_class.parse do |scope|
+                  {
+                    'published_at' => scope.greater_than_or_equal_to(
+                      '1972-03-13'
+                    )
+                  }
                 end
               end
               let(:expected) do
@@ -595,8 +599,8 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
             context 'when the scope has a less than criterion' do
               let(:criteria) do
-                described_class.parse do
-                  { 'published_at' => less_than('1972-03-13') }
+                described_class.parse do |scope|
+                  { 'published_at' => scope.less_than('1972-03-13') }
                 end
               end
               let(:expected) do
@@ -616,8 +620,12 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
             context 'when the scope has a less than or equal to criterion' do
               let(:criteria) do
-                described_class.parse do
-                  { 'published_at' => less_than_or_equal_to('1972-03-13') }
+                described_class.parse do |scope|
+                  {
+                    'published_at' => scope.less_than_or_equal_to(
+                      '1972-03-13'
+                    )
+                  }
                 end
               end
               let(:expected) do
@@ -637,8 +645,8 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
             context 'when the scope has a not equal criterion' do
               let(:criteria) do
-                described_class.parse do
-                  { 'author' => not_equal('J.R.R. Tolkien') }
+                described_class.parse do |scope|
+                  { 'author' => scope.not_equal('J.R.R. Tolkien') }
                 end
               end
               let(:expected) do
@@ -658,10 +666,10 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
             context 'when the scope has a not one of criterion' do
               let(:criteria) do
-                described_class.parse do
+                described_class.parse do |scope|
                   titles = ['The Fellowship Of The Ring', 'The Two Towers']
 
-                  { 'title' => not_one_of(titles) }
+                  { 'title' => scope.not_one_of(titles) }
                 end
               end
               let(:expected) do
@@ -681,10 +689,10 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
             context 'when the scope has a one of criterion' do
               let(:criteria) do
-                described_class.parse do
+                described_class.parse do |scope|
                   titles = ['The Fellowship Of The Ring', 'The Two Towers']
 
-                  { 'title' => one_of(titles) }
+                  { 'title' => scope.one_of(titles) }
                 end
               end
               let(:expected) do
@@ -704,12 +712,12 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
             context 'when the scope has multiple criteria' do
               let(:criteria) do
-                described_class.parse do
+                described_class.parse do |scope|
                   titles = ['The Fellowship Of The Ring', 'The Two Towers']
 
                   {
                     'author' => 'J.R.R. Tolkien',
-                    'title'  => not_one_of(titles)
+                    'title'  => scope.not_one_of(titles)
                   }
                 end
               end
@@ -893,8 +901,8 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
         context 'when the scope has a greater than criterion' do
           let(:criteria) do
-            described_class.parse do
-              { 'published_at' => greater_than('1972-03-13') }
+            described_class.parse do |scope|
+              { 'published_at' => scope.greater_than('1972-03-13') }
             end
           end
 
@@ -917,8 +925,8 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
         context 'when the scope has a greater than or equal to criterion' do
           let(:criteria) do
-            described_class.parse do
-              { 'published_at' => greater_than_or_equal_to('1972-03-13') }
+            described_class.parse do |scope|
+              { 'published_at' => scope.greater_than_or_equal_to('1972-03-13') }
             end
           end
 
@@ -941,8 +949,8 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
         context 'when the scope has a less than criterion' do
           let(:criteria) do
-            described_class.parse do
-              { 'published_at' => less_than('1972-03-13') }
+            described_class.parse do |scope|
+              { 'published_at' => scope.less_than('1972-03-13') }
             end
           end
 
@@ -965,8 +973,8 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
         context 'when the scope has a less than or equal to criterion' do
           let(:criteria) do
-            described_class.parse do
-              { 'published_at' => less_than_or_equal_to('1972-03-13') }
+            described_class.parse do |scope|
+              { 'published_at' => scope.less_than_or_equal_to('1972-03-13') }
             end
           end
 
@@ -989,8 +997,8 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
         context 'when the scope has a not equal criterion' do
           let(:criteria) do
-            described_class.parse do
-              { 'author' => not_equal('J.R.R. Tolkien') }
+            described_class.parse do |scope|
+              { 'author' => scope.not_equal('J.R.R. Tolkien') }
             end
           end
 
@@ -1013,10 +1021,10 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
         context 'when the scope has a not one of criterion' do
           let(:criteria) do
-            described_class.parse do
+            described_class.parse do |scope|
               titles = ['The Fellowship Of The Ring', 'The Two Towers']
 
-              { 'title' => not_one_of(titles) }
+              { 'title' => scope.not_one_of(titles) }
             end
           end
 
@@ -1040,10 +1048,10 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
         context 'when the scope has a one of criterion' do
           let(:criteria) do
-            described_class.parse do
+            described_class.parse do |scope|
               titles = ['The Fellowship Of The Ring', 'The Two Towers']
 
-              { 'title' => one_of(titles) }
+              { 'title' => scope.one_of(titles) }
             end
           end
 
@@ -1067,10 +1075,13 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
         context 'when the scope has mixed criteria' do
           let(:criteria) do
-            described_class.parse do
+            described_class.parse do |scope|
               titles = ['The Fellowship Of The Ring', 'The Two Towers']
 
-              { 'author' => 'J.R.R. Tolkien', 'title' => not_one_of(titles) }
+              {
+                'author' => 'J.R.R. Tolkien',
+                'title'  => scope.not_one_of(titles)
+              }
             end
           end
 
@@ -1209,7 +1220,9 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
         describe 'with a hash and a block' do
           let(:operators) { Cuprum::Collections::Queries::Operators }
           let(:block) do
-            -> { { 'author' => one_of('J.R.R. Tolkien', 'Ursula K. LeGuin') } }
+            lambda do |scope|
+              { 'author' => scope.one_of('J.R.R. Tolkien', 'Ursula K. LeGuin') }
+            end
           end
           let(:value) do
             { 'category' => 'Science Fiction and Fantasy' }
@@ -1246,6 +1259,8 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
       #   @param example_group [RSpec::Core::ExampleGroup] the example group to
       #     which the contract is applied.
       contract do
+        let(:operators) { Cuprum::Collections::Queries::Operators }
+
         describe 'without a block' do
           let(:error_message) { 'no block given' }
 
@@ -1352,9 +1367,8 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
         end
 
         describe 'with a Hash with an "eq" operator' do
-          let(:operators) { Cuprum::Collections::Queries::Operators }
           let(:block) do
-            -> { { 'title' => equals('A Wizard of Earthsea') } }
+            ->(scope) { { 'title' => scope.eq('A Wizard of Earthsea') } }
           end
           let(:expected) do
             [['title', operators::EQUAL, 'A Wizard of Earthsea']]
@@ -1366,9 +1380,8 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
         end
 
         describe 'with a Hash with an "equal" operator' do
-          let(:operators) { Cuprum::Collections::Queries::Operators }
           let(:block) do
-            -> { { 'title' => equal('A Wizard of Earthsea') } }
+            ->(scope) { { 'title' => scope.equal('A Wizard of Earthsea') } }
           end
           let(:expected) do
             [['title', operators::EQUAL, 'A Wizard of Earthsea']]
@@ -1380,9 +1393,8 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
         end
 
         describe 'with a Hash with an "equals" operator' do
-          let(:operators) { Cuprum::Collections::Queries::Operators }
           let(:block) do
-            -> { { 'title' => equals('A Wizard of Earthsea') } }
+            ->(scope) { { 'title' => scope.equals('A Wizard of Earthsea') } }
           end
           let(:expected) do
             [['title', operators::EQUAL, 'A Wizard of Earthsea']]
@@ -1394,9 +1406,8 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
         end
 
         describe 'with a Hash with a "greater_than" operator' do
-          let(:operators) { Cuprum::Collections::Queries::Operators }
           let(:block) do
-            -> { { 'published_at' => greater_than('1970-01-01') } }
+            ->(scope) { { 'published_at' => scope.greater_than('1970-01-01') } }
           end
           let(:expected) do
             [['published_at', operators::GREATER_THAN, '1970-01-01']]
@@ -1408,9 +1419,10 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
         end
 
         describe 'with a Hash with a "greater_than_or_equal_to" operator' do
-          let(:operators) { Cuprum::Collections::Queries::Operators }
           let(:block) do
-            -> { { 'published_at' => greater_than_or_equal_to('1970-01-01') } }
+            lambda do |scope|
+              { 'published_at' => scope.greater_than_or_equal_to('1970-01-01') }
+            end
           end
           let(:expected) do
             [
@@ -1428,9 +1440,8 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
         end
 
         describe 'with a Hash with a "gt" operator' do
-          let(:operators) { Cuprum::Collections::Queries::Operators }
           let(:block) do
-            -> { { 'published_at' => gt('1970-01-01') } }
+            ->(scope) { { 'published_at' => scope.gt('1970-01-01') } }
           end
           let(:expected) do
             [['published_at', operators::GREATER_THAN, '1970-01-01']]
@@ -1442,9 +1453,8 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
         end
 
         describe 'with a Hash with a "gte" operator' do
-          let(:operators) { Cuprum::Collections::Queries::Operators }
           let(:block) do
-            -> { { 'published_at' => gte('1970-01-01') } }
+            ->(scope) { { 'published_at' => scope.gte('1970-01-01') } }
           end
           let(:expected) do
             [
@@ -1462,9 +1472,8 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
         end
 
         describe 'with a Hash with a "less_than" operator' do
-          let(:operators) { Cuprum::Collections::Queries::Operators }
           let(:block) do
-            -> { { 'published_at' => less_than('1970-01-01') } }
+            ->(scope) { { 'published_at' => scope.less_than('1970-01-01') } }
           end
           let(:expected) do
             [['published_at', operators::LESS_THAN, '1970-01-01']]
@@ -1476,9 +1485,10 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
         end
 
         describe 'with a Hash with a "less_than_or_equal_to" operator' do
-          let(:operators) { Cuprum::Collections::Queries::Operators }
           let(:block) do
-            -> { { 'published_at' => less_than_or_equal_to('1970-01-01') } }
+            lambda do |scope|
+              { 'published_at' => scope.less_than_or_equal_to('1970-01-01') }
+            end
           end
           let(:expected) do
             [['published_at', operators::LESS_THAN_OR_EQUAL_TO, '1970-01-01']]
@@ -1490,9 +1500,8 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
         end
 
         describe 'with a Hash with a "lt" operator' do
-          let(:operators) { Cuprum::Collections::Queries::Operators }
           let(:block) do
-            -> { { 'published_at' => lt('1970-01-01') } }
+            ->(scope) { { 'published_at' => scope.lt('1970-01-01') } }
           end
           let(:expected) do
             [['published_at', operators::LESS_THAN, '1970-01-01']]
@@ -1504,9 +1513,8 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
         end
 
         describe 'with a Hash with a "lte" operator' do
-          let(:operators) { Cuprum::Collections::Queries::Operators }
           let(:block) do
-            -> { { 'published_at' => lte('1970-01-01') } }
+            ->(scope) { { 'published_at' => scope.lte('1970-01-01') } }
           end
           let(:expected) do
             [['published_at', operators::LESS_THAN_OR_EQUAL_TO, '1970-01-01']]
@@ -1518,9 +1526,8 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
         end
 
         describe 'with a Hash with a "ne" operator' do
-          let(:operators) { Cuprum::Collections::Queries::Operators }
           let(:block) do
-            -> { { 'series' => ne('Earthsea') } }
+            ->(scope) { { 'series' => scope.ne('Earthsea') } }
           end
           let(:expected) do
             [['series', operators::NOT_EQUAL, 'Earthsea']]
@@ -1532,9 +1539,8 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
         end
 
         describe 'with a Hash with a "not_equal" operator' do
-          let(:operators) { Cuprum::Collections::Queries::Operators }
           let(:block) do
-            -> { { 'series' => not_equal('Earthsea') } }
+            ->(scope) { { 'series' => scope.not_equal('Earthsea') } }
           end
           let(:expected) do
             [['series', operators::NOT_EQUAL, 'Earthsea']]
@@ -1546,10 +1552,13 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
         end
 
         describe 'with a Hash with a "not_one_of" operator and an Array' do
-          let(:operators) { Cuprum::Collections::Queries::Operators }
           let(:block) do
-            lambda do
-              { 'series' => not_one_of(['Earthsea', 'The Lord of the Rings']) }
+            lambda do |scope|
+              {
+                'series' => scope.not_one_of(
+                  ['Earthsea', 'The Lord of the Rings']
+                )
+              }
             end
           end
           let(:expected) do
@@ -1568,10 +1577,14 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
         end
 
         describe 'with a Hash with a "not_one_of" operator and values' do
-          let(:operators) { Cuprum::Collections::Queries::Operators }
           let(:block) do
-            lambda do
-              { 'series' => not_one_of('Earthsea', 'The Lord of the Rings') }
+            lambda do |scope|
+              {
+                'series' => scope.not_one_of(
+                  'Earthsea',
+                  'The Lord of the Rings'
+                )
+              }
             end
           end
           let(:expected) do
@@ -1590,10 +1603,39 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
         end
 
         describe 'with a Hash with a "one_of" operator and an Array' do
-          let(:operators) { Cuprum::Collections::Queries::Operators }
           let(:block) do
-            lambda do
-              { 'series' => one_of(['Earthsea', 'The Lord of the Rings']) }
+            lambda do |scope|
+              {
+                'series' => scope.one_of(
+                  ['Earthsea', 'The Lord of the Rings']
+                )
+              }
+            end
+          end
+          let(:expected) do
+            [
+              [
+                'series',
+                operators::ONE_OF,
+                ['Earthsea', 'The Lord of the Rings']
+              ]
+            ]
+          end
+
+          it 'should parse the criteria' do
+            expect(parse_criteria(&block)).to be == expected
+          end
+        end
+
+        describe 'with a Hash with a "one_of" operator and values' do
+          let(:block) do
+            lambda do |scope|
+              {
+                'series' => scope.one_of(
+                  'Earthsea',
+                  'The Lord of the Rings'
+                )
+              }
             end
           end
           let(:expected) do
@@ -1636,13 +1678,14 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
         end
 
         describe 'with a Hash with multiple operators' do
-          let(:operators) { Cuprum::Collections::Queries::Operators }
           let(:block) do
-            lambda do
+            lambda do |scope|
               {
-                'published_at' => greater_than('1970-01-01'),
-                'series'       => one_of(['Earthsea', 'The Lord of the Rings']),
-                'title'        => not_equal('The Tombs of Atuan')
+                'published_at' => scope.greater_than('1970-01-01'),
+                'series'       => scope.one_of(
+                  ['Earthsea', 'The Lord of the Rings']
+                ),
+                'title'        => scope.not_equal('The Tombs of Atuan')
               }
             end
           end
@@ -1672,11 +1715,13 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
         end
 
         describe 'with a Hash with mixed keys and operators' do
-          let(:operators) { Cuprum::Collections::Queries::Operators }
           let(:block) do
-            lambda do
+            lambda do |scope|
               {
-                'author'   => one_of('J.R.R. Tolkien', 'Ursula K. LeGuin'),
+                'author'   => scope.one_of(
+                  'J.R.R. Tolkien',
+                  'Ursula K. LeGuin'
+                ),
                 'category' => 'Science Fiction and Fantasy'
               }
             end
@@ -1698,6 +1743,372 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
 
           it 'should parse the criteria' do
             expect(parse_criteria(&block)).to be == expected
+          end
+        end
+
+        # @todo v0.5.0 Implicit receivers are deprecated.
+        describe 'with a block with legacy implicit receiver' do
+          shared_examples 'should print a deprecation warning for' \
+          do |operator_name|
+            let(:deprecation_warning) do
+              '#parse with implicit receiver'
+            end
+            let(:deprecation_message) do
+              'Pass a block with one parameter to #parse: { |scope| { scope' \
+                ".#{operator_name}: value } }"
+            end
+
+            it 'should print a deprecation warning' do
+              parse_criteria(&block)
+
+              expect(tools.core_tools)
+                .to have_received(:deprecate)
+                .with(deprecation_warning, message: deprecation_message)
+            end
+          end
+
+          def tools
+            SleepingKingStudios::Tools::Toolbelt.instance
+          end
+
+          before(:example) do
+            allow(tools.core_tools).to receive(:deprecate)
+          end
+
+          describe 'with a Hash with an "eq" operator' do
+            let(:block) do
+              -> { { 'title' => eq('A Wizard of Earthsea') } }
+            end
+            let(:expected) do
+              [['title', operators::EQUAL, 'A Wizard of Earthsea']]
+            end
+
+            it 'should parse the criteria' do
+              expect(parse_criteria(&block)).to be == expected
+            end
+
+            include_examples 'should print a deprecation warning for', 'eq'
+          end
+
+          describe 'with a Hash with an "equal" operator' do
+            let(:block) do
+              -> { { 'title' => equal('A Wizard of Earthsea') } }
+            end
+            let(:expected) do
+              [['title', operators::EQUAL, 'A Wizard of Earthsea']]
+            end
+
+            it 'should parse the criteria' do
+              expect(parse_criteria(&block)).to be == expected
+            end
+
+            include_examples 'should print a deprecation warning for', 'equal'
+          end
+
+          describe 'with a Hash with an "equals" operator' do
+            let(:block) do
+              -> { { 'title' => equals('A Wizard of Earthsea') } }
+            end
+            let(:expected) do
+              [['title', operators::EQUAL, 'A Wizard of Earthsea']]
+            end
+
+            it 'should parse the criteria' do
+              expect(parse_criteria(&block)).to be == expected
+            end
+
+            include_examples 'should print a deprecation warning for', 'equals'
+          end
+
+          describe 'with a Hash with a "greater_than" operator' do
+            let(:block) do
+              -> { { 'published_at' => greater_than('1970-01-01') } }
+            end
+            let(:expected) do
+              [['published_at', operators::GREATER_THAN, '1970-01-01']]
+            end
+
+            it 'should parse the criteria' do
+              expect(parse_criteria(&block)).to be == expected
+            end
+
+            include_examples 'should print a deprecation warning for',
+              'greater_than'
+          end
+
+          describe 'with a Hash with a "greater_than_or_equal_to" operator' do
+            let(:block) do
+              lambda do
+                { 'published_at' => greater_than_or_equal_to('1970-01-01') }
+              end
+            end
+            let(:expected) do
+              [
+                [
+                  'published_at',
+                  operators::GREATER_THAN_OR_EQUAL_TO,
+                  '1970-01-01'
+                ]
+              ]
+            end
+
+            it 'should parse the criteria' do
+              expect(parse_criteria(&block)).to be == expected
+            end
+
+            include_examples 'should print a deprecation warning for',
+              'greater_than_or_equal_to'
+          end
+
+          describe 'with a Hash with a "gt" operator' do
+            let(:block) do
+              -> { { 'published_at' => gt('1970-01-01') } }
+            end
+            let(:expected) do
+              [['published_at', operators::GREATER_THAN, '1970-01-01']]
+            end
+
+            it 'should parse the criteria' do
+              expect(parse_criteria(&block)).to be == expected
+            end
+
+            include_examples 'should print a deprecation warning for', 'gt'
+          end
+
+          describe 'with a Hash with a "gte" operator' do
+            let(:block) do
+              -> { { 'published_at' => gte('1970-01-01') } }
+            end
+            let(:expected) do
+              [
+                [
+                  'published_at',
+                  operators::GREATER_THAN_OR_EQUAL_TO,
+                  '1970-01-01'
+                ]
+              ]
+            end
+
+            it 'should parse the criteria' do
+              expect(parse_criteria(&block)).to be == expected
+            end
+
+            include_examples 'should print a deprecation warning for', 'gte'
+          end
+
+          describe 'with a Hash with a "less_than" operator' do
+            let(:block) do
+              -> { { 'published_at' => less_than('1970-01-01') } }
+            end
+            let(:expected) do
+              [['published_at', operators::LESS_THAN, '1970-01-01']]
+            end
+
+            it 'should parse the criteria' do
+              expect(parse_criteria(&block)).to be == expected
+            end
+
+            include_examples 'should print a deprecation warning for',
+              'less_than'
+          end
+
+          describe 'with a Hash with a "less_than_or_equal_to" operator' do
+            let(:block) do
+              -> { { 'published_at' => less_than_or_equal_to('1970-01-01') } }
+            end
+            let(:expected) do
+              [['published_at', operators::LESS_THAN_OR_EQUAL_TO, '1970-01-01']]
+            end
+
+            it 'should parse the criteria' do
+              expect(parse_criteria(&block)).to be == expected
+            end
+
+            include_examples 'should print a deprecation warning for',
+              'less_than_or_equal_to'
+          end
+
+          describe 'with a Hash with a "lt" operator' do
+            let(:block) do
+              -> { { 'published_at' => lt('1970-01-01') } }
+            end
+            let(:expected) do
+              [['published_at', operators::LESS_THAN, '1970-01-01']]
+            end
+
+            it 'should parse the criteria' do
+              expect(parse_criteria(&block)).to be == expected
+            end
+
+            include_examples 'should print a deprecation warning for', 'lt'
+          end
+
+          describe 'with a Hash with a "lte" operator' do
+            let(:block) do
+              -> { { 'published_at' => lte('1970-01-01') } }
+            end
+            let(:expected) do
+              [['published_at', operators::LESS_THAN_OR_EQUAL_TO, '1970-01-01']]
+            end
+
+            it 'should parse the criteria' do
+              expect(parse_criteria(&block)).to be == expected
+            end
+
+            include_examples 'should print a deprecation warning for', 'lte'
+          end
+
+          describe 'with a Hash with a "ne" operator' do
+            let(:block) do
+              -> { { 'series' => ne('Earthsea') } }
+            end
+            let(:expected) do
+              [['series', operators::NOT_EQUAL, 'Earthsea']]
+            end
+
+            it 'should parse the criteria' do
+              expect(parse_criteria(&block)).to be == expected
+            end
+
+            include_examples 'should print a deprecation warning for', 'ne'
+          end
+
+          describe 'with a Hash with a "not_equal" operator' do
+            let(:block) do
+              -> { { 'series' => not_equal('Earthsea') } }
+            end
+            let(:expected) do
+              [['series', operators::NOT_EQUAL, 'Earthsea']]
+            end
+
+            it 'should parse the criteria' do
+              expect(parse_criteria(&block)).to be == expected
+            end
+
+            include_examples 'should print a deprecation warning for',
+              'not_equal'
+          end
+
+          describe 'with a Hash with a "not_one_of" operator and an Array' do
+            let(:block) do
+              lambda do
+                {
+                  'series' => not_one_of(
+                    ['Earthsea', 'The Lord of the Rings']
+                  )
+                }
+              end
+            end
+            let(:expected) do
+              [
+                [
+                  'series',
+                  operators::NOT_ONE_OF,
+                  ['Earthsea', 'The Lord of the Rings']
+                ]
+              ]
+            end
+
+            it 'should parse the criteria' do
+              expect(parse_criteria(&block)).to be == expected
+            end
+
+            include_examples 'should print a deprecation warning for',
+              'not_one_of'
+          end
+
+          describe 'with a Hash with a "not_one_of" operator and values' do
+            let(:block) do
+              lambda do
+                { 'series' => not_one_of('Earthsea', 'The Lord of the Rings') }
+              end
+            end
+            let(:expected) do
+              [
+                [
+                  'series',
+                  operators::NOT_ONE_OF,
+                  ['Earthsea', 'The Lord of the Rings']
+                ]
+              ]
+            end
+
+            it 'should parse the criteria' do
+              expect(parse_criteria(&block)).to be == expected
+            end
+
+            include_examples 'should print a deprecation warning for',
+              'not_one_of'
+          end
+
+          describe 'with a Hash with a "one_of" operator and an Array' do
+            let(:block) do
+              lambda do
+                { 'series' => one_of(['Earthsea', 'The Lord of the Rings']) }
+              end
+            end
+            let(:expected) do
+              [
+                [
+                  'series',
+                  operators::ONE_OF,
+                  ['Earthsea', 'The Lord of the Rings']
+                ]
+              ]
+            end
+
+            it 'should parse the criteria' do
+              expect(parse_criteria(&block)).to be == expected
+            end
+
+            include_examples 'should print a deprecation warning for', 'one_of'
+          end
+
+          describe 'with a Hash with a "one_of" operator and values' do
+            let(:block) do
+              lambda do
+                { 'series' => one_of('Earthsea', 'The Lord of the Rings') }
+              end
+            end
+            let(:expected) do
+              [
+                [
+                  'series',
+                  operators::ONE_OF,
+                  ['Earthsea', 'The Lord of the Rings']
+                ]
+              ]
+            end
+
+            it 'should parse the criteria' do
+              expect(parse_criteria(&block)).to be == expected
+            end
+
+            include_examples 'should print a deprecation warning for', 'one_of'
+          end
+
+          describe 'with a Hash with an unknown operator' do
+            let(:error_class) do
+              Cuprum::Collections::Queries::UnknownOperatorException
+            end
+            let(:error_message) do
+              'unknown operator "random"'
+            end
+            let(:block) do
+              -> { { 'genre' => random('Science Fiction', 'Fantasy') } }
+            end
+
+            it 'should raise an exception' do
+              expect { parse_criteria(&block) }
+                .to raise_error error_class, error_message
+            end
+
+            it 'should preserve the original exception', :aggregate_failures do
+              parse_criteria(&block)
+            rescue error_class => exception
+              expect(exception.cause).to be_a NameError
+              expect(exception.name).to be == :random
+            end
           end
         end
       end

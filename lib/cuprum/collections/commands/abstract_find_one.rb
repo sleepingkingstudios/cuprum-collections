@@ -14,7 +14,7 @@ module Cuprum::Collections::Commands
     def apply_query(primary_key:)
       key = primary_key_name
 
-      query.where { { key => equals(primary_key) } }.limit(1)
+      query.where { |scope| { key => scope.equals(primary_key) } }.limit(1)
     end
 
     def handle_missing_item(item:, primary_key:)

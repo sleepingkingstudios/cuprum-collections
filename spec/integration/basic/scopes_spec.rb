@@ -23,7 +23,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
   let(:data) { Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES }
   let(:complex_scope) do
     Cuprum::Collections::Scope
-      .new { { 'published_at' => greater_than('1973-01-01') } }
+      .new { |scope| { 'published_at' => scope.greater_than('1973-01-01') } }
       .not({ 'series' => nil })
   end
 
