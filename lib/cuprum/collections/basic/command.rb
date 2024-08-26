@@ -6,7 +6,7 @@ require 'cuprum/collections/basic'
 
 module Cuprum::Collections::Basic
   # Abstract base class for basic collection commands.
-  class Command < Cuprum::Collections::Command
+  class Command < Cuprum::Collections::CollectionCommand
     # Creates a subclass with the given parameters applied to the constructor.
     def self.subclass(**default_options)
       Class.new(self) do
@@ -35,7 +35,7 @@ module Cuprum::Collections::Basic
       primary_key_type: Integer,
       **options
     )
-      super()
+      super(collection: nil)
 
       @collection_name  = collection_name.to_s
       @data             = data

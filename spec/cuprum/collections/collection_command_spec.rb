@@ -1,13 +1,16 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/command'
+require 'cuprum/collections/collection_command'
+require 'cuprum/collections/rspec/deferred/command_examples'
 
-RSpec.describe Cuprum::Collections::Command do
-  subject(:command) { described_class.new }
+require 'support/book'
 
-  describe '.new' do
-    it { expect(described_class).to be_constructible.with(0).arguments }
-  end
+RSpec.describe Cuprum::Collections::CollectionCommand do
+  include Cuprum::Collections::RSpec::Deferred::CommandExamples
+
+  subject(:command) { described_class.new(collection:) }
+
+  let(:collection) { Cuprum::Collections::Collection.new(name: 'books') }
 
   describe '.validate_parameters' do
     it 'should define the class method' do
@@ -24,6 +27,17 @@ RSpec.describe Cuprum::Collections::Command do
         .and_a_block
     end
   end
+
+  describe '.new' do
+    it 'should define the constructor' do
+      expect(described_class)
+        .to be_constructible
+        .with(0).arguments
+        .and_keywords(:collection)
+    end
+  end
+
+  include_deferred 'should implement the CollectionCommand methods'
 
   describe '#call' do
     it 'should define the method' do
