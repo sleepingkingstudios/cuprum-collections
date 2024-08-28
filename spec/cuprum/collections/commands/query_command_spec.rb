@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/command'
 require 'cuprum/collections/commands/query_command'
 require 'cuprum/collections/query'
 
@@ -11,7 +10,7 @@ RSpec.describe Cuprum::Collections::Commands::QueryCommand do
   let(:query)           { Struct.new(:call).new([]) }
   let(:options)         { {} }
 
-  example_class 'Spec::ExampleCommand', Cuprum::Collections::Command do |klass|
+  example_class 'Spec::ExampleCommand', Cuprum::Command do |klass|
     klass.include Cuprum::Collections::Commands::QueryCommand # rubocop:disable RSpec/DescribedClass
   end
 

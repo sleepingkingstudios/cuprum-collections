@@ -1,14 +1,11 @@
 # frozen_string_literal: true
 
 require 'cuprum/collections/commands'
-require 'cuprum/collections/commands/query_command'
 require 'cuprum/collections/errors/invalid_query'
 
 module Cuprum::Collections::Commands
   # Abstract implementation of the FindMatching command.
   module AbstractFindMatching
-    include Cuprum::Collections::Commands::QueryCommand
-
     private
 
     def apply_query(limit:, offset:, order:, scope:)

@@ -35,17 +35,11 @@ module Cuprum::Collections::RSpec::Contracts
         end
 
         shared_examples 'should define the command' \
-        do |command_name, command_class_name = nil, query: false|
+        do |command_name, command_class_name = nil|
           next if options[:abstract]
 
-          tools           = SleepingKingStudios::Tools::Toolbelt.instance
-          class_name      = tools.str.camelize(command_name)
-          command_options = %i[
-            collection_name
-            member_name
-            primary_key_name
-            primary_key_type
-          ] + options.fetch(:command_options, []).map(&:intern)
+          tools      = SleepingKingStudios::Tools::Toolbelt.instance
+          class_name = tools.str.camelize(command_name)
 
           describe "##{command_name}" do
             let(:constructor_options) { defined?(super()) ? super() : {} }
@@ -56,14 +50,6 @@ module Cuprum::Collections::RSpec::Contracts
                 "#{options[:commands_namespace]}::#{class_name}"
               )
                 .then { |str| Object.const_get(str) }
-            end
-            let(:expected_options) do
-              Hash
-                .new { |_, key| collection.send(key) }
-                .merge(
-                  collection_name: collection.name,
-                  member_name:     collection.singular_name
-                )
             end
 
             define_method(:build_command) do |collection|
@@ -79,69 +65,7 @@ module Cuprum::Collections::RSpec::Contracts
 
             it { expect(command).to be_a command_class }
 
-            include_examples 'should match the collection query' if query
-
-            command_options.each do |option_name|
-              it "should set the ##{option_name}" do
-                expect(command.send(option_name))
-                  .to be == expected_options[option_name]
-              end
-            end
-
-            describe 'with options' do
-              let(:constructor_options) do
-                super().merge(
-                  custom_option: 'value',
-                  singular_name: 'tome'
-                )
-              end
-
-              it { expect(command.options).to be >= { custom_option: 'value' } }
-
-              include_examples 'should match the collection query' if query
-
-              command_options.each do |option_name|
-                it "should set the ##{option_name}" do
-                  expect(command.send(option_name)).to(
-                    be == expected_options[option_name]
-                  )
-                end
-              end
-            end
-          end
-        end
-
-        shared_examples 'should match the collection query' do
-          let(:query_class) { collection.query.class }
-
-          it { expect(command.query).to be_a query_class }
-
-          it { expect(command.query.limit).to be == collection.query.limit }
-
-          it { expect(command.query.offset).to be == collection.query.offset }
-
-          it { expect(command.query.order).to be == collection.query.order }
-
-          it { expect(command.query.scope).to be == collection.query.scope }
-
-          wrap_context 'when initialized with a scope' do
-            it { expect(command.query.scope).to be == collection.query.scope }
-          end
-
-          context 'with a copy with custom scope' do
-            let(:other_scope) do
-              Cuprum::Collections::Scope.new({ 'secret' => '12345' })
-            end
-            let(:copy)    { collection.with_scope(other_scope) }
-            let(:command) { build_command(copy) }
-
-            it { expect(command.query.scope).to be == copy.query.scope }
-
-            context 'when the original command has been generated' do
-              before(:example) { build_command(collection) }
-
-              it { expect(command.query.scope).to be == copy.query.scope }
-            end
+            it { expect(command.collection).to be subject }
           end
         end
 
@@ -157,17 +81,11 @@ module Cuprum::Collections::RSpec::Contracts
 
         include_examples 'should define the command', :destroy_one
 
-        include_examples 'should define the command',
-          :find_many,
-          query: true
+        include_examples 'should define the command', :find_many
 
-        include_examples 'should define the command',
-          :find_matching,
-          query: true
+        include_examples 'should define the command', :find_matching
 
-        include_examples 'should define the command',
-          :find_one,
-          query: true
+        include_examples 'should define the command', :find_one
 
         include_examples 'should define the command', :insert_one
 

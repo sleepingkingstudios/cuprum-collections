@@ -1,41 +1,15 @@
 require:
   - rubocop-rspec
 
+inherit_gem:
+  rspec-sleeping_king_studios: config/rubocop-rspec.yml
+
 AllCops:
   TargetRubyVersion: 3.1
   NewCops: enable
   Exclude:
     - tmp/**/*
     - vendor/**/*
-
-RSpec:
-  Language:
-    ExampleGroups:
-      Regular:
-        - context
-        - describe
-        - wrap_context
-      Skipped:
-        - xcontext
-        - xdescribe
-        - xwrap_context
-      Focused:
-        - fcontext
-        - fdescribe
-        - fwrap_context
-    Includes:
-      Contexts:
-        - with_contract
-      Examples:
-        - finclude_contract
-        - finclude_examples
-        - fwrap_examples
-        - include_contract
-        - include_examples
-        - wrap_examples
-        - xinclude_contract
-        - xinclude_examples
-        - xwrap_examples
 
 Layout/ArgumentAlignment:
   EnforcedStyle: with_fixed_indentation
@@ -57,6 +31,7 @@ Metrics/BlockLength:
     - '*.gemspec'
     - lib/**/*_contract.rb
     - lib/**/*_contracts.rb
+    - lib/**/*_examples.rb
     - spec/support/**/*_examples.rb
     - spec/**/*_spec.rb
 

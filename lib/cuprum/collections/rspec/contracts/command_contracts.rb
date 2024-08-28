@@ -275,7 +275,7 @@ module Cuprum::Collections::RSpec::Contracts
       end
     end
 
-    # Contract validating the behavior of a FindOne command implementation.
+    # Contract validating the behavior of a DestroyOne command implementation.
     module ShouldBeADestroyOneCommandContract
       extend RSpec::SleepingKingStudios::Contract
 
@@ -286,11 +286,10 @@ module Cuprum::Collections::RSpec::Contracts
       #     which the contract is applied.
       contract do
         describe '#call' do
+          let(:query) { collection.query }
           let(:mapped_data) do
             defined?(super()) ? super() : data
           end
-          let(:primary_key_name) { defined?(super()) ? super() : 'id' }
-          let(:primary_key_type) { defined?(super()) ? super() : Integer }
           let(:invalid_primary_key_value) do
             defined?(super()) ? super() : 100
           end
@@ -301,16 +300,16 @@ module Cuprum::Collections::RSpec::Contracts
           it 'should validate the :primary_key keyword' do
             expect(command)
               .to validate_parameter(:call, :primary_key)
-              .using_constraint(primary_key_type)
+              .using_constraint(collection.primary_key_type)
           end
 
           describe 'with an invalid primary key' do
             let(:primary_key) { invalid_primary_key_value }
             let(:expected_error) do
               Cuprum::Collections::Errors::NotFound.new(
-                attribute_name:  primary_key_name,
+                attribute_name:  collection.primary_key_name,
                 attribute_value: primary_key,
-                collection_name:,
+                collection_name: collection.name,
                 primary_key:     true
               )
             end
@@ -331,7 +330,7 @@ module Cuprum::Collections::RSpec::Contracts
             let(:data) { fixtures_data }
             let(:matching_data) do
               mapped_data.find do |item|
-                item[primary_key_name.to_s] == primary_key
+                item[collection.primary_key_name.to_s] == primary_key
               end
             end
             let!(:expected_data) do
@@ -342,9 +341,9 @@ module Cuprum::Collections::RSpec::Contracts
               let(:primary_key) { invalid_primary_key_value }
               let(:expected_error) do
                 Cuprum::Collections::Errors::NotFound.new(
-                  attribute_name:  primary_key_name,
+                  attribute_name:  collection.primary_key_name,
                   attribute_value: primary_key,
-                  collection_name:,
+                  collection_name: collection.name,
                   primary_key:     true
                 )
               end
@@ -380,7 +379,9 @@ module Cuprum::Collections::RSpec::Contracts
               it 'should remove the entity from the collection' do
                 command.call(primary_key:)
 
-                expect(query.map { |item| item[primary_key_name.to_s] })
+                expect(
+                  query.map { |item| item[collection.primary_key_name.to_s] }
+                )
                   .not_to include primary_key
               end
             end
@@ -447,9 +448,9 @@ module Cuprum::Collections::RSpec::Contracts
               Cuprum::Errors::MultipleErrors.new(
                 errors: primary_keys.map do |primary_key|
                   Cuprum::Collections::Errors::NotFound.new(
-                    attribute_name:  primary_key_name,
+                    attribute_name:  collection.primary_key_name,
                     attribute_value: primary_key,
-                    collection_name: command.collection_name,
+                    collection_name: collection.name,
                     primary_key:     true
                   )
                 end
@@ -481,9 +482,9 @@ module Cuprum::Collections::RSpec::Contracts
                 Cuprum::Errors::MultipleErrors.new(
                   errors: primary_keys.map do |primary_key|
                     Cuprum::Collections::Errors::NotFound.new(
-                      attribute_name:  primary_key_name,
+                      attribute_name:  collection.primary_key_name,
                       attribute_value: primary_key,
-                      collection_name: command.collection_name,
+                      collection_name: collection.name,
                       primary_key:     true
                     )
                   end
@@ -509,9 +510,9 @@ module Cuprum::Collections::RSpec::Contracts
                     end
 
                     Cuprum::Collections::Errors::NotFound.new(
-                      attribute_name:  primary_key_name,
+                      attribute_name:  collection.primary_key_name,
                       attribute_value: primary_key,
-                      collection_name: command.collection_name,
+                      collection_name: collection.name,
                       primary_key:     true
                     )
                   end
@@ -552,9 +553,9 @@ module Cuprum::Collections::RSpec::Contracts
                   Cuprum::Errors::MultipleErrors.new(
                     errors: invalid_primary_key_values.map do |primary_key|
                       Cuprum::Collections::Errors::NotFound.new(
-                        attribute_name:  primary_key_name,
+                        attribute_name:  collection.primary_key_name,
                         attribute_value: primary_key,
-                        collection_name: command.collection_name,
+                        collection_name: collection.name,
                         primary_key:     true
                       )
                     end
@@ -580,9 +581,9 @@ module Cuprum::Collections::RSpec::Contracts
                       end
 
                       Cuprum::Collections::Errors::NotFound.new(
-                        attribute_name:  primary_key_name,
+                        attribute_name:  collection.primary_key_name,
                         attribute_value: primary_key,
-                        collection_name: command.collection_name,
+                        collection_name: collection.name,
                         primary_key:     true
                       )
                     end
@@ -642,7 +643,7 @@ module Cuprum::Collections::RSpec::Contracts
                     command.call(primary_keys:, envelope: true)
                   )
                     .to be_a_passing_result
-                    .with_value({ collection_name => expected_data })
+                    .with_value({ collection.name => expected_data })
                 end
 
                 describe 'with an ordered array of primary keys' do
@@ -653,7 +654,7 @@ module Cuprum::Collections::RSpec::Contracts
                       command.call(primary_keys:, envelope: true)
                     )
                       .to be_a_passing_result
-                      .with_value({ collection_name => expected_data })
+                      .with_value({ collection.name => expected_data })
                   end
                 end
               end
@@ -690,9 +691,9 @@ module Cuprum::Collections::RSpec::Contracts
 
             it { expect(result.value).to be_a Hash }
 
-            it { expect(result.value.keys).to be == [collection_name] }
+            it { expect(result.value.keys).to be == [collection.name] }
 
-            it { expect(result.value[collection_name]).to be == expected_data }
+            it { expect(result.value[collection.name]).to be == expected_data }
           end
 
           let(:filter) { nil }
@@ -814,10 +815,6 @@ module Cuprum::Collections::RSpec::Contracts
             defined?(super()) ? super() : 0
           end
 
-          def tools
-            SleepingKingStudios::Tools::Toolbelt.instance
-          end
-
           it 'should validate the :envelope keyword' do
             expect(command)
               .to validate_parameter(:call, :envelope)
@@ -834,9 +831,9 @@ module Cuprum::Collections::RSpec::Contracts
             let(:primary_key) { invalid_primary_key_value }
             let(:expected_error) do
               Cuprum::Collections::Errors::NotFound.new(
-                attribute_name:  primary_key_name,
+                attribute_name:  collection.primary_key_name,
                 attribute_value: primary_key,
-                collection_name: command.collection_name,
+                collection_name: collection.name,
                 primary_key:     true
               )
             end
@@ -862,9 +859,9 @@ module Cuprum::Collections::RSpec::Contracts
               let(:primary_key) { invalid_primary_key_value }
               let(:expected_error) do
                 Cuprum::Collections::Errors::NotFound.new(
-                  attribute_name:  primary_key_name,
+                  attribute_name:  collection.primary_key_name,
                   attribute_value: primary_key,
-                  collection_name: command.collection_name,
+                  collection_name: collection.name,
                   primary_key:     true
                 )
               end
@@ -887,7 +884,7 @@ module Cuprum::Collections::RSpec::Contracts
             end
 
             describe 'with envelope: true' do
-              let(:member_name) { tools.str.singularize(collection_name) }
+              let(:member_name) { collection.singular_name }
 
               describe 'with a valid primary key' do
                 let(:primary_key) { valid_primary_key_value }
@@ -900,10 +897,6 @@ module Cuprum::Collections::RSpec::Contracts
               end
             end
           end
-        end
-
-        describe '#query' do
-          include_examples 'should define reader', :query, -> { query }
         end
       end
     end
@@ -933,7 +926,7 @@ module Cuprum::Collections::RSpec::Contracts
             key    = primary_key_name
             value  = entity[primary_key_name.to_s]
 
-            query.where { { key => value } }
+            collection.query.where { { key => value } }
           end
 
           it 'should validate the :entity keyword' do
@@ -952,7 +945,7 @@ module Cuprum::Collections::RSpec::Contracts
             it 'should append an item to the collection' do
               expect { command.call(entity:) }
                 .to(
-                  change { query.reset.count }
+                  change { collection.query.count }
                   .by(1)
                 )
             end
@@ -974,12 +967,12 @@ module Cuprum::Collections::RSpec::Contracts
             let(:data) { fixtures_data }
             let(:expected_error) do
               Cuprum::Collections::Errors::AlreadyExists.new(
-                attribute_name:  primary_key_name,
+                attribute_name:  collection.primary_key_name,
                 attribute_value: attributes.fetch(
                   primary_key_name.to_s,
                   attributes[primary_key_name.intern]
                 ),
-                collection_name:,
+                collection_name: collection.name,
                 primary_key:     true
               )
             end
@@ -992,7 +985,7 @@ module Cuprum::Collections::RSpec::Contracts
 
             it 'should not append an item to the collection' do
               expect { command.call(entity:) }
-                .not_to(change { query.reset.count })
+                .not_to(change { collection.query.count })
             end
           end
         end
@@ -1024,7 +1017,7 @@ module Cuprum::Collections::RSpec::Contracts
             key    = primary_key_name
             value  = entity[primary_key_name.to_s]
 
-            query.where { { key => value } }
+            collection.query.where { { key => value } }
           end
 
           it 'should validate the :entity keyword' do
@@ -1036,12 +1029,12 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when the item does not exist in the collection' do
             let(:expected_error) do
               Cuprum::Collections::Errors::NotFound.new(
-                attribute_name:  primary_key_name,
+                attribute_name:  collection.primary_key_name,
                 attribute_value: attributes.fetch(
                   primary_key_name.to_s,
                   attributes[primary_key_name.intern]
                 ),
-                collection_name:,
+                collection_name: collection.name,
                 primary_key:     true
               )
             end
@@ -1055,7 +1048,7 @@ module Cuprum::Collections::RSpec::Contracts
 
             it 'should not append an item to the collection' do
               expect { command.call(entity:) }
-                .not_to(change { query.reset.count })
+                .not_to(change { collection.query.count })
             end
           end
 
@@ -1073,7 +1066,7 @@ module Cuprum::Collections::RSpec::Contracts
 
             it 'should not append an item to the collection' do
               expect { command.call(entity:) }
-                .not_to(change { query.reset.count })
+                .not_to(change { collection.query.count })
             end
 
             it 'should set the attributes' do
