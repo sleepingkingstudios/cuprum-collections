@@ -43,42 +43,39 @@ module Cuprum::Collections::Basic
     attr_reader :data
 
     command :assign_one do
-      Cuprum::Collections::Basic::Commands::AssignOne.new(**command_options)
+      Cuprum::Collections::Basic::Commands::AssignOne.new(collection: self)
     end
 
     command :build_one do
-      Cuprum::Collections::Basic::Commands::BuildOne.new(**command_options)
+      Cuprum::Collections::Basic::Commands::BuildOne.new(collection: self)
     end
 
     command :destroy_one do
-      Cuprum::Collections::Basic::Commands::DestroyOne.new(**command_options)
+      Cuprum::Collections::Basic::Commands::DestroyOne.new(collection: self)
     end
 
     command :find_many do
-      Cuprum::Collections::Basic::Commands::FindMany
-        .new(query:, **command_options)
+      Cuprum::Collections::Basic::Commands::FindMany.new(collection: self)
     end
 
     command :find_matching do
-      Cuprum::Collections::Basic::Commands::FindMatching
-        .new(query:, **command_options)
+      Cuprum::Collections::Basic::Commands::FindMatching.new(collection: self)
     end
 
     command :find_one do
-      Cuprum::Collections::Basic::Commands::FindOne
-        .new(query:, **command_options)
+      Cuprum::Collections::Basic::Commands::FindOne.new(collection: self)
     end
 
     command :insert_one do
-      Cuprum::Collections::Basic::Commands::InsertOne.new(**command_options)
+      Cuprum::Collections::Basic::Commands::InsertOne.new(collection: self)
     end
 
     command :update_one do
-      Cuprum::Collections::Basic::Commands::UpdateOne.new(**command_options)
+      Cuprum::Collections::Basic::Commands::UpdateOne.new(collection: self)
     end
 
     command :validate_one do
-      Cuprum::Collections::Basic::Commands::ValidateOne.new(**command_options)
+      Cuprum::Collections::Basic::Commands::ValidateOne.new(collection: self)
     end
 
     # @return [Stannum::Constraints::Base, nil] the #   default contract for

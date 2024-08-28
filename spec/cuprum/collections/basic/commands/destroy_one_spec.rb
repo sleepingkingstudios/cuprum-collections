@@ -1,44 +1,23 @@
 # frozen_string_literal: true
 
 require 'cuprum/collections/basic/commands/destroy_one'
-require 'cuprum/collections/rspec/contracts/basic/command_contracts'
 require 'cuprum/collections/rspec/contracts/command_contracts'
 
+require 'support/examples/basic/command_examples'
+
 RSpec.describe Cuprum::Collections::Basic::Commands::DestroyOne do
-  include Cuprum::Collections::RSpec::Contracts::Basic::CommandContracts
   include Cuprum::Collections::RSpec::Contracts::CommandContracts
+  include Spec::Support::Examples::Basic::CommandExamples
 
-  with_contract 'with basic command contexts'
+  subject(:command) { described_class.new(collection:) }
 
-  include_context 'with parameters for a basic contract'
+  include_deferred 'with parameters for a basic command'
 
-  subject(:command) do
-    described_class.new(
-      collection_name:,
-      data:            mapped_data,
-      **constructor_options
-    )
-  end
-
-  describe '.new' do
-    let(:keywords) do
-      %i[collection_name data primary_key_name primary_key_type]
-    end
-
-    it 'should define the constructor' do
-      expect(described_class)
-        .to respond_to(:new)
-        .with(0).arguments
-        .and_keywords(*keywords)
-        .and_any_keywords
-    end
-  end
-
-  include_contract 'should be a basic command'
+  include_deferred 'should implement the Basic::Command methods'
 
   include_contract 'should be a destroy one command'
 
-  wrap_context 'with a custom primary key' do
+  wrap_deferred 'with a collection with a custom primary key' do
     include_contract 'should be a destroy one command'
   end
 end

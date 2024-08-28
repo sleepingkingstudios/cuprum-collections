@@ -1,37 +1,17 @@
 # frozen_string_literal: true
 
 require 'cuprum/collections/basic/command'
-require 'cuprum/collections/rspec/contracts/basic/command_contracts'
-require 'cuprum/collections/rspec/fixtures'
+
+require 'support/examples/basic/command_examples'
 
 RSpec.describe Cuprum::Collections::Basic::Command do
-  include Cuprum::Collections::RSpec::Contracts::Basic::CommandContracts
+  include Spec::Support::Examples::Basic::CommandExamples
 
-  subject(:command) do
-    described_class.new(
-      collection_name:,
-      data:,
-      **constructor_options
-    )
-  end
+  subject(:command) { described_class.new(collection:) }
 
-  let(:data) do
-    Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES.dup
-  end
-  let(:collection_name)     { 'books' }
-  let(:constructor_options) { {} }
+  include_deferred 'with parameters for a basic command'
 
-  describe '.new' do
-    it 'should define the constructor' do
-      expect(described_class)
-        .to respond_to(:new)
-        .with(0).arguments
-        .and_keywords(:collection_name, :data)
-        .and_any_keywords
-    end
-  end
-
-  include_contract 'should be a basic command'
+  include_deferred 'should implement the Basic::Command methods'
 
   describe '#call' do
     it 'should define the method' do

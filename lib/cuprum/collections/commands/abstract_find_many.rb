@@ -1,14 +1,11 @@
 # frozen_string_literal: true
 
 require 'cuprum/collections/commands'
-require 'cuprum/collections/commands/query_command'
 require 'cuprum/collections/errors/not_found'
 
 module Cuprum::Collections::Commands
   # Abstract implementation of the FindMany command.
   module AbstractFindMany
-    include Cuprum::Collections::Commands::QueryCommand
-
     private
 
     def apply_query(primary_keys:)
