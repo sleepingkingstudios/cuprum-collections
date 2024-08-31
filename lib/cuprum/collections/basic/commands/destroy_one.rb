@@ -18,9 +18,7 @@ module Cuprum::Collections::Basic::Commands
     #
     #   @return [Cuprum::Result<Hash{String, Object}>] a result with the
     #     destroyed item.
-    validate_parameters :call do
-      keyword :primary_key, Object
-    end
+    validate :primary_key
 
     private
 
@@ -37,8 +35,6 @@ module Cuprum::Collections::Basic::Commands
     end
 
     def process(primary_key:)
-      step { validate_primary_key(primary_key) }
-
       index = data.index { |item| item[primary_key_name.to_s] == primary_key }
 
       step { handle_missing_item(index:, primary_key:) }

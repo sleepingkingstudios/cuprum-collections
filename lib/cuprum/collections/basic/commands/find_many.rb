@@ -30,11 +30,7 @@ module Cuprum::Collections::Basic::Commands
     #
     #   @return [Cuprum::Result<Array<Hash{String, Object}>>] a result with the
     #     requested items.
-    validate_parameters :call do
-      keyword :allow_partial, Stannum::Constraints::Boolean.new, default: true
-      keyword :envelope,      Stannum::Constraints::Boolean.new, default: true
-      keyword :primary_keys,  Array
-    end
+    validate :allow_partial, :boolean, optional: true
 
     private
 

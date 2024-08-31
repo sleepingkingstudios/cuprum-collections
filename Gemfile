@@ -4,10 +4,10 @@ source 'https://rubygems.org'
 
 gemspec
 
-gem 'cuprum',
-  '>= 1.3.0.alpha',
-  git:    'https://github.com/sleepingkingstudios/cuprum.git',
-  branch: 'main'
+gem 'cuprum', path: '../cuprum'
+  # '>= 1.3.0.alpha',
+  # git:    'https://github.com/sleepingkingstudios/cuprum.git',
+  # branch: 'main'
 gem 'sleeping_king_studios-tools',
   '>= 1.2.0.alpha',
   git:    'https://github.com/sleepingkingstudios/sleeping_king_studios-tools.git',

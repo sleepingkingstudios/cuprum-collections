@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'stannum/parameter_validation'
+require 'cuprum/parameter_validation'
 
 require 'cuprum/collections'
 require 'cuprum/collections/errors/invalid_parameters'
@@ -8,8 +8,7 @@ require 'cuprum/collections/errors/invalid_parameters'
 module Cuprum::Collections
   # Abstract base class for commands implementing collection actions.
   class CollectionCommand < Cuprum::Command
-    extend  Stannum::ParameterValidation
-    include Stannum::ParameterValidation
+    include Cuprum::ParameterValidation
 
     # @param collection [Cuprum::Collections::Collection] the collection to
     #   which the command belongs.
@@ -55,14 +54,63 @@ module Cuprum::Collections
 
     private
 
-    def handle_invalid_parameters(errors:, method_name:)
-      return super unless method_name == :call
-
-      error = Cuprum::Collections::Errors::InvalidParameters.new(
-        command: self,
-        errors:
+    def error_message_for(message = nil, as:, expected:)
+      tools.assertions.error_message_for(
+        message || 'sleeping_king_studios.tools.assertions.instance_of',
+        as:,
+        expected:
       )
-      failure(error)
+    end
+
+    def tools
+      SleepingKingStudios::Tools::Toolbelt.instance
+    end
+
+    def validate_attributes(value, as: 'attributes')
+      return error_message_for(as:, expected: Hash) unless value.is_a?(Hash)
+
+      return [] if value.empty?
+
+      validator = tools.assertions.aggregator_class.new
+
+      value.each_key do |key|
+        validator.validate_name(
+          key,
+          as: "#{as}[#{key.inspect}] key"
+        )
+      end
+
+      validator.each.to_a
+    end
+
+    def validate_primary_key(value, as: nil)
+      return nil if primary_key_type.nil?
+
+      if primary_key_type.is_a?(Stannum::Constraints::Base)
+        match, errors = primary_key_type.match(value)
+
+        return match ? nil : "#{as || primary_key_name} #{errors.summary}"
+      end
+
+      return nil if value.is_a?(primary_key_type)
+
+      error_message_for(as: as || primary_key_name, expected: primary_key_type)
+    end
+
+    def validate_primary_keys(primary_keys, as: 'value')
+      unless primary_keys.is_a?(Array)
+        return error_message_for(as:, expected: Array)
+      end
+
+      messages = []
+
+      primary_keys.each.with_index do |item, index|
+        message = validate_primary_key(item, as: "#{as}[#{index}]")
+
+        messages << message if message
+      end
+
+      messages
     end
   end
 end
