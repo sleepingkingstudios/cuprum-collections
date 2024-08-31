@@ -1,10 +1,14 @@
 # frozen_string_literal: true
 
+require 'cuprum/rspec/deferred/parameter_validation_examples'
+
 require 'cuprum/collections/rspec/contracts'
 
 module Cuprum::Collections::RSpec::Contracts
   # Contracts for asserting on Command objects.
   module CommandContracts
+    include Cuprum::RSpec::Deferred::ParameterValidationExamples
+
     # Contract validating the behavior of an AssignOne command implementation.
     module ShouldBeAnAssignOneCommandContract
       extend RSpec::SleepingKingStudios::Contract
@@ -37,19 +41,21 @@ module Cuprum::Collections::RSpec::Contracts
             defined?(super()) ? super() : expected_attributes
           end
 
-          it 'should validate the :attributes keyword' do
-            expect(command)
-              .to validate_parameter(:call, :attributes)
-              .using_constraint(
-                Stannum::Constraints::Types::HashWithIndifferentKeys.new
-              )
+          def call_command
+            command.call(attributes:, entity:)
           end
 
-          it 'should validate the :entity keyword' do
-            expect(command)
-              .to validate_parameter(:call, :entity)
-              .using_constraint(entity_type)
-              .with_parameters(attributes: {}, entity: nil)
+          include_contract 'should validate the attributes'
+
+          if defined_deferred_examples? 'should validate the entity'
+            include_deferred 'should validate the entity'
+          else
+            # :nocov:
+            pending \
+              'the command should validate the entity parameter, but entity ' \
+              'validation is not defined - implement a "should validate the ' \
+              'entity" deferred example group to resolve this warning'
+            # :nocov:
           end
 
           describe 'with an empty attributes hash' do
@@ -209,13 +215,11 @@ module Cuprum::Collections::RSpec::Contracts
             defined?(super()) ? super() : attributes
           end
 
-          it 'should validate the :attributes keyword' do
-            expect(command)
-              .to validate_parameter(:call, :attributes)
-              .using_constraint(
-                Stannum::Constraints::Types::HashWithIndifferentKeys.new
-              )
+          def call_command
+            command.call(attributes:)
           end
+
+          include_contract 'should validate the attributes'
 
           describe 'with an empty attributes hash' do
             let(:attributes) { {} }
@@ -297,11 +301,11 @@ module Cuprum::Collections::RSpec::Contracts
             defined?(super()) ? super() : 0
           end
 
-          it 'should validate the :primary_key keyword' do
-            expect(command)
-              .to validate_parameter(:call, :primary_key)
-              .using_constraint(collection.primary_key_type)
+          def call_command
+            command.call(primary_key:)
           end
+
+          include_contract 'should validate the primary key'
 
           describe 'with an invalid primary key' do
             let(:primary_key) { invalid_primary_key_value }
@@ -406,40 +410,46 @@ module Cuprum::Collections::RSpec::Contracts
           end
           let(:primary_key_name) { defined?(super()) ? super() : 'id' }
           let(:primary_key_type) { defined?(super()) ? super() : Integer }
-          let(:primary_keys_contract) do
-            Stannum::Constraints::Types::ArrayType
-              .new(item_type: primary_key_type)
-          end
           let(:invalid_primary_key_values) do
             defined?(super()) ? super() : [100, 101, 102]
           end
           let(:valid_primary_key_values) do
             defined?(super()) ? super() : [0, 1, 2]
           end
+          let(:primary_keys) { [] }
+          let(:options)      { {} }
 
-          it 'should validate the :allow_partial keyword' do
-            expect(command)
-              .to validate_parameter(:call, :allow_partial)
-              .using_constraint(Stannum::Constraints::Boolean.new)
+          def call_command
+            command.call(primary_keys:, **options)
           end
 
-          it 'should validate the :envelope keyword' do
-            expect(command)
-              .to validate_parameter(:call, :envelope)
-              .using_constraint(Stannum::Constraints::Boolean.new)
+          include_contract 'should validate the primary keys'
+
+          describe 'with an invalid allow_partial value' do
+            let(:options) { super().merge(allow_partial: Object.new.freeze) }
+
+            include_deferred 'should validate the parameter',
+              :allow_partial,
+              'sleeping_king_studios.tools.assertions.boolean'
           end
 
-          it 'should validate the :primary_keys keyword' do
-            expect(command)
-              .to validate_parameter(:call, :primary_keys)
-              .using_constraint(Array)
+          describe 'with an invalid envelope value' do
+            let(:options) { super().merge(envelope: Object.new.freeze) }
+
+            include_deferred 'should validate the parameter',
+              :envelope,
+              'sleeping_king_studios.tools.assertions.boolean'
           end
 
-          it 'should validate the :primary_keys keyword items' do
-            expect(command)
-              .to validate_parameter(:call, :primary_keys)
-              .with_value([nil])
-              .using_constraint(primary_keys_contract)
+          describe 'with an empty array of primary keys' do
+            let(:primary_keys)  { [] }
+            let(:expected_data) { [] }
+
+            it 'should return a passing result' do
+              expect(command.call(primary_keys:))
+                .to be_a_passing_result
+                .with_value(expected_data)
+            end
           end
 
           describe 'with an array of invalid primary keys' do
@@ -474,6 +484,17 @@ module Cuprum::Collections::RSpec::Contracts
             end
             let(:expected_data) do
               defined?(super()) ? super() : matching_data
+            end
+
+            describe 'with an empty array of primary keys' do
+              let(:primary_keys)  { [] }
+              let(:expected_data) { [] }
+
+              it 'should return a passing result' do
+                expect(command.call(primary_keys:))
+                  .to be_a_passing_result
+                  .with_value(expected_data)
+              end
             end
 
             describe 'with an array of invalid primary keys' do
@@ -635,6 +656,19 @@ module Cuprum::Collections::RSpec::Contracts
             end
 
             describe 'with envelope: true' do
+              describe 'with an empty array of primary keys' do
+                let(:primary_keys)  { [] }
+                let(:expected_data) { [] }
+
+                it 'should return a passing result' do
+                  expect(
+                    command.call(primary_keys:, envelope: true)
+                  )
+                    .to be_a_passing_result
+                    .with_value({ collection.name => expected_data })
+                end
+              end
+
               describe 'with a valid array of primary keys' do
                 let(:primary_keys) { valid_primary_key_values }
 
@@ -723,37 +757,50 @@ module Cuprum::Collections::RSpec::Contracts
             defined?(super()) ? super() : matching_data
           end
 
-          it 'should validate the :envelope keyword' do
-            expect(command)
-              .to validate_parameter(:call, :envelope)
-              .using_constraint(Stannum::Constraints::Boolean.new)
+          def call_command
+            command.call(**options, &block)
           end
 
-          it 'should validate the :limit keyword' do
-            expect(command)
-              .to validate_parameter(:call, :limit)
-              .with_value(Object.new)
-              .using_constraint(Integer, required: false)
+          describe 'with an invalid envelope value' do
+            let(:options) { super().merge(envelope: Object.new.freeze) }
+
+            include_deferred 'should validate the parameter',
+              :envelope,
+              'sleeping_king_studios.tools.assertions.boolean'
           end
 
-          it 'should validate the :offset keyword' do
-            expect(command)
-              .to validate_parameter(:call, :offset)
-              .with_value(Object.new)
-              .using_constraint(Integer, required: false)
+          describe 'with an invalid limit value' do
+            let(:options) { super().merge(limit: Object.new.freeze) }
+
+            include_deferred 'should validate the parameter',
+              :limit,
+              'sleeping_king_studios.tools.assertions.instance_of',
+              expected: Integer
           end
 
-          it 'should validate the :order keyword' do
-            constraint = Cuprum::Collections::Constraints::Ordering.new
+          describe 'with an invalid offset value' do
+            let(:options) { super().merge(offset: Object.new.freeze) }
 
-            expect(command)
-              .to validate_parameter(:call, :order)
-              .with_value(Object.new)
-              .using_constraint(constraint, required: false)
+            include_deferred 'should validate the parameter',
+              :offset,
+              'sleeping_king_studios.tools.assertions.instance_of',
+              expected: Integer
           end
 
-          it 'should validate the :where keyword' do
-            expect(command).to validate_parameter(:call, :where)
+          describe 'with an invalid order value' do
+            let(:options) { super().merge(order: Object.new.freeze) }
+
+            include_deferred 'should validate the parameter',
+              :order,
+              message: 'order is not a valid sort order'
+          end
+
+          describe 'with an invalid where value' do
+            let(:options) { super().merge(where: Object.new.freeze) }
+
+            include_deferred 'should validate the parameter',
+              :where,
+              message: 'where is not a scope or query hash'
           end
 
           describe 'with an invalid filter block' do
@@ -814,17 +861,21 @@ module Cuprum::Collections::RSpec::Contracts
           let(:valid_primary_key_value) do
             defined?(super()) ? super() : 0
           end
+          let(:primary_key) { valid_primary_key_value }
+          let(:options)     { {} }
 
-          it 'should validate the :envelope keyword' do
-            expect(command)
-              .to validate_parameter(:call, :envelope)
-              .using_constraint(Stannum::Constraints::Boolean.new)
+          def call_command
+            command.call(primary_key:, **options)
           end
 
-          it 'should validate the :primary_key keyword' do
-            expect(command)
-              .to validate_parameter(:call, :primary_key)
-              .using_constraint(primary_key_type)
+          include_contract 'should validate the primary key'
+
+          describe 'with an invalid envelope value' do
+            let(:options) { super().merge(envelope: Object.new.freeze) }
+
+            include_deferred 'should validate the parameter',
+              :envelope,
+              'sleeping_king_studios.tools.assertions.boolean'
           end
 
           describe 'with an invalid primary key' do
@@ -929,10 +980,19 @@ module Cuprum::Collections::RSpec::Contracts
             collection.query.where { { key => value } }
           end
 
-          it 'should validate the :entity keyword' do
-            expect(command)
-              .to validate_parameter(:call, :entity)
-              .using_constraint(entity_type)
+          def call_command
+            command.call(entity:)
+          end
+
+          if defined_deferred_examples? 'should validate the entity'
+            include_deferred 'should validate the entity'
+          else
+            # :nocov:
+            pending \
+              'the command should validate the entity parameter, but entity ' \
+              'validation is not defined - implement a "should validate the ' \
+              'entity" deferred example group to resolve this warning'
+            # :nocov:
           end
 
           context 'when the item does not exist in the collection' do
@@ -1020,10 +1080,19 @@ module Cuprum::Collections::RSpec::Contracts
             collection.query.where { { key => value } }
           end
 
-          it 'should validate the :entity keyword' do
-            expect(command)
-              .to validate_parameter(:call, :entity)
-              .using_constraint(entity_type)
+          def call_command
+            command.call(entity:)
+          end
+
+          if defined_deferred_examples? 'should validate the entity'
+            include_deferred 'should validate the entity'
+          else
+            # :nocov:
+            pending \
+              'the command should validate the entity parameter, but entity ' \
+              'validation is not defined - implement a "should validate the ' \
+              'entity" deferred example group to resolve this warning'
+            # :nocov:
           end
 
           context 'when the item does not exist in the collection' do
@@ -1092,18 +1161,31 @@ module Cuprum::Collections::RSpec::Contracts
       #     which the contract is applied.
       contract do |default_contract:|
         describe '#call' do
-          it 'should validate the :contract keyword' do
-            expect(command)
-              .to validate_parameter(:call, :contract)
-              .with_value(Object.new.freeze)
-              .using_constraint(Stannum::Constraints::Base, optional: true)
+          let(:attributes) { defined?(super()) ? super() : {} }
+          let(:contract)   { defined?(super()) ? super() : nil }
+
+          def call_command
+            command.call(contract:, entity:)
           end
 
-          it 'should validate the :entity keyword' do
-            expect(command)
-              .to validate_parameter(:call, :entity)
-              .with_value(Object.new.freeze)
-              .using_constraint(entity_type)
+          if defined_deferred_examples? 'should validate the entity'
+            include_deferred 'should validate the entity'
+          else
+            # :nocov:
+            pending \
+              'the command should validate the entity parameter, but entity ' \
+              'validation is not defined - implement a "should validate the ' \
+              'entity" deferred example group to resolve this warning'
+            # :nocov:
+          end
+
+          describe 'with an invalid contract value' do
+            let(:contract) { Object.new.freeze }
+
+            include_deferred 'should validate the parameter',
+              :contract,
+              'sleeping_king_studios.tools.assertions.instance_of',
+              expected: Stannum::Constraints::Base
           end
 
           describe 'with contract: nil' do
@@ -1176,6 +1258,132 @@ module Cuprum::Collections::RSpec::Contracts
                   .with_value(entity)
               end
             end
+          end
+        end
+      end
+    end
+
+    # Contract asserting that the command validates the attributes parameter.
+    module ShouldValidateTheAttributesContract
+      extend RSpec::SleepingKingStudios::Contract
+
+      # @!method apply(example_group)
+      #   Adds the contract to the example group.
+      #
+      #   @param example_group [RSpec::Core::ExampleGroup] the example group to
+      #     which the contract is applied.
+      contract do
+        describe 'with an invalid attributes value' do
+          let(:attributes) { Object.new.freeze }
+
+          include_deferred 'should validate the parameter',
+            :attributes,
+            'sleeping_king_studios.tools.assertions.instance_of',
+            expected: Hash
+        end
+
+        describe 'with an attributes value with invalid keys' do
+          let(:attributes) do
+            {
+              nil      => 'NilClass',
+              'string' => 'String',
+              symbol:     'Symbol'
+            }
+          end
+
+          include_deferred 'should validate the parameter',
+            'attributes[nil] key',
+            'sleeping_king_studios.tools.assertions.presence'
+        end
+      end
+    end
+
+    # Contract asserting that the command validates the primary key parameter.
+    module ShouldValidateThePrimaryKeyContract
+      extend RSpec::SleepingKingStudios::Contract
+
+      # @!method apply(example_group)
+      #   Adds the contract to the example group.
+      #
+      #   @param example_group [RSpec::Core::ExampleGroup] the example group to
+      #     which the contract is applied.
+      contract do
+        describe 'with an invalid primary key value' do
+          let(:primary_key) { Object.new.freeze }
+          let(:expected_error) do
+            Cuprum::Errors::InvalidParameters.new(
+              command_class: command.class,
+              failures:      [
+                tools.assertions.error_message_for(
+                  'sleeping_king_studios.tools.assertions.instance_of',
+                  as:       'primary_key',
+                  expected: collection.primary_key_type
+                )
+              ]
+            )
+          end
+
+          it 'should return a failing result with InvalidParameters error' do
+            expect(call_command)
+              .to be_a_failing_result
+              .with_error(expected_error)
+          end
+        end
+      end
+    end
+
+    # Contract asserting that the command validates the primary keys parameter.
+    module ShouldValidateThePrimaryKeysContract
+      extend RSpec::SleepingKingStudios::Contract
+
+      # @!method apply(example_group)
+      #   Adds the contract to the example group.
+      #
+      #   @param example_group [RSpec::Core::ExampleGroup] the example group to
+      #     which the contract is applied.
+      contract do
+        describe 'with an invalid primary keys value' do
+          let(:primary_keys) { Object.new.freeze }
+
+          include_deferred 'should validate the parameter',
+            :primary_keys,
+            'sleeping_king_studios.tools.assertions.instance_of',
+            expected: Array
+        end
+
+        describe 'with an attributes value with invalid keys' do
+          let(:valid_primary_key_value) do
+            defined?(super()) ? super() : 0
+          end
+          let(:primary_keys) do
+            [
+              nil,
+              Object.new.freeze,
+              valid_primary_key_value
+            ]
+          end
+          let(:expected_error) do
+            Cuprum::Errors::InvalidParameters.new(
+              command_class: command.class,
+              failures:      [
+                tools.assertions.error_message_for(
+                  'sleeping_king_studios.tools.assertions.instance_of',
+                  as:       'primary_keys[0]',
+                  expected: collection.primary_key_type
+                ),
+                tools.assertions.error_message_for(
+                  'sleeping_king_studios.tools.assertions.instance_of',
+                  as:       'primary_keys[1]',
+                  expected: collection.primary_key_type
+                )
+              ]
+            )
+          end
+
+          it 'should return a failing result with InvalidParameters error' do
+            expect(call_command)
+              .to be_a_failing_result
+              .with_error(expected_error)
           end
         end
       end

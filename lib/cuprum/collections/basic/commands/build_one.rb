@@ -31,10 +31,7 @@ module Cuprum::Collections::Basic::Commands
     #       'series'   => nil,
     #       'category' => 'Science Fiction and Fantasy'
     #     }
-    validate_parameters :call do
-      keyword :attributes,
-        Stannum::Constraints::Types::HashWithIndifferentKeys.new
-    end
+    validate :attributes
 
     private
 

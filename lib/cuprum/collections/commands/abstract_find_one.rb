@@ -26,7 +26,7 @@ module Cuprum::Collections::Commands
       Cuprum::Result.new(error:)
     end
 
-    def process(envelope:, primary_key:)
+    def process(primary_key:, envelope: false)
       query = apply_query(primary_key:)
       item  = query.to_a.first
 
