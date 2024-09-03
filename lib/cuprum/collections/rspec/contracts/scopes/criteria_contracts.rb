@@ -1746,7 +1746,7 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           end
         end
 
-        # @todo v0.5.0 Implicit receivers are deprecated.
+        # @deprecated v0.5.0 Implicit receivers are deprecated.
         describe 'with a block with legacy implicit receiver' do
           shared_examples 'should print a deprecation warning for' \
           do |operator_name|

@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 require 'cuprum/collections/basic/commands/insert_one'
-require 'cuprum/collections/rspec/contracts/command_contracts'
+require 'cuprum/collections/rspec/deferred/commands/insert_one_examples'
 
 require 'support/examples/basic/command_examples'
 
 RSpec.describe Cuprum::Collections::Basic::Commands::InsertOne do
-  include Cuprum::Collections::RSpec::Contracts::CommandContracts
+  include Cuprum::Collections::RSpec::Deferred::Commands::InsertOneExamples
   include Spec::Support::Examples::Basic::CommandExamples
 
   subject(:command) { described_class.new(collection:) }
@@ -33,7 +33,7 @@ RSpec.describe Cuprum::Collections::Basic::Commands::InsertOne do
 
   include_deferred 'should implement the Basic::Command methods'
 
-  include_contract 'should be an insert one command'
+  include_deferred 'should implement the InsertOne command'
 
   wrap_deferred 'with a collection with a custom primary key' do
     let(:attributes) do
@@ -42,6 +42,6 @@ RSpec.describe Cuprum::Collections::Basic::Commands::InsertOne do
         .merge(uuid: '00000000-0000-0000-0000-000000000000')
     end
 
-    include_contract 'should be an insert one command'
+    include_deferred 'should implement the InsertOne command'
   end
 end

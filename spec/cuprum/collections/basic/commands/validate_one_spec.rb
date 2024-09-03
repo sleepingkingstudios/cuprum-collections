@@ -4,12 +4,12 @@ require 'stannum/constraints/presence'
 require 'stannum/contracts/hash_contract'
 
 require 'cuprum/collections/basic/commands/validate_one'
-require 'cuprum/collections/rspec/contracts/command_contracts'
+require 'cuprum/collections/rspec/deferred/commands/validate_one_examples'
 
 require 'support/examples/basic/command_examples'
 
 RSpec.describe Cuprum::Collections::Basic::Commands::ValidateOne do
-  include Cuprum::Collections::RSpec::Contracts::CommandContracts
+  include Cuprum::Collections::RSpec::Deferred::Commands::ValidateOneExamples
   include Spec::Support::Examples::Basic::CommandExamples
 
   subject(:command) { described_class.new(collection:) }
@@ -33,7 +33,7 @@ RSpec.describe Cuprum::Collections::Basic::Commands::ValidateOne do
 
   include_deferred 'should implement the Basic::Command methods'
 
-  include_contract 'should be a validate one command',
+  include_deferred 'should implement the ValidateOne command',
     default_contract: false
 
   context 'when the collection has a default contract' do
@@ -57,7 +57,7 @@ RSpec.describe Cuprum::Collections::Basic::Commands::ValidateOne do
       }
     end
 
-    include_contract 'should be a validate one command',
+    include_deferred 'should implement the ValidateOne command',
       default_contract: true
   end
 end

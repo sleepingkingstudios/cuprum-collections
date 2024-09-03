@@ -78,8 +78,8 @@ module Cuprum::Collections::Scopes::Criteria
       end
     end
 
-    # @todo v0.5.0 Implicit receivers are deprecated. Remove this class when
-    #   removing the functionality.
+    # @deprecated v0.5.0 Implicit receivers are deprecated. Remove this class
+    #   when removing the functionality.
     class ImplicitReceiver
       ERROR_MESSAGE =
         'Pass a block with one parameter to #parse: { |scope| { ' \
@@ -229,7 +229,7 @@ module Cuprum::Collections::Scopes::Criteria
 
     private
 
-    # @todo v0.5.0 Implicit receivers are deprecated.
+    # @deprecated v0.5.0 Implicit receivers are deprecated.
     def evaluate_block(&block)
       receiver = ImplicitReceiver.new
 

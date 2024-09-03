@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 require 'cuprum/collections/basic/commands/find_matching'
-require 'cuprum/collections/rspec/contracts/command_contracts'
+require 'cuprum/collections/rspec/deferred/commands/find_matching_examples'
 
 require 'support/examples/basic/command_examples'
 
 RSpec.describe Cuprum::Collections::Basic::Commands::FindMatching do
-  include Cuprum::Collections::RSpec::Contracts::CommandContracts
+  include Cuprum::Collections::RSpec::Deferred::Commands::FindMatchingExamples
   include Spec::Support::Examples::Basic::CommandExamples
 
   subject(:command) { described_class.new(collection:) }
@@ -15,5 +15,5 @@ RSpec.describe Cuprum::Collections::Basic::Commands::FindMatching do
 
   include_deferred 'should implement the Basic::Command methods'
 
-  include_contract 'should be a find matching command'
+  include_deferred 'should implement the FindMatching command'
 end
