@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 require 'cuprum/collections/basic/commands/update_one'
-require 'cuprum/collections/rspec/contracts/command_contracts'
+require 'cuprum/collections/rspec/deferred/commands/update_one_examples'
 
 require 'support/examples/basic/command_examples'
 
 RSpec.describe Cuprum::Collections::Basic::Commands::UpdateOne do
-  include Cuprum::Collections::RSpec::Contracts::CommandContracts
+  include Cuprum::Collections::RSpec::Deferred::Commands::UpdateOneExamples
   include Spec::Support::Examples::Basic::CommandExamples
 
   subject(:command) { described_class.new(collection:) }
@@ -33,7 +33,7 @@ RSpec.describe Cuprum::Collections::Basic::Commands::UpdateOne do
 
   include_deferred 'should implement the Basic::Command methods'
 
-  include_contract 'should be an update one command'
+  include_deferred 'should implement the UpdateOne command'
 
   wrap_deferred 'with a collection with a custom primary key' do
     let(:attributes) do
@@ -42,6 +42,6 @@ RSpec.describe Cuprum::Collections::Basic::Commands::UpdateOne do
         .merge(uuid: '00000000-0000-0000-0000-000000000000')
     end
 
-    include_contract 'should be an update one command'
+    include_deferred 'should implement the UpdateOne command'
   end
 end

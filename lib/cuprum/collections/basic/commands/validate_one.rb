@@ -24,13 +24,8 @@ module Cuprum::Collections::Basic::Commands
     #   @param entity [Hash] The collection entity to validate.
     #
     #   @return [Cuprum::Result<Hash>] the validated entity.
-    validate_parameters :call do
-      keyword :contract,
-        Stannum::Constraints::Base,
-        optional: true
-      keyword :entity,
-        Stannum::Constraints::Types::HashWithStringKeys.new
-    end
+    validate :contract, Stannum::Constraints::Base, optional: true
+    validate :entity
 
     private
 
@@ -45,16 +40,7 @@ module Cuprum::Collections::Basic::Commands
       failure(error)
     end
 
-    def process(entity:, contract: nil)
-      contract =
-        step { contract_or_default(contract:, entity:) }
-
-      step { validate_entity(contract:, entity:) }
-
-      entity
-    end
-
-    def validate_entity(contract:, entity:)
+    def match_entity(contract:, entity:)
       valid, errors = contract.match(entity)
 
       return if valid
@@ -64,6 +50,15 @@ module Cuprum::Collections::Basic::Commands
         errors:
       )
       failure(error)
+    end
+
+    def process(entity:, contract: nil)
+      contract =
+        step { contract_or_default(contract:, entity:) }
+
+      step { match_entity(contract:, entity:) }
+
+      entity
     end
   end
 end

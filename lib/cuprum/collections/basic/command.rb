@@ -20,41 +20,27 @@ module Cuprum::Collections::Basic
 
     private
 
-    def primary_key_contract
-      type = primary_key_type
+    def validate_entity(value, as: 'entity') # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+      return error_message_for(as:, expected: Hash) unless value.is_a?(Hash)
 
-      @primary_key_contract ||= Stannum::Contracts::ParametersContract.new do
-        keyword :primary_key, type
+      return [] if value.empty?
+
+      validator = tools.assertions.aggregator_class.new
+
+      value.each_key do |key|
+        unless key.nil? || key.is_a?(String)
+          validator << error_message_for(
+            as:       "#{as}[#{key.inspect}] key",
+            expected: String
+          )
+
+          next
+        end
+
+        validator.validate_presence(key, as: "#{as}[#{key.inspect}] key")
       end
-    end
 
-    def primary_keys_contract
-      type = primary_key_type
-
-      @primary_keys_contract ||= Stannum::Contracts::ParametersContract.new do
-        keyword :primary_keys,
-          Stannum::Constraints::Types::ArrayType.new(item_type: type)
-      end
-    end
-
-    def tools
-      SleepingKingStudios::Tools::Toolbelt.instance
-    end
-
-    def validate_primary_key(primary_key)
-      match_parameters_to_contract(
-        contract:    primary_key_contract,
-        keywords:    { primary_key: },
-        method_name: :call
-      )
-    end
-
-    def validate_primary_keys(primary_keys)
-      match_parameters_to_contract(
-        contract:    primary_keys_contract,
-        keywords:    { primary_keys: },
-        method_name: :call
-      )
+      validator.each.to_a
     end
   end
 end

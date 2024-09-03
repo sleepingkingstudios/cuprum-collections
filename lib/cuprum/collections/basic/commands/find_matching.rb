@@ -101,20 +101,33 @@ module Cuprum::Collections::Basic::Commands
     #     @return [Cuprum::Result<Hash{String, Array<Hash{String, Object}>}>] a
     #       hash with the collection name as key and the matching items as
     #       value.
+    validate :envelope, :boolean, optional: true
+    validate :limit,    Integer,  optional: true
+    validate :offset,   Integer,  optional: true
+    validate :order
+    validate :where
 
-    validate_parameters :call do
-      keyword :envelope,
-        Stannum::Constraints::Boolean.new,
-        default: true
-      keyword :limit, Integer, optional: true
-      keyword :offset, Integer, optional: true
-      keyword :order,
-        Cuprum::Collections::Constraints::Ordering.new,
-        optional: true
-      keyword :scope,
-        Cuprum::Collections::Basic::Query,
-        optional: true
-      keyword :where, Object, optional: true
+    private
+
+    def validate_order(value, as: 'order')
+      return if value.nil?
+
+      match, errors =
+        Cuprum::Collections::Constraints::Ordering.new.match(value)
+
+      return if match
+
+      "#{as} #{errors.summary}"
+    end
+
+    def validate_where(value, as: 'where')
+      return if value.nil?
+
+      return if value.is_a?(Cuprum::Collections::Scopes::Base)
+
+      return if validate_attributes(value, as:).empty?
+
+      "#{as} is not a scope or query hash"
     end
   end
 end

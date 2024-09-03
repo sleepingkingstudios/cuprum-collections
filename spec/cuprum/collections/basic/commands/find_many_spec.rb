@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 require 'cuprum/collections/basic/commands/find_many'
-require 'cuprum/collections/rspec/contracts/command_contracts'
+require 'cuprum/collections/rspec/deferred/commands/find_many_examples'
 
 require 'support/examples/basic/command_examples'
 
 RSpec.describe Cuprum::Collections::Basic::Commands::FindMany do
-  include Cuprum::Collections::RSpec::Contracts::CommandContracts
+  include Cuprum::Collections::RSpec::Deferred::Commands::FindManyExamples
   include Spec::Support::Examples::Basic::CommandExamples
 
   subject(:command) { described_class.new(collection:) }
@@ -19,9 +19,9 @@ RSpec.describe Cuprum::Collections::Basic::Commands::FindMany do
 
   include_deferred 'should implement the Basic::Command methods'
 
-  include_contract 'should be a find many command'
+  include_deferred 'should implement the FindMany command'
 
   wrap_deferred 'with a collection with a custom primary key' do
-    include_contract 'should be a find many command'
+    include_deferred 'should implement the FindMany command'
   end
 end

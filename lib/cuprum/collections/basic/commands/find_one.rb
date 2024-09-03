@@ -26,17 +26,7 @@ module Cuprum::Collections::Basic::Commands
     #
     #   @return [Cuprum::Result<Hash{String, Object}>] a result with the
     #     requested item.
-    validate_parameters :call do
-      keyword :envelope,    Stannum::Constraints::Boolean.new, default: true
-      keyword :primary_key, Object
-    end
-
-    private
-
-    def process(primary_key:, envelope: false)
-      step { validate_primary_key(primary_key) }
-
-      super
-    end
+    validate :envelope, :boolean, optional: true
+    validate :primary_key
   end
 end

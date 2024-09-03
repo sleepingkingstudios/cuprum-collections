@@ -18,10 +18,7 @@ module Cuprum::Collections::Basic::Commands
     #   @param entity [Hash] The collection entity to persist.
     #
     #   @return [Cuprum::Result<Hash>] the persisted entity.
-    validate_parameters :call do
-      keyword :entity,
-        Stannum::Constraints::Types::HashWithStringKeys.new
-    end
+    validate :entity
 
     private
 

@@ -39,6 +39,7 @@ Metrics/ModuleLength:
   Exclude:
     - lib/**/*_contract.rb
     - lib/**/*_contracts.rb
+    - lib/**/*_examples.rb
     - spec/**/*_examples.rb
 
 Naming/RescuedExceptionsVariableName:
