@@ -76,7 +76,7 @@ module Cuprum::Collections::RSpec::Deferred::Commands
             end
             let(:expected_error) do
               Cuprum::Collections::Errors::ExtraAttributes.new(
-                entity_class:     entity_type,
+                entity_class:,
                 extra_attributes: %w[audiobook],
                 valid_attributes:
               )

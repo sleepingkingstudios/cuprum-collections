@@ -41,15 +41,5 @@ module Cuprum::Collections::Basic::Commands
       items.to_h { |item| [item[primary_key_name.to_s], item] }
       # :nocov:
     end
-
-    def process(
-      primary_keys:,
-      allow_partial: false,
-      envelope:      false
-    )
-      step { validate_primary_keys(primary_keys) }
-
-      super
-    end
   end
 end
