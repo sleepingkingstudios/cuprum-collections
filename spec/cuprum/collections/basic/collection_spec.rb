@@ -41,7 +41,6 @@ RSpec.describe Cuprum::Collections::Basic::Collection do
   end
 
   include_contract 'should be a collection',
-    command_options:      %i[data default_contract],
     commands_namespace:   'Cuprum::Collections::Basic::Commands',
     default_entity_class: Hash
 

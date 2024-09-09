@@ -115,26 +115,19 @@ module Cuprum::Collections
     attr_writer :scope
 
     def comparable_options
-      command_options.merge(
-        name:,
-        qualified_name:,
-        scope:,
-        singular_name:
-      )
-    end
-
-    private
-
-    def command_options
-      @command_options ||= {
-        collection_name:  name,
+      @comparable_options ||= {
         entity_class:,
-        member_name:      singular_name,
+        name:,
         primary_key_name:,
         primary_key_type:,
+        qualified_name:,
+        scope:,
+        singular_name:,
         **options
       }
     end
+
+    private
 
     def default_scope
       Cuprum::Collections::Scopes::AllScope.new

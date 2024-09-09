@@ -93,8 +93,8 @@ module Cuprum::Collections::Basic
 
     protected
 
-    def command_options
-      super.merge(
+    def comparable_options
+      @comparable_options ||= super.merge(
         data:,
         default_contract:
       )
