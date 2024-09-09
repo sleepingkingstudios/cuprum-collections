@@ -3,6 +3,7 @@
 require 'stannum/constraints/types/hash_with_string_keys'
 
 require 'cuprum/collections/rspec/deferred/command_examples'
+require 'cuprum/collections/rspec/fixtures'
 
 require 'support/book'
 require 'support/examples/basic'

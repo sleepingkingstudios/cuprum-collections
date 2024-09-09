@@ -21,5 +21,6 @@ RSpec.describe Cuprum::Collections::Basic::Commands::BuildOne do
 
   include_deferred 'should implement the Basic::Command methods'
 
-  include_deferred 'should implement the BuildOne command'
+  include_deferred 'should implement the BuildOne command',
+    allow_extra_attributes: true
 end

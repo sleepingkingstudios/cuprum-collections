@@ -259,7 +259,7 @@ module Cuprum::Collections::RSpec::Contracts
           end
 
           describe 'with matching name' do
-            let(:other_options) { { collection_name: name } }
+            let(:other_options) { { name: } }
 
             it { expect(collection.matches?(**other_options)).to be true }
           end
@@ -293,7 +293,7 @@ module Cuprum::Collections::RSpec::Contracts
           describe 'with multiple matching options' do
             let(:other_options) do
               {
-                collection_name:  name,
+                name:,
                 primary_key_name: 'id',
                 qualified_name:   name
               }
