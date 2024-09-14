@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'cuprum/collections/commands'
+require 'cuprum/collections/constraints/ordering'
 require 'cuprum/collections/errors/invalid_query'
 
 module Cuprum::Collections::Commands
