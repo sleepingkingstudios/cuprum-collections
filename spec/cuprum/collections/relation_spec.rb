@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 require 'cuprum/collections/relation'
-require 'cuprum/collections/rspec/contracts/relation_contracts'
+require 'cuprum/collections/rspec/deferred/relation_examples'
 
 require 'support/book'
 require 'support/grimoire'
 require 'support/scoped_book'
 
 RSpec.describe Cuprum::Collections::Relation do
-  include Cuprum::Collections::RSpec::Contracts::RelationContracts
+  include Cuprum::Collections::RSpec::Deferred::RelationExamples
 
   subject(:relation) { described_class.new(**constructor_options) }
 
@@ -29,7 +29,7 @@ RSpec.describe Cuprum::Collections::Relation do
       end
     end
 
-    include_contract 'should define cardinality'
+    include_deferred 'should define Relation cardinality'
   end
 
   describe '::Parameters' do
@@ -53,7 +53,7 @@ RSpec.describe Cuprum::Collections::Relation do
           .with(1).argument
       end
 
-      include_contract 'should validate the parameters'
+      include_deferred 'should validate the Relation parameters'
 
       describe 'with entity_class: a Class' do
         let(:entity_class) { Book }
@@ -1233,8 +1233,8 @@ RSpec.describe Cuprum::Collections::Relation do
       klass.attr_reader :options
     end
 
-    include_contract 'should define primary keys'
+    include_deferred 'should define Relation primary key'
   end
 
-  include_contract 'should be a relation'
+  include_deferred 'should be a Relation'
 end

@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 require 'cuprum/collections/collection'
-require 'cuprum/collections/rspec/contracts/collection_contracts'
+require 'cuprum/collections/rspec/deferred/collection_examples'
 
 require 'support/book'
 require 'support/grimoire'
 require 'support/scoped_book'
 
 RSpec.describe Cuprum::Collections::Collection do
-  include Cuprum::Collections::RSpec::Contracts::CollectionContracts
+  include Cuprum::Collections::RSpec::Deferred::CollectionExamples
 
   subject(:collection) do
     described_class.new(**constructor_options)
@@ -52,17 +52,17 @@ RSpec.describe Cuprum::Collections::Collection do
         .and_any_keywords
     end
 
-    include_contract 'should validate the parameters'
+    include_deferred 'should validate the Relation parameters'
   end
 
-  include_contract 'should be a collection', abstract: true
+  include_deferred 'should be a Collection', abstract: true
 
   describe '#scope' do
     it 'should define the default scope' do
       expect(collection.scope).to be_a Cuprum::Collections::Scopes::AllScope
     end
 
-    wrap_context 'when initialized with a scope' do
+    wrap_deferred 'when initialized with a scope' do
       it 'should transform the scope' do
         expect(collection.scope)
           .to be_a Cuprum::Collections::Scopes::CriteriaScope
@@ -80,7 +80,7 @@ RSpec.describe Cuprum::Collections::Collection do
       expect(copy.scope).to be_a Cuprum::Collections::Scopes::CriteriaScope
     end
 
-    wrap_context 'when initialized with a scope' do
+    wrap_deferred 'when initialized with a scope' do
       it 'should transform the scope' do
         expect(copy.scope).to be_a Cuprum::Collections::Scopes::CriteriaScope
       end

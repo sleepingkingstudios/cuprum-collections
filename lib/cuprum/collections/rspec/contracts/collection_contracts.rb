@@ -5,6 +5,9 @@ require 'cuprum/collections/rspec/contracts/relation_contracts'
 
 module Cuprum::Collections::RSpec::Contracts
   # Contracts for asserting on Collection objects.
+  #
+  # @deprecated 0.5.0 Collection contracts are deprecated. Use
+  #   Deferred::CollectionExamples instead.
   module CollectionContracts
     include Cuprum::Collections::RSpec::Contracts::RelationContracts
 

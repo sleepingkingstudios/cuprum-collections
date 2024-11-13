@@ -2,7 +2,7 @@
 
 require 'cuprum/collections/basic/collection'
 require 'cuprum/collections/basic/commands'
-require 'cuprum/collections/rspec/contracts/collection_contracts'
+require 'cuprum/collections/rspec/deferred/collection_examples'
 require 'cuprum/collections/rspec/fixtures'
 
 require 'support/book'
@@ -10,7 +10,7 @@ require 'support/grimoire'
 require 'support/scoped_book'
 
 RSpec.describe Cuprum::Collections::Basic::Collection do
-  include Cuprum::Collections::RSpec::Contracts::CollectionContracts
+  include Cuprum::Collections::RSpec::Deferred::CollectionExamples
 
   subject(:collection) do
     described_class.new(
@@ -40,7 +40,7 @@ RSpec.describe Cuprum::Collections::Basic::Collection do
     end
   end
 
-  include_contract 'should be a collection',
+  include_deferred 'should be a Collection',
     commands_namespace:   'Cuprum::Collections::Basic::Commands',
     default_entity_class: Hash
 
@@ -74,7 +74,7 @@ RSpec.describe Cuprum::Collections::Basic::Collection do
         .to be_a Cuprum::Collections::Basic::Scopes::AllScope
     end
 
-    wrap_context 'when initialized with a scope' do
+    wrap_deferred 'when initialized with a scope' do
       it 'should transform the scope' do
         expect(collection.scope)
           .to be_a Cuprum::Collections::Basic::Scopes::CriteriaScope
@@ -93,7 +93,7 @@ RSpec.describe Cuprum::Collections::Basic::Collection do
         .to be_a Cuprum::Collections::Basic::Scopes::CriteriaScope
     end
 
-    wrap_context 'when initialized with a scope' do
+    wrap_deferred 'when initialized with a scope' do
       it 'should transform the scope' do
         expect(copy.scope)
           .to be_a Cuprum::Collections::Basic::Scopes::CriteriaScope

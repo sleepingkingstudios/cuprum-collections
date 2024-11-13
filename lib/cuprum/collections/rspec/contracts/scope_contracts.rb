@@ -27,13 +27,11 @@ module Cuprum::Collections::RSpec::Contracts
           describe 'with a scope of different type' do
             let(:other) { Spec::OtherScope.new }
 
-            # rubocop:disable Style/RedundantLineContinuation
             example_class 'Spec::OtherScope',
               Cuprum::Collections::Scopes::Base \
             do |klass|
               klass.define_method(:type) { :invalid }
             end
-            # rubocop:enable Style/RedundantLineContinuation
 
             it { expect(subject == other).to be false }
           end
@@ -156,13 +154,11 @@ module Cuprum::Collections::RSpec::Contracts
           describe 'with a scope with the same type' do
             let(:other) { Spec::CustomScope.new(scopes: other_scopes) }
 
-            # rubocop:disable Style/RedundantLineContinuation
             example_class 'Spec::CustomScope',
               Cuprum::Collections::Scopes::Base \
             do |klass|
               klass.include Cuprum::Collections::Scopes::Container
             end
-            # rubocop:enable Style/RedundantLineContinuation
 
             before(:example) do
               allow(other).to receive(:type).and_return(scope.type)
@@ -299,13 +295,11 @@ module Cuprum::Collections::RSpec::Contracts
           describe 'with a scope with the same type' do
             let(:other) { Spec::CustomScope.new }
 
-            # rubocop:disable Style/RedundantLineContinuation
             example_class 'Spec::CustomScope',
               Cuprum::Collections::Scopes::Base \
             do |klass|
               klass.define_method(:type) { :all }
             end
-            # rubocop:enable Style/RedundantLineContinuation
 
             it { expect(subject == other).to be true }
           end
@@ -682,13 +676,11 @@ module Cuprum::Collections::RSpec::Contracts
           describe 'with a scope with the same type' do
             let(:other) { Spec::CustomScope.new }
 
-            # rubocop:disable Style/RedundantLineContinuation
             example_class 'Spec::CustomScope',
               Cuprum::Collections::Scopes::Base \
             do |klass|
               klass.define_method(:type) { :none }
             end
-            # rubocop:enable Style/RedundantLineContinuation
 
             it { expect(subject == other).to be true }
           end

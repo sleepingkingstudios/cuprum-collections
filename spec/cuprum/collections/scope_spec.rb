@@ -91,13 +91,11 @@ RSpec.describe Cuprum::Collections::Scope do
     describe 'with a scope with the same type' do
       let(:other) { Spec::CustomScope.new(criteria: other_criteria) }
 
-      # rubocop:disable Style/RedundantLineContinuation
       example_class 'Spec::CustomScope',
         Cuprum::Collections::Scopes::Base \
       do |klass|
         klass.include Cuprum::Collections::Scopes::Criteria
       end
-      # rubocop:enable Style/RedundantLineContinuation
 
       describe 'with empty criteria' do
         let(:other_criteria) { [] }
