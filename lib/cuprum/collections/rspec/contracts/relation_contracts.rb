@@ -4,6 +4,9 @@ require 'cuprum/collections/rspec/contracts'
 
 module Cuprum::Collections::RSpec::Contracts
   # Contracts for asserting on Relation objects.
+  #
+  # @deprecated 0.5.0 Relation contracts are deprecated. Use
+  #   Deferred::RelationExamples instead.
   module RelationContracts
     # Contract asserting that the method validates the required parameters.
     module ShouldValidateTheParametersContract

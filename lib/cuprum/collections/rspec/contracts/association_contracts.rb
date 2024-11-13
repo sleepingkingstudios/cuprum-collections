@@ -5,6 +5,9 @@ require 'cuprum/collections/rspec/contracts/relation_contracts'
 
 module Cuprum::Collections::RSpec::Contracts
   # Contracts for asserting on Association objects.
+  #
+  # @deprecated 0.5.0 Association contracts are deprecated. Use
+  #   Deferred::AssociationExamples instead.
   module AssociationContracts
     # Contract validating the behavior of an Association.
     module ShouldBeAnAssociationContract
