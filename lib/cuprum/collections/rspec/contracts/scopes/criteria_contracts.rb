@@ -292,13 +292,11 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
               )
             end
 
-            # rubocop:disable Style/RedundantLineContinuation
             example_class 'Spec::CustomScope',
               Cuprum::Collections::Scopes::Base \
             do |klass|
               klass.include Cuprum::Collections::Scopes::Criteria
             end
-            # rubocop:enable Style/RedundantLineContinuation
 
             describe 'with empty criteria' do
               let(:other_criteria) { [] }
@@ -1169,7 +1167,6 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
           describe 'with empty data' do
             let(:data) { [] }
 
-            # rubocop:disable Style/RedundantLineContinuation
             it 'should return an empty result or raise an exception',
               :aggregate_failures \
             do
@@ -1186,7 +1183,6 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
               expect(actual).to be == []
               # :nocov:
             end
-            # rubocop:enable Style/RedundantLineContinuation
           end
 
           wrap_context 'with data' do
