@@ -15,6 +15,7 @@ module Cuprum
     autoload :Errors,            'cuprum/collections/errors'
     autoload :Query,             'cuprum/collections/query'
     autoload :Relation,          'cuprum/collections/relation'
+    autoload :Relations,         'cuprum/collections/relations'
     autoload :Repository,        'cuprum/collections/repository'
     autoload :Resource,          'cuprum/collections/resource'
     autoload :Scope,             'cuprum/collections/scope'

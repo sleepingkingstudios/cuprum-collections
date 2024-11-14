@@ -2,12 +2,14 @@
 
 require 'cuprum/collections'
 require 'cuprum/collections/relation'
+require 'cuprum/collections/relations/cardinality'
+require 'cuprum/collections/relations/primary_keys'
 
 module Cuprum::Collections
   # Class representing a singular or plural resource of entities.
   class Resource < Cuprum::Collections::Relation
-    include Cuprum::Collections::Relation::Cardinality
-    include Cuprum::Collections::Relation::PrimaryKeys
+    include Cuprum::Collections::Relations::Cardinality
+    include Cuprum::Collections::Relations::PrimaryKeys
 
     # @overload initialize(entity_class: nil, name: nil, qualified_name: nil, singular_name: nil, **options)
     #   @param entity_class [Class, String] the class of entity represented by

@@ -8,6 +8,10 @@ Major refactoring of Queries. This update is **not** backwards compatible.
 
 Collection commands no longer define the command subclass, e.g. `rockets_collection::Launch`. Instances of the command can still be created using `rockets_collection#launch`.
 
+### Commands
+
+Refactored commands to use more lightweight parameter validation from `SleepingKingStudios::Tools`.
+
 ### Queries
 
 Query result filtering now uses composable scopes.
@@ -22,6 +26,23 @@ Performing block queries with an implicit receiver is now deprecated. Instead of
 An explicit receiver must be passed to be block in order to use operators:
 
 `where { |query| { author: query.eq('J.R.R. Tolkien) } }`
+
+### Relations
+
+Extracted `Relations::Cardinality`, `Relations::Parameters`, and `Relations::PrimaryKeys`.
+
+### RSpec
+
+Migrated shared contract objects to deferred example groups:
+
+- `Cuprum::Collections::RSpec::Deferred::AssociationExamples`
+- `Cuprum::Collections::RSpec::Deferred::CollectionExamples`
+- `Cuprum::Collections::RSpec::Deferred::CommandExamples`
+- `Cuprum::Collections::RSpec::Deferred::Commands::*`
+- `Cuprum::Collections::RSpec::Deferred::RelationExamples`
+- `Cuprum::Collections::RSpec::Deferred::ResourceExamples`
+
+The corresponding contracts are now deprecated.
 
 ### Scopes
 
