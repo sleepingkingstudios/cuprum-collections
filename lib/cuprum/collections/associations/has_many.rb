@@ -8,16 +8,7 @@ module Cuprum::Collections::Associations
   class HasMany < Cuprum::Collections::Association
     # (see Cuprum::Collections::Association#initialize)
     def initialize(**params)
-      params.delete(:plural)
-      params.delete(:singular)
-
-      super(**params, singular: false)
-    end
-
-    private
-
-    def ignored_parameters
-      @ignored_parameters ||= Set.new(IGNORED_PARAMETERS + %i[singular])
+      super(**params.except(:plural), singular: false)
     end
   end
 end

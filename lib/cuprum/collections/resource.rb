@@ -25,10 +25,5 @@ module Cuprum::Collections
     #     attribute. Defaults to 'id'.
     #   @option primary_key_type [Class, Stannum::Constraint] the type of
     #     the primary key attribute. Defaults to Integer.
-    def initialize(**params)
-      @plural = resolve_plurality(**params)
-
-      super
-    end
   end
 end

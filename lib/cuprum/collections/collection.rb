@@ -4,6 +4,7 @@ require 'cuprum/command_factory'
 
 require 'cuprum/collections'
 require 'cuprum/collections/relation'
+require 'cuprum/collections/relations/options'
 require 'cuprum/collections/relations/parameters'
 require 'cuprum/collections/relations/primary_keys'
 require 'cuprum/collections/scopes/all_scope'
@@ -11,20 +12,12 @@ require 'cuprum/collections/scopes/all_scope'
 module Cuprum::Collections
   # Provides a base implementation for collections.
   class Collection < Cuprum::CommandFactory
+    include Cuprum::Collections::Relations::Options
     include Cuprum::Collections::Relations::Parameters
     include Cuprum::Collections::Relations::PrimaryKeys
 
     # Error raised when trying to call an abstract collection method.
     class AbstractCollectionError < StandardError; end
-
-    IGNORED_PARAMETERS = %i[
-      entity_class
-      name
-      query
-      qualified_name
-      singular_name
-    ].freeze
-    private_constant :IGNORED_PARAMETERS
 
     # @overload initialize(entity_class: nil, name: nil, qualified_name: nil, singular_name: nil, **options)
     #   @param entity_class [Class, String] the class of entity represented by
@@ -38,23 +31,15 @@ module Cuprum::Collections
     #     attribute. Defaults to 'id'.
     #   @option primary_key_type [Class, Stannum::Constraint] the type of
     #     the primary key attribute. Defaults to Integer.
-    def initialize(**parameters) # rubocop:disable Metrics/MethodLength
-      super()
+    def initialize(**parameters)
+      super(**parameters.except(:scope))
 
-      relation_params = resolve_parameters(parameters)
-      @entity_class   = relation_params[:entity_class]
-      @name           = relation_params[:name]
-      @plural_name    = relation_params[:plural_name]
-      @qualified_name = relation_params[:qualified_name]
-      @singular_name  = relation_params[:singular_name]
-
-      @scope   =
+      @scope =
         if parameters.key?(:scope)
           default_scope.and(parameters[:scope])
         else
           default_scope
         end
-      @options = ignore_parameters(**parameters)
     end
 
     # @return [Hash<Symbol>] additional options for the collection.
@@ -133,14 +118,6 @@ module Cuprum::Collections
 
     def default_scope
       Cuprum::Collections::Scopes::AllScope.new
-    end
-
-    def ignore_parameters(**parameters)
-      parameters.except(*ignored_parameters)
-    end
-
-    def ignored_parameters
-      @ignored_parameters ||= Set.new(IGNORED_PARAMETERS)
     end
   end
 end

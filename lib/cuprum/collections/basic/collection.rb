@@ -27,7 +27,7 @@ module Cuprum::Collections::Basic
       qualified_name = parameters.fetch(:qualified_name) do
         next nil unless entity_class == Hash
 
-        parameters.fetch(:collection_name, parameters[:name])
+        parameters.fetch(:name, parameters[:name])
       end
 
       super(

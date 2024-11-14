@@ -5,6 +5,14 @@ require 'cuprum/collections/relations'
 module Cuprum::Collections::Relations
   # Methods for resolving a relations's naming and entity class from options.
   module Parameters # rubocop:disable Metrics/ModuleLength
+    IGNORED_PARAMETERS = %i[
+      entity_class
+      name
+      qualified_name
+      singular_name
+    ].freeze
+    private_constant :IGNORED_PARAMETERS
+
     PARAMETER_KEYS = %i[entity_class name qualified_name].freeze
     private_constant :PARAMETER_KEYS
 
@@ -162,6 +170,24 @@ module Cuprum::Collections::Relations
           validate_parameter(params[:singular_name], as: 'singular name')
         end
       end
+    end
+
+    # @overload initialize(entity_class: nil, name: nil, qualified_name: nil, singular_name: nil, **)
+    #   @param entity_class [Class, String] the class of entity represented by
+    #     the relation.
+    #   @param name [String] the name of the relation.
+    #   @param qualified_name [String] a scoped name for the relation.
+    #   @param singular_name [String] the name of an entity in the relation.
+    def initialize(**parameters)
+      super(**parameters.except(*IGNORED_PARAMETERS))
+
+      relation_params = resolve_parameters(parameters)
+
+      @entity_class   = relation_params[:entity_class]
+      @name           = relation_params[:name]
+      @plural_name    = relation_params[:plural_name]
+      @qualified_name = relation_params[:qualified_name]
+      @singular_name  = relation_params[:singular_name]
     end
 
     # @return [String] the name of the relation.

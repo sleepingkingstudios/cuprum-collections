@@ -5,6 +5,21 @@ require 'cuprum/collections/relations'
 module Cuprum::Collections::Relations
   # Methods for resolving a singular or plural relation.
   module Cardinality
+    IGNORED_PARAMETERS = %i[
+      plural
+      singular
+    ].freeze
+    private_constant :IGNORED_PARAMETERS
+
+    # @overload initialize(plural: true, **)
+    #   @param plural [Boolean] if true, the resource represents a plural
+    #     resource. Defaults to true. Can also be specified as :singular.
+    def initialize(**parameters)
+      super(**parameters.except(*IGNORED_PARAMETERS))
+
+      @plural = resolve_plurality(**parameters)
+    end
+
     # @return [Boolean] true if the relation is plural; otherwise false.
     def plural?
       @plural

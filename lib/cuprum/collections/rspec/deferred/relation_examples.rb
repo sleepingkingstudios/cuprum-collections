@@ -10,6 +10,8 @@ module Cuprum::Collections::RSpec::Deferred
     include RSpec::SleepingKingStudios::Deferred::Provider
 
     deferred_examples 'should be a Relation' do |**options|
+      include Cuprum::Collections::RSpec::Deferred::RelationExamples
+
       if options.fetch(:constructor, true)
         describe '.new' do
           let(:expected_keywords) do
@@ -41,6 +43,8 @@ module Cuprum::Collections::RSpec::Deferred
           include_deferred 'should validate the Relation parameters'
         end
       end
+
+      include_deferred 'should define Relation options'
 
       describe '#entity_class' do
         include_examples 'should define reader', :entity_class
@@ -365,15 +369,6 @@ module Cuprum::Collections::RSpec::Deferred
           end
 
           it { expect(subject.options).to be == {} }
-        end
-
-        context 'when initialized with options' do
-          let(:options) { { custom_option: 'custom value' } }
-          let(:constructor_options) do
-            super().merge(options)
-          end
-
-          it { expect(subject.options).to be == options }
         end
       end
 
@@ -824,6 +819,26 @@ module Cuprum::Collections::RSpec::Deferred
         end
       end
 
+      describe '#options' do
+        include_examples 'should define reader', :options, -> { {} }
+
+        context 'when initialized with plural: value' do
+          let(:constructor_options) do
+            super().merge(plural: false)
+          end
+
+          it { expect(subject.options).to be == {} }
+        end
+
+        context 'when initialized with singular: value' do
+          let(:constructor_options) do
+            super().merge(singular: true)
+          end
+
+          it { expect(subject.options).to be == {} }
+        end
+      end
+
       describe '#plural?' do
         include_examples 'should define predicate', :plural?, true
 
@@ -877,6 +892,21 @@ module Cuprum::Collections::RSpec::Deferred
           let(:constructor_options) { super().merge(singular: true) }
 
           it { expect(subject.singular?).to be true }
+        end
+      end
+    end
+
+    deferred_examples 'should define Relation options' do
+      describe '#options' do
+        include_examples 'should define reader', :options, -> { {} }
+
+        context 'when initialized with options' do
+          let(:options) { { custom_option: 'custom value' } }
+          let(:constructor_options) do
+            super().merge(options)
+          end
+
+          it { expect(subject.options).to be == options }
         end
       end
     end
