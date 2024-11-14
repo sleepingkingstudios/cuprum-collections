@@ -21,8 +21,11 @@ module Cuprum::Collections::Basic
     #
     #   @option options primary_key_name [String] the name of the primary key
     #     attribute. Defaults to 'id'.
-    #   @option primary_key_type [Class, Stannum::Constraint] the type of
-    #     the primary key attribute. Defaults to Integer.
+    #   @option options primary_key_type [Class, Stannum::Constraint] the type
+    #     of the primary key attribute. Defaults to Integer.
+    #   @option options scope
+    #     [Cuprum::Collections::Scopes::Base, Hash, Proc, nil] the configured
+    #     scope for the relation.
     def initialize(data: [], entity_class: Hash, **parameters)
       qualified_name = parameters.fetch(:qualified_name) do
         next nil unless entity_class == Hash

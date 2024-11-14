@@ -4,12 +4,14 @@ require 'cuprum/collections'
 require 'cuprum/collections/relation'
 require 'cuprum/collections/relations/cardinality'
 require 'cuprum/collections/relations/primary_keys'
+require 'cuprum/collections/relations/scope'
 
 module Cuprum::Collections
   # Class representing a singular or plural resource of entities.
   class Resource < Cuprum::Collections::Relation
     include Cuprum::Collections::Relations::Cardinality
     include Cuprum::Collections::Relations::PrimaryKeys
+    include Cuprum::Collections::Relations::Scope
 
     # @overload initialize(entity_class: nil, name: nil, qualified_name: nil, singular_name: nil, **options)
     #   @param entity_class [Class, String] the class of entity represented by
@@ -25,5 +27,8 @@ module Cuprum::Collections
     #     attribute. Defaults to 'id'.
     #   @option primary_key_type [Class, Stannum::Constraint] the type of
     #     the primary key attribute. Defaults to Integer.
+    #   @option options scope
+    #     [Cuprum::Collections::Scopes::Base, Hash, Proc, nil] the configured
+    #     scope for the relation.
   end
 end
