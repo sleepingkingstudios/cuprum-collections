@@ -29,7 +29,9 @@ An explicit receiver must be passed to be block in order to use operators:
 
 ### Relations
 
-Extracted `Relations::Cardinality`, `Relations::Parameters`, and `Relations::PrimaryKeys`.
+Extracted `Cuprum::Collections::Relations` concerns.
+
+- Added `#scope` support to `Cuprum::Collections::Resource`.
 
 ### RSpec
 
