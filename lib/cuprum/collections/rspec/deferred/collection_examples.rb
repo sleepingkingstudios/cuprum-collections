@@ -11,15 +11,6 @@ module Cuprum::Collections::RSpec::Deferred
     include RSpec::SleepingKingStudios::Deferred::Provider
     include Cuprum::Collections::RSpec::Deferred::RelationExamples
 
-    deferred_context 'when initialized with a scope' do
-      let(:initial_scope) do
-        Cuprum::Collections::Scope.new({ 'ok' => true })
-      end
-      let(:constructor_options) do
-        super().merge(scope: initial_scope)
-      end
-    end
-
     deferred_examples 'should be a Collection' do |**options|
       include Cuprum::Collections::RSpec::Deferred::RelationExamples
 
@@ -63,6 +54,9 @@ module Cuprum::Collections::RSpec::Deferred
         default_entity_class: options[:default_entity_class]
 
       include_deferred 'should define Relation primary key'
+
+      include_deferred 'should define Relation scope',
+        default_scope: options[:default_scope]
 
       include_deferred 'should define the command', :assign_one
 
@@ -327,44 +321,16 @@ module Cuprum::Collections::RSpec::Deferred
 
           it { expect(query.scope).to be == subject.scope }
 
-          wrap_deferred 'when initialized with a scope' do
+          context 'when initialized with a scope' do
+            let(:initial_scope) do
+              Cuprum::Collections::Scope.new({ 'ok' => true })
+            end
+            let(:constructor_options) do
+              super().merge(scope: initial_scope)
+            end
+
             it { expect(query.scope).to be == subject.scope }
           end
-        end
-      end
-
-      describe '#scope' do
-        let(:expected) do
-          Cuprum::Collections::Scopes::AllScope.new
-        end
-
-        include_examples 'should define reader', :scope, -> { be == expected }
-
-        wrap_deferred 'when initialized with a scope' do
-          it { expect(subject.scope).to be == initial_scope }
-        end
-      end
-
-      describe '#with_scope' do
-        let(:other_scope) do
-          Cuprum::Collections::Scope.new({ 'secret' => '12345' })
-        end
-        let(:copy) { subject.with_scope(other_scope) }
-
-        it { expect(subject).to respond_to(:with_scope).with(1).argument }
-
-        it { expect(copy).to be_a described_class }
-
-        it { expect(copy).not_to be subject }
-
-        it { expect(copy.scope).to be == other_scope }
-
-        wrap_deferred 'when initialized with a scope' do
-          let(:expected) do
-            initial_scope.and(other_scope)
-          end
-
-          it { expect(copy.scope).to be == expected }
         end
       end
     end

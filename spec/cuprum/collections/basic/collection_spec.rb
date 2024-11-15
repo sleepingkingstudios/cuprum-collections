@@ -42,7 +42,8 @@ RSpec.describe Cuprum::Collections::Basic::Collection do
 
   include_deferred 'should be a Collection',
     commands_namespace:   'Cuprum::Collections::Basic::Commands',
-    default_entity_class: Hash
+    default_entity_class: Hash,
+    default_scope:        Cuprum::Collections::Basic::Scopes::AllScope
 
   describe '#data' do
     include_examples 'should define reader', :data, -> { data }
@@ -65,39 +66,6 @@ RSpec.describe Cuprum::Collections::Basic::Collection do
     it 'should define the default scope' do
       expect(collection.query.scope)
         .to be_a Cuprum::Collections::Basic::Scopes::AllScope
-    end
-  end
-
-  describe '#scope' do
-    it 'should define the default scope' do
-      expect(collection.scope)
-        .to be_a Cuprum::Collections::Basic::Scopes::AllScope
-    end
-
-    wrap_deferred 'when initialized with a scope' do
-      it 'should transform the scope' do
-        expect(collection.scope)
-          .to be_a Cuprum::Collections::Basic::Scopes::CriteriaScope
-      end
-    end
-  end
-
-  describe '#with_scope' do
-    let(:other_scope) do
-      Cuprum::Collections::Scope.new({ 'secret' => '12345' })
-    end
-    let(:copy) { subject.with_scope(other_scope) }
-
-    it 'should transform the scope' do
-      expect(copy.scope)
-        .to be_a Cuprum::Collections::Basic::Scopes::CriteriaScope
-    end
-
-    wrap_deferred 'when initialized with a scope' do
-      it 'should transform the scope' do
-        expect(copy.scope)
-          .to be_a Cuprum::Collections::Basic::Scopes::CriteriaScope
-      end
     end
   end
 end

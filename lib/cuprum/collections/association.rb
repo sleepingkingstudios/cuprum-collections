@@ -31,9 +31,9 @@ module Cuprum::Collections
     #   @option options singular_inverse_name [String, Symbol] the name of an
     #     entity in the inverse association.
     def initialize(**params)
-      @inverse = params.delete(:inverse)
+      super(**params.except(:inverse))
 
-      super
+      @inverse = params[:inverse]
     end
 
     # @return [Cuprum::Collections::Resource] the inverse association, if any.

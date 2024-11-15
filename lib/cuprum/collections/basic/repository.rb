@@ -2,6 +2,7 @@
 
 require 'cuprum/collections/basic'
 require 'cuprum/collections/basic/collection'
+require 'cuprum/collections/relations/parameters'
 require 'cuprum/collections/repository'
 
 module Cuprum::Collections::Basic
@@ -21,7 +22,7 @@ module Cuprum::Collections::Basic
       validate_data!(data)
 
       qualified_name =
-        Cuprum::Collections::Relation::Parameters
+        Cuprum::Collections::Relations::Parameters
           .resolve_parameters(parameters)
           .fetch(:qualified_name)
 

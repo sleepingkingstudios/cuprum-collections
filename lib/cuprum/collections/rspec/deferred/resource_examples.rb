@@ -19,6 +19,8 @@ module Cuprum::Collections::RSpec::Deferred
       include_deferred 'should define Relation cardinality'
 
       include_deferred 'should define Relation primary key'
+
+      include_deferred 'should define Relation scope'
     end
   end
 end

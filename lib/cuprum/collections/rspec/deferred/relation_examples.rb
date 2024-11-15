@@ -10,6 +10,8 @@ module Cuprum::Collections::RSpec::Deferred
     include RSpec::SleepingKingStudios::Deferred::Provider
 
     deferred_examples 'should be a Relation' do |**options|
+      include Cuprum::Collections::RSpec::Deferred::RelationExamples
+
       if options.fetch(:constructor, true)
         describe '.new' do
           let(:expected_keywords) do
@@ -41,6 +43,8 @@ module Cuprum::Collections::RSpec::Deferred
           include_deferred 'should validate the Relation parameters'
         end
       end
+
+      include_deferred 'should define Relation options'
 
       describe '#entity_class' do
         include_examples 'should define reader', :entity_class
@@ -365,15 +369,6 @@ module Cuprum::Collections::RSpec::Deferred
           end
 
           it { expect(subject.options).to be == {} }
-        end
-
-        context 'when initialized with options' do
-          let(:options) { { custom_option: 'custom value' } }
-          let(:constructor_options) do
-            super().merge(options)
-          end
-
-          it { expect(subject.options).to be == options }
         end
       end
 
@@ -824,6 +819,26 @@ module Cuprum::Collections::RSpec::Deferred
         end
       end
 
+      describe '#options' do
+        include_examples 'should define reader', :options, -> { {} }
+
+        context 'when initialized with plural: value' do
+          let(:constructor_options) do
+            super().merge(plural: false)
+          end
+
+          it { expect(subject.options).to be == {} }
+        end
+
+        context 'when initialized with singular: value' do
+          let(:constructor_options) do
+            super().merge(singular: true)
+          end
+
+          it { expect(subject.options).to be == {} }
+        end
+      end
+
       describe '#plural?' do
         include_examples 'should define predicate', :plural?, true
 
@@ -881,6 +896,21 @@ module Cuprum::Collections::RSpec::Deferred
       end
     end
 
+    deferred_examples 'should define Relation options' do
+      describe '#options' do
+        include_examples 'should define reader', :options, -> { {} }
+
+        context 'when initialized with options' do
+          let(:options) { { custom_option: 'custom value' } }
+          let(:constructor_options) do
+            super().merge(options)
+          end
+
+          it { expect(subject.options).to be == options }
+        end
+      end
+    end
+
     deferred_examples 'should define Relation primary key' do
       describe '#primary_key_name' do
         let(:expected_primary_key_name) do
@@ -932,6 +962,200 @@ module Cuprum::Collections::RSpec::Deferred
           end
 
           it { expect(subject.primary_key_type).to be == primary_key_type }
+        end
+      end
+    end
+
+    deferred_examples 'should define Relation scope' do |**options|
+      deferred_context 'when initialized with scope: a Hash' do
+        let(:scope) { { author: 'Ursula K. LeGuin' } }
+        let(:constructor_options) do
+          super().merge(scope:)
+        end
+      end
+
+      deferred_context 'when initialized with scope: a Proc' do
+        let(:scope) do
+          lambda do |query|
+            { published_at: query.greater_than('1970-01-01') }
+          end
+        end
+        let(:constructor_options) do
+          super().merge(scope:)
+        end
+      end
+
+      deferred_context 'when initialized with scope: a Scope' do
+        let(:scope) do
+          Cuprum::Collections::Scope.new({ author: 'Ursula K. LeGuin' })
+        end
+        let(:constructor_options) do
+          super().merge(scope:)
+        end
+      end
+
+      define_method(:match_scope) do |scope|
+        be_a(scope.class).and(be == scope)
+      end
+
+      describe '#scope' do
+        let(:expected) do
+          (options[:default_scope] || Cuprum::Collections::Scopes::AllScope)
+            .new
+        end
+
+        include_examples 'should define reader', :scope
+
+        it { expect(subject.scope).to match_scope(expected) }
+
+        wrap_deferred 'when initialized with scope: a Hash' do
+          let(:expected) { super().and(scope) }
+
+          it { expect(subject.scope).to match_scope(expected) }
+        end
+
+        wrap_deferred 'when initialized with scope: a Proc' do
+          let(:expected) { super().and(&scope) }
+
+          it { expect(subject.scope).to match_scope(expected) }
+        end
+
+        wrap_deferred 'when initialized with scope: a Scope' do
+          let(:expected) { super().and(scope) }
+
+          it { expect(subject.scope).to match_scope(expected) }
+        end
+      end
+
+      describe '#with_scope' do
+        deferred_examples 'should copy the relation' do
+          it { expect(copy).to be_a subject.class }
+
+          it { expect(copy).not_to be subject }
+        end
+
+        let(:expected) do
+          (options[:default_scope] || Cuprum::Collections::Scopes::AllScope)
+            .new
+        end
+
+        it 'should define the method' do
+          expect(subject)
+            .to respond_to(:with_scope)
+            .with(0..1).arguments
+            .and_a_block
+        end
+
+        describe 'with a block' do
+          let(:scope) do
+            lambda do |query|
+              { published_at: query.greater_than('1970-01-01') }
+            end
+          end
+          let(:copy)     { subject.with_scope(&scope) }
+          let(:expected) { super().and(&scope) }
+
+          include_deferred 'should copy the relation'
+
+          it { expect(copy.scope).to match_scope(expected) }
+
+          it { expect { copy }.not_to change(subject, :scope) }
+        end
+
+        describe 'with a Hash' do
+          let(:scope)    { { author: 'Ursula K. LeGuin' } }
+          let(:copy)     { subject.with_scope(scope) }
+          let(:expected) { super().and(scope) }
+
+          include_deferred 'should copy the relation'
+
+          it { expect(copy.scope).to match_scope(expected) }
+
+          it { expect { copy }.not_to change(subject, :scope) }
+        end
+
+        describe 'with a Proc' do
+          let(:scope) do
+            lambda do |query|
+              { published_at: query.greater_than('1970-01-01') }
+            end
+          end
+          let(:copy)     { subject.with_scope(scope) }
+          let(:expected) { super().and(&scope) }
+
+          include_deferred 'should copy the relation'
+
+          it { expect(copy.scope).to match_scope(expected) }
+
+          it { expect { copy }.not_to change(subject, :scope) }
+        end
+
+        describe 'with a Scope' do
+          let(:scope) do
+            Cuprum::Collections::Scope.new({ author: 'Ursula K. LeGuin' })
+          end
+          let(:copy)     { subject.with_scope(scope) }
+          let(:expected) { super().and(scope) }
+
+          include_deferred 'should copy the relation'
+
+          it { expect(copy.scope).to match_scope(expected) }
+
+          it { expect { copy }.not_to change(subject, :scope) }
+        end
+
+        context 'when the relation has a custom scope' do
+          let(:custom_scope) do
+            Cuprum::Collections::Scope.new do |query|
+              { series: query.not_equal(nil) }
+            end
+          end
+          let(:constructor_options) do
+            super().merge(scope: custom_scope)
+          end
+          let(:expected) { super().and(custom_scope) }
+
+          describe 'with a block' do
+            let(:scope) do
+              lambda do |query|
+                { published_at: query.greater_than('1970-01-01') }
+              end
+            end
+            let(:copy)     { subject.with_scope(&scope) }
+            let(:expected) { super().and(&scope) }
+
+            it { expect(copy.scope).to match_scope(expected) }
+          end
+
+          describe 'with a Hash' do
+            let(:scope)    { { author: 'Ursula K. LeGuin' } }
+            let(:copy)     { subject.with_scope(scope) }
+            let(:expected) { super().and(scope) }
+
+            it { expect(copy.scope).to match_scope(expected) }
+          end
+
+          describe 'with a Proc' do
+            let(:scope) do
+              lambda do |query|
+                { published_at: query.greater_than('1970-01-01') }
+              end
+            end
+            let(:copy)     { subject.with_scope(scope) }
+            let(:expected) { super().and(&scope) }
+
+            it { expect(copy.scope).to match_scope(expected) }
+          end
+
+          describe 'with a Scope' do
+            let(:scope) do
+              Cuprum::Collections::Scope.new({ author: 'Ursula K. LeGuin' })
+            end
+            let(:copy)     { subject.with_scope(scope) }
+            let(:expected) { super().and(scope) }
+
+            it { expect(copy.scope).to match_scope(expected) }
+          end
         end
       end
     end
