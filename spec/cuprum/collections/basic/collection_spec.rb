@@ -31,6 +31,10 @@ RSpec.describe Cuprum::Collections::Basic::Collection do
   let(:query_options)       { { data: } }
 
   describe '.new' do
+    def call_method(**parameters)
+      described_class.new(data:, **parameters)
+    end
+
     it 'should define the constructor' do
       expect(described_class)
         .to respond_to(:new)
@@ -38,6 +42,8 @@ RSpec.describe Cuprum::Collections::Basic::Collection do
         .and_keywords(:data, :entity_class, :name, :qualified_name)
         .and_any_keywords
     end
+
+    include_deferred 'should validate the Relation parameters'
   end
 
   include_deferred 'should be a Collection',
@@ -59,6 +65,22 @@ RSpec.describe Cuprum::Collections::Basic::Collection do
       end
 
       it { expect(collection.default_contract).to be default_contract }
+    end
+  end
+
+  describe '#name' do
+    context 'when initialized with qualified_name: value' do
+      let(:qualified_name)      { 'books' }
+      let(:constructor_options) { { qualified_name: } }
+
+      it { expect(collection.name).to be == 'books' }
+    end
+
+    context 'when initialized with qualified_name: scoped value' do
+      let(:qualified_name)      { 'spec/scoped_books' }
+      let(:constructor_options) { { qualified_name: } }
+
+      it { expect(collection.name).to be == 'scoped_books' }
     end
   end
 
