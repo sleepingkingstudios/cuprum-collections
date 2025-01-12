@@ -32,8 +32,8 @@ group :development, :test do
     git:    'https://github.com/sleepingkingstudios/rspec-sleeping_king_studios.git',
     branch: 'main'
 
-  gem 'rubocop', '~> 1.68'
-  gem 'rubocop-rspec', '~> 3.2'
+  gem 'rubocop', '~> 1.70'
+  gem 'rubocop-rspec', '~> 3.3'
 
   gem 'simplecov', '~> 0.22'
 end
