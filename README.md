@@ -26,7 +26,7 @@ The Ruby ecosystem has a wide variety of tools and libraries for managing data a
 
 ### Compatibility
 
-Cuprum::Collections is tested against Ruby (MRI) 3.1 through 3.3.
+Cuprum::Collections is tested against Ruby (MRI) 3.1 through 3.4.
 
 ### Documentation
 
@@ -34,7 +34,7 @@ Documentation is generated using [YARD](https://yardoc.org/), and can be generat
 
 ### License
 
-Copyright (c) 2020-2024 Rob Smith
+Copyright (c) 2020-2025 Rob Smith
 
 Cuprum::Collections is released under the [MIT License](https://opensource.org/licenses/MIT).
 
