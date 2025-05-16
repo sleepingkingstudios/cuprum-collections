@@ -125,7 +125,6 @@ RSpec.describe Cuprum::Collections::Commands::Associations::FindMany do
 
     let(:collection) do
       repository.find_or_create(
-        name:           tools.str.pluralize(association.name),
         qualified_name: association.qualified_name
       )
     end
@@ -171,10 +170,6 @@ RSpec.describe Cuprum::Collections::Commands::Associations::FindMany do
     end
     let(:params)   { {} }
     let(:matching) { [] }
-
-    def tools
-      SleepingKingStudios::Tools::Toolbelt.instance
-    end
 
     before(:example) do
       matching.each { |item| collection.insert_one.call(entity: item) }
@@ -460,6 +455,25 @@ RSpec.describe Cuprum::Collections::Commands::Associations::FindMany do
 
         include_examples 'should find the plural association for one entity'
       end
+    end
+
+    context 'when initialized with an association with existing collection' do
+      let(:association) do
+        Cuprum::Collections::Association.new(
+          name:           'recent_books',
+          qualified_name: 'books'
+        )
+      end
+      let(:repository) do
+        super().tap do |repository|
+          repository.create(qualified_name: 'books')
+        end
+      end
+      let(:params) do
+        { keys: entities.map { |entity| entity[inverse_key_name] } }
+      end
+
+      include_examples 'should find the plural association for many entities'
     end
   end
 
