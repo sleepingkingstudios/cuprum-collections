@@ -75,7 +75,6 @@ module Cuprum::Collections::Commands::Associations
 
     def collection
       repository.find_or_create(
-        name:           tools.string_tools.pluralize(association.name),
         qualified_name: association.qualified_name
       )
     end
@@ -152,10 +151,6 @@ module Cuprum::Collections::Commands::Associations
       keys   = keys.compact.uniq
 
       [keys, plural]
-    end
-
-    def tools
-      SleepingKingStudios::Tools::Toolbelt.instance
     end
   end
 end
