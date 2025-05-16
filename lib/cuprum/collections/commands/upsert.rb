@@ -108,7 +108,7 @@ module Cuprum::Collections::Commands
       tools
         .hash_tools
         .convert_keys_to_strings(attributes)
-        .select { |key, _| attribute_names.include?(key) }
+        .slice(*attribute_names)
     end
 
     def find_entity(attributes:)
