@@ -105,7 +105,7 @@ module Cuprum::Collections::RSpec::Deferred::Commands
               it 'should return a passing result' do
                 expect(command.call(primary_key:, envelope: true))
                   .to be_a_passing_result
-                  .with_value({ member_name => expected_data })
+                  .with_value(match({ member_name => expected_data }))
               end
             end
           end
