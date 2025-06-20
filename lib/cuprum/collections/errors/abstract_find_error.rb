@@ -117,7 +117,7 @@ module Cuprum::Collections::Errors
       if attribute_name
         "#{core_message} with #{attribute_name.inspect} " \
           "#{attribute_value.inspect}" \
-          "#{primary_key? ? ' (primary key)' : ''}"
+          "#{' (primary key)' if primary_key?}"
       elsif attributes
         "#{core_message} with attributes #{attributes.inspect}"
       elsif scope
@@ -181,11 +181,11 @@ module Cuprum::Collections::Errors
 
       if ambiguous_keywords.empty?
         raise ArgumentError,
-          "unknown keyword#{extra_keywords.size == 1 ? '' : 's'} " \
+          "unknown keyword#{'s' unless extra_keywords.size == 1} " \
           "#{extra_keywords.map(&:inspect).join(', ')}"
       else
         raise ArgumentError,
-          "ambiguous keyword#{extra_keywords.size == 1 ? '' : 's'} " \
+          "ambiguous keyword#{'s' unless extra_keywords.size == 1} " \
           "#{ambiguous_keywords.map(&:inspect).join(', ')}"
       end
     end

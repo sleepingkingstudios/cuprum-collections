@@ -80,7 +80,7 @@ module Cuprum::Collections::Relations
           .then { |ary| scoped ? ary.join('/') : ary.last }
       end
 
-      def has_key?(params, key) # rubocop:disable Naming/PredicateName
+      def has_key?(params, key) # rubocop:disable Naming/PredicatePrefix
         return false unless params.key?(key)
 
         !params[key].nil?
