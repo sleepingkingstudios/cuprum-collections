@@ -272,7 +272,7 @@ module Cuprum::Collections::RSpec::Deferred::Commands
                   command.call(primary_keys:, envelope: true)
                 )
                   .to be_a_passing_result
-                  .with_value({ collection.name => expected_data })
+                  .with_value(match({ collection.name => expected_data }))
               end
             end
 
@@ -284,7 +284,7 @@ module Cuprum::Collections::RSpec::Deferred::Commands
                   command.call(primary_keys:, envelope: true)
                 )
                   .to be_a_passing_result
-                  .with_value({ collection.name => expected_data })
+                  .with_value(match({ collection.name => expected_data }))
               end
 
               describe 'with an ordered array of primary keys' do
@@ -295,7 +295,7 @@ module Cuprum::Collections::RSpec::Deferred::Commands
                     command.call(primary_keys:, envelope: true)
                   )
                     .to be_a_passing_result
-                    .with_value({ collection.name => expected_data })
+                    .with_value(match({ collection.name => expected_data }))
                 end
               end
             end

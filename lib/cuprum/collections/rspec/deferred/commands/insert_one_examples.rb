@@ -48,7 +48,7 @@ module Cuprum::Collections::RSpec::Deferred::Commands
           it 'should return a passing result' do
             expect(command.call(entity:))
               .to be_a_passing_result
-              .with_value(be == expected_data)
+              .with_value(match(expected_data))
           end
 
           it 'should append an item to the collection' do
@@ -68,7 +68,7 @@ module Cuprum::Collections::RSpec::Deferred::Commands
           it 'should set the attributes' do
             command.call(entity:)
 
-            expect(scoped.to_a.first).to be == expected_data
+            expect(scoped.to_a.first).to match(expected_data)
           end
         end
 
