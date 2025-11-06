@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.1
+
+Added missing `config/locales` directory to the gemspec.
+
 ## 0.5.0
 
 Major refactoring of Queries. This update is **not** backwards compatible.
