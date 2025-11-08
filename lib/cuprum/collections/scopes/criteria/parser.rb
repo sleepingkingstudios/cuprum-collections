@@ -78,51 +78,6 @@ module Cuprum::Collections::Scopes::Criteria
       end
     end
 
-    # @deprecated v0.5.0 Implicit receivers are deprecated. Remove this class
-    #   when removing the functionality.
-    class ImplicitReceiver
-      ERROR_MESSAGE =
-        'Pass a block with one parameter to #parse: { |scope| { ' \
-        'scope.%s: value } }'
-      private_constant :ERROR_MESSAGE
-
-      OPERATORS = %i[
-        eq
-        equal
-        equals
-        greater_than
-        greater_than_or_equal_to
-        gt
-        gte
-        less_than
-        less_than_or_equal_to
-        lt
-        lte
-        ne
-        not_equal
-        not_one_of
-        one_of
-      ].freeze
-      private_constant :OPERATORS
-
-      OPERATORS.each do |operator|
-        define_method(operator) do |*args, **kwargs, &block|
-          tools.core_tools.deprecate(
-            '#parse with implicit receiver',
-            message: format(ERROR_MESSAGE, operator)
-          )
-
-          BlockParser.instance.send(operator, *args, **kwargs, &block)
-        end
-      end
-
-      private
-
-      def tools
-        SleepingKingStudios::Tools::Toolbelt.instance
-      end
-    end
-
     OperatorExpression = Struct.new(:operator, :value)
     private_constant :OperatorExpression
 
@@ -229,13 +184,10 @@ module Cuprum::Collections::Scopes::Criteria
 
     private
 
-    # @deprecated v0.5.0 Implicit receivers are deprecated.
     def evaluate_block(&block)
-      receiver = ImplicitReceiver.new
+      return block.call if block.arity.zero?
 
-      return receiver.instance_exec(&block) if block.arity.zero?
-
-      receiver.instance_exec(BlockParser.instance, &block)
+      block.call(BlockParser.instance)
     end
   end
 end
