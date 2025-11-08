@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.0
+
+Removed all deprecated functionality from version 0.5.0 and earlier.
+
 ## 0.5.1
 
 Added missing `config/locales` directory to the gemspec.
