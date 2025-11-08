@@ -2,58 +2,23 @@
 
 require 'cuprum/collections/basic/collection'
 require 'cuprum/collections/repository'
-require 'cuprum/collections/rspec/contracts/repository_contracts'
+require 'cuprum/collections/rspec/deferred/repository_examples'
 
 require 'support/book'
 
 RSpec.describe Cuprum::Collections::Repository do
-  include Cuprum::Collections::RSpec::Contracts::RepositoryContracts
+  include Cuprum::Collections::RSpec::Deferred::RepositoryExamples
 
   subject(:repository) { described_class.new }
 
-  shared_context 'when the repository has many collections' do
-    let(:books_collection) do
-      instance_double(
-        Cuprum::Collections::Basic::Collection,
-        name:           'books',
-        qualified_name: 'sources/books'
-      )
-    end
-    let(:authors_collection) do
-      instance_double(
-        Cuprum::Collections::Basic::Collection,
-        name:           :authors,
-        qualified_name: 'authors'
-      )
-    end
-    let(:publishers_collection) do
-      instance_double(
-        Cuprum::Collections::Basic::Collection,
-        name:           'publishers',
-        qualified_name: 'publishers'
-      )
-    end
-    let(:collections) do
-      {
-        'sources/books' => books_collection,
-        'authors'       => authors_collection,
-        'publishers'    => publishers_collection
-      }
-    end
+  define_method(:build_collection) do |**options|
+    name           = options.fetch(:name)
+    qualified_name = options.fetch(:qualified_name, name)
 
-    before(:example) do
-      repository <<
-        books_collection <<
-        authors_collection <<
-        publishers_collection
-    end
-  end
-
-  let(:example_collection) do
     instance_double(
       Cuprum::Collections::Basic::Collection,
-      name:           'widgets',
-      qualified_name: 'scope/widgets'
+      name:,
+      qualified_name:
     )
   end
 
@@ -101,5 +66,5 @@ RSpec.describe Cuprum::Collections::Repository do
     it { expect(described_class).to respond_to(:new).with(0).arguments }
   end
 
-  include_contract 'should be a repository', abstract: true
+  include_deferred 'should be a Repository', abstract: true
 end
