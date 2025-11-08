@@ -4,6 +4,9 @@ require 'cuprum/collections/rspec/contracts'
 
 module Cuprum::Collections::RSpec::Contracts
   # Contracts for asserting on Repository objects.
+  #
+  # @deprecated 0.6.0 Use RepositoryExamples instead.
+  #   Note - requires defining a #build_collection(**options) helper method.
   module RepositoryContracts
     # Contract validating the behavior of a Repository.
     module ShouldBeARepositoryContract
@@ -23,6 +26,14 @@ module Cuprum::Collections::RSpec::Contracts
       #   @option options entity_class [Class, String] the expected entity
       #     class.
       contract do |abstract: false, **options|
+        SleepingKingStudios::Tools::Toolbelt
+          .instance
+          .core_tools
+          .deprecate(
+            'Cuprum::Collections::RSpec::Contracts::RepositoryContracts',
+            message: 'Use RepositoryExamples instead.'
+          )
+
         shared_examples 'should create the collection' do
           let(:configured_collection_class) do
             return super() if defined?(super())
