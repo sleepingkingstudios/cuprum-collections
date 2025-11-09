@@ -91,25 +91,25 @@ module Cuprum::Collections::Commands
 
     private
 
-    def error_params_for(attributes: nil, &block)
+    def error_params_for(attributes: nil, &)
       { collection_name: collection.name }.merge(
         if block_given?
-          { query: collection.query.where(&block) }
+          { query: collection.query.where(&) }
         else
           { attributes: }
         end
       )
     end
 
-    def not_found_error(attributes: nil, &block)
+    def not_found_error(attributes: nil, &)
       Cuprum::Collections::Errors::NotFound.new(
-        **error_params_for(attributes:, &block)
+        **error_params_for(attributes:, &)
       )
     end
 
-    def not_unique_error(attributes: nil, &block)
+    def not_unique_error(attributes: nil, &)
       Cuprum::Collections::Errors::NotUnique.new(
-        **error_params_for(attributes:, &block)
+        **error_params_for(attributes:, &)
       )
     end
 
@@ -120,14 +120,14 @@ module Cuprum::Collections::Commands
       require_one_entity(attributes:, entities:, &block)
     end
 
-    def require_one_entity(attributes:, entities:, &block)
+    def require_one_entity(attributes:, entities:, &)
       case entities.count
       when 0
-        failure(not_found_error(attributes:, &block))
+        failure(not_found_error(attributes:, &))
       when 1
         entities.first
       when 2
-        failure(not_unique_error(attributes:, &block))
+        failure(not_unique_error(attributes:, &))
       end
     end
   end

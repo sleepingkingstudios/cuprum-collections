@@ -8,11 +8,11 @@ require 'cuprum/collections/constraints/attribute_name'
 module Cuprum::Collections::Constraints
   # Asserts that the object is a Hash with valid attribute name keys.
   class QueryHash < Stannum::Constraints::Types::HashType
-    def initialize(**options)
+    def initialize(**)
       super(
         allow_empty: true,
         key_type:    attribute_name_constraint,
-        **options
+        **
       )
     end
 

@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'set'
-
 require 'cuprum/collections'
 require 'cuprum/collections/relations/options'
 require 'cuprum/collections/relations/parameters'

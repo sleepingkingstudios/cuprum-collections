@@ -30,7 +30,7 @@ Gem::Specification.new do |gem|
     '*.md'
   ]
 
-  gem.required_ruby_version = '~> 3.1'
+  gem.required_ruby_version = '~> 3.2'
 
   gem.add_dependency 'cuprum',  '~> 1.1'
   gem.add_dependency 'stannum', '~> 0.3'
