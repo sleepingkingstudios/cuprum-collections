@@ -30,8 +30,9 @@ RSpec.describe Cuprum::Collections::Basic::Repository do
   end
 
   include_deferred 'should be a Repository',
-    collection_class: Cuprum::Collections::Basic::Collection,
-    entity_class:     Hash
+    collection_class:     Cuprum::Collections::Basic::Collection,
+    entity_class:         Hash,
+    find_by_entity_class: false
 
   describe '#create' do
     let(:collection_name)    { 'books' }

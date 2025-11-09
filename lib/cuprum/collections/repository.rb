@@ -84,10 +84,10 @@ module Cuprum::Collections
     end
     alias << add
 
-    # @overload create(collection_name: nil, entity_class: nil, force: false, **options)
+    # @overload create(name: nil, entity_class: nil, force: false, **options)
     #   Adds a new collection with the given name to the repository.
     #
-    #   @param collection_name [String] the name of the new collection.
+    #   @param name [String] the name of the new collection.
     #   @param entity_class [Class, String] the class of entity represented in
     #     the collection.
     #   @param force [true, false] if true, override an existing collection with
@@ -104,6 +104,23 @@ module Cuprum::Collections
       add(collection, force:)
 
       collection
+    end
+
+    # @overload find(name: nil, entity_class: nil, **options)
+    def find(**parameters)
+      qualified_name = qualified_name_for(**parameters)
+      collection     = @collections[qualified_name]
+
+      unless collection
+        raise UndefinedCollectionError,
+          "repository does not define collection #{qualified_name.inspect}"
+      end
+
+      return collection if collection.matches?(**parameters)
+
+      error_message = partial_match_error_message(collection:, parameters:)
+
+      raise DuplicateCollectionError, error_message
     end
 
     # @overload find_or_create(collection_name: nil, entity_class: nil, **options)
@@ -150,6 +167,20 @@ module Cuprum::Collections
       raise AbstractRepositoryError,
         "#{self.class.name} is an abstract class. Define a repository " \
         'subclass and implement the #build_collection method.'
+    end
+
+    def partial_match_error_message(collection:, parameters:)
+      non_matching =
+        parameters
+          .each_key
+          .reject { |key| collection.public_send(key) == parameters[key] }
+      expected = parameters.slice(*non_matching)
+      actual   = non_matching.to_h { |key| [key, collection.public_send(key)] }
+      name     = collection.qualified_name.inspect
+
+      "collection #{name} exists but does not match:\n" \
+        "\n  expected: #{expected.inspect}" \
+        "\n    actual: #{actual.inspect}"
     end
 
     def qualified_name_for(**parameters)

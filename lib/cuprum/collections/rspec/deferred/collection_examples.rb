@@ -241,8 +241,14 @@ module Cuprum::Collections::RSpec::Deferred
           it { expect(collection.matches?(**other_options)).to be true }
         end
 
-        describe 'with matching name' do
-          let(:other_options) { { name: } }
+        describe 'with matching name as a String' do
+          let(:other_options) { { name: name.to_s } }
+
+          it { expect(collection.matches?(**other_options)).to be true }
+        end
+
+        describe 'with matching name as a Symbol' do
+          let(:other_options) { { name: name.intern } }
 
           it { expect(collection.matches?(**other_options)).to be true }
         end
@@ -259,8 +265,14 @@ module Cuprum::Collections::RSpec::Deferred
           it { expect(collection.matches?(**other_options)).to be true }
         end
 
-        describe 'with matching qualified name' do
-          let(:other_options) { { qualified_name: name } }
+        describe 'with matching qualified name as a String' do
+          let(:other_options) { { qualified_name: name.to_s } }
+
+          it { expect(collection.matches?(**other_options)).to be true }
+        end
+
+        describe 'with matching qualified name as a Symbol' do
+          let(:other_options) { { qualified_name: name.intern } }
 
           it { expect(collection.matches?(**other_options)).to be true }
         end

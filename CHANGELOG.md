@@ -4,6 +4,10 @@
 
 Removed all deprecated functionality from version 0.5.0 and earlier.
 
+### Repositories
+
+- Implemented `#find`, which finds the matching collection by name, qualified name, or entity class.
+
 ## 0.5.1
 
 Added missing `config/locales` directory to the gemspec.

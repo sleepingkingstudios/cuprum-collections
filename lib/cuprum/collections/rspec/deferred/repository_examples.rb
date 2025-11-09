@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'rspec/sleeping_king_studios/deferred'
+require 'rspec/sleeping_king_studios/matchers/core/have_aliased_method'
 
 require 'cuprum/collections/rspec/deferred'
 
@@ -452,6 +453,161 @@ module Cuprum::Collections::RSpec::Deferred
               collection = repository[qualified_name]
 
               expect(collection.options[:old]).to be false
+            end
+          end
+        end
+      end
+
+      describe '#find' do
+        shared_examples 'should find the matching collection' do
+          context 'when the collection does not exist' do
+            let(:error_message) do
+              "repository does not define collection #{qualified_name.inspect}"
+            end
+
+            it 'should raise an exception' do
+              expect { repository.find(**collection_options) }.to raise_error(
+                described_class::UndefinedCollectionError,
+                error_message
+              )
+            end
+          end
+
+          next if deferred_options.fetch(:abstract, false)
+
+          context 'when the collection exists' do
+            include_deferred 'when the repository has many collections'
+
+            let(:collection)     { collections.values.first }
+            let(:entity_class)   { collection.entity_class }
+            let(:name)           { collection.name }
+            let(:qualified_name) { collection.qualified_name }
+
+            it 'should find the collection' do
+              expect(repository.find(**collection_options)).to be == collection
+            end
+          end
+        end
+
+        let(:name)               { 'books' }
+        let(:qualified_name)     { name.to_s }
+        let(:collection_options) { {} }
+
+        it 'should define the method' do
+          expect(repository)
+            .to respond_to(:find)
+            .with(0).arguments
+            .and_any_keywords
+        end
+
+        describe 'with no parameters' do
+          let(:error_message) { "name or entity class can't be blank" }
+
+          it 'should raise an exception' do
+            expect { repository.find }
+              .to raise_error ArgumentError, error_message
+          end
+        end
+
+        if deferred_options.fetch(:find_by_entity_class, true)
+          describe 'with entity_class: a Class' do
+            let(:entity_class)       { Book }
+            let(:collection_options) { super().merge(entity_class:) }
+
+            include_examples 'should find the matching collection'
+          end
+
+          describe 'with entity_class: a String' do
+            let(:entity_class)       { 'Book' }
+            let(:collection_options) { super().merge(entity_class:) }
+
+            include_examples 'should find the matching collection'
+          end
+        end
+
+        describe 'with name: a String' do
+          let(:collection_options) { super().merge(name: name.to_s) }
+
+          include_examples 'should find the matching collection'
+        end
+
+        describe 'with name: a Symbol' do
+          let(:collection_options) { super().merge(name: name.intern) }
+
+          include_examples 'should find the matching collection'
+        end
+
+        describe 'with qualified_name: a String' do
+          let(:collection_options) do
+            super().merge(qualified_name: qualified_name.to_s)
+          end
+
+          include_examples 'should find the matching collection'
+        end
+
+        describe 'with qualified_name: a Symbol' do
+          let(:collection_options) do
+            super().merge(qualified_name: qualified_name.intern)
+          end
+
+          include_examples 'should find the matching collection'
+        end
+
+        describe 'with multiple parameters' do
+          let(:entity_class) { Book }
+          let(:collection_options) do
+            super().merge(entity_class:, qualified_name:)
+          end
+
+          context 'when the collection does not exist' do
+            let(:error_message) do
+              "repository does not define collection #{qualified_name.inspect}"
+            end
+
+            it 'should raise an exception' do
+              expect { repository.find(**collection_options) }.to raise_error(
+                described_class::UndefinedCollectionError,
+                error_message
+              )
+            end
+          end
+
+          next if deferred_options.fetch(:abstract, false)
+
+          context 'when a partially-matching collection exists' do
+            include_deferred 'when the repository has many collections'
+
+            let(:collection)     { collections.values.first }
+            let(:entity_class)   { Spec::EntityClass }
+            let(:qualified_name) { collection.qualified_name }
+            let(:error_message) do
+              <<~TEXT.strip
+                collection "authors" exists but does not match:
+
+                  expected: #{{ entity_class: Spec::EntityClass }.inspect}
+                    actual: #{{ entity_class: Hash }.inspect}
+              TEXT
+            end
+
+            example_class 'Spec::EntityClass'
+
+            it 'should raise an exception' do
+              expect { repository.find(**collection_options) }.to raise_error(
+                described_class::DuplicateCollectionError,
+                error_message
+              )
+            end
+          end
+
+          context 'when a matching collection exists' do
+            include_deferred 'when the repository has many collections'
+
+            let(:collection)     { collections.values.first }
+            let(:entity_class)   { collection.entity_class }
+            let(:qualified_name) { collection.qualified_name }
+
+            it 'should find the collection' do
+              expect(repository.find(**collection_options)).to be == collection
             end
           end
         end
