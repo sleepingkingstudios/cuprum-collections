@@ -7,6 +7,7 @@ Removed all deprecated functionality from version 0.5.0 and earlier.
 ### Repositories
 
 - Implemented `#find`, which finds the matching collection by name, qualified name, or entity class.
+- Implemented `#remove`, which removes the collection with the specified qualified name.
 
 ## 0.5.1
 

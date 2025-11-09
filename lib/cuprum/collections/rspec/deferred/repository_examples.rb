@@ -785,6 +785,90 @@ module Cuprum::Collections::RSpec::Deferred
           it { expect(repository.keys).to be == collections.keys }
         end
       end
+
+      describe '#remove' do
+        let(:qualified_name) { 'books' }
+
+        it 'should define the method' do
+          expect(repository)
+            .to respond_to(:remove)
+            .with(0).arguments
+            .and_keywords(:qualified_name)
+        end
+
+        describe 'with qualified_name: a String' do
+          let(:qualified_name) { super().to_s }
+
+          context 'when the collection does not exist' do
+            let(:error_message) do
+              "repository does not define collection #{qualified_name.inspect}"
+            end
+
+            it 'should raise an exception' do
+              expect { repository.remove(qualified_name:) }.to raise_error(
+                described_class::UndefinedCollectionError,
+                error_message
+              )
+            end
+          end
+
+          next if deferred_options.fetch(:abstract, false)
+
+          context 'when the collection exists' do
+            include_deferred 'when the repository has many collections'
+
+            let(:collection)     { collections.values.first }
+            let(:qualified_name) { collection.qualified_name.to_s }
+
+            it 'should return the collection' do
+              expect(repository.remove(qualified_name:)).to be == collection
+            end
+
+            it 'should remove the collection from the repository' do
+              expect { repository.remove(qualified_name:) }
+                .to change(repository, :keys)
+                .to(satisfy { |keys| !keys.include?(qualified_name.to_s) })
+            end
+          end
+        end
+
+        describe 'with qualified_name: a Symbol' do
+          let(:qualified_name) { super().intern }
+
+          context 'when the collection does not exist' do
+            let(:error_message) do
+              'repository does not define collection ' \
+                "#{qualified_name.to_s.inspect}"
+            end
+
+            it 'should raise an exception' do
+              expect { repository.remove(qualified_name:) }.to raise_error(
+                described_class::UndefinedCollectionError,
+                error_message
+              )
+            end
+          end
+
+          next if deferred_options.fetch(:abstract, false)
+
+          context 'when the collection exists' do
+            include_deferred 'when the repository has many collections'
+
+            let(:collection)     { collections.values.first }
+            let(:qualified_name) { collection.qualified_name.intern }
+
+            it 'should return the collection' do
+              expect(repository.remove(qualified_name:)).to be == collection
+            end
+
+            it 'should remove the collection from the repository' do
+              expect { repository.remove(qualified_name:) }
+                .to change(repository, :keys)
+                .to(satisfy { |keys| !keys.include?(qualified_name.to_s) })
+            end
+          end
+        end
+      end
     end
   end
 end

@@ -161,6 +161,20 @@ module Cuprum::Collections
       @collections.key?(qualified_name.to_s)
     end
 
+    # Removes the specified collection from the repository.
+    #
+    # @param qualified_name [String, Symbol] the name of the collection to
+    #   remove.
+    #
+    # @return [Cuprum::Collections::Collection] the removed collection.
+    def remove(qualified_name:)
+      collection = find(qualified_name:)
+
+      @collections.delete(collection.qualified_name)
+
+      collection
+    end
+
     private
 
     def build_collection(**)
