@@ -30,8 +30,9 @@ RSpec.describe Cuprum::Collections::Basic::Repository do
   end
 
   include_deferred 'should be a Repository',
-    collection_class: Cuprum::Collections::Basic::Collection,
-    entity_class:     Hash
+    collection_class:     Cuprum::Collections::Basic::Collection,
+    entity_class:         Hash,
+    find_by_entity_class: false
 
   describe '#create' do
     let(:collection_name)    { 'books' }
@@ -82,6 +83,11 @@ RSpec.describe Cuprum::Collections::Basic::Repository do
         name: collection_name,
         **collection_options
       )
+    end
+
+    before(:example) do
+      allow(SleepingKingStudios::Tools::Toolbelt.instance.core_tools)
+        .to receive(:deprecate)
     end
 
     it { expect(collection.count).to be 0 }

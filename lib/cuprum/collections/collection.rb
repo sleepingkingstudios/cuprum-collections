@@ -66,6 +66,12 @@ module Cuprum::Collections
         )
       end
 
+      expected[:name] = expected[:name].to_s if expected[:name]
+
+      if expected[:qualified_name]
+        expected[:qualified_name] = expected[:qualified_name].to_s
+      end
+
       comparable_options >= expected
     end
 
