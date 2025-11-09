@@ -46,7 +46,7 @@ module Cuprum::Collections
       collection.query
     end
 
-    # @returnb [String] the name of an entity in the collection.
+    # @return [String] the name of an entity in the collection.
     def singular_name
       @singular_name ||= collection.singular_name
     end

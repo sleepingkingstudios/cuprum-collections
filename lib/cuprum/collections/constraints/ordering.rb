@@ -41,15 +41,16 @@ module Cuprum::Collections::Constraints
       @instance ||= new
     end
 
-    # @param options [Hash<Symbol, Object>] Configuration options for the
-    #   constraint. Defaults to an empty Hash.
-    def initialize(optional: nil, required: nil, **options)
+    # @overload initialize(optional: nil, required: nil, **options)
+    #   @param options [Hash<Symbol, Object>] Configuration options for the
+    #     constraint. Defaults to an empty Hash.
+    def initialize(optional: nil, required: nil, **)
       super(
         *ordering_constraints,
         **resolve_required_option(
           optional:,
           required:,
-          **options
+          **
         )
       )
     end
@@ -91,13 +92,14 @@ module Cuprum::Collections::Constraints
       (errors || Stannum::Errors.new).add(negated_type)
     end
 
-    # Creates a copy of the constraint and updates the copy's options.
+    # @overload with_options(**options)
+    #   Creates a copy of the constraint and updates the copy's options.
     #
-    # @param options [Hash] The options to update.
+    #   @param options [Hash] The options to update.
     #
-    # @return [Stannum::Constraints::Base] the copied constraint.
-    def with_options(**options)
-      super(**resolve_required_option(**options))
+    #   @return [Stannum::Constraints::Base] the copied constraint.
+    def with_options(**)
+      super(**resolve_required_option(**))
     end
 
     private

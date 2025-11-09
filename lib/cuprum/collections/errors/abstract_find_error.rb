@@ -28,11 +28,11 @@ module Cuprum::Collections::Errors
     # @overload initialize(query:, collection_name:)
     #   @param collection_name [String] The name of the collection.
     #   @param query [Cuprum::Collections::Query] The performed query.
-    def initialize(collection_name:, **options) # rubocop:disable Metrics/MethodLength
+    def initialize(collection_name:, **) # rubocop:disable Metrics/MethodLength
       @collection_name = collection_name
       @primary_key     = false
 
-      resolve_options(**options)
+      resolve_options(**)
 
       super(
         attribute_name:,

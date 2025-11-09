@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'set'
-
 require 'cuprum/collections/commands'
 require 'cuprum/collections/commands/create'
 require 'cuprum/collections/commands/find_one_matching'

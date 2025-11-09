@@ -19,8 +19,8 @@ module Cuprum::Collections::Constraints::Order
       @instance ||= new
     end
 
-    def initialize(**options)
-      super(*sort_directions, **options)
+    def initialize(**)
+      super(*sort_directions, **)
     end
 
     private

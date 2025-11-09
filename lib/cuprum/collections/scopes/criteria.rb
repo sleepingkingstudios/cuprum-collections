@@ -43,12 +43,13 @@ module Cuprum::Collections::Scopes
       end
     end
 
-    # @param criteria [Array] the criteria used for filtering query data.
-    # @param inverted [Boolean] if true, the criteria are inverted and should
-    #   match on any criterion (per DeMorgan's Laws).
-    # @param options [Hash] additional options for the scope.
-    def initialize(criteria:, inverted: false, **options)
-      super(**options)
+    # @overload initialize(criteria:, inverted: false, **options)
+    #   @param criteria [Array] the criteria used for filtering query data.
+    #   @param inverted [Boolean] if true, the criteria are inverted and should
+    #     match on any criterion (per DeMorgan's Laws).
+    #   @param options [Hash] additional options for the scope.
+    def initialize(criteria:, inverted: false, **)
+      super(**)
 
       @criteria = criteria
       @inverted = inverted

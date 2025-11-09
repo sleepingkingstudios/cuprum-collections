@@ -98,8 +98,8 @@ module Cuprum::Collections
     #
     #   @raise [DuplicateCollectionError] if a collection with the same name
     #     already exists in the repository.
-    def create(force: false, **options)
-      collection = build_collection(**options)
+    def create(force: false, **)
+      collection = build_collection(**)
 
       add(collection, force:)
 

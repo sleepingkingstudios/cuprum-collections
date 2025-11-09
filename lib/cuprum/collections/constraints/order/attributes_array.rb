@@ -14,12 +14,13 @@ module Cuprum::Collections::Constraints::Order
       @instance ||= new
     end
 
-    # @param options [Hash<Symbol, Object>] Configuration options for the
-    #   constraint. Defaults to an empty Hash.
-    def initialize(**options)
+    # @overload initialize(**options)
+    #   @param options [Hash<Symbol, Object>] Configuration options for the
+    #     constraint. Defaults to an empty Hash.
+    def initialize(**)
       super(
         item_type: Cuprum::Collections::Constraints::AttributeName.instance,
-        **options
+        **
       )
     end
   end

@@ -5,10 +5,11 @@ require 'cuprum/collections/scopes'
 module Cuprum::Collections::Scopes
   # Functionality for implementing a scope container.
   module Container
-    # @param scopes [Array<Scope>] the scopes wrapped by the scope.
-    # @param options [Hash] additional options for the scope.
-    def initialize(scopes:, **options)
-      super(**options)
+    # @overload initialize(scopes:, **options)
+    #   @param scopes [Array<Scope>] the scopes wrapped by the scope.
+    #   @param options [Hash] additional options for the scope.
+    def initialize(scopes:, **)
+      super(**)
 
       @scopes = scopes
     end
