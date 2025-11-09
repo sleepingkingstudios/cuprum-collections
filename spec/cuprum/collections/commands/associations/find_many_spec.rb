@@ -16,8 +16,12 @@ RSpec.describe Cuprum::Collections::Commands::Associations::FindMany do
   end
 
   let(:association) { Cuprum::Collections::Association.new(name: 'books') }
-  let(:repository)  { Cuprum::Collections::Basic::Repository.new }
-  let(:resource)    { Cuprum::Collections::Resource.new(name: 'authors') }
+  let(:repository) do
+    Cuprum::Collections::Basic::Repository.new.tap do |repository|
+      repository.create(qualified_name: association.qualified_name)
+    end
+  end
+  let(:resource) { Cuprum::Collections::Resource.new(name: 'authors') }
 
   describe '.new' do
     it 'should define the constructor' do
@@ -124,9 +128,7 @@ RSpec.describe Cuprum::Collections::Commands::Associations::FindMany do
     end
 
     let(:collection) do
-      repository.find_or_create(
-        qualified_name: association.qualified_name
-      )
+      repository.find(qualified_name: association.qualified_name)
     end
     let(:non_matching) do
       {
@@ -457,23 +459,22 @@ RSpec.describe Cuprum::Collections::Commands::Associations::FindMany do
       end
     end
 
-    context 'when initialized with an association with existing collection' do
-      let(:association) do
-        Cuprum::Collections::Association.new(
-          name:           'recent_books',
-          qualified_name: 'books'
-        )
-      end
-      let(:repository) do
-        super().tap do |repository|
-          repository.create(qualified_name: 'books')
-        end
-      end
-      let(:params) do
-        { keys: entities.map { |entity| entity[inverse_key_name] } }
+    context 'when the collection does not exist' do
+      let(:params) { { key: entities.first[inverse_key_name] } }
+      let(:error_message) do
+        'repository does not define collection "books"'
       end
 
-      include_examples 'should find the plural association for many entities'
+      before(:example) do
+        repository.remove(qualified_name: association.qualified_name)
+      end
+
+      it 'should raise an exception' do
+        expect { command.call(**params) }.to raise_error(
+          Cuprum::Collections::Repository::UndefinedCollectionError,
+          error_message
+        )
+      end
     end
   end
 

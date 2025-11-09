@@ -85,6 +85,11 @@ RSpec.describe Cuprum::Collections::Basic::Repository do
       )
     end
 
+    before(:example) do
+      allow(SleepingKingStudios::Tools::Toolbelt.instance.core_tools)
+        .to receive(:deprecate)
+    end
+
     it { expect(collection.count).to be 0 }
 
     describe 'with data: an Object' do

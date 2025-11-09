@@ -8,6 +8,7 @@ Removed all deprecated functionality from version 0.5.0 and earlier.
 
 - Implemented `#find`, which finds the matching collection by name, qualified name, or entity class.
 - Implemented `#remove`, which removes the collection with the specified qualified name.
+- Deprecated `#find_or_create`. Use `#find` to find an existing collection. Use `#create` to add a new collection.
 
 ## 0.5.1
 

@@ -17,8 +17,12 @@ RSpec.describe Cuprum::Collections::Commands::Associations::RequireMany do
   let(:association) do
     Cuprum::Collections::Associations::BelongsTo.new(name: 'author')
   end
-  let(:repository) { Cuprum::Collections::Basic::Repository.new }
-  let(:resource)   { Cuprum::Collections::Resource.new(name: 'books') }
+  let(:repository) do
+    Cuprum::Collections::Basic::Repository.new.tap do |repository|
+      repository.create(qualified_name: association.qualified_name)
+    end
+  end
+  let(:resource) { Cuprum::Collections::Resource.new(name: 'books') }
 
   describe '.new' do
     it 'should define the constructor' do
@@ -111,7 +115,7 @@ RSpec.describe Cuprum::Collections::Commands::Associations::RequireMany do
     end
 
     let(:collection) do
-      repository.find_or_create(
+      repository.find(
         name:           tools.str.pluralize(association.name),
         qualified_name: association.qualified_name
       )

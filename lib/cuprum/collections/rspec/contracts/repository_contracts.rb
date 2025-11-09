@@ -454,6 +454,11 @@ module Cuprum::Collections::RSpec::Contracts
               'repository subclass and implement the #build_collection method.'
           end
 
+          before(:example) do
+            allow(SleepingKingStudios::Tools::Toolbelt.instance.core_tools)
+              .to receive(:deprecate)
+          end
+
           def create_collection(safe: true, **options)
             if safe
               begin

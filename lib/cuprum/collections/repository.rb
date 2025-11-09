@@ -135,7 +135,12 @@ module Cuprum::Collections
     #
     #   @raise [DuplicateCollectionError] if a collection with the same name
     #     but different parameters already exists in the repository.
-    def find_or_create(**parameters)
+    def find_or_create(**parameters) # rubocop:disable Metrics/MethodLength
+      tools.core_tools.deprecate(
+        "#{self.class.name}#find_or_create()",
+        message: 'Use #create or #find method.'
+      )
+
       qualified_name = qualified_name_for(**parameters)
 
       unless key?(qualified_name)
@@ -201,6 +206,10 @@ module Cuprum::Collections
       Cuprum::Collections::Relations::Parameters
         .resolve_parameters(parameters)
         .fetch(:qualified_name)
+    end
+
+    def tools
+      SleepingKingStudios::Tools::Toolbelt.instance
     end
 
     def valid_collection?(collection)

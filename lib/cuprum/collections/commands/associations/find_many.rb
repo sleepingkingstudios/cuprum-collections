@@ -74,9 +74,7 @@ module Cuprum::Collections::Commands::Associations
     private
 
     def collection
-      repository.find_or_create(
-        qualified_name: association.qualified_name
-      )
+      repository.find(qualified_name: association.qualified_name)
     end
 
     def extract_keys(association, hsh)

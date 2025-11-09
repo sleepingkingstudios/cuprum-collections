@@ -629,7 +629,12 @@ module Cuprum::Collections::RSpec::Deferred
             'repository subclass and implement the #build_collection method.'
         end
 
-        def create_collection(safe: true, **options)
+        before(:example) do
+          allow(SleepingKingStudios::Tools::Toolbelt.instance.core_tools)
+            .to receive(:deprecate)
+        end
+
+        define_method :create_collection do |safe: true, **options|
           if safe
             begin
               repository.find_or_create(**collection_options, **options)
@@ -661,6 +666,17 @@ module Cuprum::Collections::RSpec::Deferred
           end
 
           next
+        end
+
+        it 'should print a deprecation warning' do
+          repository.find_or_create(qualified_name:)
+
+          expect(SleepingKingStudios::Tools::Toolbelt.instance.core_tools)
+            .to have_received(:deprecate)
+            .with(
+              'Cuprum::Collections::Basic::Repository#find_or_create()',
+              message: 'Use #create or #find method.'
+            )
         end
 
         describe 'with entity_class: a Class' do
