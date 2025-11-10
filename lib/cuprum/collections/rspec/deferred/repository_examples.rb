@@ -582,10 +582,10 @@ module Cuprum::Collections::RSpec::Deferred
             let(:qualified_name) { collection.qualified_name }
             let(:error_message) do
               <<~TEXT.strip
-                collection "authors" exists but does not match:
+                collection "#{collection.qualified_name}" exists but does not match:
 
                   expected: #{{ entity_class: Spec::EntityClass }.inspect}
-                    actual: #{{ entity_class: Hash }.inspect}
+                    actual: #{{ entity_class: collection.entity_class }.inspect}
               TEXT
             end
 
@@ -674,7 +674,7 @@ module Cuprum::Collections::RSpec::Deferred
           expect(SleepingKingStudios::Tools::Toolbelt.instance.core_tools)
             .to have_received(:deprecate)
             .with(
-              'Cuprum::Collections::Basic::Repository#find_or_create()',
+              "#{described_class.name}#find_or_create()",
               message: 'Use #create or #find method.'
             )
         end
