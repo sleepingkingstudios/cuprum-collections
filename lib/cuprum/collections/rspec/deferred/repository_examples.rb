@@ -319,6 +319,19 @@ module Cuprum::Collections::RSpec::Deferred
             end
           end
         end
+
+        context 'when the repository is frozen' do
+          let(:error_message) do
+            "can't modify frozen #{described_class.name}"
+          end
+
+          before(:example) { repository.freeze }
+
+          it 'should raise an exception' do
+            expect { repository.add(valid_collection) }
+              .to raise_error FrozenError, error_message
+          end
+        end
       end
 
       describe '#create' do
@@ -337,7 +350,8 @@ module Cuprum::Collections::RSpec::Deferred
             'repository subclass and implement the #build_collection method.'
         end
 
-        def create_collection(force: false, safe: true, **options)
+        define_method(:create_collection) \
+        do |force: false, safe: true, **options|
           if safe
             begin
               repository.create(force:, **collection_options, **options)
@@ -454,6 +468,23 @@ module Cuprum::Collections::RSpec::Deferred
 
               expect(collection.options[:old]).to be false
             end
+          end
+        end
+
+        context 'when the repository is frozen' do
+          let(:collection_name) { 'books' }
+          let(:collection_options) do
+            super().merge(name: collection_name)
+          end
+          let(:error_message) do
+            "can't modify frozen #{described_class.name}"
+          end
+
+          before(:example) { repository.freeze }
+
+          it 'should raise an exception' do
+            expect { create_collection(safe: false) }
+              .to raise_error FrozenError, error_message
           end
         end
       end
@@ -768,6 +799,23 @@ module Cuprum::Collections::RSpec::Deferred
             end
           end
         end
+
+        context 'when the repository is frozen' do
+          let(:collection_name) { 'books' }
+          let(:collection_options) do
+            super().merge(name: collection_name)
+          end
+          let(:error_message) do
+            "can't modify frozen #{described_class.name}"
+          end
+
+          before(:example) { repository.freeze }
+
+          it 'should raise an exception' do
+            expect { create_collection(safe: false) }
+              .to raise_error FrozenError, error_message
+          end
+        end
       end
 
       describe '#key?' do
@@ -882,6 +930,19 @@ module Cuprum::Collections::RSpec::Deferred
                 .to change(repository, :keys)
                 .to(satisfy { |keys| !keys.include?(qualified_name.to_s) })
             end
+          end
+        end
+
+        context 'when the repository is frozen' do
+          let(:error_message) do
+            "can't modify frozen #{described_class.name}"
+          end
+
+          before(:example) { repository.freeze }
+
+          it 'should raise an exception' do
+            expect { repository.remove(qualified_name:) }
+              .to raise_error FrozenError, error_message
           end
         end
       end

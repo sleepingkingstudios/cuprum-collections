@@ -14,7 +14,7 @@ module Cuprum::Collections
   # and so on. The application may instead aggregate all of its collections into
   # a single repository, relying on the shared interface of all Collection
   # implementations.
-  class Repository
+  class Repository # rubocop:disable Metrics/ClassLength
     extend Forwardable
 
     # Error raised when trying to call an abstract repository method.
@@ -72,6 +72,8 @@ module Cuprum::Collections
     #   already exists in the repository.
     def add(collection, force: false)
       validate_collection!(collection)
+
+      raise FrozenError, frozen_error_message if frozen?
 
       if !force && key?(collection.qualified_name.to_s)
         raise DuplicateCollectionError,
@@ -173,6 +175,8 @@ module Cuprum::Collections
     #
     # @return [Cuprum::Collections::Collection] the removed collection.
     def remove(qualified_name:)
+      raise FrozenError, frozen_error_message if frozen?
+
       collection = find(qualified_name:)
 
       @collections.delete(collection.qualified_name)
@@ -186,6 +190,10 @@ module Cuprum::Collections
       raise AbstractRepositoryError,
         "#{self.class.name} is an abstract class. Define a repository " \
         'subclass and implement the #build_collection method.'
+    end
+
+    def frozen_error_message
+      "can't modify frozen #{self.class.name}"
     end
 
     def partial_match_error_message(collection:, parameters:)
