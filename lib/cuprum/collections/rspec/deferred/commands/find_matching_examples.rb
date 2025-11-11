@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/rspec/contracts/query_contracts'
 require 'cuprum/collections/rspec/deferred/command_examples'
 require 'cuprum/collections/rspec/deferred/commands'
+require 'cuprum/collections/rspec/deferred/query_examples'
 
 module Cuprum::Collections::RSpec::Deferred::Commands
   # Namespace for deferred example groups for validating FindMatching commands.
@@ -11,8 +11,8 @@ module Cuprum::Collections::RSpec::Deferred::Commands
 
     deferred_examples 'should implement the FindMatching command' do
       describe '#call' do
-        include Cuprum::Collections::RSpec::Contracts::QueryContracts
         include Cuprum::Collections::RSpec::Deferred::CommandExamples
+        include Cuprum::Collections::RSpec::Deferred::QueryExamples
 
         shared_examples 'should return the matching items' do
           it { expect(result).to be_a_passing_result }
@@ -127,7 +127,7 @@ module Cuprum::Collections::RSpec::Deferred::Commands
         context 'when the collection has many items' do
           let(:data) { fixtures_data }
 
-          include_contract 'should query the collection' do
+          include_deferred 'should query the collection' do
             include_examples 'should return the matching items'
 
             describe 'with envelope: true' do

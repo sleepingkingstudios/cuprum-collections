@@ -2,11 +2,14 @@
 
 require 'cuprum/collections/queries'
 require 'cuprum/collections/rspec/contracts'
+require 'cuprum/collections/rspec/deferred/query_examples'
 require 'cuprum/collections/rspec/fixtures'
 
 module Cuprum::Collections::RSpec::Contracts
   # Contracts for asserting on Query objects.
   module QueryContracts
+    include Cuprum::Collections::RSpec::Deferred::QueryExamples
+
     # Contract validating the behavior of a Query implementation.
     module ShouldBeAQuery
       extend RSpec::SleepingKingStudios::Contract
@@ -26,6 +29,11 @@ module Cuprum::Collections::RSpec::Contracts
       #     methods for operating on a collection. Defaults to false.
       contract do |abstract: false|
         include Cuprum::Collections::RSpec::Contracts::QueryContracts
+
+        SleepingKingStudios::Tools::CoreTools.deprecate(
+          'QueryContracts "should be a query"',
+          message: 'Use Deferred::QueryExamples instead.'
+        )
 
         shared_context 'when initialized with a scope' do
           let(:initial_scope) do
@@ -97,7 +105,8 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when the collection has many items' do
             let(:data) { BOOKS_FIXTURES }
 
-            include_contract 'should query the collection', :ignore_order do
+            include_deferred 'should query the collection', ignore_order: true \
+            do
               it { expect(scoped_query.count).to be == expected_data.count }
 
               wrap_context 'when the query has composed filters' do
@@ -167,7 +176,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when the collection has many items' do
             let(:data) { BOOKS_FIXTURES }
 
-            include_contract 'should query the collection' do
+            include_deferred 'should query the collection' do
               include_examples 'should enumerate the matching data'
 
               wrap_context 'when the query has composed filters' do
@@ -215,7 +224,8 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when the collection has many items' do
             let(:data) { BOOKS_FIXTURES }
 
-            include_contract 'should query the collection', :ignore_order do
+            include_deferred 'should query the collection', ignore_order: true \
+            do
               include_examples 'should check the existence of matching data'
 
               wrap_context 'when the query has composed filters' do
@@ -549,7 +559,7 @@ module Cuprum::Collections::RSpec::Contracts
           context 'when the collection has many items' do
             let(:data) { BOOKS_FIXTURES }
 
-            include_contract 'should query the collection' do
+            include_deferred 'should query the collection' do
               it { expect(queried_data).to be == expected_data }
 
               wrap_context 'when the query has composed filters' do
@@ -766,11 +776,18 @@ module Cuprum::Collections::RSpec::Contracts
     end
 
     # Contract validating the behavior when performing queries.
+    #
+    # @deprecate 0.6.0 Use Deferred::QueryExamples instead.
     module ShouldQueryTheCollectionContract
       extend RSpec::SleepingKingStudios::Contract
 
       contract do |*tags, &examples|
         ignore_order = tags.include?(:ignore_order)
+
+        SleepingKingStudios::Tools::CoreTools.deprecate(
+          'QueryContracts "should query the collection"',
+          message: 'Use Deferred::QueryExamples instead.'
+        )
 
         shared_examples 'should query the collection' do
           # :nocov:
