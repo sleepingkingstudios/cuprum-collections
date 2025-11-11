@@ -3,10 +3,10 @@
 require 'sleeping_king_studios/tools/string_tools'
 
 require 'cuprum/collections/basic/query'
-require 'cuprum/collections/rspec/contracts/query_contracts'
+require 'cuprum/collections/rspec/deferred/query_examples'
 
 RSpec.describe Cuprum::Collections::Basic::Query do
-  include Cuprum::Collections::RSpec::Contracts::QueryContracts
+  include Cuprum::Collections::RSpec::Deferred::QueryExamples
 
   subject(:query) do
     described_class.new(
@@ -36,7 +36,7 @@ RSpec.describe Cuprum::Collections::Basic::Query do
     it { expect(described_class).to respond_to(:new).with(1).argument }
   end
 
-  include_contract 'should be a query'
+  include_deferred 'should be a Query'
 
   describe '#scope' do
     it 'should define the default scope' do

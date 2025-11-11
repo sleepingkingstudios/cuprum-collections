@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 require 'cuprum/collections/query'
-require 'cuprum/collections/rspec/contracts/query_contracts'
+require 'cuprum/collections/rspec/deferred/query_examples'
 
 RSpec.describe Cuprum::Collections::Query do
-  include Cuprum::Collections::RSpec::Contracts::QueryContracts
+  include Cuprum::Collections::RSpec::Deferred::QueryExamples
 
   subject(:query) { described_class.new(scope: initial_scope) }
 
@@ -19,7 +19,7 @@ RSpec.describe Cuprum::Collections::Query do
     end
   end
 
-  include_contract 'should be a query', abstract: true
+  include_deferred 'should be a Query', abstract: true
 
   describe '#scope' do
     it 'should define the default scope' do
