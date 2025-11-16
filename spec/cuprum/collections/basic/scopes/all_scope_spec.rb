@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 require 'cuprum/collections/basic/scopes/all_scope'
-require 'cuprum/collections/rspec/contracts/scope_contracts'
+require 'cuprum/collections/rspec/deferred/scopes/all_scope_examples'
 
 RSpec.describe Cuprum::Collections::Basic::Scopes::AllScope do
-  include Cuprum::Collections::RSpec::Contracts::ScopeContracts
+  include Cuprum::Collections::RSpec::Deferred::Scopes::AllScopeExamples
 
   subject(:scope) { described_class.new }
 
@@ -33,7 +33,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::AllScope do
     end
   end
 
-  include_contract 'should be an all scope'
+  include_deferred 'should be an AllScope'
 
   describe '#match' do
     let(:item) { {} }

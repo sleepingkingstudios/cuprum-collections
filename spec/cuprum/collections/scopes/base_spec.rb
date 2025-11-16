@@ -1,12 +1,10 @@
 # frozen_string_literal: true
 
 require 'cuprum/collections/scopes/base'
-require 'cuprum/collections/rspec/contracts/scope_contracts'
-require 'cuprum/collections/rspec/contracts/scopes/composition_contracts'
+require 'cuprum/collections/rspec/deferred/scope_examples'
 
 RSpec.describe Cuprum::Collections::Scopes::Base do
-  include Cuprum::Collections::RSpec::Contracts::ScopeContracts
-  include Cuprum::Collections::RSpec::Contracts::Scopes::CompositionContracts
+  include Cuprum::Collections::RSpec::Deferred::ScopeExamples
 
   let(:scope) { described_class.new }
 
@@ -25,9 +23,9 @@ RSpec.describe Cuprum::Collections::Scopes::Base do
     end
   end
 
-  include_contract 'should be a scope'
+  include_deferred 'should be a Scope'
 
-  include_contract 'should compose scopes'
+  include_deferred 'should compose scopes'
 
   describe '#==' do
     it { expect(scope == nil).to be false } # rubocop:disable Style/NilComparison

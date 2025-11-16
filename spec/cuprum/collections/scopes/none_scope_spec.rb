@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/rspec/contracts/scope_contracts'
+require 'cuprum/collections/rspec/deferred/scopes/none_scope_examples'
 require 'cuprum/collections/scopes/none_scope'
 
 RSpec.describe Cuprum::Collections::Scopes::NoneScope do
-  include Cuprum::Collections::RSpec::Contracts::ScopeContracts
+  include Cuprum::Collections::RSpec::Deferred::Scopes::NoneScopeExamples
 
   describe '.instance' do
     let(:expected) { described_class.instance }
@@ -25,5 +25,5 @@ RSpec.describe Cuprum::Collections::Scopes::NoneScope do
     end
   end
 
-  include_contract 'should be a none scope', abstract: true
+  include_deferred 'should be a NoneScope', abstract: true
 end
