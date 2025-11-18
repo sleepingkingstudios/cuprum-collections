@@ -9,13 +9,13 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
   module ParserExamples
     include RSpec::SleepingKingStudios::Deferred::Provider
 
-    deferred_examples 'should parse criteria' do
+    deferred_examples 'should parse Scope criteria' do
       describe 'with a block' do
-        include_deferred 'should parse criteria from a block'
+        include_deferred 'should parse Scope criteria from a block'
       end
 
       describe 'with a hash' do
-        include_deferred 'should parse criteria from a Hash'
+        include_deferred 'should parse Scope criteria from a Hash'
       end
 
       describe 'with a hash and a block' do
@@ -49,7 +49,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
       end
     end
 
-    deferred_examples 'should parse criteria from a Hash' do
+    deferred_examples 'should parse Scope criteria from a Hash' do
       describe 'with nil' do
         let(:error_message) do
           'value must be a Hash with String or Symbol keys'
@@ -143,7 +143,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
       end
     end
 
-    deferred_examples 'should parse criteria from a block' do
+    deferred_examples 'should parse Scope criteria from a block' do
       describe 'without a block' do
         let(:error_message) { 'no block given' }
 

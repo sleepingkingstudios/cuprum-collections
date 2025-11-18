@@ -21,5 +21,7 @@ RSpec.describe Cuprum::Collections::Scopes::Container do
     Cuprum::Collections::Scope.new(...)
   end
 
-  include_deferred 'should be a container Scope'
+  include_deferred 'should implement the Scope methods'
+
+  include_deferred 'should define child scopes'
 end

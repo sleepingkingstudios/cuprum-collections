@@ -23,7 +23,7 @@ RSpec.describe Cuprum::Collections::Scopes::Base do
     end
   end
 
-  include_deferred 'should be a Scope'
+  include_deferred 'should implement the Scope methods'
 
   include_deferred 'should compose scopes'
 

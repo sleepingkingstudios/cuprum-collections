@@ -41,7 +41,7 @@ RSpec.describe Cuprum::Collections::Scopes::Building do
     end
   end
 
-  include_deferred 'should be a Scope builder', abstract: true
+  include_deferred 'should build collection Scopes', abstract: true
 
   describe '#build' do
     let(:error_class) do

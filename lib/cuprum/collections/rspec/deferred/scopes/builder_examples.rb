@@ -11,7 +11,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
     include RSpec::SleepingKingStudios::Deferred::Provider
     include Cuprum::Collections::RSpec::Deferred::Scopes::ParserExamples
 
-    deferred_examples 'should be a Scope builder' do |**deferred_options|
+    deferred_examples 'should build collection Scopes' do |**deferred_options|
       all_scope_class = deferred_options.fetch(:all_class) do
         deferred_options[:namespace]&.const_get(:AllScope)
       end
@@ -326,7 +326,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
           include_deferred 'should build a criteria scope'
 
-          include_deferred 'should parse criteria from a block'
+          include_deferred 'should parse Scope criteria from a block'
         end
 
         describe 'with a hash' do
@@ -344,7 +344,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
           include_deferred 'should build a criteria scope'
 
-          include_deferred 'should parse criteria from a Hash'
+          include_deferred 'should parse Scope criteria from a Hash'
         end
 
         describe 'with an all scope' do

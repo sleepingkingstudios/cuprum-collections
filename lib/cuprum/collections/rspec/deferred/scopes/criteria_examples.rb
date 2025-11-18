@@ -9,14 +9,15 @@ require 'cuprum/collections/rspec/deferred/scopes/parser_examples'
 require 'cuprum/collections/rspec/fixtures'
 
 module Cuprum::Collections::RSpec::Deferred::Scopes
-  # Deferred examples for asserting on Criteria scopes parsing.
-  module CriteriaScopeExamples
+  # Deferred examples for asserting on Criteria scopes.
+  module CriteriaExamples
     include RSpec::SleepingKingStudios::Deferred::Provider
     include Cuprum::Collections::RSpec::Deferred::ScopeExamples
     include Cuprum::Collections::RSpec::Deferred::Scopes::CompositionExamples
     include Cuprum::Collections::RSpec::Deferred::Scopes::ParserExamples
 
-    deferred_examples 'should be a CriteriaScope' do |**deferred_options|
+    deferred_examples 'should implement the CriteriaScope methods' \
+    do |**deferred_options|
       deferred_context 'when initialized with inverted: true' do
         let(:constructor_options) { super().merge(inverted: true) }
       end
@@ -53,7 +54,9 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
       let(:criteria) { [] }
 
-      include_deferred 'should be a Scope', invertible: true
+      include_deferred 'should implement the Scope methods', invertible: true
+
+      include_deferred 'should compose scopes as a CriteriaScope'
 
       describe '.new' do
         next if deferred_options.fetch(:skip_constructor, false)
@@ -85,7 +88,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
         it { expect(described_class.build(value)).to be_a described_class }
 
-        include_deferred 'should parse criteria'
+        include_deferred 'should parse Scope criteria'
       end
 
       describe '.parse' do
@@ -102,7 +105,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
             .and_a_block
         end
 
-        include_deferred 'should parse criteria'
+        include_deferred 'should parse Scope criteria'
       end
 
       describe '#==' do
@@ -469,264 +472,6 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
         end
       end
 
-      describe '#and' do
-        describe 'with a block' do
-          let(:block) { ->(_) { { 'title' => 'A Wizard of Earthsea' } } }
-          let(:expected) do
-            operators = Cuprum::Collections::Queries::Operators
-            criteria  = [
-              [
-                'title',
-                operators::EQUAL,
-                'A Wizard of Earthsea'
-              ]
-            ]
-
-            Cuprum::Collections::Scopes::CriteriaScope.new(
-              criteria: [*self.criteria, *criteria]
-            )
-          end
-
-          it { expect(subject.and(&block)).to be == expected }
-
-          wrap_deferred 'when the scope has multiple criteria' do
-            it { expect(subject.and(&block)).to be == expected }
-          end
-        end
-
-        describe 'with a hash' do
-          let(:value) { { 'title' => 'A Wizard of Earthsea' } }
-          let(:expected) do
-            operators = Cuprum::Collections::Queries::Operators
-            criteria  = [
-              [
-                'title',
-                operators::EQUAL,
-                'A Wizard of Earthsea'
-              ]
-            ]
-
-            Cuprum::Collections::Scopes::CriteriaScope.new(
-              criteria: [*self.criteria, *criteria]
-            )
-          end
-
-          it { expect(subject.and(value)).to be == expected }
-
-          wrap_deferred 'when the scope has multiple criteria' do
-            it { expect(subject.and(value)).to be == expected }
-          end
-        end
-
-        wrap_deferred 'with an all scope' do
-          it { expect(subject.and(original)).to be == original }
-
-          wrap_deferred 'when the scope has multiple criteria' do
-            it { expect(subject.and(original)).to be subject }
-          end
-        end
-
-        wrap_deferred 'with a none scope' do
-          it { expect(subject.and(original)).to be == original }
-
-          wrap_deferred 'when the scope has multiple criteria' do
-            it { expect(subject.and(original)).to be == original }
-          end
-        end
-
-        wrap_deferred 'with an empty conjunction scope' do
-          it { expect(subject.and(original)).to be subject }
-
-          wrap_deferred 'when the scope has multiple criteria' do
-            it { expect(subject.and(original)).to be subject }
-          end
-        end
-
-        wrap_deferred 'with an empty criteria scope' do
-          it { expect(subject.and(original)).to be subject }
-
-          wrap_deferred 'when the scope has multiple criteria' do
-            it { expect(subject.and(original)).to be subject }
-          end
-        end
-
-        context 'with an empty inverted criteria scope' do
-          include_deferred 'with an empty criteria scope'
-
-          let(:inverted) { original.invert }
-
-          it { expect(subject.and(inverted)).to be subject }
-
-          wrap_deferred 'when the scope has multiple criteria' do
-            it { expect(subject.and(original)).to be subject }
-          end
-        end
-
-        wrap_deferred 'with an empty disjunction scope' do
-          it { expect(subject.and(original)).to be subject }
-
-          wrap_deferred 'when the scope has multiple criteria' do
-            it { expect(subject.and(original)).to be subject }
-          end
-        end
-
-        wrap_deferred 'with a non-empty conjunction scope' do
-          it { expect(subject.and(original)).to be == original }
-
-          wrap_deferred 'when the scope has multiple criteria' do
-            let(:expected) do
-              Cuprum::Collections::Scopes::ConjunctionScope.new(
-                scopes: [subject, *original.scopes]
-              )
-            end
-
-            it { expect(subject.and(original)).to be == expected }
-          end
-        end
-
-        wrap_deferred 'with a non-empty criteria scope' do
-          let(:expected) do
-            Cuprum::Collections::Scopes::CriteriaScope.new(
-              criteria: [*subject.criteria, *original.criteria]
-            )
-          end
-
-          it { expect(subject.and(original)).to be == expected }
-
-          wrap_deferred 'when the scope has multiple criteria' do
-            it { expect(subject.and(original)).to be == expected }
-          end
-        end
-
-        context 'with a non-empty inverted criteria scope' do
-          include_deferred 'with a non-empty criteria scope'
-
-          let(:inverted) { original.invert }
-
-          it { expect(subject.and(inverted)).to be == inverted }
-
-          wrap_deferred 'when the scope has multiple criteria' do
-            let(:expected) do
-              Cuprum::Collections::Scopes::ConjunctionScope.new(
-                scopes: [subject, inverted]
-              )
-            end
-
-            it { expect(subject.and(inverted)).to be == expected }
-          end
-        end
-
-        wrap_deferred 'with a non-empty disjunction scope' do
-          it { expect(subject.and(original)).to be == original }
-
-          wrap_deferred 'when the scope has multiple criteria' do
-            let(:expected) do
-              Cuprum::Collections::Scopes::ConjunctionScope.new(
-                scopes: [subject, original]
-              )
-            end
-
-            it { expect(subject.and(original)).to be == expected }
-          end
-        end
-
-        wrap_deferred 'when initialized with inverted: true' do
-          describe 'with a block' do
-            let(:block) { -> { { 'title' => 'A Wizard of Earthsea' } } }
-            let(:expected) do
-              Cuprum::Collections::Scope.new(&block)
-            end
-
-            it { expect(subject.and(&block)).to be == expected }
-
-            wrap_deferred 'when the scope has multiple criteria' do
-              let(:expected) do
-                wrapped = Cuprum::Collections::Scope.new(&block)
-
-                Cuprum::Collections::Scopes::ConjunctionScope.new(
-                  scopes: [subject, wrapped]
-                )
-              end
-
-              it { expect(subject.and(&block)).to be == expected }
-            end
-          end
-
-          describe 'with a hash' do
-            let(:value) { { 'title' => 'A Wizard of Earthsea' } }
-            let(:expected) do
-              Cuprum::Collections::Scope.new(value)
-            end
-
-            it { expect(subject.and(value)).to be == expected }
-
-            wrap_deferred 'when the scope has multiple criteria' do
-              let(:expected) do
-                wrapped = Cuprum::Collections::Scope.new(value)
-
-                Cuprum::Collections::Scopes::ConjunctionScope.new(
-                  scopes: [subject, wrapped]
-                )
-              end
-
-              it { expect(subject.and(value)).to be == expected }
-            end
-          end
-
-          wrap_deferred 'with an empty criteria scope' do
-            it { expect(subject.and(original)).to be subject }
-
-            wrap_deferred 'when the scope has multiple criteria' do
-              it { expect(subject.and(original)).to be subject }
-            end
-          end
-
-          context 'with an empty inverted criteria scope' do
-            include_deferred 'with an empty criteria scope'
-
-            let(:inverted) { original.invert }
-
-            it { expect(subject.and(inverted)).to be subject }
-
-            wrap_deferred 'when the scope has multiple criteria' do
-              it { expect(subject.and(inverted)).to be subject }
-            end
-          end
-
-          wrap_deferred 'with a non-empty criteria scope' do
-            it { expect(subject.and(original)).to be == original }
-
-            wrap_deferred 'when the scope has multiple criteria' do
-              let(:expected) do
-                Cuprum::Collections::Scopes::ConjunctionScope.new(
-                  scopes: [subject, original]
-                )
-              end
-
-              it { expect(subject.and(original)).to be == expected }
-            end
-          end
-
-          context 'with a non-empty inverted criteria scope' do
-            include_deferred 'with a non-empty criteria scope'
-
-            let(:inverted) { original.invert }
-
-            it { expect(subject.and(inverted)).to be == inverted }
-
-            wrap_deferred 'when the scope has multiple criteria' do
-              let(:expected) do
-                Cuprum::Collections::Scopes::ConjunctionScope.new(
-                  scopes: [subject, inverted]
-                )
-              end
-
-              it { expect(subject.and(inverted)).to be == expected }
-            end
-          end
-        end
-      end
-
       describe '#as_json' do
         let(:expected) do
           {
@@ -1049,7 +794,317 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
         end
       end
 
+      describe '#type' do
+        include_examples 'should define reader', :type, :criteria
+      end
+
+      describe '#with_criteria' do
+        let(:new_criteria) { ['author', 'eq', 'Ursula K. LeGuin'] }
+
+        it { expect(subject).to respond_to(:with_criteria).with(1).argument }
+
+        it 'should return a scope' do
+          expect(subject.with_criteria(new_criteria)).to be_a described_class
+        end
+
+        it "should not change the original scope's criteria" do
+          expect { subject.with_criteria(new_criteria) }
+            .not_to change(subject, :criteria)
+        end
+
+        it "should set the copied scope's criteria" do
+          expect(subject.with_criteria(new_criteria).criteria)
+            .to be == new_criteria
+        end
+
+        it 'should return an uninverted scope' do
+          expect(subject.with_criteria(new_criteria).inverted?).to be false
+        end
+
+        wrap_deferred 'with criteria' do
+          it "should not change the original scope's criteria" do
+            expect { subject.with_criteria(new_criteria) }
+              .not_to change(subject, :criteria)
+          end
+
+          it "should set the copied scope's criteria" do
+            expect(subject.with_criteria(new_criteria).criteria)
+              .to be == new_criteria
+          end
+        end
+
+        wrap_deferred 'when initialized with inverted: true' do
+          it 'should return an inverted scope' do
+            expect(subject.with_criteria(new_criteria).inverted?).to be true
+          end
+        end
+      end
+    end
+
+    deferred_examples 'should compose scopes as a CriteriaScope' do
+      describe '#and' do
+        include_deferred 'with contexts for composable scopes'
+
+        describe 'with a block' do
+          let(:block) { ->(_) { { 'title' => 'A Wizard of Earthsea' } } }
+          let(:expected) do
+            operators = Cuprum::Collections::Queries::Operators
+            criteria  = [
+              [
+                'title',
+                operators::EQUAL,
+                'A Wizard of Earthsea'
+              ]
+            ]
+
+            Cuprum::Collections::Scopes::CriteriaScope.new(
+              criteria: [*self.criteria, *criteria]
+            )
+          end
+
+          it { expect(subject.and(&block)).to be == expected }
+
+          wrap_deferred 'when the scope has multiple criteria' do
+            it { expect(subject.and(&block)).to be == expected }
+          end
+        end
+
+        describe 'with a hash' do
+          let(:value) { { 'title' => 'A Wizard of Earthsea' } }
+          let(:expected) do
+            operators = Cuprum::Collections::Queries::Operators
+            criteria  = [
+              [
+                'title',
+                operators::EQUAL,
+                'A Wizard of Earthsea'
+              ]
+            ]
+
+            Cuprum::Collections::Scopes::CriteriaScope.new(
+              criteria: [*self.criteria, *criteria]
+            )
+          end
+
+          it { expect(subject.and(value)).to be == expected }
+
+          wrap_deferred 'when the scope has multiple criteria' do
+            it { expect(subject.and(value)).to be == expected }
+          end
+        end
+
+        wrap_deferred 'with an all scope' do
+          it { expect(subject.and(original)).to be == original }
+
+          wrap_deferred 'when the scope has multiple criteria' do
+            it { expect(subject.and(original)).to be subject }
+          end
+        end
+
+        wrap_deferred 'with a none scope' do
+          it { expect(subject.and(original)).to be == original }
+
+          wrap_deferred 'when the scope has multiple criteria' do
+            it { expect(subject.and(original)).to be == original }
+          end
+        end
+
+        wrap_deferred 'with an empty conjunction scope' do
+          it { expect(subject.and(original)).to be subject }
+
+          wrap_deferred 'when the scope has multiple criteria' do
+            it { expect(subject.and(original)).to be subject }
+          end
+        end
+
+        wrap_deferred 'with an empty criteria scope' do
+          it { expect(subject.and(original)).to be subject }
+
+          wrap_deferred 'when the scope has multiple criteria' do
+            it { expect(subject.and(original)).to be subject }
+          end
+        end
+
+        context 'with an empty inverted criteria scope' do
+          include_deferred 'with an empty criteria scope'
+
+          let(:inverted) { original.invert }
+
+          it { expect(subject.and(inverted)).to be subject }
+
+          wrap_deferred 'when the scope has multiple criteria' do
+            it { expect(subject.and(original)).to be subject }
+          end
+        end
+
+        wrap_deferred 'with an empty disjunction scope' do
+          it { expect(subject.and(original)).to be subject }
+
+          wrap_deferred 'when the scope has multiple criteria' do
+            it { expect(subject.and(original)).to be subject }
+          end
+        end
+
+        wrap_deferred 'with a non-empty conjunction scope' do
+          it { expect(subject.and(original)).to be == original }
+
+          wrap_deferred 'when the scope has multiple criteria' do
+            let(:expected) do
+              Cuprum::Collections::Scopes::ConjunctionScope.new(
+                scopes: [subject, *original.scopes]
+              )
+            end
+
+            it { expect(subject.and(original)).to be == expected }
+          end
+        end
+
+        wrap_deferred 'with a non-empty criteria scope' do
+          let(:expected) do
+            Cuprum::Collections::Scopes::CriteriaScope.new(
+              criteria: [*subject.criteria, *original.criteria]
+            )
+          end
+
+          it { expect(subject.and(original)).to be == expected }
+
+          wrap_deferred 'when the scope has multiple criteria' do
+            it { expect(subject.and(original)).to be == expected }
+          end
+        end
+
+        context 'with a non-empty inverted criteria scope' do
+          include_deferred 'with a non-empty criteria scope'
+
+          let(:inverted) { original.invert }
+
+          it { expect(subject.and(inverted)).to be == inverted }
+
+          wrap_deferred 'when the scope has multiple criteria' do
+            let(:expected) do
+              Cuprum::Collections::Scopes::ConjunctionScope.new(
+                scopes: [subject, inverted]
+              )
+            end
+
+            it { expect(subject.and(inverted)).to be == expected }
+          end
+        end
+
+        wrap_deferred 'with a non-empty disjunction scope' do
+          it { expect(subject.and(original)).to be == original }
+
+          wrap_deferred 'when the scope has multiple criteria' do
+            let(:expected) do
+              Cuprum::Collections::Scopes::ConjunctionScope.new(
+                scopes: [subject, original]
+              )
+            end
+
+            it { expect(subject.and(original)).to be == expected }
+          end
+        end
+
+        wrap_deferred 'when initialized with inverted: true' do
+          describe 'with a block' do
+            let(:block) { -> { { 'title' => 'A Wizard of Earthsea' } } }
+            let(:expected) do
+              Cuprum::Collections::Scope.new(&block)
+            end
+
+            it { expect(subject.and(&block)).to be == expected }
+
+            wrap_deferred 'when the scope has multiple criteria' do
+              let(:expected) do
+                wrapped = Cuprum::Collections::Scope.new(&block)
+
+                Cuprum::Collections::Scopes::ConjunctionScope.new(
+                  scopes: [subject, wrapped]
+                )
+              end
+
+              it { expect(subject.and(&block)).to be == expected }
+            end
+          end
+
+          describe 'with a hash' do
+            let(:value) { { 'title' => 'A Wizard of Earthsea' } }
+            let(:expected) do
+              Cuprum::Collections::Scope.new(value)
+            end
+
+            it { expect(subject.and(value)).to be == expected }
+
+            wrap_deferred 'when the scope has multiple criteria' do
+              let(:expected) do
+                wrapped = Cuprum::Collections::Scope.new(value)
+
+                Cuprum::Collections::Scopes::ConjunctionScope.new(
+                  scopes: [subject, wrapped]
+                )
+              end
+
+              it { expect(subject.and(value)).to be == expected }
+            end
+          end
+
+          wrap_deferred 'with an empty criteria scope' do
+            it { expect(subject.and(original)).to be subject }
+
+            wrap_deferred 'when the scope has multiple criteria' do
+              it { expect(subject.and(original)).to be subject }
+            end
+          end
+
+          context 'with an empty inverted criteria scope' do
+            include_deferred 'with an empty criteria scope'
+
+            let(:inverted) { original.invert }
+
+            it { expect(subject.and(inverted)).to be subject }
+
+            wrap_deferred 'when the scope has multiple criteria' do
+              it { expect(subject.and(inverted)).to be subject }
+            end
+          end
+
+          wrap_deferred 'with a non-empty criteria scope' do
+            it { expect(subject.and(original)).to be == original }
+
+            wrap_deferred 'when the scope has multiple criteria' do
+              let(:expected) do
+                Cuprum::Collections::Scopes::ConjunctionScope.new(
+                  scopes: [subject, original]
+                )
+              end
+
+              it { expect(subject.and(original)).to be == expected }
+            end
+          end
+
+          context 'with a non-empty inverted criteria scope' do
+            include_deferred 'with a non-empty criteria scope'
+
+            let(:inverted) { original.invert }
+
+            it { expect(subject.and(inverted)).to be == inverted }
+
+            wrap_deferred 'when the scope has multiple criteria' do
+              let(:expected) do
+                Cuprum::Collections::Scopes::ConjunctionScope.new(
+                  scopes: [subject, inverted]
+                )
+              end
+
+              it { expect(subject.and(inverted)).to be == expected }
+            end
+          end
+        end
+      end
+
       describe '#not' do
+        include_deferred 'with contexts for composable scopes'
+
         describe 'with a block' do
           let(:block) { -> { { 'title' => 'A Wizard of Earthsea' } } }
           let(:expected) do
@@ -1362,6 +1417,8 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
       end
 
       describe '#or' do
+        include_deferred 'with contexts for composable scopes'
+
         describe 'with a block' do
           let(:block) { -> { { 'title' => 'A Wizard of Earthsea' } } }
           let(:expected) do
@@ -1479,52 +1536,6 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
             end
 
             it { expect(subject.or(original)).to be == expected }
-          end
-        end
-      end
-
-      describe '#type' do
-        include_examples 'should define reader', :type, :criteria
-      end
-
-      describe '#with_criteria' do
-        let(:new_criteria) { ['author', 'eq', 'Ursula K. LeGuin'] }
-
-        it { expect(subject).to respond_to(:with_criteria).with(1).argument }
-
-        it 'should return a scope' do
-          expect(subject.with_criteria(new_criteria)).to be_a described_class
-        end
-
-        it "should not change the original scope's criteria" do
-          expect { subject.with_criteria(new_criteria) }
-            .not_to change(subject, :criteria)
-        end
-
-        it "should set the copied scope's criteria" do
-          expect(subject.with_criteria(new_criteria).criteria)
-            .to be == new_criteria
-        end
-
-        it 'should return an uninverted scope' do
-          expect(subject.with_criteria(new_criteria).inverted?).to be false
-        end
-
-        wrap_deferred 'with criteria' do
-          it "should not change the original scope's criteria" do
-            expect { subject.with_criteria(new_criteria) }
-              .not_to change(subject, :criteria)
-          end
-
-          it "should set the copied scope's criteria" do
-            expect(subject.with_criteria(new_criteria).criteria)
-              .to be == new_criteria
-          end
-        end
-
-        wrap_deferred 'when initialized with inverted: true' do
-          it 'should return an inverted scope' do
-            expect(subject.with_criteria(new_criteria).inverted?).to be true
           end
         end
       end

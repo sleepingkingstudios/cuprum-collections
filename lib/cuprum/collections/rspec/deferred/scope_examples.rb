@@ -9,7 +9,8 @@ module Cuprum::Collections::RSpec::Deferred
   module ScopeExamples
     include RSpec::SleepingKingStudios::Deferred::Provider
 
-    deferred_examples 'should be a Scope' do |**deferred_options|
+    deferred_examples 'should implement the Scope methods' \
+    do |**deferred_options|
       describe '#==' do
         it { expect(subject == nil).to be false } # rubocop:disable Style/NilComparison
 
@@ -62,7 +63,7 @@ module Cuprum::Collections::RSpec::Deferred
       end
     end
 
-    deferred_examples 'should be a container Scope' do |**deferred_options|
+    deferred_examples 'should define child scopes' do
       deferred_context 'with scopes' do
         let(:scopes) do
           [
@@ -82,8 +83,6 @@ module Cuprum::Collections::RSpec::Deferred
             .and_any_keywords
         end
       end
-
-      include_deferred('should be a Scope', **deferred_options)
 
       describe '#==' do
         describe 'with a scope with the same class' do

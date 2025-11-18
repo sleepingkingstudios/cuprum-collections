@@ -13,6 +13,6 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::Builder do
     Cuprum::Collections::Scopes::CriteriaScope.build({ 'ok' => true })
   end
 
-  include_deferred 'should be a Scope builder',
+  include_deferred 'should build collection Scopes',
     namespace: Cuprum::Collections::Basic::Scopes
 end
