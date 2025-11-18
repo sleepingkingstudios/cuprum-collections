@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 require 'cuprum/collections/basic/scopes/criteria_scope'
-require 'cuprum/collections/rspec/contracts/scopes/criteria_contracts'
+require 'cuprum/collections/rspec/deferred/scopes/criteria_scope_examples'
 
 RSpec.describe Cuprum::Collections::Basic::Scopes::CriteriaScope do
-  include Cuprum::Collections::RSpec::Contracts::Scopes::CriteriaContracts
+  include Cuprum::Collections::RSpec::Deferred::Scopes::CriteriaScopeExamples
 
   subject(:scope) do
     described_class.new(criteria:, **constructor_options)
@@ -18,7 +18,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::CriteriaScope do
     subject.call(data:)
   end
 
-  include_contract 'should be a criteria scope'
+  include_deferred 'should be a CriteriaScope'
 
   describe '#call' do
     it 'should define the method' do

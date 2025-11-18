@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 require 'cuprum/collections/scope'
-require 'cuprum/collections/rspec/contracts/scopes/criteria_contracts'
+require 'cuprum/collections/rspec/deferred/scopes/criteria_scope_examples'
 require 'cuprum/collections/rspec/deferred/scopes/parser_examples'
 
 RSpec.describe Cuprum::Collections::Scope do
-  include Cuprum::Collections::RSpec::Contracts::Scopes::CriteriaContracts
+  include Cuprum::Collections::RSpec::Deferred::Scopes::CriteriaScopeExamples
   include Cuprum::Collections::RSpec::Deferred::Scopes::ParserExamples
 
   subject(:scope) do
@@ -43,11 +43,11 @@ RSpec.describe Cuprum::Collections::Scope do
     include_deferred 'should parse criteria'
   end
 
-  include_contract 'should be a criteria scope',
+  include_deferred 'should be a CriteriaScope',
     abstract:            true,
-    equality:            false,
-    constructor:         false,
-    ignore_uninvertible: true
+    ignore_uninvertible: true,
+    skip_constructor:    true,
+    skip_equality:       true
 
   describe '#==' do
     describe 'with a scope with the same class' do
