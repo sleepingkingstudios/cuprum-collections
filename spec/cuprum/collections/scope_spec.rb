@@ -2,9 +2,11 @@
 
 require 'cuprum/collections/scope'
 require 'cuprum/collections/rspec/contracts/scopes/criteria_contracts'
+require 'cuprum/collections/rspec/deferred/scopes/parser_examples'
 
 RSpec.describe Cuprum::Collections::Scope do
   include Cuprum::Collections::RSpec::Contracts::Scopes::CriteriaContracts
+  include Cuprum::Collections::RSpec::Deferred::Scopes::ParserExamples
 
   subject(:scope) do
     described_class.new(
@@ -38,7 +40,7 @@ RSpec.describe Cuprum::Collections::Scope do
         .and_a_block
     end
 
-    include_contract 'should parse criteria'
+    include_deferred 'should parse criteria'
   end
 
   include_contract 'should be a criteria scope',

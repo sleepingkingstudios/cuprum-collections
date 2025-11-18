@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/rspec/contracts/scopes/criteria_contracts'
+require 'cuprum/collections/rspec/deferred/scopes/parser_examples'
 require 'cuprum/collections/scopes/criteria/parser'
 
 RSpec.describe Cuprum::Collections::Scopes::Criteria::Parser do
-  include Cuprum::Collections::RSpec::Contracts::Scopes::CriteriaContracts
+  include Cuprum::Collections::RSpec::Deferred::Scopes::ParserExamples
 
   subject(:parser) { described_class.instance }
 
@@ -27,7 +27,7 @@ RSpec.describe Cuprum::Collections::Scopes::Criteria::Parser do
       expect(parser).to respond_to(:parse).with(0..1).arguments.and_a_block
     end
 
-    include_contract 'should parse criteria'
+    include_deferred 'should parse criteria'
   end
 
   describe '#parse_block' do
@@ -39,7 +39,7 @@ RSpec.describe Cuprum::Collections::Scopes::Criteria::Parser do
       expect(parser).to respond_to(:parse_block).with(0).arguments.and_a_block
     end
 
-    include_contract 'should parse criteria from a block'
+    include_deferred 'should parse criteria from a block'
   end
 
   describe '#parse_hash' do
@@ -49,6 +49,6 @@ RSpec.describe Cuprum::Collections::Scopes::Criteria::Parser do
 
     it { expect(parser).to respond_to(:parse_hash).with(1).argument }
 
-    include_contract 'should parse criteria from a hash'
+    include_deferred 'should parse criteria from a Hash'
   end
 end
