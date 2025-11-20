@@ -5,7 +5,6 @@ require 'cuprum/collections/scopes/all'
 require 'cuprum/collections/scopes/base'
 
 RSpec.describe Cuprum::Collections::Scopes::All do
-  include Cuprum::Collections::RSpec::Contracts::ScopeContracts
   include Cuprum::Collections::RSpec::Deferred::Scopes::AllExamples
 
   let(:described_class) { Spec::ExampleScope }
