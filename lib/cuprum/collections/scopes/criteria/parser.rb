@@ -66,15 +66,23 @@ module Cuprum::Collections::Scopes::Criteria
       def not_one_of(*values)
         OperatorExpression.new(
           Cuprum::Collections::Queries::Operators::NOT_ONE_OF,
-          values.flatten
+          flatten_values(values)
         )
       end
 
       def one_of(*values)
         OperatorExpression.new(
           Cuprum::Collections::Queries::Operators::ONE_OF,
-          values.flatten
+          flatten_values(values)
         )
+      end
+
+      private
+
+      def flatten_values(values)
+        values
+          .map { |item| item.is_a?(Set) ? item.to_a : item }
+          .flatten
       end
     end
 
