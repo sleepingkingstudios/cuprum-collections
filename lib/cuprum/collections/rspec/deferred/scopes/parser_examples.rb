@@ -473,6 +473,32 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
         end
       end
 
+      describe 'with a Hash with a "not_one_of" operator and a Set' do
+        let(:operators) { Cuprum::Collections::Queries::Operators }
+        let(:block) do
+          lambda do |scope|
+            {
+              'series' => scope.not_one_of(
+                Set.new(['Earthsea', 'The Lord of the Rings'])
+              )
+            }
+          end
+        end
+        let(:expected) do
+          [
+            [
+              'series',
+              operators::NOT_ONE_OF,
+              ['Earthsea', 'The Lord of the Rings']
+            ]
+          ]
+        end
+
+        it 'should parse the criteria' do
+          expect(parse_criteria(&block)).to be == expected
+        end
+      end
+
       describe 'with a Hash with a "not_one_of" operator and values' do
         let(:operators) { Cuprum::Collections::Queries::Operators }
         let(:block) do
@@ -507,6 +533,32 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
             {
               'series' => scope.one_of(
                 ['Earthsea', 'The Lord of the Rings']
+              )
+            }
+          end
+        end
+        let(:expected) do
+          [
+            [
+              'series',
+              operators::ONE_OF,
+              ['Earthsea', 'The Lord of the Rings']
+            ]
+          ]
+        end
+
+        it 'should parse the criteria' do
+          expect(parse_criteria(&block)).to be == expected
+        end
+      end
+
+      describe 'with a Hash with a "one_of" operator and a Set' do
+        let(:operators) { Cuprum::Collections::Queries::Operators }
+        let(:block) do
+          lambda do |scope|
+            {
+              'series' => scope.one_of(
+                Set.new(['Earthsea', 'The Lord of the Rings'])
               )
             }
           end
