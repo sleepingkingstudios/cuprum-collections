@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/rspec/contracts/scopes/composition_contracts'
+require 'cuprum/collections/rspec/deferred/scope_examples'
 require 'cuprum/collections/scopes/base'
 require 'cuprum/collections/scopes/composition'
 
 RSpec.describe Cuprum::Collections::Scopes::Composition do
-  include Cuprum::Collections::RSpec::Contracts::Scopes::CompositionContracts
+  include Cuprum::Collections::RSpec::Deferred::ScopeExamples
 
   subject(:scope) { described_class.new }
 
@@ -13,5 +13,5 @@ RSpec.describe Cuprum::Collections::Scopes::Composition do
 
   example_class 'Spec::ExampleScope', Cuprum::Collections::Scopes::Base
 
-  include_contract 'should compose scopes'
+  include_deferred 'should compose scopes'
 end

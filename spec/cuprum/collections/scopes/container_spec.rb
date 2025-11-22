@@ -2,10 +2,10 @@
 
 require 'cuprum/collections/scopes/base'
 require 'cuprum/collections/scopes/container'
-require 'cuprum/collections/rspec/contracts/scope_contracts'
+require 'cuprum/collections/rspec/deferred/scope_examples'
 
 RSpec.describe Cuprum::Collections::Scopes::Container do
-  include Cuprum::Collections::RSpec::Contracts::ScopeContracts
+  include Cuprum::Collections::RSpec::Deferred::ScopeExamples
 
   subject(:scope) { described_class.new(scopes:) }
 
@@ -21,5 +21,7 @@ RSpec.describe Cuprum::Collections::Scopes::Container do
     Cuprum::Collections::Scope.new(...)
   end
 
-  include_contract 'should be a container scope'
+  include_deferred 'should implement the Scope methods'
+
+  include_deferred 'should define child scopes'
 end

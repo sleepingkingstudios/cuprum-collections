@@ -1,26 +1,16 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/rspec/contracts/scopes/builder_contracts'
-require 'cuprum/collections/scopes/all_scope'
-require 'cuprum/collections/scopes/builder'
-require 'cuprum/collections/scopes/conjunction_scope'
-require 'cuprum/collections/scopes/criteria_scope'
-require 'cuprum/collections/scopes/disjunction_scope'
-require 'cuprum/collections/scopes/none_scope'
+require 'cuprum/collections/rspec/deferred/scopes/builder_examples'
 
 RSpec.describe Cuprum::Collections::Scopes::Builder do
-  include Cuprum::Collections::RSpec::Contracts::Scopes::BuilderContracts
+  include Cuprum::Collections::RSpec::Deferred::Scopes::BuilderExamples
 
   subject(:builder) { described_class.instance }
 
-  def build_scope
+  define_method :build_scope do
     Cuprum::Collections::Scopes::CriteriaScope.build({ 'ok' => true })
   end
 
-  include_contract 'should be a scope builder',
-    all_class:         Cuprum::Collections::Scopes::AllScope,
-    conjunction_class: Cuprum::Collections::Scopes::ConjunctionScope,
-    criteria_class:    Cuprum::Collections::Scopes::CriteriaScope,
-    disjunction_class: Cuprum::Collections::Scopes::DisjunctionScope,
-    none_class:        Cuprum::Collections::Scopes::NoneScope
+  include_deferred 'should build collection Scopes',
+    namespace: Cuprum::Collections::Scopes
 end

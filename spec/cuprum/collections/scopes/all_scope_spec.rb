@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/rspec/contracts/scope_contracts'
+require 'cuprum/collections/rspec/deferred/scopes/all_examples'
 require 'cuprum/collections/scopes/all_scope'
 
 RSpec.describe Cuprum::Collections::Scopes::AllScope do
-  include Cuprum::Collections::RSpec::Contracts::ScopeContracts
+  include Cuprum::Collections::RSpec::Deferred::Scopes::AllExamples
 
   describe '.instance' do
     let(:expected) { described_class.instance }
@@ -25,5 +25,5 @@ RSpec.describe Cuprum::Collections::Scopes::AllScope do
     end
   end
 
-  include_contract 'should be an all scope', abstract: true
+  include_deferred 'should implement the AllScope methods', abstract: true
 end

@@ -10,6 +10,17 @@ Removed all deprecated functionality from version 0.5.0 and earlier.
 - Implemented `#remove`, which removes the collection with the specified qualified name.
 - Deprecated `#find_or_create`. Use `#find` to find an existing collection. Use `#create` to add a new collection.
 
+### RSpec
+
+Migrated shared contract objects to deferred example groups:
+
+- `Cuprum::Collections::RSpec::Deferred::QueryExamples`
+- `Cuprum::Collections::RSpec::Deferred::RepositoryExamples`
+- `Cuprum::Collections::RSpec::Deferred::ScopeExamples`
+- `Cuprum::Collections::RSpec::Deferred::Scopes::*`
+
+The corresponding contracts are now deprecated.
+
 ## 0.5.1
 
 Added missing `config/locales` directory to the gemspec.

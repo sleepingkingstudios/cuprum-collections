@@ -23,15 +23,6 @@ Stannum::RSpec::ValidateParameterMatcher.add_parameter_mapping(
   end
 )
 
-# Isolated namespace for defining spec-only or transient objects.
-module Spec
-  module WithContract
-    include RSpec::SleepingKingStudios::Concerns::IncludeContract
-
-    alias with_contract include_contract
-  end
-end
-
 require 'support/error_messages'
 
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
@@ -41,12 +32,10 @@ RSpec.configure do |config|
 
   config.extend  RSpec::SleepingKingStudios::Concerns::ExampleConstants
   config.extend  RSpec::SleepingKingStudios::Concerns::FocusExamples
-  config.extend  RSpec::SleepingKingStudios::Concerns::IncludeContract
   config.extend  RSpec::SleepingKingStudios::Concerns::WrapExamples
   config.include RSpec::SleepingKingStudios::Deferred::Consumer
   config.include RSpec::SleepingKingStudios::Deferred::Provider
   config.include RSpec::SleepingKingStudios::Examples::PropertyExamples
-  config.extend  Spec::WithContract
 
   config.disable_monkey_patching!
 

@@ -2,33 +2,31 @@
 
 require 'cuprum/collections/basic/scopes/conjunction_scope'
 require 'cuprum/collections/basic/scopes/criteria_scope'
-require 'cuprum/collections/rspec/contracts/scope_contracts'
-require 'cuprum/collections/rspec/contracts/scopes/logical_contracts'
+require 'cuprum/collections/rspec/deferred/scopes/conjunction_examples'
 
 RSpec.describe Cuprum::Collections::Basic::Scopes::ConjunctionScope do
-  include Cuprum::Collections::RSpec::Contracts::ScopeContracts
-  include Cuprum::Collections::RSpec::Contracts::Scopes::LogicalContracts
+  include Cuprum::Collections::RSpec::Deferred::Scopes::ConjunctionExamples
 
   subject(:scope) { described_class.new(scopes:) }
 
   let(:scopes) { [] }
   let(:data) { [] }
 
-  def build_scope(filters = nil, &block)
+  define_method :build_scope do |filters = nil, &block|
     scope_class = Cuprum::Collections::Basic::Scopes::CriteriaScope
 
-    if block_given?
+    if block
       scope_class.build(&block)
     else
       scope_class.build(filters)
     end
   end
 
-  def filtered_data
+  define_method :filtered_data do
     scope.call(data:)
   end
 
-  include_contract 'should be a conjunction scope'
+  include_deferred 'should implement the ConjunctionScope methods'
 
   describe '#call' do
     it 'should define the method' do

@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/rspec/contracts/scopes/logical_contracts'
+require 'cuprum/collections/rspec/deferred/scopes/disjunction_examples'
 require 'cuprum/collections/scopes/base'
 require 'cuprum/collections/scopes/criteria_scope'
 require 'cuprum/collections/scopes/disjunction'
 
 RSpec.describe Cuprum::Collections::Scopes::Disjunction do
-  include Cuprum::Collections::RSpec::Contracts::Scopes::LogicalContracts
+  include Cuprum::Collections::RSpec::Deferred::Scopes::DisjunctionExamples
 
   subject(:scope) { described_class.new(scopes:) }
 
@@ -28,5 +28,6 @@ RSpec.describe Cuprum::Collections::Scopes::Disjunction do
     end
   end
 
-  include_contract 'should be a disjunction scope', abstract: true
+  include_deferred 'should implement the DisjunctionScope methods',
+    abstract: true
 end

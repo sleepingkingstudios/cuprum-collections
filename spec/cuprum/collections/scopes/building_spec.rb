@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 require 'cuprum/collections/queries'
-require 'cuprum/collections/rspec/contracts/scopes/builder_contracts'
+require 'cuprum/collections/rspec/deferred/scopes/builder_examples'
 require 'cuprum/collections/scopes/building'
 require 'cuprum/collections/scopes/conjunction_scope'
 require 'cuprum/collections/scopes/criteria_scope'
 
 RSpec.describe Cuprum::Collections::Scopes::Building do
-  include Cuprum::Collections::RSpec::Contracts::Scopes::BuilderContracts
+  include Cuprum::Collections::RSpec::Deferred::Scopes::BuilderExamples
 
   subject(:builder) { described_class.instance }
 
@@ -17,7 +17,7 @@ RSpec.describe Cuprum::Collections::Scopes::Building do
     klass.include Cuprum::Collections::Scopes::Building # rubocop:disable RSpec/DescribedClass
   end
 
-  def build_scope
+  define_method :build_scope do
     Cuprum::Collections::Scopes::CriteriaScope.new(criteria: [])
   end
 
@@ -41,7 +41,7 @@ RSpec.describe Cuprum::Collections::Scopes::Building do
     end
   end
 
-  include_contract 'should be a scope builder', abstract: true
+  include_deferred 'should build collection Scopes', abstract: true
 
   describe '#build' do
     let(:error_class) do

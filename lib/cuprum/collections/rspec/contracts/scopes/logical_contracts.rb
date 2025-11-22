@@ -12,6 +12,8 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
     include Cuprum::Collections::RSpec::Contracts::Scopes::CompositionContracts
 
     # Contract validating the behavior of a logical AND scope implementation.
+    #
+    # @deprecated 0.6.0
     module ShouldBeAConjunctionScopeContract
       extend RSpec::SleepingKingStudios::Contract
 
@@ -23,6 +25,17 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
       #   @param abstract [Boolean] if true, the scope is abstract and does not
       #     define a #call implementation. Defaults to false.
       contract do |abstract: false|
+        message =
+          'Use deferred examples "should implement the ConjunctionScope ' \
+          'methods"'
+        SleepingKingStudios::Tools::Toolbelt
+          .instance
+          .core_tools
+          .deprecate(
+            'ShouldBeAConjunctionScopeContract',
+            message:
+          )
+
         include_contract 'should be a container scope', invertible: true
 
         include_contract 'should compose scopes for conjunction'
@@ -69,6 +82,8 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
     end
 
     # Contract validating the behavior of a logical OR scope implementation.
+    #
+    # @deprecated 0.6.0
     module ShouldBeADisjunctionScopeContract
       extend RSpec::SleepingKingStudios::Contract
 
@@ -80,6 +95,17 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
       #   @param abstract [Boolean] if true, the scope is abstract and does not
       #     define a #call implementation. Defaults to false.
       contract do |abstract: false|
+        message =
+          'Use deferred examples "should implement the DisjunctionScope ' \
+          'methods"'
+        SleepingKingStudios::Tools::Toolbelt
+          .instance
+          .core_tools
+          .deprecate(
+            'ShouldBeADisjunctionScopeContract',
+            message:
+          )
+
         include_contract 'should be a container scope', invertible: true
 
         include_contract 'should compose scopes for disjunction'
@@ -126,6 +152,8 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
     end
 
     # Contract validating the behavior of a Conjunction scope implementation.
+    #
+    # @deprecated 0.6.0
     module ShouldFilterDataByLogicalAndContract
       extend RSpec::SleepingKingStudios::Contract
 
@@ -211,6 +239,8 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
     end
 
     # Contract validating the behavior of a Disjunction scope implementation.
+    #
+    # @deprecated 0.6.0
     module ShouldFilterDataByLogicalOrContract
       extend RSpec::SleepingKingStudios::Contract
 
