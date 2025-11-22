@@ -8,6 +8,8 @@ module Cuprum::Collections::RSpec::Contracts
   # Contracts for asserting on scope objects.
   module ScopeContracts
     # Contract validating the behavior of a scope implementation.
+    #
+    # @deprecated 0.6.0
     module ShouldBeAScopeContract
       extend RSpec::SleepingKingStudios::Contract
 
@@ -19,6 +21,16 @@ module Cuprum::Collections::RSpec::Contracts
       #   @param invertible [Boolean] if true, the scope defines an
       #     implementation of the #invert method. Defaults to false.
       contract do |invertible: false|
+        message = 'Use deferred examples "should implement the Scope methods"'
+
+        SleepingKingStudios::Tools::Toolbelt
+          .instance
+          .core_tools
+          .deprecate(
+            'ShouldBeAScopeContract',
+            message:
+          )
+
         describe '#==' do
           it { expect(subject == nil).to be false } # rubocop:disable Style/NilComparison
 
@@ -73,6 +85,8 @@ module Cuprum::Collections::RSpec::Contracts
     end
 
     # Contract validating the behavior of a Container scope implementation.
+    #
+    # @deprecated 0.6.0
     module ShouldBeAContainerScopeContract
       extend RSpec::SleepingKingStudios::Contract
 
@@ -84,6 +98,17 @@ module Cuprum::Collections::RSpec::Contracts
       #   @param invertible [Boolean] if true, the scope defines an
       #     implementation of the #invert method. Defaults to false.
       contract do |invertible: false|
+        message =
+          'Use deferred examples "should implement the Scope methods" and ' \
+          '"should define child scopes"'
+        SleepingKingStudios::Tools::Toolbelt
+          .instance
+          .core_tools
+          .deprecate(
+            'ShouldBeADisjunctionScopeContract',
+            message:
+          )
+
         shared_context 'with scopes' do
           let(:scopes) do
             [
@@ -272,6 +297,8 @@ module Cuprum::Collections::RSpec::Contracts
     end
 
     # Contract validating the behavior of an All scope implementation.
+    #
+    # @deprecated 0.6.0
     module ShouldBeAnAllScopeContract
       extend RSpec::SleepingKingStudios::Contract
 
@@ -283,6 +310,17 @@ module Cuprum::Collections::RSpec::Contracts
       #   @param abstract [Boolean] if true, the scope is abstract and does not
       #     define a #call implementation. Defaults to false.
       contract do |abstract: false|
+        message =
+          'Use deferred examples "should implement the AllScope methods"'
+
+        SleepingKingStudios::Tools::Toolbelt
+          .instance
+          .core_tools
+          .deprecate(
+            'ShouldBeAnAllScopeContract',
+            message:
+          )
+
         include_contract 'should be a scope', invertible: true
 
         describe '#==' do
@@ -653,6 +691,8 @@ module Cuprum::Collections::RSpec::Contracts
     end
 
     # Contract validating the behavior of a None scope implementation.
+    #
+    # @deprecated 0.6.0
     module ShouldBeANoneScopeContract
       extend RSpec::SleepingKingStudios::Contract
 
@@ -664,6 +704,17 @@ module Cuprum::Collections::RSpec::Contracts
       #   @param abstract [Boolean] if true, the scope is abstract and does not
       #     define a #call implementation. Defaults to false.
       contract do |abstract: false|
+        message =
+          'Use deferred examples "should implement the NoneScope methods"'
+
+        SleepingKingStudios::Tools::Toolbelt
+          .instance
+          .core_tools
+          .deprecate(
+            'ShouldBeANoneScopeContract',
+            message:
+          )
+
         include_contract 'should be a scope', invertible: true
 
         describe '#==' do

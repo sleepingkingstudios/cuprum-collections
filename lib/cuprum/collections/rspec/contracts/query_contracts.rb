@@ -11,6 +11,8 @@ module Cuprum::Collections::RSpec::Contracts
     include Cuprum::Collections::RSpec::Deferred::QueryExamples
 
     # Contract validating the behavior of a Query implementation.
+    #
+    # @deprecated 0.6.0
     module ShouldBeAQuery
       extend RSpec::SleepingKingStudios::Contract
 

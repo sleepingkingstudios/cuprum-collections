@@ -11,6 +11,8 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
     include Cuprum::Collections::RSpec::Contracts::Scopes::CompositionContracts
 
     # Contract validating the behavior of a Criteria scope implementation.
+    #
+    # @deprecated 0.6.0
     module ShouldBeACriteriaScopeContract
       extend RSpec::SleepingKingStudios::Contract
 
@@ -31,6 +33,16 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
         constructor:         true,
         ignore_uninvertible: false
       |
+        message =
+          'Use deferred examples "should implement the CriteriaScope methods"'
+        SleepingKingStudios::Tools::Toolbelt
+          .instance
+          .core_tools
+          .deprecate(
+            'ShouldBeACriteriaScopeContract',
+            message:
+          )
+
         shared_context 'when initialized with inverted: true' do
           let(:constructor_options) { super().merge(inverted: true) }
         end
@@ -837,6 +849,8 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
     end
 
     # Contract validating the scope filters data based on the criteria.
+    #
+    # @deprecated 0.6.0
     module ShouldFilterDataByCriteriaContract
       extend RSpec::SleepingKingStudios::Contract
 
@@ -1196,6 +1210,8 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
     end
 
     # Contract validating the parsing of criteria.
+    #
+    # @deprecated 0.6.0
     module ShouldParseCriteriaContract
       extend RSpec::SleepingKingStudios::Contract
 
@@ -1246,6 +1262,8 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
     end
 
     # Contract validating the parsing of criteria from a Hash.
+    #
+    # @deprecated 0.6.0
     module ShouldParseCriteriaFromABlockContract
       extend RSpec::SleepingKingStudios::Contract
 

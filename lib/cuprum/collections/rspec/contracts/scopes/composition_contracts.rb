@@ -13,6 +13,8 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
   # Contracts for validating the behavior of scope composition.
   module CompositionContracts
     # Contract validating the fluent interface for scope composition.
+    #
+    # @deprecated 0.6.0
     module ShouldComposeScopesContract
       extend RSpec::SleepingKingStudios::Contract
 
@@ -372,6 +374,8 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
     end
 
     # Contract validating scope composition for conjunction scopes.
+    #
+    # @deprecated 0.6.0
     module ShouldComposeScopesForConjunctionContract
       extend  RSpec::SleepingKingStudios::Contract
       include Cuprum::Collections::RSpec::Contracts::Scopes::CompositionContracts # rubocop:disable Layout/LineLength
@@ -593,6 +597,8 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
     end
 
     # Contract validating scope composition for criteria scopes.
+    #
+    # @deprecated 0.6.0
     module ShouldComposeScopesForCriteriaContract
       extend  RSpec::SleepingKingStudios::Contract
       include Cuprum::Collections::RSpec::Contracts::Scopes::CompositionContracts # rubocop:disable Layout/LineLength
@@ -1319,6 +1325,8 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
     end
 
     # Contract validating scope composition for disjunction scopes.
+    #
+    # @deprecated 0.6.0
     module ShouldComposeScopesForDisjunctionContract
       extend  RSpec::SleepingKingStudios::Contract
       include Cuprum::Collections::RSpec::Contracts::Scopes::CompositionContracts # rubocop:disable Layout/LineLength

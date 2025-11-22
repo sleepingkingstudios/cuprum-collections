@@ -15,6 +15,8 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
     include Cuprum::Collections::RSpec::Contracts::Scopes::CriteriaContracts
 
     # Contract validating the behavior of a scope builder implementation.
+    #
+    # @deprecated 0.6.0
     module ShouldBeAScopeBuilderContract
       extend RSpec::SleepingKingStudios::Contract
 
@@ -43,6 +45,14 @@ module Cuprum::Collections::RSpec::Contracts::Scopes
         criteria_scope_class    = contract_options[:criteria_class]
         disjunction_scope_class = contract_options[:disjunction_class]
         none_scope_class        = contract_options[:none_class]
+
+        SleepingKingStudios::Tools::Toolbelt
+          .instance
+          .core_tools
+          .deprecate(
+            'ShouldBeAScopeBuilderContract',
+            message: 'Use deferred examples "should build collection Scopes"'
+          )
 
         shared_context 'with container scope helpers' do
           let(:scope) { build_container(scopes:) }

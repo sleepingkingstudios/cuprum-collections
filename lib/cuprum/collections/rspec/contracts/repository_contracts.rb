@@ -9,6 +9,8 @@ module Cuprum::Collections::RSpec::Contracts
   #   Note - requires defining a #build_collection(**options) helper method.
   module RepositoryContracts
     # Contract validating the behavior of a Repository.
+    #
+    # @deprecated 0.6.0
     module ShouldBeARepositoryContract
       extend RSpec::SleepingKingStudios::Contract
 
