@@ -5,9 +5,8 @@ require 'stannum/errors'
 require 'cuprum/collections/errors/failed_validation'
 
 RSpec.describe Cuprum::Collections::Errors::FailedValidation do
-  subject(:error) { described_class.new(**keywords) }
+  subject(:error) { described_class.new(**options) }
 
-  let(:entity_class) { Spec::FuelTank }
   let(:errors) do
     errors = Stannum::Errors.new
 
@@ -17,14 +16,7 @@ RSpec.describe Cuprum::Collections::Errors::FailedValidation do
 
     errors
   end
-  let(:keywords) do
-    {
-      entity_class:,
-      errors:
-    }
-  end
-
-  example_class 'Spec::FuelTank'
+  let(:options) { { errors: } }
 
   describe '::TYPE' do
     include_examples 'should define immutable constant',
@@ -42,6 +34,7 @@ RSpec.describe Cuprum::Collections::Errors::FailedValidation do
   end
 
   describe '#as_json' do
+    let(:entity_class) { nil }
     let(:expected_errors) do
       {
         ''            => ['failed inspection'],
@@ -52,7 +45,7 @@ RSpec.describe Cuprum::Collections::Errors::FailedValidation do
     let(:expected) do
       {
         'data'    => {
-          'entity_class' => entity_class.name,
+          'entity_class' => entity_class&.name,
           'errors'       => expected_errors
         },
         'message' => error.message,
@@ -61,10 +54,40 @@ RSpec.describe Cuprum::Collections::Errors::FailedValidation do
     end
 
     include_examples 'should have reader', :as_json, -> { be == expected }
+
+    describe 'with entity_class: nil' do
+      let(:options) { super().merge(entity_class: nil) }
+
+      it { expect(error.as_json).to be == expected }
+    end
+
+    describe 'with entity_class: value' do
+      let(:entity_class) { Spec::FuelTank }
+      let(:options)      { super().merge(entity_class:) }
+
+      example_class 'Spec::FuelTank'
+
+      it { expect(error.as_json).to be == expected }
+    end
   end
 
   describe '#entity_class' do
-    include_examples 'should define reader', :entity_class, -> { entity_class }
+    include_examples 'should define reader', :entity_class, nil
+
+    describe 'with entity_class: nil' do
+      let(:options) { super().merge(entity_class: nil) }
+
+      it { expect(error.entity_class).to be nil }
+    end
+
+    describe 'with entity_class: value' do
+      let(:entity_class) { Spec::FuelTank }
+      let(:options)      { super().merge(entity_class:) }
+
+      example_class 'Spec::FuelTank'
+
+      it { expect(error.entity_class).to be entity_class }
+    end
   end
 
   describe '#errors' do
@@ -73,10 +96,28 @@ RSpec.describe Cuprum::Collections::Errors::FailedValidation do
 
   describe '#message' do
     let(:expected) do
-      "#{entity_class.name} failed validation"
+      'an entity failed validation'
     end
 
     include_examples 'should define reader', :message, -> { be == expected }
+
+    describe 'with entity_class: nil' do
+      let(:options) { super().merge(entity_class: nil) }
+
+      it { expect(error.message).to be == expected }
+    end
+
+    describe 'with entity_class: value' do
+      let(:entity_class) { Spec::FuelTank }
+      let(:options)      { super().merge(entity_class:) }
+      let(:expected) do
+        "#{entity_class.name} failed validation"
+      end
+
+      example_class 'Spec::FuelTank'
+
+      it { expect(error.message).to be == expected }
+    end
   end
 
   describe '#type' do
