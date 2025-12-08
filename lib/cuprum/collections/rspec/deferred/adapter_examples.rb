@@ -65,7 +65,7 @@ module Cuprum::Collections::RSpec::Deferred
             if entity.respond_to?(:title)
               entity.title
             elsif entity.respond_to?(:[])
-              entity[:title]
+              entity[:title] || entity['title']
             end
 
           value.is_a?(String) && !value.empty?
@@ -530,6 +530,76 @@ module Cuprum::Collections::RSpec::Deferred
         expect(call_adapter_method)
           .to be_a_failing_result
           .with_error(expected_error)
+      end
+    end
+
+    deferred_examples 'should validate the entity by fixed class' do
+      describe '#merge' do
+        let(:attributes) { configured_partial_attributes }
+        let(:entity)     { configured_valid_entity }
+
+        define_method :call_adapter_method do
+          subject.merge(attributes:, entity:)
+        end
+
+        include_deferred 'with parameters for verifying adapters'
+
+        describe 'with entity: nil' do
+          let(:entity) { nil }
+
+          include_deferred 'should validate the entity parameter'
+        end
+
+        describe 'with entity: an Object' do
+          let(:entity) { Object.new.freeze }
+
+          include_deferred 'should validate the entity parameter'
+        end
+      end
+
+      describe '#serialize' do
+        let(:entity) { configured_valid_entity }
+
+        define_method :call_adapter_method do
+          subject.serialize(entity:)
+        end
+
+        include_deferred 'with parameters for verifying adapters'
+
+        describe 'with entity: nil' do
+          let(:entity) { nil }
+
+          include_deferred 'should validate the entity parameter'
+        end
+
+        describe 'with entity: an Object' do
+          let(:entity) { Object.new.freeze }
+
+          include_deferred 'should validate the entity parameter'
+        end
+      end
+
+      describe '#validate' do
+        let(:entity)  { configured_valid_entity }
+        let(:options) { {} }
+
+        define_method :call_adapter_method do
+          subject.validate(entity:, **options)
+        end
+
+        include_deferred 'with parameters for verifying adapters'
+
+        describe 'with entity: nil' do
+          let(:entity) { nil }
+
+          include_deferred 'should validate the entity parameter'
+        end
+
+        describe 'with entity: an Object' do
+          let(:entity) { Object.new.freeze }
+
+          include_deferred 'should validate the entity parameter'
+        end
       end
     end
 
