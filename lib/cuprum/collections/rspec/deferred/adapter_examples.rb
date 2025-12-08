@@ -749,7 +749,8 @@ module Cuprum::Collections::RSpec::Deferred
       end
     end
 
-    deferred_examples 'should validate the entity using the default contract' do
+    deferred_examples 'should validate the entity using the default contract' \
+    do |**deferred_options|
       describe '#validate' do
         let(:entity)  { configured_valid_entity }
         let(:options) { {} }
@@ -764,10 +765,12 @@ module Cuprum::Collections::RSpec::Deferred
 
         include_deferred 'with parameters for verifying adapters'
 
-        it 'should return a failing result' do
-          expect(call_adapter_method)
-            .to be_a_failing_result
-            .with_error(expected_error)
+        if deferred_options.fetch(:require_default_contract, true)
+          it 'should return a failing result' do
+            expect(call_adapter_method)
+              .to be_a_failing_result
+              .with_error(expected_error)
+          end
         end
 
         describe 'with contract: value' do

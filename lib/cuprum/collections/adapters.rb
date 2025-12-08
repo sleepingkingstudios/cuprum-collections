@@ -7,7 +7,8 @@ module Cuprum::Collections
   #
   # @see Cuprum::Collections::Adapter.
   module Adapters
-    autoload :DataAdapter, 'cuprum/collections/adapters/data_adapter'
-    autoload :HashAdapter, 'cuprum/collections/adapters/hash_adapter'
+    autoload :DataAdapter,   'cuprum/collections/adapters/data_adapter'
+    autoload :EntityAdapter, 'cuprum/collections/adapters/entity_adapter'
+    autoload :HashAdapter,   'cuprum/collections/adapters/hash_adapter'
   end
 end
