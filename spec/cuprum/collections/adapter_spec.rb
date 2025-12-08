@@ -12,19 +12,7 @@ RSpec.describe Cuprum::Collections::Adapter do
 
   let(:constructor_options) { {} }
 
-  deferred_context 'when initialized with a default contract' do
-    let(:default_contract) do
-      type    = 'spec.example_constraint'
-      message = 'is not a valid data object'
-
-      Stannum::Constraint.new(message:, type:) do |value|
-        value.respond_to?(:[]) &&
-          value[:title].is_a?(String) &&
-          !value[:title].empty?
-      end
-    end
-    let(:constructor_options) { super().merge(default_contract:) }
-  end
+  define_method(:build_entity) { |attributes| attributes }
 
   deferred_context 'when initialized with an entity class' do
     let(:entity_class)        { Spec::BookEntity }
@@ -108,25 +96,97 @@ RSpec.describe Cuprum::Collections::Adapter do
 
   include_deferred 'should implement the Adapter interface'
 
-  describe '#build' do
-    describe 'with an attributes Hash' do
-      let(:attributes) { { 'title' => 'Gideon the Ninth' } }
-      let(:expected_error) do
-        Cuprum::Errors::CommandNotImplemented
-          .new(command: adapter)
+  include_deferred 'should validate the attribute names by parameter'
+
+  include_deferred 'should validate the entity by optional parameter'
+
+  include_deferred 'should validate the entity using the default contract'
+
+  describe '#allow_extra_attributes?' do
+    it { expect(adapter.allow_extra_attributes?).to be true }
+
+    context 'when initialized with allow_extra_attributes: false' do
+      let(:constructor_options) do
+        super().merge(allow_extra_attributes: false)
       end
 
-      it 'should return a failing result' do
-        expect(adapter.build(attributes:))
-          .to be_a_failing_result
-          .with_error(expected_error)
+      it { expect(adapter.allow_extra_attributes?).to be false }
+    end
+
+    context 'when initialized with allow_extra_attributes: true' do
+      let(:constructor_options) do
+        super().merge(allow_extra_attributes: true)
+      end
+
+      it { expect(adapter.allow_extra_attributes?).to be true }
+    end
+
+    wrap_deferred 'when initialized with attribute names' do
+      it { expect(adapter.allow_extra_attributes?).to be false }
+
+      context 'when initialized with allow_extra_attributes: false' do
+        let(:constructor_options) do
+          super().merge(allow_extra_attributes: false)
+        end
+
+        it { expect(adapter.allow_extra_attributes?).to be false }
+      end
+
+      context 'when initialized with allow_extra_attributes: true' do
+        let(:constructor_options) do
+          super().merge(allow_extra_attributes: true)
+        end
+
+        it { expect(adapter.allow_extra_attributes?).to be true }
       end
     end
   end
 
+  describe '#attribute_names' do
+    it { expect(adapter.attribute_names).to be == Set.new }
+
+    context 'when initialized with attribute_names: an Array of Strings' do
+      let(:attribute_names)     { %w[title author series] }
+      let(:constructor_options) { super().merge(attribute_names:) }
+      let(:expected)            { attribute_names }
+
+      it { expect(adapter.attribute_names).to match_array(expected) }
+    end
+
+    context 'when initialized with attribute_names: an Array of Symbols' do
+      let(:attribute_names)     { %i[title author series] }
+      let(:constructor_options) { super().merge(attribute_names:) }
+      let(:expected)            { attribute_names.map(&:to_s) }
+
+      it { expect(adapter.attribute_names).to match_array(expected) }
+    end
+  end
+
+  describe '#build' do
+    let(:attributes) { { 'title' => 'Gideon the Ninth' } }
+    let(:expected_error) do
+      Cuprum::Errors::CommandNotImplemented
+        .new(command: adapter)
+    end
+
+    it 'should return a failing result' do
+      expect(adapter.build(attributes:))
+        .to be_a_failing_result
+        .with_error(expected_error)
+    end
+  end
+
   describe '#default_contract' do
-    wrap_deferred 'when initialized with a default contract' do
-      it { expect(adapter.default_contract).to be default_contract }
+    it { expect(adapter.default_contract).to be nil }
+
+    context 'when initialized with a default contract' do
+      let(:constructor_options) do
+        super().merge(default_contract: configured_contract)
+      end
+
+      include_deferred 'with parameters for verifying adapters'
+
+      it { expect(adapter.default_contract).to be configured_contract }
     end
   end
 
@@ -137,52 +197,26 @@ RSpec.describe Cuprum::Collections::Adapter do
   end
 
   describe '#merge' do
-    describe 'with an attributes Hash and valid entity' do
-      let(:attributes) { { 'title' => 'Gideon the Ninth' } }
-      let(:entity)     { Struct.new(:title).new }
-      let(:expected_error) do
-        Cuprum::Errors::CommandNotImplemented
-          .new(command: adapter)
-      end
+    let(:attributes) { { 'title' => 'Gideon the Ninth' } }
+    let(:entity)     { Struct.new(:title).new }
+    let(:expected_error) do
+      Cuprum::Errors::CommandNotImplemented
+        .new(command: adapter)
+    end
+
+    it 'should return a failing result' do
+      expect(adapter.merge(attributes:, entity:))
+        .to be_a_failing_result
+        .with_error(expected_error)
+    end
+
+    wrap_deferred 'when initialized with an entity class' do
+      let(:entity) { entity_class.new }
 
       it 'should return a failing result' do
         expect(adapter.merge(attributes:, entity:))
           .to be_a_failing_result
           .with_error(expected_error)
-      end
-    end
-
-    wrap_deferred 'when initialized with an entity class' do
-      let(:attributes) { { 'title' => 'Gideon the Ninth' } }
-
-      define_method :call_adapter_method do
-        adapter.merge(attributes:, entity:)
-      end
-
-      describe 'with entity: nil' do
-        let(:entity) { nil }
-
-        include_deferred 'should validate the entity'
-      end
-
-      describe 'with entity: an Object' do
-        let(:entity) { Object.new.freeze }
-
-        include_deferred 'should validate the entity'
-      end
-
-      describe 'with entity: a valid entity' do
-        let(:entity) { entity_class.new }
-        let(:expected_error) do
-          Cuprum::Errors::CommandNotImplemented
-            .new(command: adapter)
-        end
-
-        it 'should return a failing result' do
-          expect(adapter.merge(attributes:, entity:))
-            .to be_a_failing_result
-            .with_error(expected_error)
-        end
       end
     end
 
@@ -197,21 +231,17 @@ RSpec.describe Cuprum::Collections::Adapter do
       describe 'with entity: nil' do
         let(:entity) { nil }
 
-        include_deferred 'should validate the entity'
+        include_deferred 'should validate the entity parameter'
       end
 
       describe 'with entity: an Object' do
         let(:entity) { Object.new.freeze }
 
-        include_deferred 'should validate the entity'
+        include_deferred 'should validate the entity parameter'
       end
 
       describe 'with entity: a valid entity' do
         let(:entity) { Struct.new(:title).new }
-        let(:expected_error) do
-          Cuprum::Errors::CommandNotImplemented
-            .new(command: adapter)
-        end
 
         it 'should return a failing result' do
           expect(adapter.merge(attributes:, entity:))
@@ -224,22 +254,6 @@ RSpec.describe Cuprum::Collections::Adapter do
 
   describe '#serialize' do
     wrap_deferred 'when initialized with an entity class' do
-      define_method :call_adapter_method do
-        adapter.serialize(entity:)
-      end
-
-      describe 'with entity: nil' do
-        let(:entity) { nil }
-
-        include_deferred 'should validate the entity'
-      end
-
-      describe 'with entity: an Object' do
-        let(:entity) { Object.new.freeze }
-
-        include_deferred 'should validate the entity'
-      end
-
       describe 'with entity: a valid entity' do
         let(:entity) { entity_class.new }
         let(:expected_error) do
@@ -265,13 +279,13 @@ RSpec.describe Cuprum::Collections::Adapter do
       describe 'with entity: nil' do
         let(:entity) { nil }
 
-        include_deferred 'should validate the entity'
+        include_deferred 'should validate the entity parameter'
       end
 
       describe 'with entity: an Object' do
         let(:entity) { Object.new.freeze }
 
-        include_deferred 'should validate the entity'
+        include_deferred 'should validate the entity parameter'
       end
 
       describe 'with entity: a valid entity' do
@@ -291,161 +305,29 @@ RSpec.describe Cuprum::Collections::Adapter do
   end
 
   describe '#validate' do
-    describe 'with entity: value' do
-      let(:entity) { Struct.new(:title).new }
+    let(:entity) { Struct.new(:title).new }
+    let(:expected_error) do
+      Cuprum::Collections::Errors::MissingDefaultContract
+        .new(entity_class: nil)
+    end
+
+    it 'should return a failing result' do
+      expect(adapter.validate(entity:))
+        .to be_a_failing_result
+        .with_error(expected_error)
+    end
+
+    wrap_deferred 'when initialized with an entity class' do
+      let(:entity) { entity_class.new }
       let(:expected_error) do
         Cuprum::Collections::Errors::MissingDefaultContract
-          .new(entity_class: nil)
+          .new(entity_class:)
       end
 
       it 'should return a failing result' do
         expect(adapter.validate(entity:))
           .to be_a_failing_result
           .with_error(expected_error)
-      end
-    end
-
-    describe 'with contract: value' do
-      let(:contract) do
-        type    = 'spec.example_constraint'
-        message = 'is not a valid data object'
-
-        Stannum::Constraint.new(message:, type:) do |value|
-          value.respond_to?(:[]) &&
-            value[:title].is_a?(String) &&
-            !value[:title].empty?
-        end
-      end
-
-      describe 'when the entity does not match the contract' do
-        let(:entity) { {} }
-        let(:expected_error) do
-          errors = contract.errors_for(entity)
-
-          Cuprum::Collections::Errors::FailedValidation.new(
-            entity_class: nil,
-            errors:
-          )
-        end
-
-        it 'should return a failing result' do
-          expect(adapter.validate(contract:, entity:))
-            .to be_a_failing_result
-            .with_error(expected_error)
-        end
-      end
-
-      describe 'when the entity matches the contract' do
-        let(:entity) { { title: 'Gideon the Ninth' } }
-
-        it 'should return a passing result' do
-          expect(adapter.validate(contract:, entity:))
-            .to be_a_passing_result
-            .with_value(entity)
-        end
-      end
-    end
-
-    wrap_deferred 'when initialized with a default contract' do
-      describe 'when the entity does not match the contract' do
-        let(:entity) { {} }
-        let(:expected_error) do
-          errors = default_contract.errors_for(entity)
-
-          Cuprum::Collections::Errors::FailedValidation.new(
-            entity_class: nil,
-            errors:
-          )
-        end
-
-        it 'should return a failing result' do
-          expect(adapter.validate(entity:))
-            .to be_a_failing_result
-            .with_error(expected_error)
-        end
-      end
-
-      describe 'when the entity matches the contract' do
-        let(:entity) { { title: 'Gideon the Ninth' } }
-
-        it 'should return a passing result' do
-          expect(adapter.validate(entity:))
-            .to be_a_passing_result
-            .with_value(entity)
-        end
-      end
-
-      describe 'with contract: value' do
-        let(:contract) do
-          type    = 'spec.example_constraint'
-          message = 'is not a valid data object'
-
-          Stannum::Constraint.new(message:, type:) do |value|
-            value.respond_to?(:[]) &&
-              value[:author].is_a?(String) &&
-              !value[:author].empty?
-          end
-        end
-
-        describe 'when the entity does not match the contract' do
-          let(:entity) { {} }
-          let(:expected_error) do
-            errors = default_contract.errors_for(entity)
-
-            Cuprum::Collections::Errors::FailedValidation.new(
-              entity_class: nil,
-              errors:
-            )
-          end
-
-          it 'should return a failing result' do
-            expect(adapter.validate(contract:, entity:))
-              .to be_a_failing_result
-              .with_error(expected_error)
-          end
-        end
-
-        describe 'when the entity matches the contract' do
-          let(:entity) { { author: 'Tamsyn Muir' } }
-
-          it 'should return a passing result' do
-            expect(adapter.validate(contract:, entity:))
-              .to be_a_passing_result
-              .with_value(entity)
-          end
-        end
-      end
-    end
-
-    wrap_deferred 'when initialized with an entity class' do
-      define_method :call_adapter_method do
-        adapter.validate(entity:)
-      end
-
-      describe 'with entity: nil' do
-        let(:entity) { nil }
-
-        include_deferred 'should validate the entity'
-      end
-
-      describe 'with entity: an Object' do
-        let(:entity) { Object.new.freeze }
-
-        include_deferred 'should validate the entity'
-      end
-
-      describe 'with entity: a valid entity' do
-        let(:entity) { entity_class.new }
-        let(:expected_error) do
-          Cuprum::Collections::Errors::MissingDefaultContract
-            .new(entity_class:)
-        end
-
-        it 'should return a failing result' do
-          expect(adapter.validate(entity:))
-            .to be_a_failing_result
-            .with_error(expected_error)
-        end
       end
     end
 
@@ -459,13 +341,13 @@ RSpec.describe Cuprum::Collections::Adapter do
       describe 'with entity: nil' do
         let(:entity) { nil }
 
-        include_deferred 'should validate the entity'
+        include_deferred 'should validate the entity parameter'
       end
 
       describe 'with entity: an Object' do
         let(:entity) { Object.new.freeze }
 
-        include_deferred 'should validate the entity'
+        include_deferred 'should validate the entity parameter'
       end
 
       describe 'with entity: a valid entity' do
@@ -566,11 +448,17 @@ RSpec.describe Cuprum::Collections::Adapter do
         end
       end
 
-      wrap_deferred 'when initialized with a default contract' do
+      context 'when initialized with a default contract' do
+        let(:constructor_options) do
+          super().merge(default_contract: configured_contract)
+        end
+
+        include_deferred 'with parameters for verifying adapters'
+
         describe 'when the entity does not match the contract' do
           let(:entity) { entity_class.new }
           let(:expected_error) do
-            errors = default_contract.errors_for(entity)
+            errors = configured_contract.errors_for(entity)
 
             Cuprum::Collections::Errors::FailedValidation.new(
               entity_class:,
