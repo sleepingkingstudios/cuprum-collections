@@ -244,6 +244,111 @@ module Cuprum::Collections::RSpec::Deferred
       end
     end
 
+    deferred_examples 'should implement the Adapter methods' do
+      describe '#build' do
+        let(:attributes)     { configured_valid_attributes }
+        let(:expected_value) { build_entity(attributes) }
+
+        define_method :call_adapter_method do
+          subject.build(attributes:)
+        end
+
+        include_deferred 'with parameters for verifying adapters'
+
+        describe 'with an empty Hash' do
+          let(:attributes) { {} }
+
+          it 'should return a passing result' do
+            expect(call_adapter_method)
+              .to be_a_passing_result
+              .with_value(expected_value)
+          end
+        end
+
+        describe 'with a Hash with String keys' do
+          let(:attributes) { super().transform_keys(&:to_s) }
+
+          it 'should return a passing result' do
+            expect(call_adapter_method)
+              .to be_a_passing_result
+              .with_value(expected_value)
+          end
+        end
+
+        describe 'with a Hash with Symbol keys' do
+          let(:attributes) { super().transform_keys(&:to_sym) }
+
+          it 'should return a passing result' do
+            expect(call_adapter_method)
+              .to be_a_passing_result
+              .with_value(expected_value)
+          end
+        end
+      end
+
+      describe '#merge' do
+        let(:attributes) { configured_partial_attributes }
+        let(:entity)     { configured_valid_entity }
+        let(:expected_attributes) do
+          configured_valid_attributes.merge(attributes)
+        end
+        let(:expected_value) { build_entity(expected_attributes) }
+
+        define_method :call_adapter_method do
+          subject.merge(attributes:, entity:)
+        end
+
+        include_deferred 'with parameters for verifying adapters'
+
+        describe 'with an empty Hash' do
+          let(:attributes) { {} }
+
+          it 'should return a passing result' do
+            expect(call_adapter_method)
+              .to be_a_passing_result
+              .with_value(expected_value)
+          end
+        end
+
+        describe 'with a Hash with String keys' do
+          let(:attributes) { super().transform_keys(&:to_s) }
+
+          it 'should return a passing result' do
+            expect(call_adapter_method)
+              .to be_a_passing_result
+              .with_value(expected_value)
+          end
+        end
+
+        describe 'with a Hash with Symbol keys' do
+          let(:attributes) { super().transform_keys(&:to_sym) }
+
+          it 'should return a passing result' do
+            expect(call_adapter_method)
+              .to be_a_passing_result
+              .with_value(expected_value)
+          end
+        end
+      end
+
+      describe '#serialize' do
+        let(:entity)         { configured_valid_entity }
+        let(:expected_value) { serialize_entity(entity).transform_keys(&:to_s) }
+
+        define_method :call_adapter_method do
+          subject.serialize(entity:)
+        end
+
+        include_deferred 'with parameters for verifying adapters'
+
+        it 'should return a passing result' do
+          expect(call_adapter_method)
+            .to be_a_passing_result
+            .with_value(expected_value)
+        end
+      end
+    end
+
     deferred_examples 'should validate the attributes parameter' do
       let(:configured_failures) do
         next expected_failures if defined?(expected_failures)
@@ -287,6 +392,57 @@ module Cuprum::Collections::RSpec::Deferred
         expect(call_adapter_method)
           .to be_a_failing_result
           .with_error(expected_error)
+      end
+    end
+
+    deferred_examples 'should validate the attribute names by entity class' do
+      describe '#build' do
+        let(:attributes) do
+          configured_invalid_attribute_names.to_h { |key| [key, 'value'] }
+        end
+
+        define_method :call_adapter_method do
+          subject.build(attributes:)
+        end
+
+        include_deferred 'with parameters for verifying adapters'
+
+        describe 'with an attributes Hash with extra Strings' do
+          let(:attributes) { super().transform_keys(&:to_s) }
+
+          include_deferred 'should validate the attribute names'
+        end
+
+        describe 'with an attributes Hash with extra Symbols' do
+          let(:attributes) { super().transform_keys(&:to_sym) }
+
+          include_deferred 'should validate the attribute names'
+        end
+      end
+
+      describe '#merge' do
+        let(:attributes) do
+          configured_invalid_attribute_names.to_h { |key| [key, 'value'] }
+        end
+        let(:entity) { configured_valid_entity }
+
+        define_method :call_adapter_method do
+          subject.merge(attributes:, entity:)
+        end
+
+        include_deferred 'with parameters for verifying adapters'
+
+        describe 'with an attributes Hash with extra Strings' do
+          let(:attributes) { super().transform_keys(&:to_s) }
+
+          include_deferred 'should validate the attribute names'
+        end
+
+        describe 'with an attributes Hash with extra Symbols' do
+          let(:attributes) { super().transform_keys(&:to_sym) }
+
+          include_deferred 'should validate the attribute names'
+        end
       end
     end
 
@@ -449,6 +605,76 @@ module Cuprum::Collections::RSpec::Deferred
 
             include_deferred 'should validate the entity parameter'
           end
+        end
+      end
+    end
+
+    deferred_examples 'should validate the entity by required parameter' do
+      describe '#merge' do
+        let(:attributes) { configured_partial_attributes }
+        let(:entity)     { configured_valid_entity }
+
+        define_method :call_adapter_method do
+          subject.merge(attributes:, entity:)
+        end
+
+        include_deferred 'with parameters for verifying adapters'
+
+        describe 'with entity: nil' do
+          let(:entity) { nil }
+
+          include_deferred 'should validate the entity parameter'
+        end
+
+        describe 'with entity: an Object' do
+          let(:entity) { Object.new.freeze }
+
+          include_deferred 'should validate the entity parameter'
+        end
+      end
+
+      describe '#serialize' do
+        let(:entity) { configured_valid_entity }
+
+        define_method :call_adapter_method do
+          subject.serialize(entity:)
+        end
+
+        include_deferred 'with parameters for verifying adapters'
+
+        describe 'with entity: nil' do
+          let(:entity) { nil }
+
+          include_deferred 'should validate the entity parameter'
+        end
+
+        describe 'with entity: an Object' do
+          let(:entity) { Object.new.freeze }
+
+          include_deferred 'should validate the entity parameter'
+        end
+      end
+
+      describe '#validate' do
+        let(:entity)  { configured_valid_entity }
+        let(:options) { {} }
+
+        define_method :call_adapter_method do
+          subject.validate(entity:, **options)
+        end
+
+        include_deferred 'with parameters for verifying adapters'
+
+        describe 'with entity: nil' do
+          let(:entity) { nil }
+
+          include_deferred 'should validate the entity parameter'
+        end
+
+        describe 'with entity: an Object' do
+          let(:entity) { Object.new.freeze }
+
+          include_deferred 'should validate the entity parameter'
         end
       end
     end
