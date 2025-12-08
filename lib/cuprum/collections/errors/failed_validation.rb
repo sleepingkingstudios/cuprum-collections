@@ -13,7 +13,7 @@ module Cuprum::Collections::Errors
     # @param entity_class [Class] The class of the assigned entity.
     # @param errors [Stannum::Errors] The errors generated when validating the
     #   entity.
-    def initialize(entity_class:, errors:)
+    def initialize(errors:, entity_class: nil)
       @entity_class = entity_class
       @errors       = errors
 
@@ -34,13 +34,13 @@ module Cuprum::Collections::Errors
 
     def as_json_data
       {
-        'entity_class' => entity_class.name,
+        'entity_class' => entity_class&.name,
         'errors'       => format_errors
       }
     end
 
     def default_message
-      "#{entity_class.name} failed validation"
+      "#{entity_class&.name || 'an entity'} failed validation"
     end
 
     def format_errors

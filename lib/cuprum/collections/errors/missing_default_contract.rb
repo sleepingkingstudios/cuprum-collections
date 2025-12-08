@@ -11,7 +11,7 @@ module Cuprum::Collections::Errors
     TYPE = 'cuprum.collections.errors.missing_default_contract'
 
     # @param entity_class [Class] The class of the assigned entity.
-    def initialize(entity_class:)
+    def initialize(entity_class: nil)
       @entity_class = entity_class
 
       super(
@@ -26,12 +26,20 @@ module Cuprum::Collections::Errors
     private
 
     def as_json_data
-      { 'entity_class' => entity_class.name }
+      { 'entity_class' => entity_class&.name }
     end
 
     def default_message
-      "attempted to validate a #{entity_class.name}, but " \
-        "#{entity_class.name} does not define a default contract"
+      "attempted to validate #{entity_name}, but " \
+        "#{entity_class_name} does not define a default contract"
+    end
+
+    def entity_class_name
+      entity_class&.name || 'the entity class'
+    end
+
+    def entity_name
+      entity_class ? "a #{entity_class.name}" : 'an entity'
     end
   end
 end

@@ -15,7 +15,7 @@ module Cuprum::Collections::Errors
     #   that were assigned to the entity.
     # @param valid_attributes [Array<String>] The names of valid attributes for
     #   the entity.
-    def initialize(entity_class:, extra_attributes:, valid_attributes:)
+    def initialize(extra_attributes:, valid_attributes:, entity_class: nil)
       @entity_class     = entity_class
       @extra_attributes = extra_attributes
       @valid_attributes = valid_attributes
@@ -42,14 +42,14 @@ module Cuprum::Collections::Errors
 
     def as_json_data
       {
-        'entity_class'     => entity_class.name,
+        'entity_class'     => entity_class&.name,
         'extra_attributes' => extra_attributes,
         'valid_attributes' => valid_attributes
       }
     end
 
     def default_message
-      "invalid attributes for #{entity_class.name}: " \
+      "invalid attributes for #{entity_class&.name || 'an entity'}: " \
         "#{extra_attributes.join(', ')}"
     end
   end
