@@ -59,12 +59,12 @@ module Cuprum::Collections::Adapters
       tools.hash_tools.convert_keys_to_strings(entity.to_h)
     end
 
-    def validate_entity_class(entity_class)
-      tools.assertions.validate_class(entity_class, as: 'entity class')
+    def validate_entity_class_parameter(entity_class, as: 'entity class')
+      tools.assertions.validate_class(entity_class, as:)
 
       return if entity_class < Data
 
-      raise ArgumentError, 'entity class is not a subclass of Data'
+      raise ArgumentError, "#{as} is not a subclass of Data"
     end
 
     def verify_attribute_names_are_members

@@ -242,6 +242,24 @@ module Cuprum::Collections::RSpec::Deferred
           expect(call_adapter_method).to be_a_result
         end
       end
+
+      describe '#validate_attributes_parameter' do
+        it 'should define the method' do
+          expect(subject)
+            .to respond_to(:validate_attributes_parameter)
+            .with(1).argument
+            .and_keywords(:as)
+        end
+      end
+
+      describe '#validate_entity_parameter' do
+        it 'should define the method' do
+          expect(subject)
+            .to respond_to(:validate_entity_parameter)
+            .with(1).argument
+            .and_keywords(:as)
+        end
+      end
     end
 
     deferred_examples 'should implement the Adapter methods' do
@@ -345,6 +363,63 @@ module Cuprum::Collections::RSpec::Deferred
           expect(call_adapter_method)
             .to be_a_passing_result
             .with_value(expected_value)
+        end
+      end
+
+      describe '#validate_attributes_parameter' do
+        describe 'with nil' do
+          let(:error_message) do
+            SleepingKingStudios::Tools::Toolbelt
+              .instance
+              .assertions
+              .error_message_for(
+                'sleeping_king_studios.tools.assertions.instance_of',
+                as:       'attributes',
+                expected: Hash
+              )
+          end
+
+          it 'should return the error message' do
+            expect(adapter.validate_attributes_parameter(nil))
+              .to be == error_message
+          end
+        end
+
+        describe 'with an Object' do
+          let(:error_message) do
+            SleepingKingStudios::Tools::Toolbelt
+              .instance
+              .assertions
+              .error_message_for(
+                'sleeping_king_studios.tools.assertions.instance_of',
+                as:       'attributes',
+                expected: Hash
+              )
+          end
+
+          it 'should return the error message' do
+            expect(adapter.validate_attributes_parameter(Object.new.freeze))
+              .to be == error_message
+          end
+        end
+
+        describe 'with an attributes Hash with invalid keys' do
+          let(:attributes) do
+            {
+              nil    => 'null',
+              ''     => 'blank',
+              10_000 => 'km'
+            }
+          end
+          let(:error_message) do
+            "attribute key nil can't be blank, attribute key \"\" can't be " \
+              'blank, attribute key 10000 is not a String or a Symbol'
+          end
+
+          it 'should return the error message' do
+            expect(adapter.validate_attributes_parameter(attributes))
+              .to be == error_message
+          end
         end
       end
     end
@@ -601,6 +676,50 @@ module Cuprum::Collections::RSpec::Deferred
           include_deferred 'should validate the entity parameter'
         end
       end
+
+      describe '#validate_entity_parameter' do
+        let(:configured_failures) do
+          next expected_failures if defined?(expected_failures)
+
+          message =
+            SleepingKingStudios::Tools::Toolbelt
+              .instance
+              .assertions
+              .error_message_for(
+                'sleeping_king_studios.tools.assertions.instance_of',
+                as:       'entity',
+                expected: adapter.entity_class
+              )
+
+          [message]
+        end
+
+        include_deferred 'with parameters for verifying adapters'
+
+        describe 'with entity: nil' do
+          let(:entity) { nil }
+
+          it 'should return the failure message' do
+            expect(adapter.validate_entity_parameter(entity))
+              .to be == configured_failures.join(', ')
+          end
+        end
+
+        describe 'with entity: an Object' do
+          let(:entity) { Object.new.freeze }
+
+          it 'should return the failure message' do
+            expect(adapter.validate_entity_parameter(entity))
+              .to be == configured_failures.join(', ')
+          end
+        end
+
+        describe 'with entity: a valid entity' do
+          let(:entity) { configured_valid_entity }
+
+          it { expect(adapter.validate_entity_parameter(entity)).to be nil }
+        end
+      end
     end
 
     deferred_examples 'should validate the entity by optional parameter' do
@@ -677,6 +796,52 @@ module Cuprum::Collections::RSpec::Deferred
           end
         end
       end
+
+      describe '#validate_entity_parameter' do
+        let(:configured_failures) do
+          next expected_failures if defined?(expected_failures)
+
+          message =
+            SleepingKingStudios::Tools::Toolbelt
+              .instance
+              .assertions
+              .error_message_for(
+                'sleeping_king_studios.tools.assertions.instance_of',
+                as:       'entity',
+                expected: adapter.entity_class
+              )
+
+          [message]
+        end
+
+        include_deferred 'with parameters for verifying adapters'
+
+        wrap_deferred 'when initialized with an entity class' do
+          describe 'with entity: nil' do
+            let(:entity) { nil }
+
+            it 'should return the failure message' do
+              expect(adapter.validate_entity_parameter(entity))
+                .to be == configured_failures.join(', ')
+            end
+          end
+
+          describe 'with entity: an Object' do
+            let(:entity) { Object.new.freeze }
+
+            it 'should return the failure message' do
+              expect(adapter.validate_entity_parameter(entity))
+                .to be == configured_failures.join(', ')
+            end
+          end
+
+          describe 'with entity: a valid entity' do
+            let(:entity) { configured_valid_entity }
+
+            it { expect(adapter.validate_entity_parameter(entity)).to be nil }
+          end
+        end
+      end
     end
 
     deferred_examples 'should validate the entity by required parameter' do
@@ -745,6 +910,50 @@ module Cuprum::Collections::RSpec::Deferred
           let(:entity) { Object.new.freeze }
 
           include_deferred 'should validate the entity parameter'
+        end
+      end
+
+      describe '#validate_entity_parameter' do
+        let(:configured_failures) do
+          next expected_failures if defined?(expected_failures)
+
+          message =
+            SleepingKingStudios::Tools::Toolbelt
+              .instance
+              .assertions
+              .error_message_for(
+                'sleeping_king_studios.tools.assertions.instance_of',
+                as:       'entity',
+                expected: adapter.entity_class
+              )
+
+          [message]
+        end
+
+        include_deferred 'with parameters for verifying adapters'
+
+        describe 'with entity: nil' do
+          let(:entity) { nil }
+
+          it 'should return the failure message' do
+            expect(adapter.validate_entity_parameter(entity))
+              .to be == configured_failures.join(', ')
+          end
+        end
+
+        describe 'with entity: an Object' do
+          let(:entity) { Object.new.freeze }
+
+          it 'should return the failure message' do
+            expect(adapter.validate_entity_parameter(entity))
+              .to be == configured_failures.join(', ')
+          end
+        end
+
+        describe 'with entity: a valid entity' do
+          let(:entity) { configured_valid_entity }
+
+          it { expect(adapter.validate_entity_parameter(entity)).to be nil }
         end
       end
     end

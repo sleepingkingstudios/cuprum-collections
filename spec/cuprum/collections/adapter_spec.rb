@@ -15,10 +15,12 @@ RSpec.describe Cuprum::Collections::Adapter do
   define_method(:build_entity) { |attributes| attributes }
 
   deferred_context 'when initialized with an entity class' do
-    let(:entity_class)        { Spec::BookEntity }
+    let(:entity_class)        { Spec::BookStruct }
     let(:constructor_options) { super().merge(entity_class:) }
 
-    example_class 'Spec::BookEntity', Struct.new(:title, :author, :series) \
+    define_method(:build_entity) { |attributes| entity_class.new(**attributes) }
+
+    example_class 'Spec::BookStruct', Struct.new(:title, :author, :series) \
     do |klass|
       klass.define_singleton_method :contract do
         type    = 'spec.example_constraint'
@@ -39,7 +41,7 @@ RSpec.describe Cuprum::Collections::Adapter do
     # rubocop:disable RSpec/DescribedClass
     example_class 'Spec::ValidatedAdapter', Cuprum::Collections::Adapter \
     do |klass|
-      klass.define_method :validate_entity do |entity, as: 'entity'|
+      klass.define_method :validate_entity_parameter do |entity, as: 'entity'|
         return if entity.respond_to?(:title)
 
         "#{as} does not respond to :title"
@@ -53,44 +55,7 @@ RSpec.describe Cuprum::Collections::Adapter do
       expect(described_class)
         .to be_constructible
         .with(0).arguments
-        .and_keywords(:entity_class)
-    end
-
-    context 'with an adapter class that validates entity classes' do
-      let(:described_class) { Spec::ValidatedAdapter }
-      let(:error_message) do
-        SleepingKingStudios::Tools::Toolbelt
-          .instance
-          .assertions
-          .error_message_for(
-            'sleeping_king_studios.tools.assertions.class',
-            as: 'entity class'
-          )
-      end
-
-      # rubocop:disable RSpec/DescribedClass
-      example_class 'Spec::ValidatedAdapter', Cuprum::Collections::Adapter \
-      do |klass|
-        klass.define_method :validate_entity_class do |entity_class|
-          tools.assertions.validate_class(entity_class, as: 'entity class')
-        end
-      end
-      # rubocop:enable RSpec/DescribedClass
-
-      it 'should raise an exception' do
-        expect { described_class.new(**constructor_options) }
-          .to raise_error ArgumentError, error_message
-      end
-
-      describe 'with entity class: an invalid value' do
-        let(:entity_class)        { 'Spec::EntityClass' }
-        let(:constructor_options) { super().merge(entity_class:) }
-
-        it 'should raise an exception' do
-          expect { described_class.new(**constructor_options) }
-            .to raise_error ArgumentError, error_message
-        end
-      end
+        .and_any_keywords
     end
   end
 
