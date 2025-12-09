@@ -53,12 +53,12 @@ module Cuprum::Collections::Adapters
       entity.attributes
     end
 
-    def validate_entity_class(entity_class)
-      tools.assertions.validate_class(entity_class, as: 'entity class')
+    def validate_entity_class_parameter(entity_class, as: 'entity class')
+      tools.assertions.validate_class(entity_class, as:)
 
       return if entity_class < Stannum::Entity
 
-      raise ArgumentError, 'entity class is not a Stannum::Entity'
+      raise ArgumentError, "#{as} is not a Stannum::Entity"
     end
 
     def verify_attribute_names_are_attributes

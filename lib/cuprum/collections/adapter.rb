@@ -33,7 +33,7 @@ module Cuprum::Collections
       @allow_extra_attributes =
         options.fetch(:allow_extra_attributes, @attribute_names.empty?)
 
-      validate_entity_class(@entity_class)
+      validate_entity_class_parameter(@entity_class)
     end
 
     # @return [Set<String>] the valid attribute names for a data object.
@@ -61,8 +61,7 @@ module Cuprum::Collections
     def build(attributes:)
       steps do
         handle_invalid_parameters(
-          validate_attributes(attributes),
-          *validate_attribute_keys(attributes)
+          validate_attributes_parameter(attributes)
         )
         handle_extra_attributes(attributes)
 
@@ -80,9 +79,8 @@ module Cuprum::Collections
     def merge(attributes:, entity:)
       steps do
         handle_invalid_parameters(
-          validate_attributes(attributes),
-          *validate_attribute_keys(attributes),
-          validate_entity(entity)
+          validate_attributes_parameter(attributes),
+          validate_entity_parameter(entity)
         )
         handle_extra_attributes(attributes)
 
@@ -98,7 +96,9 @@ module Cuprum::Collections
     #   or the error.
     def serialize(entity:)
       steps do
-        handle_invalid_parameters(validate_entity(entity))
+        handle_invalid_parameters(
+          validate_entity_parameter(entity)
+        )
 
         serialize_entity(entity:)
       end
@@ -114,19 +114,67 @@ module Cuprum::Collections
     #   the error if the data object is not valid.
     def validate(entity:, contract: nil)
       steps do
-        handle_invalid_parameters(validate_entity(entity))
+        handle_invalid_parameters(
+          validate_entity_parameter(entity)
+        )
 
-        contract ||= default_contract_for(entity:)
-
-        match, errors = step { match_contract(contract:, entity:) }
-
-        return success(entity) if match
-
-        failure(failed_validation_error(errors:))
+        validate_entity(contract:, entity:)
       end
     end
 
+    # Asserts that an attributes parameter is a Hash with valid keys.
+    #
+    # @param attributes [Object] the attributes to validate.
+    # @param as [String] the name of the validate object. Defaults to
+    #   "attributes".
+    #
+    # @return [String, nil] the error message if the attributes are not a Hash
+    #   with valid keys; or nil if the attributes are valid.
+    def validate_attributes_parameter(attributes, as: 'attributes') # rubocop:disable Metrics/MethodLength
+      return attributes_not_hash_error(as:) unless attributes.is_a?(Hash)
+
+      prefix = "#{tools.string_tools.singularize(as)} key"
+
+      attributes
+        .each_key
+        .with_object([]) do |key, messages|
+          messages << validate_attributes_parameter_key(
+            key,
+            as: "#{prefix} #{key.inspect}"
+          )
+        end
+        .compact
+        .join(', ')
+    end
+
+    # Asserts that an entity parameter is of valid type.
+    #
+    # @param entity [Object] the entity to validate.
+    # @param as [String] the name of the validated object. Defaults to "entity".
+    #
+    # @return [String, nil] the error message if the entity is not of valid
+    #   type; or nil if the entity is valid.
+    def validate_entity_parameter(entity, as: 'entity')
+      return unless entity_class
+
+      return if entity.is_a?(entity_class)
+
+      tools.assertions.error_message_for(
+        'sleeping_king_studios.tools.assertions.instance_of',
+        as:,
+        expected: entity_class
+      )
+    end
+
     private
+
+    def attributes_not_hash_error(as:)
+      tools.assertions.error_message_for(
+        'sleeping_king_studios.tools.assertions.instance_of',
+        as:,
+        expected: Hash
+      )
+    end
 
     def build_entity(**)
       failure(not_implemented_error)
@@ -134,6 +182,13 @@ module Cuprum::Collections
 
     def default_contract_for(**)
       default_contract
+    end
+
+    def empty_attribute_key_error(as:)
+      tools.assertions.error_message_for(
+        'sleeping_king_studios.tools.assertions.presence',
+        as:
+      )
     end
 
     def extra_attributes_error(extra_attributes:)
@@ -173,8 +228,17 @@ module Cuprum::Collections
 
         return if failures.empty?
 
+        failures = failures.map { |failure| failure.split(', ') }.flatten
+
         failure(invalid_parameters_error(failures:))
       end
+    end
+
+    def invalid_attribute_key_error(as:)
+      tools.assertions.error_message_for(
+        'sleeping_king_studios.tools.assertions.name',
+        as:
+      )
     end
 
     def invalid_parameters_error(failures:)
@@ -212,63 +276,28 @@ module Cuprum::Collections
       SleepingKingStudios::Tools::Toolbelt.instance
     end
 
-    def validate_attribute_key(key, as:) # rubocop:disable Metrics/MethodLength
-      if key.nil?
-        return tools.assertions.error_message_for(
-          'sleeping_king_studios.tools.assertions.presence',
-          as:
-        )
-      end
+    def validate_attributes_parameter_key(key, as:)
+      return empty_attribute_key_error(as:) if key.nil?
 
       unless key.is_a?(String) || key.is_a?(Symbol)
-        return tools.assertions.error_message_for(
-          'sleeping_king_studios.tools.assertions.name',
-          as:
-        )
+        return invalid_attribute_key_error(as:)
       end
 
       return unless key.empty?
 
-      tools.assertions.error_message_for(
-        'sleeping_king_studios.tools.assertions.presence',
-        as:
-      )
+      empty_attribute_key_error(as:)
     end
 
-    def validate_attribute_keys(attributes, as: 'attributes')
-      return unless attributes.is_a?(Hash)
+    def validate_entity(contract:, entity:)
+      contract ||= default_contract_for(entity:)
 
-      prefix = "#{tools.string_tools.singularize(as)} key"
+      match, errors = step { match_contract(contract:, entity:) }
 
-      attributes.each_key.with_object([]) do |key, errors|
-        message = validate_attribute_key(key, as: "#{prefix} #{key.inspect}")
+      return success(entity) if match
 
-        errors << message if message
-      end
+      failure(failed_validation_error(errors:))
     end
 
-    def validate_attributes(attributes, as: 'attributes')
-      return if attributes.is_a?(Hash)
-
-      tools.assertions.error_message_for(
-        'sleeping_king_studios.tools.assertions.instance_of',
-        as:,
-        expected: Hash
-      )
-    end
-
-    def validate_entity(entity, as: 'entity')
-      return unless entity_class
-
-      return if entity.is_a?(entity_class)
-
-      tools.assertions.error_message_for(
-        'sleeping_king_studios.tools.assertions.instance_of',
-        as:,
-        expected: entity_class
-      )
-    end
-
-    def validate_entity_class(*) = nil
+    def validate_entity_class_parameter(*, **) = nil
   end
 end
