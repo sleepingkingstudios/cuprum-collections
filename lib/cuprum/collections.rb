@@ -6,6 +6,7 @@ require 'cuprum'
 module Cuprum
   # A data abstraction layer based on the Cuprum library.
   module Collections
+    autoload :Adaptable,         'cuprum/collections/adaptable'
     autoload :Adapter,           'cuprum/collections/adapter'
     autoload :Adapters,          'cuprum/collections/adapters'
     autoload :Association,       'cuprum/collections/association'
@@ -15,6 +16,7 @@ module Cuprum
     autoload :CollectionCommand, 'cuprum/collections/collection_command'
     autoload :Commands,          'cuprum/collections/commands'
     autoload :Errors,            'cuprum/collections/errors'
+    autoload :Queries,           'cuprum/collections/queries'
     autoload :Query,             'cuprum/collections/query'
     autoload :Relation,          'cuprum/collections/relation'
     autoload :Relations,         'cuprum/collections/relations'
