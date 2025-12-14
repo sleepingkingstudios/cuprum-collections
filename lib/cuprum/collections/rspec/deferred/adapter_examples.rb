@@ -129,9 +129,9 @@ module Cuprum::Collections::RSpec::Deferred
           end
           let(:expected_failures) do
             [
-              "attribute key nil can't be blank",
-              "attribute key \"\" can't be blank",
-              'attribute key 10000 is not a String or a Symbol'
+              "attributes[nil] key can't be blank",
+              "attributes[\"\"] key can't be blank",
+              'attributes[10000] key is not a String or a Symbol'
             ]
           end
 
@@ -190,9 +190,9 @@ module Cuprum::Collections::RSpec::Deferred
           end
           let(:expected_failures) do
             [
-              "attribute key nil can't be blank",
-              "attribute key \"\" can't be blank",
-              'attribute key 10000 is not a String or a Symbol'
+              "attributes[nil] key can't be blank",
+              "attributes[\"\"] key can't be blank",
+              'attributes[10000] key is not a String or a Symbol'
             ]
           end
 
@@ -411,14 +411,17 @@ module Cuprum::Collections::RSpec::Deferred
               10_000 => 'km'
             }
           end
-          let(:error_message) do
-            "attribute key nil can't be blank, attribute key \"\" can't be " \
-              'blank, attribute key 10000 is not a String or a Symbol'
+          let(:error_messages) do
+            [
+              "attributes[nil] key can't be blank",
+              "attributes[\"\"] key can't be blank",
+              'attributes[10000] key is not a String or a Symbol'
+            ]
           end
 
           it 'should return the error message' do
             expect(adapter.validate_attributes_parameter(attributes))
-              .to be == error_message
+              .to be == error_messages
           end
         end
       end
