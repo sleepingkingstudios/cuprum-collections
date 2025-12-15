@@ -9,5 +9,7 @@ module Cuprum::Collections::Adaptable
       'cuprum/collections/adaptable/commands/abstract_assign_one'
     autoload :AbstractBuildOne,
       'cuprum/collections/adaptable/commands/abstract_build_one'
+    autoload :AbstractValidateOne,
+      'cuprum/collections/adaptable/commands/abstract_validate_one'
   end
 end
