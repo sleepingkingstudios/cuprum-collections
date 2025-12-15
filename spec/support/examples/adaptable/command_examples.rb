@@ -81,5 +81,33 @@ module Spec::Support::Examples::Adaptable
         klass.define_attribute   :published_at, String, optional: true
       end
     end
+
+    deferred_examples 'should validate the entity' do
+      describe 'with an invalid entity value' do
+        let(:entity) { Object.new.freeze }
+        let(:expected_error) do
+          error_message =
+            SleepingKingStudios::Tools::Toolbelt
+              .instance
+              .assertions
+              .error_message_for(
+                'sleeping_king_studios.tools.assertions.instance_of',
+                as:       'entity',
+                expected: Spec::BookEntity
+              )
+
+          Cuprum::Errors::InvalidParameters.new(
+            command_class: command.class,
+            failures:      [error_message]
+          )
+        end
+
+        it 'should return a failing result' do
+          expect(call_command)
+            .to be_a_failing_result
+            .with_error(expected_error)
+        end
+      end
+    end
   end
 end
