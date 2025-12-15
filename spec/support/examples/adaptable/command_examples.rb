@@ -34,6 +34,8 @@ module Spec::Support::Examples::Adaptable
       end
 
       define_method :convert_data_to_entities do |data|
+        return nil if data.nil?
+
         return Spec::BookEntity.new(**data) unless data.is_a?(Array)
 
         stringify_data(data).map do |maybe_attributes|
