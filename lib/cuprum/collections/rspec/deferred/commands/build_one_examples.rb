@@ -62,8 +62,8 @@ module Cuprum::Collections::RSpec::Deferred::Commands
         describe 'with an attributes hash with extra attributes' do
           let(:attributes) do
             {
-              title:     'The Book of Lost Tales',
-              audiobook: true
+              'title'     => 'The Book of Lost Tales',
+              'audiobook' => true
             }
           end
 

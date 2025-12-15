@@ -61,7 +61,7 @@ module Cuprum::Collections
     def build(attributes:)
       steps do
         handle_invalid_parameters(
-          validate_attributes_parameter(attributes)
+          *validate_attributes_parameter(attributes)
         )
         handle_extra_attributes(attributes)
 
@@ -79,7 +79,7 @@ module Cuprum::Collections
     def merge(attributes:, entity:)
       steps do
         handle_invalid_parameters(
-          validate_attributes_parameter(attributes),
+          *validate_attributes_parameter(attributes),
           validate_entity_parameter(entity)
         )
         handle_extra_attributes(attributes)
@@ -130,21 +130,18 @@ module Cuprum::Collections
     #
     # @return [String, nil] the error message if the attributes are not a Hash
     #   with valid keys; or nil if the attributes are valid.
-    def validate_attributes_parameter(attributes, as: 'attributes') # rubocop:disable Metrics/MethodLength
+    def validate_attributes_parameter(attributes, as: 'attributes')
       return attributes_not_hash_error(as:) unless attributes.is_a?(Hash)
-
-      prefix = "#{tools.string_tools.singularize(as)} key"
 
       attributes
         .each_key
         .with_object([]) do |key, messages|
           messages << validate_attributes_parameter_key(
             key,
-            as: "#{prefix} #{key.inspect}"
+            as: "#{as}[#{key.inspect}] key"
           )
         end
         .compact
-        .join(', ')
     end
 
     # Asserts that an entity parameter is of valid type.

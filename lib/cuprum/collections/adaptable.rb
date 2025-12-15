@@ -5,6 +5,8 @@ require 'cuprum/collections'
 module Cuprum::Collections
   # Namespace for defining adaptable collections.
   module Adaptable
-    autoload :Query, 'cuprum/collections/adaptable/query'
+    autoload :Command,  'cuprum/collections/adaptable/command'
+    autoload :Commands, 'cuprum/collections/adaptable/commands'
+    autoload :Query,    'cuprum/collections/adaptable/query'
   end
 end

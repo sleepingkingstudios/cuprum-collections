@@ -1,11 +1,39 @@
 # frozen_string_literal: true
 
+require 'cuprum/parameter_validation'
+require 'stannum/constraints/boolean'
+
 require 'cuprum/collections/commands'
 require 'cuprum/collections/errors/not_found'
 
 module Cuprum::Collections::Commands
   # Abstract implementation of the FindMany command.
   module AbstractFindMany
+    include Cuprum::ParameterValidation
+
+    # @!method call(primary_keys:, allow_partial: false, envelope: false)
+    #   Queries the collection for the items with the given primary keys.
+    #
+    #   The command will find and return the entities with the given primary
+    #   keys. If any of the items are not found, the command will fail and
+    #   return a NotFound error. If the :allow_partial option is set, the
+    #   command will return a partial result unless none of the requested items
+    #   are found.
+    #
+    #   When the :envelope option is true, the command wraps the items in a
+    #   Hash, using the name of the collection as the key.
+    #
+    #   @param allow_partial [Boolean] If true, passes if any of the items are
+    #     found.
+    #   @param envelope [Boolean] If true, wraps the result value in a Hash.
+    #   @param primary_keys [Array] The primary keys of the requested items.
+    #
+    #   @return [Cuprum::Result<Array<Hash{String, Object}>>] a result with the
+    #     requested items.
+    validate :allow_partial, :boolean, optional: true
+    validate :envelope,      :boolean, optional: true
+    validate :primary_keys
+
     private
 
     def apply_query(primary_keys:)
@@ -36,7 +64,16 @@ module Cuprum::Collections::Commands
 
     def items_with_primary_keys(items:)
       # :nocov:
-      items.to_h { |item| [item.send(primary_key_name), item] }
+      items.to_h do |item|
+        primary_key_value =
+          if item.respond_to?(:[])
+            item[primary_key_name.to_s] || item[primary_key_name.to_sym]
+          else
+            item.send(primary_key_name)
+          end
+
+        [primary_key_value, item]
+      end
       # :nocov:
     end
 
