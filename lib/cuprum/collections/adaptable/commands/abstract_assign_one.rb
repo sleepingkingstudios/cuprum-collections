@@ -22,8 +22,6 @@ module Cuprum::Collections::Adaptable::Commands
 
     private
 
-    def process(attributes:, entity:)
-      adapter.merge(attributes:, entity:)
-    end
+    def process(attributes:, entity:) = adapter.merge(attributes:, entity:)
   end
 end

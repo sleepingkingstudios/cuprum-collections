@@ -7,5 +7,7 @@ module Cuprum::Collections::Adaptable
   module Commands
     autoload :AbstractAssignOne,
       'cuprum/collections/adaptable/commands/abstract_assign_one'
+    autoload :AbstractBuildOne,
+      'cuprum/collections/adaptable/commands/abstract_build_one'
   end
 end

@@ -25,6 +25,7 @@ module Spec::Support::Examples::Adaptable
         )
       end
       let(:collection_options) { {} }
+      let(:entity_class)       { Spec::BookEntity }
       let(:data)               { [] }
       let(:matching_data)      { data }
       let(:expected_data)      { convert_data_to_entities(matching_data) }
