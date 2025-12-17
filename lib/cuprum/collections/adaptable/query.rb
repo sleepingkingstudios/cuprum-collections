@@ -4,7 +4,7 @@ require 'cuprum/collections/adaptable'
 require 'cuprum/collections/query'
 
 module Cuprum::Collections::Adaptable
-  # Abstract base class for adaptable collection Query implementations.
+  # Mixin for adaptable collection Query implementations.
   module Query
     # Exception raised when the query cannot convert native data.
     class AbstractQueryError < StandardError; end
@@ -12,13 +12,7 @@ module Cuprum::Collections::Adaptable
     # Exception raised when converting attributes returns a failing result.
     class InvalidDataError < StandardError; end
 
-    # @todo: Two exception classes here.
-    #   - Not implemented/abstract query.
-    #   - Internal data error - converting from native/using adapter failed.
-
     # @param adapter [Cuprum::Collections::Adapter] the collection adapter.
-    # @param scope [Cuprum::Collections::Scopes::Base] the base scope for the
-    #   query. Defaults to nil.
     def initialize(*, adapter:, **)
       super(*, **)
 

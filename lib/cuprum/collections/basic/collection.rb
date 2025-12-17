@@ -71,7 +71,7 @@ module Cuprum::Collections::Basic
       Cuprum::Collections::Basic::Commands::ValidateOne.new(collection: self)
     end
 
-    # @return [Stannum::Constraints::Base, nil] the #   default contract for
+    # @return [Stannum::Constraints::Base, nil] the default contract for
     #   validating items in the collection.
     def default_contract
       @options[:default_contract]
