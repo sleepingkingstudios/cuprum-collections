@@ -98,7 +98,11 @@ module Cuprum::Collections::RSpec::Deferred
           let(:constructor_options) do
             super().merge(name:)
           end
-          let(:expected) { options[:default_entity_class] || Book }
+          let(:expected) do
+            value = options[:default_entity_class] || Book
+            value = instance_exec(&value) if value.is_a?(Proc)
+            value
+          end
 
           it { expect(subject.entity_class).to be expected }
 
@@ -119,7 +123,9 @@ module Cuprum::Collections::RSpec::Deferred
               super().merge(qualified_name:)
             end
             let(:expected) do
-              options[:default_entity_class] || Spec::ScopedBook
+              value = options[:default_entity_class] || Spec::ScopedBook
+              value = instance_exec(&value) if value.is_a?(Proc)
+              value
             end
 
             it { expect(subject.entity_class).to be expected }
@@ -142,7 +148,11 @@ module Cuprum::Collections::RSpec::Deferred
           let(:constructor_options) do
             super().merge(name:)
           end
-          let(:expected) { options[:default_entity_class] || Book }
+          let(:expected) do
+            value = options[:default_entity_class] || Book
+            value = instance_exec(&value) if value.is_a?(Proc)
+            value
+          end
 
           it { expect(subject.entity_class).to be expected }
 
@@ -163,7 +173,9 @@ module Cuprum::Collections::RSpec::Deferred
               super().merge(qualified_name:)
             end
             let(:expected) do
-              options[:default_entity_class] || Spec::ScopedBook
+              value = options[:default_entity_class] || Spec::ScopedBook
+              value = instance_exec(&value) if value.is_a?(Proc)
+              value
             end
 
             it { expect(subject.entity_class).to be expected }
@@ -187,7 +199,9 @@ module Cuprum::Collections::RSpec::Deferred
             super().merge(qualified_name:)
           end
           let(:expected) do
-            options[:default_entity_class] || Spec::ScopedBook
+            value = options[:default_entity_class] || Spec::ScopedBook
+            value = instance_exec(&value) if value.is_a?(Proc)
+            value
           end
 
           it { expect(subject.entity_class).to be expected }
@@ -210,7 +224,9 @@ module Cuprum::Collections::RSpec::Deferred
             super().merge(qualified_name:)
           end
           let(:expected) do
-            options[:default_entity_class] || Spec::ScopedBook
+            value = options[:default_entity_class] || Spec::ScopedBook
+            value = instance_exec(&value) if value.is_a?(Proc)
+            value
           end
 
           it { expect(subject.entity_class).to be expected }
@@ -331,7 +347,15 @@ module Cuprum::Collections::RSpec::Deferred
       end
 
       describe '#options' do
-        include_examples 'should define reader', :options, -> { {} }
+        let(:expected_options) do
+          next super() if defined?(super())
+
+          {}
+        end
+
+        include_examples 'should define reader',
+          :options,
+          -> { expected_options }
 
         context 'when initialized with entity_class: value' do
           let(:entity_class) { Grimoire }
@@ -341,7 +365,7 @@ module Cuprum::Collections::RSpec::Deferred
               .merge(entity_class:)
           end
 
-          it { expect(subject.options).to be == {} }
+          it { expect(subject.options).to be == expected_options }
         end
 
         context 'when initialized with singular_name: value' do
@@ -350,7 +374,7 @@ module Cuprum::Collections::RSpec::Deferred
             super().merge(singular_name:)
           end
 
-          it { expect(subject.options).to be == {} }
+          it { expect(subject.options).to be == expected_options }
         end
 
         context 'when initialized with name: value' do
@@ -359,7 +383,7 @@ module Cuprum::Collections::RSpec::Deferred
             super().merge(name:)
           end
 
-          it { expect(subject.options).to be == {} }
+          it { expect(subject.options).to be == expected_options }
         end
 
         context 'when initialized with qualified_name: value' do
@@ -368,7 +392,7 @@ module Cuprum::Collections::RSpec::Deferred
             super().merge(qualified_name:)
           end
 
-          it { expect(subject.options).to be == {} }
+          it { expect(subject.options).to be == expected_options }
         end
       end
 
@@ -898,15 +922,22 @@ module Cuprum::Collections::RSpec::Deferred
 
     deferred_examples 'should define Relation options' do
       describe '#options' do
-        include_examples 'should define reader', :options, -> { {} }
+        let(:expected_options) do
+          next super() if defined?(super())
+
+          {}
+        end
+
+        include_examples 'should define reader',
+          :options,
+          -> { expected_options }
 
         context 'when initialized with options' do
-          let(:options) { { custom_option: 'custom value' } }
-          let(:constructor_options) do
-            super().merge(options)
-          end
+          let(:options)             { { custom_option: 'custom value' } }
+          let(:expected_options)    { super().merge(options) }
+          let(:constructor_options) { super().merge(options) }
 
-          it { expect(subject.options).to be == options }
+          it { expect(subject.options).to be == expected_options }
         end
       end
     end
