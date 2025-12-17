@@ -447,6 +447,20 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
         end
       end
 
+      describe 'with a Hash with a "not_null" operator' do
+        let(:operators) { Cuprum::Collections::Queries::Operators }
+        let(:block) do
+          ->(scope) { { 'series' => scope.not_null } }
+        end
+        let(:expected) do
+          [['series', operators::NOT_NULL, nil]]
+        end
+
+        it 'should parse the criteria' do
+          expect(parse_criteria(&block)).to be == expected
+        end
+      end
+
       describe 'with a Hash with a "not_one_of" operator and an Array' do
         let(:operators) { Cuprum::Collections::Queries::Operators }
         let(:block) do
@@ -519,6 +533,20 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
               ['Earthsea', 'The Lord of the Rings']
             ]
           ]
+        end
+
+        it 'should parse the criteria' do
+          expect(parse_criteria(&block)).to be == expected
+        end
+      end
+
+      describe 'with a Hash with a "null" operator' do
+        let(:operators) { Cuprum::Collections::Queries::Operators }
+        let(:block) do
+          ->(scope) { { 'series' => scope.null } }
+        end
+        let(:expected) do
+          [['series', operators::NULL, nil]]
         end
 
         it 'should parse the criteria' do

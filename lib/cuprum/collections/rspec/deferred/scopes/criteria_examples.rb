@@ -1713,6 +1713,30 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
         end
       end
 
+      context 'when the scope has a not null criterion' do
+        let(:criteria) do
+          described_class.parse do |scope|
+            { 'series' => scope.not_null }
+          end
+        end
+
+        describe 'with empty data' do
+          let(:data) { [] }
+
+          it { expect(filtered_data).to be == [] }
+        end
+
+        wrap_deferred 'with data' do
+          let(:matching) do
+            data.reject do |item|
+              item['series'].nil?
+            end
+          end
+
+          it { expect(filtered_data).to match_array expected }
+        end
+      end
+
       context 'when the scope has a not one of criterion' do
         let(:criteria) do
           described_class.parse do |scope|
@@ -1733,6 +1757,30 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
             data.reject do |item|
               ['The Fellowship Of The Ring', 'The Two Towers']
                 .include?(item['title'])
+            end
+          end
+
+          it { expect(filtered_data).to match_array expected }
+        end
+      end
+
+      context 'when the scope has a null criterion' do
+        let(:criteria) do
+          described_class.parse do |scope|
+            { 'series' => scope.null }
+          end
+        end
+
+        describe 'with empty data' do
+          let(:data) { [] }
+
+          it { expect(filtered_data).to be == [] }
+        end
+
+        wrap_deferred 'with data' do
+          let(:matching) do
+            data.select do |item|
+              item['series'].nil?
             end
           end
 

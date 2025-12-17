@@ -15,7 +15,9 @@ module Cuprum::Collections
       LESS_THAN:                :less_than,
       LESS_THAN_OR_EQUAL_TO:    :less_than_or_equal_to,
       NOT_EQUAL:                :not_equal,
+      NOT_NULL:                 :not_null,
       NOT_ONE_OF:               :not_one_of,
+      NULL:                     :null,
       ONE_OF:                   :one_of
     ).freeze
 
@@ -46,7 +48,9 @@ module Cuprum::Collections
       Operators::LESS_THAN                => Operators::GREATER_THAN_OR_EQUAL_TO, # rubocop:disable Layout/LineLength
       Operators::LESS_THAN_OR_EQUAL_TO    => Operators::GREATER_THAN,
       Operators::NOT_EQUAL                => Operators::EQUAL,
+      Operators::NOT_NULL                 => Operators::NULL,
       Operators::NOT_ONE_OF               => Operators::ONE_OF,
+      Operators::NULL                     => Operators::NOT_NULL,
       Operators::ONE_OF                   => Operators::NOT_ONE_OF
     }.freeze
 
