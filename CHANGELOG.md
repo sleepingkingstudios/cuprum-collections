@@ -4,6 +4,25 @@
 
 Removed all deprecated functionality from version 0.5.0 and earlier.
 
+### Collections
+
+Added support for adaptable collections.
+
+- Adapters map raw attributes from a datastore to a Ruby object.
+  - Added `Cuprum::Collections::Adapter`
+  - Added `Cuprum::Collections::Adapters::DataAdapter`
+  - Added `Cuprum::Collections::Adapters::EntityAdapter`
+  - Added `Cuprum::Collections::Adapters::HashAdapter`
+- Adaptable collections use an adapter to transform the data into the desired object.
+  - Added `Cuprum::Collections::Adaptable::Collection`
+  - Added `Cuprum::Collections::Adaptable::Command`
+  - Added `Cuprum::Collections::Adaptable::Commands`
+  - Added `Cuprum::Collections::Adaptable::Query`
+
+### Queries
+
+Added support for `NULL`, `NOT_NULL` operators in queries.
+
 ### Repositories
 
 - Implemented `#find`, which finds the matching collection by name, qualified name, or entity class.
