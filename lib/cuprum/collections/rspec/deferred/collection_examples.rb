@@ -77,7 +77,11 @@ module Cuprum::Collections::RSpec::Deferred
       include_deferred 'should define the command', :validate_one
 
       describe '#==' do
-        let(:other_options)    { { name: } }
+        let(:other_options) do
+          next super() if defined?(super())
+
+          { name: }
+        end
         let(:other_collection) { described_class.new(**other_options) }
 
         describe 'with nil' do
@@ -223,7 +227,9 @@ module Cuprum::Collections::RSpec::Deferred
 
         describe 'with matching entity class as a Class' do
           let(:configured_entity_class) do
-            options.fetch(:default_entity_class, Book)
+            value = options.fetch(:default_entity_class, Book)
+            value = instance_exec(&value) if value.is_a?(Proc)
+            value
           end
           let(:other_options) { { entity_class: configured_entity_class } }
 
@@ -232,7 +238,9 @@ module Cuprum::Collections::RSpec::Deferred
 
         describe 'with matching entity class as a String' do
           let(:configured_entity_class) do
-            options.fetch(:default_entity_class, Book)
+            value = options.fetch(:default_entity_class, Book)
+            value = instance_exec(&value) if value.is_a?(Proc)
+            value
           end
           let(:other_options) do
             { entity_class: configured_entity_class.to_s }

@@ -13,7 +13,13 @@ module Cuprum::Collections::Relations
     ].freeze
     private_constant :IGNORED_PARAMETERS
 
-    PARAMETER_KEYS = %i[entity_class name qualified_name].freeze
+    OPTIONAL_PARAMETER_KEYS = %i[plural_name singular_name].freeze
+    private_constant :OPTIONAL_PARAMETER_KEYS
+
+    REQUIRED_PARAMETER_KEYS = %i[entity_class name qualified_name].freeze
+    private_constant :REQUIRED_PARAMETER_KEYS
+
+    PARAMETER_KEYS = (OPTIONAL_PARAMETER_KEYS + REQUIRED_PARAMETER_KEYS).freeze
     private_constant :PARAMETER_KEYS
 
     class << self # rubocop:disable Metrics/ClassLength
@@ -30,23 +36,14 @@ module Cuprum::Collections::Relations
       #   @param qualified_name [String] a scoped name for the relation.
       #
       #   @return [Hash] the resolved parameters.
-      def resolve_parameters(params) # rubocop:disable Metrics/MethodLength
+      def resolve_parameters(params)
         validate_parameters(**params)
 
-        entity_class   = entity_class_from(**params)
-        class_name     = entity_class_name(entity_class)
-        name           = relation_name_from(**params, class_name:)
-        plural_name    = plural_name_from(**params, name:)
-        qualified_name = qualified_name_from(**params, class_name:)
-        singular_name  = singular_name_from(**params, name:)
-
-        {
-          entity_class:,
-          name:,
-          plural_name:,
-          qualified_name:,
-          singular_name:
-        }
+        if has_key?(params, :entity_class)
+          resolve_parameters_from_entity_class(**params)
+        else
+          resolve_parameters_from_name(**params)
+        end
       end
 
       private
@@ -59,65 +56,102 @@ module Cuprum::Collections::Relations
           .join('::')
       end
 
-      def entity_class_from(**params)
-        if has_key?(params, :entity_class)
-          entity_class = params[:entity_class]
-
-          return entity_class.is_a?(Class) ? entity_class : entity_class.to_s
-        end
-
-        if has_key?(params, :qualified_name)
-          return classify(params[:qualified_name])
-        end
-
-        classify(params[:name])
-      end
-
-      def entity_class_name(entity_class, scoped: true)
-        (entity_class.is_a?(Class) ? entity_class.name : entity_class)
-          .split('::')
-          .map { |str| tools.string_tools.underscore(str) }
-          .then { |ary| scoped ? ary.join('/') : ary.last }
-      end
-
       def has_key?(params, key) # rubocop:disable Naming/PredicatePrefix
         return false unless params.key?(key)
 
         !params[key].nil?
       end
 
-      def plural_name_from(name:, **parameters)
-        if parameters.key?(:plural_name) && !parameters[:plural_name].nil?
-          return validate_parameter(
-            parameters[:plural_name],
-            as: 'plural name'
-          )
-        end
+      def resolve_entity_class(params)
+        entity_class = classify(params[:qualified_name])
 
-        tools.string_tools.pluralize(name)
+        params.update(entity_class:)
       end
 
-      def qualified_name_from(class_name:, **params)
-        return params[:qualified_name].to_s if has_key?(params, :qualified_name)
+      def resolve_entity_name(params)
+        entity_class = params[:entity_class]
+        entity_name  =
+          (entity_class.is_a?(Class) ? entity_class.name : entity_class)
+            .split('::')
+            .map { |str| tools.string_tools.underscore(str) }
+            .join('/')
 
-        tools.string_tools.pluralize(class_name)
+        params.update(entity_name:)
       end
 
-      def relation_name_from(class_name:, **params)
-        return params[:name].to_s if has_key?(params, :name)
+      def resolve_name(params)
+        name =
+          if has_key?(params, :name)
+            params[:name].to_s
+          elsif has_key?(params, :entity_name)
+            tools.string_tools.pluralize(params[:entity_name].split('/').last)
+          else
+            params[:qualified_name].split('/').last
+          end
 
-        tools.string_tools.pluralize(class_name.split('/').last)
+        params.update(name:)
       end
 
-      def singular_name_from(name:, **parameters)
-        if parameters.key?(:singular_name) && !parameters[:singular_name].nil?
-          return validate_parameter(
-            parameters[:singular_name],
-            as: 'singular name'
-          )
-        end
+      def resolve_parameters_from_entity_class(**params)
+        params
+          .slice(*PARAMETER_KEYS)
+          .then { |hsh| resolve_entity_name(hsh) }
+          .then { |hsh| resolve_qualified_name(hsh) }
+          .then { |hsh| resolve_name(hsh) }
+          .then { |hsh| resolve_plural_name(hsh) }
+          .then { |hsh| resolve_singular_name(hsh) }
+          .tap  { |hsh| hsh.delete(:entity_name) }
+      end
 
-        tools.string_tools.singularize(name)
+      def resolve_parameters_from_name(**params)
+        params
+          .slice(*PARAMETER_KEYS)
+          .then { |hsh| resolve_qualified_name(hsh) }
+          .then { |hsh| resolve_name(hsh) }
+          .then { |hsh| resolve_plural_name(hsh) }
+          .then { |hsh| resolve_singular_name(hsh) }
+          .then { |hsh| resolve_entity_class(hsh) }
+      end
+
+      def resolve_plural_name(params)
+        plural_name =
+          if has_key?(params, :plural_name)
+            validate_parameter(
+              params[:plural_name],
+              as: 'plural name'
+            )
+          else
+            tools.string_tools.pluralize(params[:name])
+          end
+
+        params.update(plural_name:)
+      end
+
+      def resolve_qualified_name(params)
+        qualified_name =
+          if has_key?(params, :qualified_name)
+            params[:qualified_name].to_s
+          elsif has_key?(params, :entity_name)
+            tools.string_tools.pluralize(params[:entity_name])
+          elsif has_key?(params, :name)
+            tools.string_tools.pluralize(params[:name])
+          end
+
+        params.update(qualified_name:)
+      end
+
+      def resolve_singular_name(params)
+        singular_name =
+          if has_key?(params, :singular_name)
+            validate_parameter(
+              params[:singular_name],
+              as: 'singular name'
+            )
+          else
+            tools.string_tools.singularize(params[:name])
+          end
+
+        params.update(singular_name:)
       end
 
       def tools
@@ -144,7 +178,7 @@ module Cuprum::Collections::Relations
       end
 
       def validate_parameter_keys(params)
-        return if PARAMETER_KEYS.any? { |key| has_key?(params, key) }
+        return if REQUIRED_PARAMETER_KEYS.any? { |key| has_key?(params, key) }
 
         raise ArgumentError, "name or entity class can't be blank"
       end

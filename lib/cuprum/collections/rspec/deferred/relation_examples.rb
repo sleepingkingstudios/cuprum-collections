@@ -98,7 +98,11 @@ module Cuprum::Collections::RSpec::Deferred
           let(:constructor_options) do
             super().merge(name:)
           end
-          let(:expected) { options[:default_entity_class] || Book }
+          let(:expected) do
+            value = options[:default_entity_class] || Book
+            value = instance_exec(&value) if value.is_a?(Proc)
+            value
+          end
 
           it { expect(subject.entity_class).to be expected }
 
@@ -119,7 +123,9 @@ module Cuprum::Collections::RSpec::Deferred
               super().merge(qualified_name:)
             end
             let(:expected) do
-              options[:default_entity_class] || Spec::ScopedBook
+              value = options[:default_entity_class] || Spec::ScopedBook
+              value = instance_exec(&value) if value.is_a?(Proc)
+              value
             end
 
             it { expect(subject.entity_class).to be expected }
@@ -142,7 +148,11 @@ module Cuprum::Collections::RSpec::Deferred
           let(:constructor_options) do
             super().merge(name:)
           end
-          let(:expected) { options[:default_entity_class] || Book }
+          let(:expected) do
+            value = options[:default_entity_class] || Book
+            value = instance_exec(&value) if value.is_a?(Proc)
+            value
+          end
 
           it { expect(subject.entity_class).to be expected }
 
@@ -163,7 +173,9 @@ module Cuprum::Collections::RSpec::Deferred
               super().merge(qualified_name:)
             end
             let(:expected) do
-              options[:default_entity_class] || Spec::ScopedBook
+              value = options[:default_entity_class] || Spec::ScopedBook
+              value = instance_exec(&value) if value.is_a?(Proc)
+              value
             end
 
             it { expect(subject.entity_class).to be expected }
@@ -187,7 +199,9 @@ module Cuprum::Collections::RSpec::Deferred
             super().merge(qualified_name:)
           end
           let(:expected) do
-            options[:default_entity_class] || Spec::ScopedBook
+            value = options[:default_entity_class] || Spec::ScopedBook
+            value = instance_exec(&value) if value.is_a?(Proc)
+            value
           end
 
           it { expect(subject.entity_class).to be expected }
@@ -210,7 +224,9 @@ module Cuprum::Collections::RSpec::Deferred
             super().merge(qualified_name:)
           end
           let(:expected) do
-            options[:default_entity_class] || Spec::ScopedBook
+            value = options[:default_entity_class] || Spec::ScopedBook
+            value = instance_exec(&value) if value.is_a?(Proc)
+            value
           end
 
           it { expect(subject.entity_class).to be expected }
