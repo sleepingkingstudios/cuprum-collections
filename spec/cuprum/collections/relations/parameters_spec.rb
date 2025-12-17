@@ -49,6 +49,12 @@ RSpec.describe Cuprum::Collections::Relations::Parameters do
 
       it { expect(call_method(**parameters)).to be == expected }
 
+      describe 'with default_entity_class: a value' do
+        let(:parameters) { super().merge(default_entity_class: Hash) }
+
+        it { expect(call_method(**parameters)).to be == expected }
+      end
+
       describe 'with name: a String' do
         let(:name)       { 'grimoires' }
         let(:parameters) { super().merge(name:) }
@@ -142,6 +148,12 @@ RSpec.describe Cuprum::Collections::Relations::Parameters do
       end
 
       it { expect(call_method(**parameters)).to be == expected }
+
+      describe 'with default_entity_class: a value' do
+        let(:parameters) { super().merge(default_entity_class: Hash) }
+
+        it { expect(call_method(**parameters)).to be == expected }
+      end
 
       describe 'with name: a String' do
         let(:name)       { 'grimoires' }
@@ -237,6 +249,12 @@ RSpec.describe Cuprum::Collections::Relations::Parameters do
 
       it { expect(call_method(**parameters)).to be == expected }
 
+      describe 'with default_entity_class: a value' do
+        let(:parameters) { super().merge(default_entity_class: 'Hash') }
+
+        it { expect(call_method(**parameters)).to be == expected }
+      end
+
       describe 'with name: a String' do
         let(:name)       { 'grimoires' }
         let(:parameters) { super().merge(name:) }
@@ -331,6 +349,12 @@ RSpec.describe Cuprum::Collections::Relations::Parameters do
 
       it { expect(call_method(**parameters)).to be == expected }
 
+      describe 'with default_entity_class: a value' do
+        let(:parameters) { super().merge(default_entity_class: 'Hash') }
+
+        it { expect(call_method(**parameters)).to be == expected }
+      end
+
       describe 'with name: a String' do
         let(:name)       { 'grimoires' }
         let(:parameters) { super().merge(name:) }
@@ -424,6 +448,20 @@ RSpec.describe Cuprum::Collections::Relations::Parameters do
       end
 
       it { expect(call_method(**parameters)).to be == expected }
+
+      describe 'with default_entity_class: a Class' do
+        let(:parameters) { super().merge(default_entity_class: Hash) }
+        let(:expected)   { super().merge(entity_class: Hash) }
+
+        it { expect(call_method(**parameters)).to be == expected }
+      end
+
+      describe 'with default_entity_class: a String' do
+        let(:parameters) { super().merge(default_entity_class: 'Hash') }
+        let(:expected)   { super().merge(entity_class: 'Hash') }
+
+        it { expect(call_method(**parameters)).to be == expected }
+      end
 
       describe 'with entity_class: a Class' do
         let(:entity_class) { Grimoire }
@@ -550,6 +588,20 @@ RSpec.describe Cuprum::Collections::Relations::Parameters do
       end
 
       it { expect(call_method(**parameters)).to be == expected }
+
+      describe 'with default_entity_class: a Class' do
+        let(:parameters) { super().merge(default_entity_class: Hash) }
+        let(:expected)   { super().merge(entity_class: Hash) }
+
+        it { expect(call_method(**parameters)).to be == expected }
+      end
+
+      describe 'with default_entity_class: a String' do
+        let(:parameters) { super().merge(default_entity_class: 'Hash') }
+        let(:expected)   { super().merge(entity_class: 'Hash') }
+
+        it { expect(call_method(**parameters)).to be == expected }
+      end
 
       describe 'with entity_class: a Class' do
         let(:entity_class) { Grimoire }

@@ -14,7 +14,8 @@ RSpec.describe Cuprum::Collections::Basic do
         **options
       }
     end
-    let(:collection) { described_class.new(**constructor_options) }
+    let(:collection)       { described_class.new(**constructor_options) }
+    let(:expected_options) { options.merge(default_entity_class: Hash) }
 
     it 'should define the class method' do
       expect(described_class)
@@ -29,6 +30,6 @@ RSpec.describe Cuprum::Collections::Basic do
 
     it { expect(collection.name).to be == name }
 
-    it { expect(collection.options).to be == options }
+    it { expect(collection.options).to be == expected_options }
   end
 end

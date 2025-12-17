@@ -13,7 +13,8 @@ module Cuprum::Collections::Relations
     ].freeze
     private_constant :IGNORED_PARAMETERS
 
-    OPTIONAL_PARAMETER_KEYS = %i[plural_name singular_name].freeze
+    OPTIONAL_PARAMETER_KEYS =
+      %i[default_entity_class plural_name singular_name].freeze
     private_constant :OPTIONAL_PARAMETER_KEYS
 
     REQUIRED_PARAMETER_KEYS = %i[entity_class name qualified_name].freeze
@@ -23,17 +24,27 @@ module Cuprum::Collections::Relations
     private_constant :PARAMETER_KEYS
 
     class << self # rubocop:disable Metrics/ClassLength
-      # @overload resolve_parameters(entity_class: nil, singular_name: nil, name: nil, qualified_name: nil)
+      # @overload resolve_parameters(**options)
       #   Helper method for resolving a Relation's required parameters.
       #
-      #   The returned Hash will define the :entity_class, :singular_name,
-      #   :name, and :qualified_name keys.
+      #   At least one of the following options must be provided: name,
+      #   qualified_name, or entity_class. The returned Hash will include the
+      #   above keys as well as :singular_name and :plural_name.
       #
-      #   @param entity_class [Class, String] the class of entity represented
-      #     by the relation.
-      #   @param singular_name [String] the name of an entity in the relation.
-      #   @param name [String] the name of the relation.
-      #   @param qualified_name [String] a scoped name for the relation.
+      #   @param options [Hash] the parameters to resolve.
+      #
+      #   @option options default_entity_class [Class, String, nil] if given,
+      #     this value will be assigned to the entity class if the entity_class
+      #     is absent; it will *not* be used to derive other properties.
+      #   @option options entity_class [Class, String] the class of entity
+      #     represented by the relation.
+      #   @option options name [String] the name of the relation.
+      #   @option options plural_name [String] the name of a group of entities
+      #     in the relation.
+      #   @option options qualified_name [String] a scoped name for the
+      #     relation.
+      #   @option options singular_name [String] the name of an entity in the
+      #     relation.
       #
       #   @return [Hash] the resolved parameters.
       def resolve_parameters(params)
@@ -63,7 +74,12 @@ module Cuprum::Collections::Relations
       end
 
       def resolve_entity_class(params)
-        entity_class = classify(params[:qualified_name])
+        entity_class =
+          if has_key?(params, :default_entity_class)
+            params[:default_entity_class]
+          else
+            classify(params[:qualified_name])
+          end
 
         params.update(entity_class:)
       end
@@ -100,6 +116,7 @@ module Cuprum::Collections::Relations
           .then { |hsh| resolve_name(hsh) }
           .then { |hsh| resolve_plural_name(hsh) }
           .then { |hsh| resolve_singular_name(hsh) }
+          .tap  { |hsh| hsh.delete(:default_entity_class) }
           .tap  { |hsh| hsh.delete(:entity_name) }
       end
 
@@ -111,6 +128,7 @@ module Cuprum::Collections::Relations
           .then { |hsh| resolve_plural_name(hsh) }
           .then { |hsh| resolve_singular_name(hsh) }
           .then { |hsh| resolve_entity_class(hsh) }
+          .tap  { |hsh| hsh.delete(:default_entity_class) }
       end
 
       def resolve_plural_name(params)

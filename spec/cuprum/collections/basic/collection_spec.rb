@@ -27,6 +27,7 @@ RSpec.describe Cuprum::Collections::Basic::Collection do
   let(:name)                { 'books' }
   let(:data)                { [] }
   let(:constructor_options) { { name: } }
+  let(:expected_options)    { { default_entity_class: Hash } }
   let(:query_class)         { Cuprum::Collections::Basic::Query }
   let(:query_options)       { { data: } }
 

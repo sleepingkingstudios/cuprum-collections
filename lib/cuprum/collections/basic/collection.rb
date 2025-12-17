@@ -27,7 +27,7 @@ module Cuprum::Collections::Basic
     #     [Cuprum::Collections::Scopes::Base, Hash, Proc, nil] the configured
     #     scope for the relation.
     def initialize(data: [], **parameters)
-      super(**normalize_parameters(**parameters))
+      super(default_entity_class: Hash, **parameters)
 
       @data = data
     end
@@ -97,24 +97,6 @@ module Cuprum::Collections::Basic
 
     def default_scope
       Cuprum::Collections::Basic::Scopes::AllScope.new
-    end
-
-    def normalize_parameters(**parameters) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
-      return parameters if parameters.key?(:entity_class)
-
-      return parameters unless parameters[:name] || parameters[:qualified_name]
-
-      parameters = parameters.merge(entity_class: Hash)
-
-      if parameters.key?(:name) && parameters.key?(:qualified_name)
-        parameters
-      elsif parameters.key?(:name)
-        parameters.merge(qualified_name: parameters[:name])
-      elsif parameters.key?(:qualified_name)
-        name = parameters[:qualified_name].split('/').last
-
-        parameters.merge(name:)
-      end
     end
   end
 end
