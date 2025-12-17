@@ -12,7 +12,9 @@ RSpec.describe Cuprum::Collections::Queries do
         LESS_THAN:                :less_than,
         LESS_THAN_OR_EQUAL_TO:    :less_than_or_equal_to,
         NOT_EQUAL:                :not_equal,
+        NOT_NULL:                 :not_null,
         NOT_ONE_OF:               :not_one_of,
+        NULL:                     :null,
         ONE_OF:                   :one_of
       }
     end
@@ -29,15 +31,53 @@ RSpec.describe Cuprum::Collections::Queries do
       end
     end
 
+    describe '::GREATER_THAN' do
+      it 'should store the value' do
+        expect(described_class::Operators::GREATER_THAN).to be :greater_than
+      end
+    end
+
+    describe '::GREATER_THAN_OR_EQUAL_TO' do
+      it 'should store the value' do
+        expect(described_class::Operators::GREATER_THAN_OR_EQUAL_TO)
+          .to be :greater_than_or_equal_to
+      end
+    end
+
+    describe '::LESS_THAN' do
+      it 'should store the value' do
+        expect(described_class::Operators::LESS_THAN).to be :less_than
+      end
+    end
+
+    describe '::LESS_THAN_OR_EQUAL_TO' do
+      it 'should store the value' do
+        expect(described_class::Operators::LESS_THAN_OR_EQUAL_TO)
+          .to be :less_than_or_equal_to
+      end
+    end
+
     describe '::NOT_EQUAL' do
       it 'should store the value' do
         expect(described_class::Operators::NOT_EQUAL).to be :not_equal
       end
     end
 
+    describe '::NOT_NULL' do
+      it 'should store the value' do
+        expect(described_class::Operators::NOT_NULL).to be :not_null
+      end
+    end
+
     describe '::NOT_ONE_OF' do
       it 'should store the value' do
         expect(described_class::Operators::NOT_ONE_OF).to be :not_one_of
+      end
+    end
+
+    describe '::NULL' do
+      it 'should store the value' do
+        expect(described_class::Operators::NULL).to be :null
       end
     end
 
@@ -103,7 +143,9 @@ RSpec.describe Cuprum::Collections::Queries do
         op::LESS_THAN                => op::GREATER_THAN_OR_EQUAL_TO,
         op::LESS_THAN_OR_EQUAL_TO    => op::GREATER_THAN,
         op::NOT_EQUAL                => op::EQUAL,
+        op::NOT_NULL                 => op::NULL,
         op::NOT_ONE_OF               => op::ONE_OF,
+        op::NULL                     => op::NOT_NULL,
         op::ONE_OF                   => op::NOT_ONE_OF
       }
     end

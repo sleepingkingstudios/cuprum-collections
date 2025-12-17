@@ -63,10 +63,24 @@ module Cuprum::Collections::Scopes::Criteria
       end
       alias ne not_equal
 
+      def not_null
+        OperatorExpression.new(
+          Cuprum::Collections::Queries::Operators::NOT_NULL,
+          nil
+        )
+      end
+
       def not_one_of(*values)
         OperatorExpression.new(
           Cuprum::Collections::Queries::Operators::NOT_ONE_OF,
           flatten_values(values)
+        )
+      end
+
+      def null
+        OperatorExpression.new(
+          Cuprum::Collections::Queries::Operators::NULL,
+          nil
         )
       end
 
