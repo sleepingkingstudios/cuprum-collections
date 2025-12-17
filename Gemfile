@@ -6,10 +6,7 @@ gemspec
 
 gem 'cuprum', '~> 1.3'
 gem 'sleeping_king_studios-tools', '~> 1.2'
-gem 'stannum',
-  '>= 0.4.0.alpha',
-  git:    'https://github.com/sleepingkingstudios/stannum.git',
-  branch: 'main'
+gem 'stannum', '~> 0.4'
 
 group :development do
   gem 'sleeping_king_studios-tasks', '~> 0.4', '>= 0.4.1'
@@ -23,8 +20,8 @@ group :development, :test do
   gem 'rspec', '~> 3.13'
   gem 'rspec-sleeping_king_studios', '~> 2.8'
 
-  gem 'rubocop', '~> 1.79'
-  gem 'rubocop-rspec', '~> 3.6'
+  gem 'rubocop', '~> 1.82'
+  gem 'rubocop-rspec', '~> 3.8'
 
   gem 'simplecov', '~> 0.22'
 end
