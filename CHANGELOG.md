@@ -30,6 +30,7 @@ Added support for passing `Proc` values when parsing query criteria.
 - Implemented `#find`, which finds the matching collection by name, qualified name, or entity class.
 - Implemented `#remove`, which removes the collection with the specified qualified name.
 - Deprecated `#find_or_create`. Use `#find` to find an existing collection. Use `#create` to add a new collection.
+- Added support for passing a block to `Repository.new { |repository| }`.
 
 ### RSpec
 
