@@ -29,8 +29,11 @@ module Cuprum::Collections
     # Error raised when trying to access a collection that is not defined.
     class UndefinedCollectionError < StandardError; end
 
+    # @yieldparam [Cuprum::Collections::Repository] the created repository.
     def initialize
       @collections = {}
+
+      yield self if block_given?
     end
 
     # @!method keys

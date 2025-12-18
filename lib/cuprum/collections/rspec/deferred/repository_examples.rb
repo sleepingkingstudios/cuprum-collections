@@ -137,6 +137,16 @@ module Cuprum::Collections::RSpec::Deferred
         build_collection(name: 'widgets', qualified_name: 'scope/widgets')
       end
 
+      describe '.new' do
+        it 'should yield the repository' do
+          yielded = nil
+
+          repository = described_class.new { |value| yielded = value }
+
+          expect(yielded).to be repository
+        end
+      end
+
       describe '#[]' do
         let(:error_class) do
           described_class::UndefinedCollectionError
