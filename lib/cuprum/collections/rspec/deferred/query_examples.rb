@@ -14,6 +14,24 @@ module Cuprum::Collections::RSpec::Deferred
     private_constant :OPERATORS
 
     deferred_examples 'should be a Query' do |**deferred_options|
+      shared_context 'when initialized with a Hash' do
+        let(:initial_scope) do
+          { 'author' => 'Ursula K. LeGuin' }
+        end
+        let(:filtered_data) do
+          super().select { |item| item['author'] == 'Ursula K. LeGuin' }
+        end
+      end
+
+      shared_context 'when initialized with a Proc' do
+        let(:initial_scope) do
+          ->(scope) { { 'published_at' => scope.less_than('1973-01-01') } }
+        end
+        let(:filtered_data) do
+          super().select { |item| item['published_at'] < '1973-01-01' }
+        end
+      end
+
       shared_context 'when initialized with a scope' do
         let(:initial_scope) do
           Cuprum::Collections::Scope.new do |scope|
@@ -90,6 +108,22 @@ module Cuprum::Collections::RSpec::Deferred
 
             wrap_context 'when the query has composed filters' do
               it { expect(scoped_query.count).to be == expected_data.count }
+            end
+
+            wrap_context 'when initialized with a Hash' do
+              it { expect(scoped_query.count).to be == expected_data.count }
+
+              wrap_context 'when the query has composed filters' do
+                it { expect(scoped_query.count).to be == expected_data.count }
+              end
+            end
+
+            wrap_context 'when initialized with a Proc' do
+              it { expect(scoped_query.count).to be == expected_data.count }
+
+              wrap_context 'when the query has composed filters' do
+                it { expect(scoped_query.count).to be == expected_data.count }
+              end
             end
 
             wrap_context 'when initialized with a scope' do

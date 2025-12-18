@@ -329,6 +329,25 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
           include_deferred 'should parse Scope criteria from a block'
         end
 
+        describe 'with a proc' do
+          def build_criteria(criteria:)
+            value = criteria.to_h do |(attribute, _, expected)|
+              [attribute, expected]
+            end
+            block = -> { value }
+
+            subject.build(block)
+          end
+
+          def parse_criteria(...)
+            subject.build(...).criteria
+          end
+
+          include_deferred 'should build a criteria scope'
+
+          include_deferred 'should parse Scope criteria from a block'
+        end
+
         describe 'with a hash' do
           def build_criteria(criteria:)
             value = criteria.to_h do |(attribute, _, expected)|
