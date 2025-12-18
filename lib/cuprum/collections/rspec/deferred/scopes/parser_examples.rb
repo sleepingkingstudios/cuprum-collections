@@ -11,6 +11,23 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
     deferred_examples 'should parse Scope criteria' do
       describe 'with a block' do
+        describe 'without a block' do
+          let(:error_message) { 'no block given' }
+
+          it 'should raise an exception' do
+            expect { parse_criteria }
+              .to raise_error ArgumentError, error_message
+          end
+        end
+
+        include_deferred 'should parse Scope criteria from a block'
+      end
+
+      describe 'with a proc' do
+        define_method :parse_criteria do |&block|
+          super(block)
+        end
+
         include_deferred 'should parse Scope criteria from a block'
       end
 
@@ -144,15 +161,6 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
     end
 
     deferred_examples 'should parse Scope criteria from a block' do
-      describe 'without a block' do
-        let(:error_message) { 'no block given' }
-
-        it 'should raise an exception' do
-          expect { parse_criteria }
-            .to raise_error ArgumentError, error_message
-        end
-      end
-
       describe 'with a block returning nil' do
         let(:error_message) do
           'value must be a Hash with String or Symbol keys'

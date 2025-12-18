@@ -150,6 +150,8 @@ module Cuprum::Collections::Scopes::Criteria
     def parse(value = UNKNOWN, &)
       if block_given? && value != UNKNOWN
         parse_hash(value) + parse_block(&)
+      elsif value.is_a?(Proc)
+        parse_block(&value)
       elsif value == UNKNOWN
         parse_block(&)
       else

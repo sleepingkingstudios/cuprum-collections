@@ -59,7 +59,7 @@ module Cuprum::Collections::RSpec::Deferred::Commands
           defined?(super()) ? super() : matching_data
         end
 
-        def call_command
+        define_method :call_command do
           command.call(**options, &block)
         end
 
@@ -98,11 +98,21 @@ module Cuprum::Collections::RSpec::Deferred::Commands
         end
 
         describe 'with an invalid where value' do
-          let(:options) { super().merge(where: Object.new.freeze) }
+          describe 'with an object' do
+            let(:options) { super().merge(where: Object.new.freeze) }
 
-          include_deferred 'should validate the parameter',
-            :where,
-            message: 'where is not a scope or query hash'
+            include_deferred 'should validate the parameter',
+              :where,
+              message: 'where is not a scope or query hash'
+          end
+
+          describe 'with an Proc with invalid arity' do
+            let(:options) { super().merge(where: ->(_a, _b = nil) {}) }
+
+            include_deferred 'should validate the parameter',
+              :where,
+              message: 'where is not a scope or query hash'
+          end
         end
 
         describe 'with an invalid filter block' do
@@ -127,13 +137,36 @@ module Cuprum::Collections::RSpec::Deferred::Commands
         context 'when the collection has many items' do
           let(:data) { fixtures_data }
 
-          include_deferred 'should query the collection' do
-            include_examples 'should return the matching items'
+          context 'when passed a scope as a block' do
+            include_deferred 'should query the collection' do
+              include_examples 'should return the matching items'
 
-            describe 'with envelope: true' do
-              let(:options) { super().merge(envelope: true) }
+              describe 'with envelope: true' do
+                let(:options) { super().merge(envelope: true) }
 
-              include_examples 'should return the wrapped items'
+                include_examples 'should return the wrapped items'
+              end
+            end
+          end
+
+          context 'when passed a scope as a proc' do
+            let(:options) do
+              opts = super()
+
+              opts[:where] = filter unless filter.nil?
+
+              opts
+            end
+            let(:block) { nil }
+
+            include_deferred 'should query the collection' do
+              include_examples 'should return the matching items'
+
+              describe 'with envelope: true' do
+                let(:options) { super().merge(envelope: true) }
+
+                include_examples 'should return the wrapped items'
+              end
             end
           end
         end

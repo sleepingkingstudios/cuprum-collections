@@ -120,6 +120,8 @@ module Cuprum::Collections::Commands
     def build_scope(value, &)
       return Cuprum::Collections::Scope.build(&) if block_given?
 
+      return Cuprum::Collections::Scope.build(&value) if value.is_a?(Proc)
+
       return value if value.is_a?(Cuprum::Collections::Scopes::Base)
 
       Cuprum::Collections::Scope.build(value) if value
@@ -166,6 +168,8 @@ module Cuprum::Collections::Commands
 
     def validate_where(value, as: 'where')
       return if value.nil?
+
+      return if value.is_a?(Proc) && (-1..1).cover?(value.arity)
 
       return if value.is_a?(Cuprum::Collections::Scopes::Base)
 

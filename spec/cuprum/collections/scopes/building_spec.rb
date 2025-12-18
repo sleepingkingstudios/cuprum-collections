@@ -76,6 +76,21 @@ RSpec.describe Cuprum::Collections::Scopes::Building do
       end
     end
 
+    describe 'with a proc' do
+      let(:block) do
+        -> { { 'title' => 'A Wizard of Earthsea' } }
+      end
+      let(:error_message) do
+        "#{described_class.name} is an abstract class. Define a builder " \
+          'class and implement the #criteria_scope_class method.'
+      end
+
+      it 'should raise an exception' do
+        expect { builder.build(block) }
+          .to raise_error error_class, error_message
+      end
+    end
+
     describe 'with a scope' do
       let(:value) do
         scopes = Array.new(3) { build_scope }

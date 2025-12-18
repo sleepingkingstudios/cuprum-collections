@@ -23,6 +23,8 @@ Added support for adaptable collections.
 
 Added support for `NULL`, `NOT_NULL` operators in queries.
 
+Added support for passing `Proc` values when parsing query criteria.
+
 ### Repositories
 
 - Implemented `#find`, which finds the matching collection by name, qualified name, or entity class.
