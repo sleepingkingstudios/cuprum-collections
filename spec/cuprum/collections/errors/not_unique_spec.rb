@@ -9,14 +9,15 @@ RSpec.describe Cuprum::Collections::Errors::NotUnique do
 
   subject(:error) { described_class.new(**constructor_options) }
 
-  let(:attribute_name)  { 'title' }
-  let(:attribute_value) { 'Gideon the Ninth' }
-  let(:collection_name) { 'books' }
+  let(:attribute_name)     { 'title' }
+  let(:attribute_value)    { 'Gideon the Ninth' }
+  let(:name)               { 'books' }
+  let(:collection_options) { { name: } }
   let(:constructor_options) do
     {
       attribute_name:,
       attribute_value:,
-      collection_name:
+      **collection_options
     }
   end
 

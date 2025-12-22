@@ -24,7 +24,7 @@ module Cuprum::Collections::Commands::Associations
       Cuprum::Collections::Errors::NotFound.new(
         attribute_name:  association.query_key_name,
         attribute_value:,
-        collection_name: association.name,
+        name:            association.name,
         primary_key:     association.primary_key_query?
       )
     end

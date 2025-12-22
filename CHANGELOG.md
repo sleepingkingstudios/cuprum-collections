@@ -19,6 +19,10 @@ Added support for adaptable collections.
   - Added `Cuprum::Collections::Adaptable::Commands`
   - Added `Cuprum::Collections::Adaptable::Query`
 
+### Errors
+
+Removed `#collection_name` from all Find errors. Either pass the `collection:` directly or pass collection parameters (`name:`, `entity_class:`, and/or `qualified_name:`).
+
 ### Queries
 
 Added support for `NULL`, `NOT_NULL` operators in queries.

@@ -31,7 +31,7 @@ module Cuprum::Collections::Basic::Commands
       error = Cuprum::Collections::Errors::AlreadyExists.new(
         attribute_name:  primary_key_name,
         attribute_value: value,
-        collection_name:,
+        name:,
         primary_key:     true
       )
       failure(error)

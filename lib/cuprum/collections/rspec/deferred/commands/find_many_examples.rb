@@ -67,7 +67,7 @@ module Cuprum::Collections::RSpec::Deferred::Commands
                 Cuprum::Collections::Errors::NotFound.new(
                   attribute_name:  collection.primary_key_name,
                   attribute_value: primary_key,
-                  collection_name: collection.name,
+                  name:            collection.name,
                   primary_key:     true
                 )
               end
@@ -112,7 +112,7 @@ module Cuprum::Collections::RSpec::Deferred::Commands
                   Cuprum::Collections::Errors::NotFound.new(
                     attribute_name:  collection.primary_key_name,
                     attribute_value: primary_key,
-                    collection_name: collection.name,
+                    name:            collection.name,
                     primary_key:     true
                   )
                 end
@@ -140,7 +140,7 @@ module Cuprum::Collections::RSpec::Deferred::Commands
                   Cuprum::Collections::Errors::NotFound.new(
                     attribute_name:  collection.primary_key_name,
                     attribute_value: primary_key,
-                    collection_name: collection.name,
+                    name:            collection.name,
                     primary_key:     true
                   )
                 end
@@ -183,7 +183,7 @@ module Cuprum::Collections::RSpec::Deferred::Commands
                     Cuprum::Collections::Errors::NotFound.new(
                       attribute_name:  collection.primary_key_name,
                       attribute_value: primary_key,
-                      collection_name: collection.name,
+                      name:            collection.name,
                       primary_key:     true
                     )
                   end
@@ -211,7 +211,7 @@ module Cuprum::Collections::RSpec::Deferred::Commands
                     Cuprum::Collections::Errors::NotFound.new(
                       attribute_name:  collection.primary_key_name,
                       attribute_value: primary_key,
-                      collection_name: collection.name,
+                      name:            collection.name,
                       primary_key:     true
                     )
                   end

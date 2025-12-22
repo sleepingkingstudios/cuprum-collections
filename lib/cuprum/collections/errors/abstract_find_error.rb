@@ -1,44 +1,110 @@
 # frozen_string_literal: true
 
 require 'cuprum/collections/errors'
+require 'cuprum/collections/relations/parameters'
 
 module Cuprum::Collections::Errors
   # Abstract base class for failed query errors.
   class AbstractFindError < Cuprum::Error # rubocop:disable Metrics/ClassLength
-    PERMITTED_KEYWORDS = %i[
+    COLLECTION_KEYWORDS = %i[
+      collection
+      collection_name
+      entity_class
+      name
+      qualified_name
+    ].freeze
+    private_constant :COLLECTION_KEYWORDS
+
+    QUERYING_KEYWORDS = %i[
       attribute_name
       attribute_value
       attributes
       primary_key
       query
     ].freeze
-    private_constant :PERMITTED_KEYWORDS
+    private_constant :QUERYING_KEYWORDS
 
-    # @overload initialize(attribute_name:, attribute_value:, collection_name:, primary_key: false)
-    #   @param attribute_name [String] The name of the queried attribute.
-    #   @param attribute_value [Object] The value of the queried attribute.
-    #   @param collection_name [String] The name of the collection.
-    #   @param primary_key [true, false] Indicates that the queried attribute is
+    VALID_PARAMETERS = %i[entity_class name qualified_name].freeze
+    private_constant :VALID_PARAMETERS
+
+    class << self
+      # Resolves the details about the queried collection.
+      #
+      # @param params [Hash] the parameters to resolve.
+      #
+      # @return [Hash] the collection details.
+      def resolve_collection(**params) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+        if params[:collection].is_a?(Cuprum::Collections::Collection)
+          return collection_details(params[:collection])
+        elsif collection_name?(params[:collection])
+          return { 'name' => params[:collection].to_s }
+        elsif collection_name?(params[:collection_name])
+          # @deprecated 0.6.0
+          tools.core_tools.deprecate(
+            ':collection_name parameter is deprecated',
+            message: 'Use the :name parameter instead.'
+          )
+
+          return { 'name' => params[:collection_name].to_s }
+        elsif VALID_PARAMETERS.any? { |key| params.key?(key) }
+          return Cuprum::Collections::Relations::Parameters
+              .resolve_parameters(params)
+              .slice(*VALID_PARAMETERS)
+              .to_h { |key, value| [key.to_s, value.to_s] }
+        end
+
+        raise ArgumentError, "collection, name or entity class can't be blank"
+      end
+
+      private
+
+      def collection_details(collection)
+        entity_class = collection.entity_class
+        entity_class = entity_class.name if entity_class.is_a?(Class)
+
+        {
+          'entity_class'   => entity_class,
+          'name'           => collection.name,
+          'qualified_name' => collection.qualified_name
+        }
+      end
+
+      def collection_name?(value)
+        return false unless value.is_a?(String) || value.is_a?(Symbol)
+
+        !value.to_s.empty?
+      end
+
+      def tools
+        SleepingKingStudios::Tools::Toolbelt.instance
+      end
+    end
+
+    # @overload initialize(attribute_name:, attribute_value:, name:, primary_key: false)
+    #   @param attribute_name [String] the name of the queried attribute.
+    #   @param attribute_value [Object] the value of the queried attribute.
+    #   @param name [String] the name of the collection.
+    #   @param primary_key [true, false] indicates that the queried attribute is
     #     the primary key for the collection.
     #
-    # @overload initialize(attributes:, collection_name:)
-    #   @param attributes [Hash<String=>Object>] The queried attributes.
-    #   @param collection_name [String] The name of the collection.
+    # @overload initialize(attributes:, name:)
+    #   @param attributes [Hash<String=>Object>] the queried attributes.
+    #   @param name [String] the name of the collection.
     #
-    # @overload initialize(query:, collection_name:)
-    #   @param collection_name [String] The name of the collection.
+    # @overload initialize(query:, name:)
+    #   @param name [String] the name of the collection.
     #   @param query [Cuprum::Collections::Query] The performed query.
-    def initialize(collection_name:, **) # rubocop:disable Metrics/MethodLength
-      @collection_name = collection_name
+    def initialize(**params) # rubocop:disable Metrics/MethodLength
+      @collection      = self.class.resolve_collection(**params)
+      @collection_name = @collection['name']
       @primary_key     = false
 
-      resolve_options(**)
+      resolve_options(**params.except(*COLLECTION_KEYWORDS))
 
       super(
         attribute_name:,
         attribute_value:,
         attributes:,
-        collection_name:,
         message:         generate_message,
         scope:
       )
@@ -53,11 +119,23 @@ module Cuprum::Collections::Errors
     # @return [Hash<String=>Object>] The queried attributes.
     attr_reader :attributes
 
-    # @return [String] the name of the collection.
-    attr_reader :collection_name
+    # @return [Hash] the resolved collection details.
+    attr_reader :collection
 
     # @return [Cuprum::Collections::Scopes::Base] the query scope, if any.
     attr_reader :scope
+
+    # @return [String] the name of the collection.
+    #
+    # @deprecated 0.6.0
+    def collection_name
+      tools.core_tools.deprecate(
+        '#collection_name is deprecated',
+        message: 'Use the #collection method instead.'
+      )
+
+      collection['name']
+    end
 
     # @return [Array<Array>] the details of the query, in scope format.
     def details # rubocop:disable Metrics/MethodLength
@@ -86,13 +164,13 @@ module Cuprum::Collections::Errors
 
     def as_json_data
       {
-        'collection_name' => collection_name,
-        'details'         => details
+        'collection' => collection,
+        'details'    => details
       }.merge(find_data)
     end
 
     def entity_name
-      titleize(tools.str.singularize(collection_name))
+      titleize(tools.str.singularize(collection['name']))
     end
 
     def find_data # rubocop:disable Metrics/MethodLength
@@ -161,7 +239,7 @@ module Cuprum::Collections::Errors
         resolve_query_options(**options)
       else
         raise ArgumentError,
-          'missing keywords :attribute_name, :attribute_value or :attributes ' \
+          'missing keywords :attribute_name, :attribute_value, :attributes, ' \
           'or :query'
       end
     end
@@ -177,7 +255,7 @@ module Cuprum::Collections::Errors
     def validate_keywords(extra_keywords:) # rubocop:disable Metrics/MethodLength
       return if extra_keywords.empty?
 
-      ambiguous_keywords = extra_keywords & PERMITTED_KEYWORDS
+      ambiguous_keywords = extra_keywords & QUERYING_KEYWORDS
 
       if ambiguous_keywords.empty?
         raise ArgumentError,

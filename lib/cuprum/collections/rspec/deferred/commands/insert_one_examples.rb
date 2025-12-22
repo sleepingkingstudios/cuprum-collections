@@ -81,7 +81,7 @@ module Cuprum::Collections::RSpec::Deferred::Commands
                 primary_key_name.to_s,
                 attributes[primary_key_name.intern]
               ),
-              collection_name: collection.name,
+              name:            collection.name,
               primary_key:     true
             )
           end

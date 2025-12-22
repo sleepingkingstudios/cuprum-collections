@@ -18,7 +18,7 @@ module Spec::Support::Examples
       let(:constructor_options) do
         {
           attributes:,
-          collection_name:
+          **collection_options
         }
       end
     end
@@ -38,8 +38,8 @@ module Spec::Support::Examples
       end
       let(:constructor_options) do
         {
-          collection_name:,
-          query:
+          query:,
+          **collection_options
         }
       end
     end
@@ -73,18 +73,18 @@ module Spec::Support::Examples
           expect(described_class)
             .to be_constructible
             .with(0).arguments
-            .and_keywords(:collection_name)
+            .and_keywords(:entity_class, :name, :qualified_name)
             .and_any_keywords
         end
 
         describe 'with no query keywords' do
           let(:error_message) do
-            'missing keywords :attribute_name, :attribute_value or ' \
-              ':attributes or :query'
+            'missing keywords :attribute_name, :attribute_value, ' \
+              ':attributes, or :query'
           end
 
           it 'should raise an exception' do
-            expect { described_class.new(collection_name:) }
+            expect { described_class.new(name:) }
               .to raise_error ArgumentError, error_message
           end
         end
@@ -92,11 +92,11 @@ module Spec::Support::Examples
         describe 'with attributes:' do
           let(:keywords) do
             {
-              attributes:      {
+              attributes: {
                 'title'  => 'Gideon the Ninth',
                 'author' => 'Tamsyn Muir'
               },
-              collection_name:
+              name:
             }
           end
 
@@ -150,7 +150,7 @@ module Spec::Support::Examples
             {
               attribute_name:  'name',
               attribute_value: 'Alan Bradley',
-              collection_name:
+              name:
             }
           end
 
@@ -200,7 +200,7 @@ module Spec::Support::Examples
           end
           let(:keywords) do
             {
-              collection_name:,
+              name:,
               query:
             }
           end
@@ -234,7 +234,7 @@ module Spec::Support::Examples
           {
             'attribute_name'  => attribute_name,
             'attribute_value' => attribute_value,
-            'collection_name' => collection_name,
+            'collection'      => error.collection,
             'details'         => error.details,
             'primary_key'     => false
           }
@@ -254,9 +254,9 @@ module Spec::Support::Examples
         wrap_context 'when initialized with attributes: value' do
           let(:expected_data) do
             {
-              'attributes'      => attributes,
-              'collection_name' => collection_name,
-              'details'         => error.details
+              'attributes' => attributes,
+              'collection' => error.collection,
+              'details'    => error.details
             }
           end
 
@@ -271,9 +271,9 @@ module Spec::Support::Examples
             end
             let(:expected_data) do
               {
-                'attributes'      => expected_attributes,
-                'collection_name' => collection_name,
-                'details'         => error.details
+                'attributes' => expected_attributes,
+                'collection' => error.collection,
+                'details'    => error.details
               }
             end
 
@@ -288,8 +288,8 @@ module Spec::Support::Examples
         wrap_context 'when initialized with query: value' do
           let(:expected_data) do
             {
-              'collection_name' => collection_name,
-              'details'         => error.details
+              'collection' => error.collection,
+              'details'    => error.details
             }
           end
 
@@ -355,10 +355,248 @@ module Spec::Support::Examples
         end
       end
 
+      describe '#collection' do
+        let(:expected) do
+          {
+            'entity_class'   => 'Book',
+            'name'           => 'books',
+            'qualified_name' => 'books'
+          }
+        end
+
+        include_examples 'should define reader', :collection, -> { expected }
+
+        context 'when initialized with collection: a Collection' do
+          let(:collection) do
+            Cuprum::Collections::Collection.new(
+              entity_class:   Spec::BookEntity,
+              name:           'books',
+              qualified_name: 'spec/book_entities'
+            )
+          end
+          let(:collection_options) { { collection: } }
+          let(:expected) do
+            {
+              'entity_class'   => 'Spec::BookEntity',
+              'name'           => 'books',
+              'qualified_name' => 'spec/book_entities'
+            }
+          end
+
+          example_class 'Spec::BookEntity'
+
+          it { expect(error.collection).to be == expected }
+        end
+
+        context 'when initialized with collection: a String' do
+          let(:collection_options) { { collection: 'books' } }
+          let(:expected) do
+            { 'name' => 'books' }
+          end
+
+          it { expect(error.collection).to be == expected }
+        end
+
+        context 'when initialized with collection: a Symbol' do
+          let(:collection_options) { { collection: :books } }
+          let(:expected) do
+            { 'name' => 'books' }
+          end
+
+          it { expect(error.collection).to be == expected }
+        end
+
+        context 'when initialized with collection_name: value' do
+          let(:collection_options) { { collection_name: 'books' } }
+          let(:expected) do
+            { 'name' => 'books' }
+          end
+
+          define_method :tools do
+            SleepingKingStudios::Tools::Toolbelt.instance
+          end
+
+          before(:example) do
+            allow(tools.core_tools).to receive(:deprecate)
+          end
+
+          it { expect(error.collection).to be == expected }
+        end
+
+        context 'when initialized with entity_class: a Class' do
+          let(:entity_class)       { Spec::BookEntity }
+          let(:collection_options) { { entity_class: } }
+          let(:expected) do
+            {
+              'entity_class'   => entity_class.name,
+              'name'           => 'book_entities',
+              'qualified_name' => 'spec/book_entities'
+            }
+          end
+
+          example_class 'Spec::BookEntity'
+
+          it { expect(error.collection).to be == expected }
+
+          context 'when initialized with name: value' do
+            let(:name)               { 'books' }
+            let(:collection_options) { super().merge(name:) }
+            let(:expected) do
+              super().merge({ 'name' => name })
+            end
+
+            it { expect(error.collection).to be == expected }
+          end
+
+          context 'when initialized with qualified_name: value' do
+            let(:qualified_name)     { 'books' }
+            let(:collection_options) { super().merge(qualified_name:) }
+            let(:expected) do
+              super().merge({ 'qualified_name' => qualified_name })
+            end
+
+            it { expect(error.collection).to be == expected }
+          end
+        end
+
+        context 'when initialized with entity_class: a String' do
+          let(:entity_class)       { 'Spec::BookEntity' }
+          let(:collection_options) { { entity_class: } }
+          let(:expected) do
+            {
+              'entity_class'   => entity_class,
+              'name'           => 'book_entities',
+              'qualified_name' => 'spec/book_entities'
+            }
+          end
+
+          it { expect(error.collection).to be == expected }
+
+          context 'when initialized with name: value' do
+            let(:name)               { 'books' }
+            let(:collection_options) { super().merge(name:) }
+            let(:expected) do
+              super().merge({ 'name' => name })
+            end
+
+            it { expect(error.collection).to be == expected }
+          end
+
+          context 'when initialized with qualified_name: value' do
+            let(:qualified_name)     { 'books' }
+            let(:collection_options) { super().merge(qualified_name:) }
+            let(:expected) do
+              super().merge({ 'qualified_name' => qualified_name })
+            end
+
+            it { expect(error.collection).to be == expected }
+          end
+        end
+
+        context 'when initialized name: a value' do
+          let(:name)               { 'books' }
+          let(:collection_options) { { name: } }
+          let(:expected) do
+            {
+              'entity_class'   => 'Book',
+              'name'           => name,
+              'qualified_name' => name
+            }
+          end
+
+          it { expect(error.collection).to be == expected }
+
+          context 'when initialized with entity_class: value' do
+            let(:entity_class)       { 'Spec::BookEntity' }
+            let(:collection_options) { super().merge(entity_class:) }
+            let(:expected) do
+              super().merge({
+                'entity_class'   => entity_class,
+                'qualified_name' => 'spec/book_entities'
+              })
+            end
+
+            it { expect(error.collection).to be == expected }
+          end
+
+          context 'when initialized with qualified_name: value' do
+            let(:qualified_name)     { 'spec/books' }
+            let(:collection_options) { super().merge(qualified_name:) }
+            let(:expected) do
+              super().merge({
+                'entity_class'   => 'Spec::Book',
+                'qualified_name' => qualified_name
+              })
+            end
+
+            it 'should extract the collection details' do
+              expect(
+                described_class.resolve_collection(name:, qualified_name:)
+              )
+                .to be == expected
+            end
+          end
+        end
+
+        context 'when initialized with qualified_name: value' do
+          let(:qualified_name)     { 'spec/books' }
+          let(:collection_options) { { qualified_name: } }
+          let(:expected) do
+            {
+              'entity_class'   => 'Spec::Book',
+              'name'           => 'books',
+              'qualified_name' => qualified_name
+            }
+          end
+
+          it { expect(error.collection).to be == expected }
+
+          context 'when initialized with entity_class: value' do
+            let(:entity_class)       { 'Spec::BookEntity' }
+            let(:collection_options) { super().merge(entity_class:) }
+            let(:expected) do
+              super().merge({
+                'entity_class' => entity_class,
+                'name'         => 'book_entities'
+              })
+            end
+
+            it { expect(error.collection).to be == expected }
+          end
+
+          context 'when initialized with name: value' do
+            let(:name)               { 'tomes' }
+            let(:collection_options) { super().merge(name:) }
+            let(:expected) do
+              super().merge({ 'name' => name })
+            end
+
+            it { expect(error.collection).to be == expected }
+          end
+        end
+      end
+
       describe '#collection_name' do
-        include_examples 'should define reader',
-          :collection_name,
-          -> { collection_name }
+        define_method :tools do
+          SleepingKingStudios::Tools::Toolbelt.instance
+        end
+
+        before(:example) do
+          allow(tools.core_tools).to receive(:deprecate)
+        end
+
+        include_examples 'should define reader', :collection_name
+
+        it { expect(error.collection_name).to be == name }
+
+        it 'should print a deprecation warning' do
+          error.collection_name
+
+          expect(tools.core_tools).to have_received(:deprecate).with(
+            '#collection_name is deprecated',
+            message: 'Use the #collection method instead.'
+          )
+        end
       end
 
       describe '#details' do

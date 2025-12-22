@@ -81,7 +81,7 @@ module Cuprum::Collections::Commands
       Cuprum::Collections::Errors::NotFound.new(
         attribute_name:  primary_key_name,
         attribute_value: primary_key_value,
-        collection_name:,
+        name:,
         primary_key:     true
       )
     end
@@ -99,7 +99,7 @@ module Cuprum::Collections::Commands
     end
 
     def wrap_items(items)
-      { collection_name => items }
+      { name => items }
     end
   end
 end

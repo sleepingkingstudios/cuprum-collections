@@ -11,10 +11,10 @@ RSpec.describe Spec::Support::Commands::Destroy do
   let(:data) do
     Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES.dup
   end
-  let(:collection_name) { 'books' }
+  let(:name) { 'books' }
   let(:collection_options) do
     {
-      name: collection_name,
+      name:,
       data:
     }
   end
@@ -35,7 +35,7 @@ RSpec.describe Spec::Support::Commands::Destroy do
         Cuprum::Collections::Errors::NotFound.new(
           attribute_name:  'id',
           attribute_value: primary_key,
-          collection_name:,
+          name:,
           primary_key:     true
         )
       end
