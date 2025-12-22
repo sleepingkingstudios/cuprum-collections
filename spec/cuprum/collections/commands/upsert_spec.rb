@@ -337,8 +337,8 @@ RSpec.describe Cuprum::Collections::Commands::Upsert do
           end
           let(:expected_error) do
             Cuprum::Collections::Errors::NotUnique.new(
-              attributes:      filter_attributes,
-              collection_name: collection.name
+              attributes: filter_attributes,
+              name:       collection.name
             )
           end
 
@@ -386,8 +386,8 @@ RSpec.describe Cuprum::Collections::Commands::Upsert do
           end
           let(:expected_error) do
             Cuprum::Collections::Errors::NotUnique.new(
-              attributes:      filter_attributes,
-              collection_name: collection.name
+              attributes: filter_attributes,
+              name:       collection.name
             )
           end
 
@@ -458,8 +458,8 @@ RSpec.describe Cuprum::Collections::Commands::Upsert do
           end
           let(:expected_error) do
             Cuprum::Collections::Errors::NotUnique.new(
-              attributes:      filter_attributes,
-              collection_name: collection.name
+              attributes: filter_attributes,
+              name:       collection.name
             )
           end
 
@@ -509,8 +509,8 @@ RSpec.describe Cuprum::Collections::Commands::Upsert do
           end
           let(:expected_error) do
             Cuprum::Collections::Errors::NotUnique.new(
-              attributes:      filter_attributes,
-              collection_name: collection.name
+              attributes: filter_attributes,
+              name:       collection.name
             )
           end
 

@@ -42,7 +42,7 @@ module Cuprum::Collections::Commands
       error = Cuprum::Collections::Errors::NotFound.new(
         attribute_name:  primary_key_name,
         attribute_value: primary_key,
-        collection_name:,
+        name:,
         primary_key:     true
       )
       Cuprum::Result.new(error:)

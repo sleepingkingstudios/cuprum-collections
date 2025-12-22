@@ -44,7 +44,7 @@ RSpec.describe Cuprum::Collections::Commands::Associations::RequireMany do
           Cuprum::Collections::Errors::NotFound.new(
             attribute_name:  association.query_key_name,
             attribute_value: 0,
-            collection_name: association.name,
+            name:            association.name,
             primary_key:     association.primary_key_query?
           )
         end
@@ -73,7 +73,7 @@ RSpec.describe Cuprum::Collections::Commands::Associations::RequireMany do
           Cuprum::Collections::Errors::NotFound.new(
             attribute_name:  association.query_key_name,
             attribute_value: [0, 1],
-            collection_name: association.name,
+            name:            association.name,
             primary_key:     association.primary_key_query?
           )
         end
@@ -91,7 +91,7 @@ RSpec.describe Cuprum::Collections::Commands::Associations::RequireMany do
           Cuprum::Collections::Errors::NotFound.new(
             attribute_name:  association.query_key_name,
             attribute_value: [1],
-            collection_name: association.name,
+            name:            association.name,
             primary_key:     association.primary_key_query?
           )
         end

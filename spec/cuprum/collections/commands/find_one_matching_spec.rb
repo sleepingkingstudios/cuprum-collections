@@ -39,7 +39,7 @@ RSpec.describe Cuprum::Collections::Commands::FindOneMatching do
       let(:expected_error) do
         Cuprum::Collections::Errors::NotFound.new(
           attributes:,
-          collection_name: name
+          name:
         )
       end
 
@@ -58,7 +58,7 @@ RSpec.describe Cuprum::Collections::Commands::FindOneMatching do
       end
       let(:expected_error) do
         Cuprum::Collections::Errors::NotFound.new(
-          collection_name: name,
+          name:,
           query:
         )
       end
@@ -78,7 +78,7 @@ RSpec.describe Cuprum::Collections::Commands::FindOneMatching do
         let(:expected_error) do
           Cuprum::Collections::Errors::NotFound.new(
             attributes:,
-            collection_name: name
+            name:
           )
         end
 
@@ -111,7 +111,7 @@ RSpec.describe Cuprum::Collections::Commands::FindOneMatching do
         let(:expected_error) do
           Cuprum::Collections::Errors::NotUnique.new(
             attributes:,
-            collection_name: name
+            name:
           )
         end
 
@@ -131,7 +131,7 @@ RSpec.describe Cuprum::Collections::Commands::FindOneMatching do
         end
         let(:expected_error) do
           Cuprum::Collections::Errors::NotFound.new(
-            collection_name: name,
+            name:,
             query:
           )
         end
@@ -185,7 +185,7 @@ RSpec.describe Cuprum::Collections::Commands::FindOneMatching do
         end
         let(:expected_error) do
           Cuprum::Collections::Errors::NotUnique.new(
-            collection_name: name,
+            name:,
             query:
           )
         end

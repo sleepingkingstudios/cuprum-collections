@@ -31,7 +31,7 @@ module Cuprum::Collections::Basic::Commands
       error = Cuprum::Collections::Errors::NotFound.new(
         attribute_name:  primary_key_name,
         attribute_value: entity[primary_key_name.to_s],
-        collection_name:,
+        name:,
         primary_key:     true
       )
       failure(error)
