@@ -30,6 +30,7 @@ Gem::Specification.new do |gem|
     '*.md'
   ]
 
-  gem.add_dependency 'cuprum',  '~> 1.1'
-  gem.add_dependency 'stannum', '~> 0.3'
+  gem.add_dependency 'cuprum', '~> 1.3'
+  gem.add_dependency 'sleeping_king_studios-tools', '~> 1.2'
+  gem.add_dependency 'stannum', '~> 0.4'
 end
