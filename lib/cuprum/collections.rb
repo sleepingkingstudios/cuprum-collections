@@ -33,7 +33,7 @@ module Cuprum
       __dir__.sub(pattern, '')
     end
 
-    # @return [String] The current version of the gem.
+    # @return [String] the current version of the gem.
     def self.version
       VERSION
     end

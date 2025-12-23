@@ -4,10 +4,6 @@ source 'https://rubygems.org'
 
 gemspec
 
-gem 'cuprum', '~> 1.3'
-gem 'sleeping_king_studios-tools', '~> 1.2'
-gem 'stannum', '~> 0.4'
-
 group :development do
   gem 'sleeping_king_studios-tasks', '~> 0.4', '>= 0.4.1'
 
