@@ -20,7 +20,7 @@ Gem::Specification.new do |gem|
     'source_code_uri'       => 'https://github.com/sleepingkingstudios/cuprum-collections',
     'rubygems_mfa_required' => 'true'
   }
-  gem.required_ruby_version = '~> 3.2'
+  gem.required_ruby_version = ['>= 3.2', '< 5']
 
   gem.require_path = 'lib'
   gem.files = Dir[
@@ -30,7 +30,7 @@ Gem::Specification.new do |gem|
     '*.md'
   ]
 
-  gem.add_dependency 'cuprum', '~> 1.3'
-  gem.add_dependency 'sleeping_king_studios-tools', '~> 1.2'
-  gem.add_dependency 'stannum', '~> 0.4'
+  gem.add_dependency 'cuprum', '~> 1.3', '>= 1.3.1'
+  gem.add_dependency 'sleeping_king_studios-tools', '~> 1.2', '>= 1.2.1'
+  gem.add_dependency 'stannum', '~> 0.4', '>= 0.4.1'
 end
