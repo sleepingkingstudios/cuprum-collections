@@ -38,14 +38,6 @@ module Cuprum::Collections::Errors
           return collection_details(params[:collection])
         elsif collection_name?(params[:collection])
           return { 'name' => params[:collection].to_s }
-        elsif collection_name?(params[:collection_name])
-          # @deprecated 0.6.0
-          tools.core_tools.deprecate(
-            ':collection_name parameter is deprecated',
-            message: 'Use the :name parameter instead.'
-          )
-
-          return { 'name' => params[:collection_name].to_s }
         elsif VALID_PARAMETERS.any? { |key| params.key?(key) }
           return Cuprum::Collections::Relations::Parameters
               .resolve_parameters(params)
@@ -73,10 +65,6 @@ module Cuprum::Collections::Errors
         return false unless value.is_a?(String) || value.is_a?(Symbol)
 
         !value.to_s.empty?
-      end
-
-      def tools
-        SleepingKingStudios::Tools::Toolbelt.instance
       end
     end
 
@@ -124,18 +112,6 @@ module Cuprum::Collections::Errors
 
     # @return [Cuprum::Collections::Scopes::Base] the query scope, if any.
     attr_reader :scope
-
-    # @return [String] the name of the collection.
-    #
-    # @deprecated 0.6.0
-    def collection_name
-      tools.core_tools.deprecate(
-        '#collection_name is deprecated',
-        message: 'Use the #collection method instead.'
-      )
-
-      collection['name']
-    end
 
     # @return [Array<Array>] the details of the query, in scope format.
     def details # rubocop:disable Metrics/MethodLength
