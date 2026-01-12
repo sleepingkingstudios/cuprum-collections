@@ -120,33 +120,6 @@ RSpec.describe Cuprum::Collections::Errors::AbstractFindError do
       end
     end
 
-    describe 'with collection_name: value' do
-      let(:collection_name) { 'books' }
-      let(:expected)        { { 'name' => collection_name } }
-
-      define_method :tools do
-        SleepingKingStudios::Tools::Toolbelt.instance
-      end
-
-      before(:example) do
-        allow(tools.core_tools).to receive(:deprecate)
-      end
-
-      it 'should extract the collection details' do
-        expect(described_class.resolve_collection(collection_name:))
-          .to be == expected
-      end
-
-      it 'should print a deprecation warning' do
-        described_class.resolve_collection(collection_name:)
-
-        expect(tools.core_tools).to have_received(:deprecate).with(
-          ':collection_name parameter is deprecated',
-          message: 'Use the :name parameter instead.'
-        )
-      end
-    end
-
     describe 'with entity_class: a Class' do
       let(:entity_class) { Spec::BookEntity }
       let(:expected) do
@@ -365,30 +338,6 @@ RSpec.describe Cuprum::Collections::Errors::AbstractFindError do
           expect(described_class.resolve_collection(name:, qualified_name:))
             .to be == expected
         end
-      end
-    end
-  end
-
-  describe '.new' do
-    describe 'with collection_name: value' do
-      let(:collection_name)    { 'books' }
-      let(:collection_options) { { collection_name: } }
-
-      define_method :tools do
-        SleepingKingStudios::Tools::Toolbelt.instance
-      end
-
-      before(:example) do
-        allow(tools.core_tools).to receive(:deprecate)
-      end
-
-      it 'should print a deprecation warning' do
-        described_class.new(**constructor_options)
-
-        expect(tools.core_tools).to have_received(:deprecate).with(
-          ':collection_name parameter is deprecated',
-          message: 'Use the :name parameter instead.'
-        )
       end
     end
   end

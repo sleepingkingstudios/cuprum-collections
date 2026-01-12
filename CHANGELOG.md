@@ -6,7 +6,7 @@ Added support for Ruby 4.0.
 
 Removed support for Ruby 3.1.
 
-Removed all deprecated functionality from version 0.5.0 and earlier.
+Removed all deprecated functionality.
 
 ### Collections
 

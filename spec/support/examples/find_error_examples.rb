@@ -406,23 +406,6 @@ module Spec::Support::Examples
           it { expect(error.collection).to be == expected }
         end
 
-        context 'when initialized with collection_name: value' do
-          let(:collection_options) { { collection_name: 'books' } }
-          let(:expected) do
-            { 'name' => 'books' }
-          end
-
-          define_method :tools do
-            SleepingKingStudios::Tools::Toolbelt.instance
-          end
-
-          before(:example) do
-            allow(tools.core_tools).to receive(:deprecate)
-          end
-
-          it { expect(error.collection).to be == expected }
-        end
-
         context 'when initialized with entity_class: a Class' do
           let(:entity_class)       { Spec::BookEntity }
           let(:collection_options) { { entity_class: } }
@@ -573,29 +556,6 @@ module Spec::Support::Examples
 
             it { expect(error.collection).to be == expected }
           end
-        end
-      end
-
-      describe '#collection_name' do
-        define_method :tools do
-          SleepingKingStudios::Tools::Toolbelt.instance
-        end
-
-        before(:example) do
-          allow(tools.core_tools).to receive(:deprecate)
-        end
-
-        include_examples 'should define reader', :collection_name
-
-        it { expect(error.collection_name).to be == name }
-
-        it 'should print a deprecation warning' do
-          error.collection_name
-
-          expect(tools.core_tools).to have_received(:deprecate).with(
-            '#collection_name is deprecated',
-            message: 'Use the #collection method instead.'
-          )
         end
       end
 
