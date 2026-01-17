@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require_relative 'lib/cuprum/collections/version'
+require_relative 'lib/bronze/version'
 
 Gem::Specification.new do |gem|
   gem.name        = 'cuprum-collections'
-  gem.version     = Cuprum::Collections::VERSION
+  gem.version     = Bronze::VERSION
   gem.authors     = ['Rob "Merlin" Smith']
   gem.email       = ['merlin@sleepingkingstudios.com']
 

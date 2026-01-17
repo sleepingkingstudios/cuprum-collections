@@ -2,10 +2,14 @@
 
 require 'cuprum'
 
+require 'bronze'
+
 # A Ruby implementation of the command pattern.
 module Cuprum
   # A data abstraction layer based on the Cuprum library.
   module Collections
+    include Bronze
+
     autoload :Adaptable,         'cuprum/collections/adaptable'
     autoload :Adapter,           'cuprum/collections/adapter'
     autoload :Adapters,          'cuprum/collections/adapters'
@@ -35,7 +39,7 @@ module Cuprum
 
     # @return [String] the current version of the gem.
     def self.version
-      VERSION
+      Bronze::VERSION
     end
   end
 end
