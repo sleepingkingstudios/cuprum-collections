@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/errors/missing_default_contract'
+require 'bronze/errors/missing_default_contract'
 
-RSpec.describe Cuprum::Collections::Errors::MissingDefaultContract do
+RSpec.describe Bronze::Errors::MissingDefaultContract do
   subject(:error) { described_class.new(**options) }
 
   let(:options) { {} }
@@ -10,7 +10,7 @@ RSpec.describe Cuprum::Collections::Errors::MissingDefaultContract do
   describe '::TYPE' do
     include_examples 'should define immutable constant',
       :TYPE,
-      'cuprum.collections.errors.missing_default_contract'
+      'bronze.errors.missing_default_contract'
   end
 
   describe '.new' do

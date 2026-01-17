@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/errors/invalid_query'
+require 'bronze/errors/invalid_query'
 
 require 'stannum/errors'
 
-RSpec.describe Cuprum::Collections::Errors::InvalidQuery do
+RSpec.describe Bronze::Errors::InvalidQuery do
   subject(:error) { described_class.new(**keywords) }
 
   let(:query)    { %w[invalid query] }
@@ -13,7 +13,7 @@ RSpec.describe Cuprum::Collections::Errors::InvalidQuery do
   describe '::TYPE' do
     include_examples 'should define immutable constant',
       :TYPE,
-      'cuprum.collections.errors.invalid_query'
+      'bronze.errors.invalid_query'
   end
 
   describe '.new' do

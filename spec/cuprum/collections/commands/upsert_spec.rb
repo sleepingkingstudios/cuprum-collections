@@ -134,7 +134,7 @@ RSpec.describe Cuprum::Collections::Commands::Upsert do
           let(:expected_error) do
             errors = contract.errors_for(attributes)
 
-            Cuprum::Collections::Errors::FailedValidation.new(
+            Bronze::Errors::FailedValidation.new(
               entity_class: Hash,
               errors:
             )
@@ -193,7 +193,7 @@ RSpec.describe Cuprum::Collections::Commands::Upsert do
           let(:expected_error) do
             errors = contract.errors_for(attributes)
 
-            Cuprum::Collections::Errors::FailedValidation.new(
+            Bronze::Errors::FailedValidation.new(
               entity_class: Hash,
               errors:
             )
@@ -242,7 +242,7 @@ RSpec.describe Cuprum::Collections::Commands::Upsert do
       }
     end
     let(:expected_error) do
-      Cuprum::Collections::Errors::MissingDefaultContract
+      Bronze::Errors::MissingDefaultContract
         .new(entity_class: Hash)
     end
 
@@ -336,7 +336,7 @@ RSpec.describe Cuprum::Collections::Commands::Upsert do
             ]
           end
           let(:expected_error) do
-            Cuprum::Collections::Errors::NotUnique.new(
+            Bronze::Errors::NotUnique.new(
               attributes: filter_attributes,
               name:       collection.name
             )
@@ -385,7 +385,7 @@ RSpec.describe Cuprum::Collections::Commands::Upsert do
             ]
           end
           let(:expected_error) do
-            Cuprum::Collections::Errors::NotUnique.new(
+            Bronze::Errors::NotUnique.new(
               attributes: filter_attributes,
               name:       collection.name
             )
@@ -457,7 +457,7 @@ RSpec.describe Cuprum::Collections::Commands::Upsert do
             ]
           end
           let(:expected_error) do
-            Cuprum::Collections::Errors::NotUnique.new(
+            Bronze::Errors::NotUnique.new(
               attributes: filter_attributes,
               name:       collection.name
             )
@@ -508,7 +508,7 @@ RSpec.describe Cuprum::Collections::Commands::Upsert do
             ]
           end
           let(:expected_error) do
-            Cuprum::Collections::Errors::NotUnique.new(
+            Bronze::Errors::NotUnique.new(
               attributes: filter_attributes,
               name:       collection.name
             )

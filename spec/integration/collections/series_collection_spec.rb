@@ -90,7 +90,7 @@ RSpec.describe Cuprum::Collections::Basic do
       it 'should return a failing result' do
         expect(command.call(primary_key:))
           .to be_a_failing_result
-          .with_error(an_instance_of(Cuprum::Collections::Errors::NotFound))
+          .with_error(an_instance_of(Bronze::Errors::NotFound))
       end
     end
 

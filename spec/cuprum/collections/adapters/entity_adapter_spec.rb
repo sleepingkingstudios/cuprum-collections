@@ -159,7 +159,7 @@ RSpec.describe Cuprum::Collections::Adapters::EntityAdapter do
       let(:expected_error) do
         errors = entity_class.contract.errors_for(entity)
 
-        Cuprum::Collections::Errors::FailedValidation.new(
+        Bronze::Errors::FailedValidation.new(
           entity_class: adapter.entity_class,
           errors:
         )

@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/errors/not_unique'
+require 'bronze/errors/not_found'
 
 require 'support/examples/find_error_examples'
 
-RSpec.describe Cuprum::Collections::Errors::NotUnique do
+RSpec.describe Bronze::Errors::NotFound do
   include Spec::Support::Examples::FindErrorExamples
 
   subject(:error) { described_class.new(**constructor_options) }
@@ -24,10 +24,10 @@ RSpec.describe Cuprum::Collections::Errors::NotUnique do
   describe '::TYPE' do
     include_examples 'should define immutable constant',
       :TYPE,
-      'cuprum.collections.errors.not_unique'
+      'bronze.errors.not_found'
   end
 
-  include_examples 'should implement the FindError methods', 'not unique'
+  include_examples 'should implement the FindError methods', 'not found'
 
   describe '#type' do
     include_examples 'should define reader', :type, described_class::TYPE

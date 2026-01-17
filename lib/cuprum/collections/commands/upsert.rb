@@ -116,7 +116,7 @@ module Cuprum::Collections::Commands
           .new(collection:)
           .call(attributes: filtered)
 
-      return if result.error.is_a?(Cuprum::Collections::Errors::NotFound)
+      return if result.error.is_a?(Bronze::Errors::NotFound)
 
       result
     end

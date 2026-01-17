@@ -4,7 +4,7 @@ require 'cuprum/parameter_validation'
 require 'stannum/constraints/boolean'
 
 require 'cuprum/collections/commands'
-require 'cuprum/collections/errors/not_found'
+require 'bronze/errors/not_found'
 
 module Cuprum::Collections::Commands
   # Abstract implementation of the FindMany command.
@@ -78,7 +78,7 @@ module Cuprum::Collections::Commands
     end
 
     def not_found_error(primary_key_value)
-      Cuprum::Collections::Errors::NotFound.new(
+      Bronze::Errors::NotFound.new(
         attribute_name:  primary_key_name,
         attribute_value: primary_key_value,
         name:,

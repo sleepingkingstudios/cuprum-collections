@@ -37,7 +37,7 @@ RSpec.describe Cuprum::Collections::Commands::FindOneMatching do
     describe 'with attributes: a Hash that does not match any entities' do
       let(:attributes) { { 'author' => 'Jules Verne' } }
       let(:expected_error) do
-        Cuprum::Collections::Errors::NotFound.new(
+        Bronze::Errors::NotFound.new(
           attributes:,
           name:
         )
@@ -57,7 +57,7 @@ RSpec.describe Cuprum::Collections::Commands::FindOneMatching do
           .where { { 'author' => 'Jules Verne' } }
       end
       let(:expected_error) do
-        Cuprum::Collections::Errors::NotFound.new(
+        Bronze::Errors::NotFound.new(
           name:,
           query:
         )
@@ -76,7 +76,7 @@ RSpec.describe Cuprum::Collections::Commands::FindOneMatching do
       describe 'with attributes: a Hash that does not match any entities' do
         let(:attributes) { { 'author' => 'Jules Verne' } }
         let(:expected_error) do
-          Cuprum::Collections::Errors::NotFound.new(
+          Bronze::Errors::NotFound.new(
             attributes:,
             name:
           )
@@ -109,7 +109,7 @@ RSpec.describe Cuprum::Collections::Commands::FindOneMatching do
       describe 'with attributes: a Hash that matches multiple entities' do
         let(:attributes) { { 'author' => 'Ursula K. LeGuin' } }
         let(:expected_error) do
-          Cuprum::Collections::Errors::NotUnique.new(
+          Bronze::Errors::NotUnique.new(
             attributes:,
             name:
           )
@@ -130,7 +130,7 @@ RSpec.describe Cuprum::Collections::Commands::FindOneMatching do
             .where { { 'author' => 'Jules Verne' } }
         end
         let(:expected_error) do
-          Cuprum::Collections::Errors::NotFound.new(
+          Bronze::Errors::NotFound.new(
             name:,
             query:
           )
@@ -184,7 +184,7 @@ RSpec.describe Cuprum::Collections::Commands::FindOneMatching do
           Cuprum::Collections::Basic::Query.new(data).where(&block)
         end
         let(:expected_error) do
-          Cuprum::Collections::Errors::NotUnique.new(
+          Bronze::Errors::NotUnique.new(
             name:,
             query:
           )

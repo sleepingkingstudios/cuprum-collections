@@ -4,8 +4,8 @@ require 'stannum/constraints/types/hash_with_string_keys'
 
 require 'cuprum/collections/basic/command'
 require 'cuprum/collections/basic/commands'
-require 'cuprum/collections/errors/failed_validation'
-require 'cuprum/collections/errors/missing_default_contract'
+require 'bronze/errors/failed_validation'
+require 'bronze/errors/missing_default_contract'
 
 module Cuprum::Collections::Basic::Commands
   # Command for validating a collection entity.
@@ -34,7 +34,7 @@ module Cuprum::Collections::Basic::Commands
 
       return default_contract if default_contract
 
-      error = Cuprum::Collections::Errors::MissingDefaultContract.new(
+      error = Bronze::Errors::MissingDefaultContract.new(
         entity_class: entity.class
       )
       failure(error)
@@ -45,7 +45,7 @@ module Cuprum::Collections::Basic::Commands
 
       return if valid
 
-      error = Cuprum::Collections::Errors::FailedValidation.new(
+      error = Bronze::Errors::FailedValidation.new(
         entity_class: entity.class,
         errors:
       )

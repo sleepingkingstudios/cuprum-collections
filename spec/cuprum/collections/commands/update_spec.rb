@@ -48,7 +48,7 @@ RSpec.describe Cuprum::Collections::Commands::Update do
 
   describe '#call' do
     let(:expected_error) do
-      Cuprum::Collections::Errors::MissingDefaultContract
+      Bronze::Errors::MissingDefaultContract
         .new(entity_class: Hash)
     end
     let(:entity) do
@@ -95,7 +95,7 @@ RSpec.describe Cuprum::Collections::Commands::Update do
         let(:expected_error) do
           errors = contract.errors_for(attributes)
 
-          Cuprum::Collections::Errors::FailedValidation.new(
+          Bronze::Errors::FailedValidation.new(
             entity_class: Hash,
             errors:
           )
@@ -139,7 +139,7 @@ RSpec.describe Cuprum::Collections::Commands::Update do
         let(:expected_error) do
           errors = contract.errors_for(attributes)
 
-          Cuprum::Collections::Errors::FailedValidation.new(
+          Bronze::Errors::FailedValidation.new(
             entity_class: Hash,
             errors:
           )

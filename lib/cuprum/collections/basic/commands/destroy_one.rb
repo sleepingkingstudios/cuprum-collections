@@ -2,7 +2,7 @@
 
 require 'cuprum/collections/basic/command'
 require 'cuprum/collections/basic/commands'
-require 'cuprum/collections/errors/not_found'
+require 'bronze/errors/not_found'
 
 module Cuprum::Collections::Basic::Commands
   # Command for destroying one collection item by primary key.
@@ -25,7 +25,7 @@ module Cuprum::Collections::Basic::Commands
     def handle_missing_item(index:, primary_key:)
       return if index
 
-      error = Cuprum::Collections::Errors::NotFound.new(
+      error = Bronze::Errors::NotFound.new(
         attribute_name:  primary_key_name,
         attribute_value: primary_key,
         name:,

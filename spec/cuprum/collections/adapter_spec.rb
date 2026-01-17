@@ -272,7 +272,7 @@ RSpec.describe Cuprum::Collections::Adapter do
   describe '#validate' do
     let(:entity) { Struct.new(:title).new }
     let(:expected_error) do
-      Cuprum::Collections::Errors::MissingDefaultContract
+      Bronze::Errors::MissingDefaultContract
         .new(entity_class: nil)
     end
 
@@ -285,7 +285,7 @@ RSpec.describe Cuprum::Collections::Adapter do
     wrap_deferred 'when initialized with an entity class' do
       let(:entity) { entity_class.new }
       let(:expected_error) do
-        Cuprum::Collections::Errors::MissingDefaultContract
+        Bronze::Errors::MissingDefaultContract
           .new(entity_class:)
       end
 
@@ -318,7 +318,7 @@ RSpec.describe Cuprum::Collections::Adapter do
       describe 'with entity: a valid entity' do
         let(:entity) { Struct.new(:title).new }
         let(:expected_error) do
-          Cuprum::Collections::Errors::MissingDefaultContract
+          Bronze::Errors::MissingDefaultContract
             .new(entity_class: nil)
         end
 
@@ -349,7 +349,7 @@ RSpec.describe Cuprum::Collections::Adapter do
         let(:expected_error) do
           errors = entity_class.contract.errors_for(entity)
 
-          Cuprum::Collections::Errors::FailedValidation.new(
+          Bronze::Errors::FailedValidation.new(
             entity_class:,
             errors:
           )
@@ -389,7 +389,7 @@ RSpec.describe Cuprum::Collections::Adapter do
           let(:expected_error) do
             errors = contract.errors_for(entity)
 
-            Cuprum::Collections::Errors::FailedValidation.new(
+            Bronze::Errors::FailedValidation.new(
               entity_class:,
               errors:
             )
@@ -425,7 +425,7 @@ RSpec.describe Cuprum::Collections::Adapter do
           let(:expected_error) do
             errors = configured_contract.errors_for(entity)
 
-            Cuprum::Collections::Errors::FailedValidation.new(
+            Bronze::Errors::FailedValidation.new(
               entity_class:,
               errors:
             )

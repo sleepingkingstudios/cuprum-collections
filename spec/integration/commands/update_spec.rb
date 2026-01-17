@@ -40,7 +40,7 @@ RSpec.describe Spec::Support::Commands::Update do
     describe 'with an invalid primary key' do
       let(:primary_key) { 100 }
       let(:expected_error) do
-        Cuprum::Collections::Errors::NotFound.new(
+        Bronze::Errors::NotFound.new(
           attribute_name:  'id',
           attribute_value: primary_key,
           name:,
@@ -53,7 +53,7 @@ RSpec.describe Spec::Support::Commands::Update do
 
     describe 'with contract: nil' do
       let(:expected_error) do
-        Cuprum::Collections::Errors::MissingDefaultContract.new(
+        Bronze::Errors::MissingDefaultContract.new(
           entity_class: Hash
         )
       end
@@ -75,7 +75,7 @@ RSpec.describe Spec::Support::Commands::Update do
             .merge(attributes)
         end
         let(:expected_error) do
-          Cuprum::Collections::Errors::FailedValidation.new(
+          Bronze::Errors::FailedValidation.new(
             entity_class: Hash,
             errors:       default_contract.errors_for(entity)
           )
@@ -126,7 +126,7 @@ RSpec.describe Spec::Support::Commands::Update do
           .merge(attributes)
       end
       let(:expected_error) do
-        Cuprum::Collections::Errors::FailedValidation.new(
+        Bronze::Errors::FailedValidation.new(
           entity_class: Hash,
           errors:       contract.errors_for(entity)
         )

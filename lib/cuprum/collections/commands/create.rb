@@ -16,7 +16,7 @@ module Cuprum::Collections::Commands
   #   result.success?
   #   #=> false
   #   result.error
-  #   #=> an instance of Cuprum::Collections::Errors::FailedValidation
+  #   #=> an instance of Bronze::Errors::FailedValidation
   #   books_collection.query.count
   #   #=> 0
   #

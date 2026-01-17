@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/errors'
+require 'bronze/errors'
 require 'cuprum/collections/relations/parameters'
 
-module Cuprum::Collections::Errors
+module Bronze::Errors
   # Abstract base class for failed query errors.
   class AbstractFindError < Cuprum::Error # rubocop:disable Metrics/ClassLength
     COLLECTION_KEYWORDS = %i[

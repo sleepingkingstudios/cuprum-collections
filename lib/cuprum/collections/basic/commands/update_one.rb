@@ -4,7 +4,7 @@ require 'stannum/constraints/types/hash_with_string_keys'
 
 require 'cuprum/collections/basic/command'
 require 'cuprum/collections/basic/commands'
-require 'cuprum/collections/errors/not_found'
+require 'bronze/errors/not_found'
 
 module Cuprum::Collections::Basic::Commands
   # Command for updating an entity in the collection.
@@ -28,7 +28,7 @@ module Cuprum::Collections::Basic::Commands
 
       return index unless index.nil?
 
-      error = Cuprum::Collections::Errors::NotFound.new(
+      error = Bronze::Errors::NotFound.new(
         attribute_name:  primary_key_name,
         attribute_value: entity[primary_key_name.to_s],
         name:,

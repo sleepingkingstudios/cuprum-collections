@@ -19,7 +19,6 @@ module Cuprum
     autoload :Collection,        'cuprum/collections/collection'
     autoload :CollectionCommand, 'cuprum/collections/collection_command'
     autoload :Commands,          'cuprum/collections/commands'
-    autoload :Errors,            'cuprum/collections/errors'
     autoload :Queries,           'cuprum/collections/queries'
     autoload :Query,             'cuprum/collections/query'
     autoload :Relation,          'cuprum/collections/relation'

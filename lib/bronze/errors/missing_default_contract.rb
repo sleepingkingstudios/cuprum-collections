@@ -2,13 +2,13 @@
 
 require 'cuprum/error'
 
-require 'cuprum/collections/errors'
+require 'bronze/errors'
 
-module Cuprum::Collections::Errors
+module Bronze::Errors
   # Error returned when validating an entity without a contract.
   class MissingDefaultContract < Cuprum::Error
     # Short string used to identify the type of error.
-    TYPE = 'cuprum.collections.errors.missing_default_contract'
+    TYPE = 'bronze.errors.missing_default_contract'
 
     # @param entity_class [Class] The class of the assigned entity.
     def initialize(entity_class: nil)

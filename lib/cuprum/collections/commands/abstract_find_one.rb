@@ -3,7 +3,7 @@
 require 'cuprum/parameter_validation'
 
 require 'cuprum/collections/commands'
-require 'cuprum/collections/errors/not_found'
+require 'bronze/errors/not_found'
 
 module Cuprum::Collections::Commands
   # Abstract implementation of the FindOne command.
@@ -39,7 +39,7 @@ module Cuprum::Collections::Commands
     def handle_missing_item(item:, primary_key:)
       return if item
 
-      error = Cuprum::Collections::Errors::NotFound.new(
+      error = Bronze::Errors::NotFound.new(
         attribute_name:  primary_key_name,
         attribute_value: primary_key,
         name:,

@@ -2,13 +2,13 @@
 
 require 'cuprum/error'
 
-require 'cuprum/collections/errors'
+require 'bronze/errors'
 
-module Cuprum::Collections::Errors
+module Bronze::Errors
   # Error returned when a collection item fails validation.
   class FailedValidation < Cuprum::Error
     # Short string used to identify the type of error.
-    TYPE = 'cuprum.collections.errors.failed_validation'
+    TYPE = 'bronze.errors.failed_validation'
 
     # @param entity_class [Class] The class of the assigned entity.
     # @param errors [Stannum::Errors] The errors generated when validating the
