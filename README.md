@@ -518,7 +518,7 @@ A `Cuprum::Collections::Constraints::Order::SortDirection` constraint validates 
 
 **AlreadyExists**
 
-A `Cuprum::Collections::Errors::AlreadyExists` error is used when an entity already exists in the collection with the given primary key, e.g. in an `InsertOne` command.
+A `Bronze::Errors::AlreadyExists` error is used when an entity already exists in the collection with the given primary key, e.g. in an `InsertOne` command.
 
 It has the following properties:
 
@@ -528,7 +528,7 @@ It has the following properties:
 
 **Extra Attributes**
 
-A `Cuprum::Collections::Errors::ExtraAttributes` error is used when attempting to set attributes on an entity that are not defined for that entity class.
+A `Bronze::Errors::ExtraAttributes` error is used when attempting to set attributes on an entity that are not defined for that entity class.
 
 It has the following properties:
 
@@ -538,7 +538,7 @@ It has the following properties:
 
 **Failed Validation**
 
-A `Cuprum::Collections::Errors::FailedValidation` error is used when an entity fails validation in a command.
+A `Bronze::Errors::FailedValidation` error is used when an entity fails validation in a command.
 
 It has the following properties:
 
@@ -547,7 +547,7 @@ It has the following properties:
 
 **Invalid Parameters**
 
-A `Cuprum::Collections::Errors::InvalidParameters` error is used when attempting to call a command with invalid parameters for that command.
+A `Bronze::Errors::InvalidParameters` error is used when attempting to call a command with invalid parameters for that command.
 
 It has the following properties:
 
@@ -556,7 +556,7 @@ It has the following properties:
 
 **Invalid Query**
 
-A `Cuprum::Collections::Errors::InvalidQuery` error is used when attempting to call a `FindMatching` command with invalid parameters for the query filter.
+A `Bronze::Errors::InvalidQuery` error is used when attempting to call a `FindMatching` command with invalid parameters for the query filter.
 
 It has the following properties:
 
@@ -565,7 +565,7 @@ It has the following properties:
 
 **Missing Default Contract**
 
-A `Cuprum::Collections::Errors::MissingDefaultContract`error is used when attempting to call a validation command without a contract and the collection does not define a default contract.
+A `Bronze::Errors::MissingDefaultContract`error is used when attempting to call a validation command without a contract and the collection does not define a default contract.
 
 It has the following properties:
 
@@ -573,7 +573,7 @@ It has the following properties:
 
 **Not Found**
 
-A `Cuprum::Collections::Errors::NotFound` error is used when an entity with the requested primary key does not exist in the collection.
+A `Bronze::Errors::NotFound` error is used when an entity with the requested primary key does not exist in the collection.
 
 - `#collection_name`: The name of the collection used in the command.
 - `#primary_key_name`: The name of the primary key attribute, e.g. `'id'`.
@@ -581,7 +581,7 @@ A `Cuprum::Collections::Errors::NotFound` error is used when an entity with the 
 
 **Unknown Operator**
 
-A `Cuprum::Collections::Errors::UnknownOperator` error is used when attempting to perform a filter operation with an operator that is either invalid or not implemented by the collection.
+A `Bronze::Errors::UnknownOperator` error is used when attempting to perform a filter operation with an operator that is either invalid or not implemented by the collection.
 
 It has the following properties:
 
@@ -1111,24 +1111,24 @@ result.value
 #=> the unique Book with the given series and published before the given date
 ```
 
-If there are no entities in the collection matching the attributes or query, the `FindOneMatching` command returns a failing result with a `Cuprum::Collections::Errors::NotFound` error.
+If there are no entities in the collection matching the attributes or query, the `FindOneMatching` command returns a failing result with a `Bronze::Errors::NotFound` error.
 
 ```ruby
 result = command.call(attributes: { 'title' => 'Gideon the Eleventh'})
 result.success?
 #=> false
 result.error
-#=> an instance of Cuprum::Collections::Errors::NotFound
+#=> an instance of Bronze::Errors::NotFound
 ```
 
-If there are two or more entities in the collection matching the attributes or query, the `FindOneMatching` command returns a failing result with a `Cuprum::Collections::Errors::NotUnique` error.
+If there are two or more entities in the collection matching the attributes or query, the `FindOneMatching` command returns a failing result with a `Bronze::Errors::NotUnique` error.
 
 ```ruby
 result = command.call(attributes: { 'author' => 'Tamsyn Muir'})
 result.success?
 #=> false
 result.error
-#=> an instance of Cuprum::Collections::Errors::NotUnique
+#=> an instance of Bronze::Errors::NotUnique
 ```
 
 #### Update
@@ -1251,7 +1251,7 @@ end.value.first
 #   "The Locked Tomb"
 ```
 
-If there are two or more entities in the collection matching the attributes or query, the `Upsert` command returns a failing result with a `Cuprum::Collections::Errors::NotUnique` error.
+If there are two or more entities in the collection matching the attributes or query, the `Upsert` command returns a failing result with a `Bronze::Errors::NotUnique` error.
 
 If the contract does not match the entity, the `Upsert` command will return a failing result with a `ValidationFailed` error.
 

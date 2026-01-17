@@ -459,7 +459,7 @@ module Cuprum::Collections::RSpec::Deferred
 
     deferred_examples 'should validate the attribute names' do
       let(:expected_error) do
-        Cuprum::Collections::Errors::ExtraAttributes.new(
+        Bronze::Errors::ExtraAttributes.new(
           entity_class:     adapter.entity_class,
           extra_attributes: attributes.keys,
           valid_attributes: adapter.attribute_names.to_a
@@ -967,7 +967,7 @@ module Cuprum::Collections::RSpec::Deferred
         let(:entity)  { configured_valid_entity }
         let(:options) { {} }
         let(:expected_error) do
-          Cuprum::Collections::Errors::MissingDefaultContract
+          Bronze::Errors::MissingDefaultContract
             .new(entity_class: adapter.entity_class)
         end
 
@@ -993,7 +993,7 @@ module Cuprum::Collections::RSpec::Deferred
             let(:expected_error) do
               errors = configured_contract.errors_for(entity)
 
-              Cuprum::Collections::Errors::FailedValidation.new(
+              Bronze::Errors::FailedValidation.new(
                 entity_class: adapter.entity_class,
                 errors:
               )
@@ -1027,7 +1027,7 @@ module Cuprum::Collections::RSpec::Deferred
             let(:expected_error) do
               errors = configured_contract.errors_for(entity)
 
-              Cuprum::Collections::Errors::FailedValidation.new(
+              Bronze::Errors::FailedValidation.new(
                 entity_class: adapter.entity_class,
                 errors:
               )
@@ -1058,7 +1058,7 @@ module Cuprum::Collections::RSpec::Deferred
             let(:expected_error) do
               errors = options[:contract].errors_for(entity)
 
-              Cuprum::Collections::Errors::FailedValidation.new(
+              Bronze::Errors::FailedValidation.new(
                 entity_class: adapter.entity_class,
                 errors:
               )

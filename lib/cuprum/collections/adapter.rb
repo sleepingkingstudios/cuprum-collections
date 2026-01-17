@@ -189,7 +189,7 @@ module Cuprum::Collections
     end
 
     def extra_attributes_error(extra_attributes:)
-      Cuprum::Collections::Errors::ExtraAttributes.new(
+      Bronze::Errors::ExtraAttributes.new(
         entity_class:,
         extra_attributes:,
         valid_attributes: attribute_names.to_a
@@ -197,7 +197,7 @@ module Cuprum::Collections
     end
 
     def failed_validation_error(errors:)
-      Cuprum::Collections::Errors::FailedValidation.new(
+      Bronze::Errors::FailedValidation.new(
         entity_class:,
         errors:
       )
@@ -258,7 +258,7 @@ module Cuprum::Collections
     end
 
     def missing_default_contract_error
-      Cuprum::Collections::Errors::MissingDefaultContract.new(entity_class:)
+      Bronze::Errors::MissingDefaultContract.new(entity_class:)
     end
 
     def not_implemented_error

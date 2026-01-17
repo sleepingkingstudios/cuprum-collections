@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/errors'
+require 'bronze/errors'
 require 'cuprum/collections/queries'
 
-module Cuprum::Collections::Errors
+module Bronze::Errors
   # An error returned when a query attempts to filter by an unknown operator.
   class UnknownOperator < Cuprum::Error
     # Short string used to identify the type of error.
-    TYPE = 'cuprum.collections.errors.unknown_operator'
+    TYPE = 'bronze.errors.unknown_operator'
 
     # @param operator [String, Symbol] The unknown operator.
     def initialize(operator:)

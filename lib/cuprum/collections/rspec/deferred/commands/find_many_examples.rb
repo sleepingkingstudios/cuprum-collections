@@ -64,7 +64,7 @@ module Cuprum::Collections::RSpec::Deferred::Commands
           let(:expected_error) do
             Cuprum::Errors::MultipleErrors.new(
               errors: primary_keys.map do |primary_key|
-                Cuprum::Collections::Errors::NotFound.new(
+                Bronze::Errors::NotFound.new(
                   attribute_name:  collection.primary_key_name,
                   attribute_value: primary_key,
                   name:            collection.name,
@@ -109,7 +109,7 @@ module Cuprum::Collections::RSpec::Deferred::Commands
             let(:expected_error) do
               Cuprum::Errors::MultipleErrors.new(
                 errors: primary_keys.map do |primary_key|
-                  Cuprum::Collections::Errors::NotFound.new(
+                  Bronze::Errors::NotFound.new(
                     attribute_name:  collection.primary_key_name,
                     attribute_value: primary_key,
                     name:            collection.name,
@@ -137,7 +137,7 @@ module Cuprum::Collections::RSpec::Deferred::Commands
                     next nil
                   end
 
-                  Cuprum::Collections::Errors::NotFound.new(
+                  Bronze::Errors::NotFound.new(
                     attribute_name:  collection.primary_key_name,
                     attribute_value: primary_key,
                     name:            collection.name,
@@ -180,7 +180,7 @@ module Cuprum::Collections::RSpec::Deferred::Commands
               let(:expected_error) do
                 Cuprum::Errors::MultipleErrors.new(
                   errors: invalid_primary_key_values.map do |primary_key|
-                    Cuprum::Collections::Errors::NotFound.new(
+                    Bronze::Errors::NotFound.new(
                       attribute_name:  collection.primary_key_name,
                       attribute_value: primary_key,
                       name:            collection.name,
@@ -208,7 +208,7 @@ module Cuprum::Collections::RSpec::Deferred::Commands
                       next nil
                     end
 
-                    Cuprum::Collections::Errors::NotFound.new(
+                    Bronze::Errors::NotFound.new(
                       attribute_name:  collection.primary_key_name,
                       attribute_value: primary_key,
                       name:            collection.name,

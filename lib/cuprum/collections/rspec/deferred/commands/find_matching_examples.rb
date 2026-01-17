@@ -118,7 +118,7 @@ module Cuprum::Collections::RSpec::Deferred::Commands
         describe 'with an invalid filter block' do
           let(:block) { -> {} }
           let(:expected_error) do
-            an_instance_of(Cuprum::Collections::Errors::InvalidQuery)
+            an_instance_of(Bronze::Errors::InvalidQuery)
           end
 
           it 'should return a failing result' do

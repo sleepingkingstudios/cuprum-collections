@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/errors/unknown_operator'
+require 'bronze/errors/unknown_operator'
 
-RSpec.describe Cuprum::Collections::Errors::UnknownOperator do
+RSpec.describe Bronze::Errors::UnknownOperator do
   subject(:error) { described_class.new(operator:) }
 
   let(:operator) { :neq }
@@ -10,7 +10,7 @@ RSpec.describe Cuprum::Collections::Errors::UnknownOperator do
   describe '::TYPE' do
     include_examples 'should define immutable constant',
       :TYPE,
-      'cuprum.collections.errors.unknown_operator'
+      'bronze.errors.unknown_operator'
   end
 
   describe '.new' do

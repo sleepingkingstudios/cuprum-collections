@@ -4,7 +4,7 @@ require 'cuprum/parameter_validation'
 
 require 'cuprum/collections/commands'
 require 'cuprum/collections/constraints/ordering'
-require 'cuprum/collections/errors/invalid_query'
+require 'bronze/errors/invalid_query'
 
 module Cuprum::Collections::Commands
   # Abstract implementation of the FindMatching command.
@@ -126,7 +126,7 @@ module Cuprum::Collections::Commands
 
       Cuprum::Collections::Scope.build(value) if value
     rescue ArgumentError => exception
-      error = Cuprum::Collections::Errors::InvalidQuery.new(
+      error = Bronze::Errors::InvalidQuery.new(
         message: exception.message,
         query:   value
       )

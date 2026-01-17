@@ -2,7 +2,7 @@
 
 require 'cuprum/collections/commands/associations'
 require 'cuprum/collections/commands/associations/require_many'
-require 'cuprum/collections/errors/not_found'
+require 'bronze/errors/not_found'
 
 module Cuprum::Collections::Commands::Associations
   # Command for querying required entities by association.
@@ -21,7 +21,7 @@ module Cuprum::Collections::Commands::Associations
       attribute_value =
         !plural && missing_keys.is_a?(Array) ? missing_keys.first : missing_keys
 
-      Cuprum::Collections::Errors::NotFound.new(
+      Bronze::Errors::NotFound.new(
         attribute_name:  association.query_key_name,
         attribute_value:,
         name:            association.name,

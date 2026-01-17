@@ -75,7 +75,7 @@ module Cuprum::Collections::RSpec::Deferred::Commands
         context 'when the item exists in the collection' do
           let(:data) { fixtures_data }
           let(:expected_error) do
-            Cuprum::Collections::Errors::AlreadyExists.new(
+            Bronze::Errors::AlreadyExists.new(
               attribute_name:  collection.primary_key_name,
               attribute_value: attributes.fetch(
                 primary_key_name.to_s,

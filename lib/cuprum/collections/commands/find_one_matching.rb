@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 require 'cuprum/collections/commands'
-require 'cuprum/collections/errors/not_found'
-require 'cuprum/collections/errors/not_unique'
+require 'bronze/errors/not_found'
+require 'bronze/errors/not_unique'
 
 module Cuprum::Collections::Commands
   # Command for finding a unique entity by a query or set of attributes.
@@ -102,13 +102,13 @@ module Cuprum::Collections::Commands
     end
 
     def not_found_error(attributes: nil, &)
-      Cuprum::Collections::Errors::NotFound.new(
+      Bronze::Errors::NotFound.new(
         **error_params_for(attributes:, &)
       )
     end
 
     def not_unique_error(attributes: nil, &)
-      Cuprum::Collections::Errors::NotUnique.new(
+      Bronze::Errors::NotUnique.new(
         **error_params_for(attributes:, &)
       )
     end

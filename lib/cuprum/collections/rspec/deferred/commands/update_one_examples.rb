@@ -46,7 +46,7 @@ module Cuprum::Collections::RSpec::Deferred::Commands
 
         context 'when the item does not exist in the collection' do
           let(:expected_error) do
-            Cuprum::Collections::Errors::NotFound.new(
+            Bronze::Errors::NotFound.new(
               attribute_name:  collection.primary_key_name,
               attribute_value: attributes.fetch(
                 primary_key_name.to_s,

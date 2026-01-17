@@ -3,7 +3,7 @@
 require 'cuprum/parameter_validation'
 
 require 'cuprum/collections'
-require 'cuprum/collections/errors/invalid_parameters'
+require 'bronze/errors/invalid_parameters'
 
 module Cuprum::Collections
   # Abstract base class for commands implementing collection actions.

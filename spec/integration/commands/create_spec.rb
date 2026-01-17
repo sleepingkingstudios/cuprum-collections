@@ -38,7 +38,7 @@ RSpec.describe Spec::Support::Commands::Create do
 
     describe 'with contract: nil' do
       let(:expected_error) do
-        Cuprum::Collections::Errors::MissingDefaultContract.new(
+        Bronze::Errors::MissingDefaultContract.new(
           entity_class: Hash
         )
       end
@@ -56,7 +56,7 @@ RSpec.describe Spec::Support::Commands::Create do
         end
         let(:entity) { attributes }
         let(:expected_error) do
-          Cuprum::Collections::Errors::FailedValidation.new(
+          Bronze::Errors::FailedValidation.new(
             entity_class: Hash,
             errors:       default_contract.errors_for(entity)
           )
@@ -79,7 +79,7 @@ RSpec.describe Spec::Support::Commands::Create do
         context 'when the entity already exists in the collection' do
           let(:primary_key) { 0 }
           let(:expected_error) do
-            Cuprum::Collections::Errors::AlreadyExists.new(
+            Bronze::Errors::AlreadyExists.new(
               attribute_name:  'id',
               attribute_value: primary_key,
               name:,
@@ -127,7 +127,7 @@ RSpec.describe Spec::Support::Commands::Create do
       end
       let(:entity) { attributes }
       let(:expected_error) do
-        Cuprum::Collections::Errors::FailedValidation.new(
+        Bronze::Errors::FailedValidation.new(
           entity_class: Hash,
           errors:       contract.errors_for(entity)
         )
@@ -147,7 +147,7 @@ RSpec.describe Spec::Support::Commands::Create do
       context 'when the entity already exists in the collection' do
         let(:primary_key) { 0 }
         let(:expected_error) do
-          Cuprum::Collections::Errors::AlreadyExists.new(
+          Bronze::Errors::AlreadyExists.new(
             attribute_name:  'id',
             attribute_value: primary_key,
             name:,

@@ -32,7 +32,7 @@ module Cuprum::Collections::RSpec::Deferred::Commands
         describe 'with an invalid primary key' do
           let(:primary_key) { invalid_primary_key_value }
           let(:expected_error) do
-            Cuprum::Collections::Errors::NotFound.new(
+            Bronze::Errors::NotFound.new(
               attribute_name:  collection.primary_key_name,
               attribute_value: primary_key,
               name:            collection.name,
@@ -66,7 +66,7 @@ module Cuprum::Collections::RSpec::Deferred::Commands
           describe 'with an invalid primary key' do
             let(:primary_key) { invalid_primary_key_value }
             let(:expected_error) do
-              Cuprum::Collections::Errors::NotFound.new(
+              Bronze::Errors::NotFound.new(
                 attribute_name:  collection.primary_key_name,
                 attribute_value: primary_key,
                 name:            collection.name,

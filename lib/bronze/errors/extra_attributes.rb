@@ -2,13 +2,13 @@
 
 require 'cuprum/error'
 
-require 'cuprum/collections/errors'
+require 'bronze/errors'
 
-module Cuprum::Collections::Errors
+module Bronze::Errors
   # Error returned when assigning invalid attributes to an entity.
   class ExtraAttributes < Cuprum::Error
     # Short string used to identify the type of error.
-    TYPE = 'cuprum.collections.errors.extra_attributes'
+    TYPE = 'bronze.errors.extra_attributes'
 
     # @param entity_class [Class] The class of the assigned entity.
     # @param extra_attributes [Array<String>] The names of the extra attributes

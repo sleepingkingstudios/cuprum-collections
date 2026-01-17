@@ -2,13 +2,13 @@
 
 require 'cuprum/error'
 
-require 'cuprum/collections/errors'
+require 'bronze/errors'
 
-module Cuprum::Collections::Errors
+module Bronze::Errors
   # An error returned when a command is called with invalid parameters.
   class InvalidParameters < Cuprum::Error
     # Short string used to identify the type of error.
-    TYPE = 'cuprum.collections.errors.invalid_parameters'
+    TYPE = 'bronze.errors.invalid_parameters'
 
     # @param command [Cuprum::Command] the called command.
     # @param errors [Stannum::Errors] the errors returned by the parameters

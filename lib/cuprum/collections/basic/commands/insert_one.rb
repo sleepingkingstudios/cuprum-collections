@@ -4,7 +4,7 @@ require 'stannum/constraints/types/hash_with_string_keys'
 
 require 'cuprum/collections/basic/command'
 require 'cuprum/collections/basic/commands'
-require 'cuprum/collections/errors/already_exists'
+require 'bronze/errors/already_exists'
 
 module Cuprum::Collections::Basic::Commands
   # Command for inserting an entity into the collection.
@@ -28,7 +28,7 @@ module Cuprum::Collections::Basic::Commands
 
       return if index.nil?
 
-      error = Cuprum::Collections::Errors::AlreadyExists.new(
+      error = Bronze::Errors::AlreadyExists.new(
         attribute_name:  primary_key_name,
         attribute_value: value,
         name:,

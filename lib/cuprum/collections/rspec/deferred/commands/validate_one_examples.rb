@@ -45,7 +45,7 @@ module Cuprum::Collections::RSpec::Deferred::Commands
             context 'when the entity does not match the default contract' do
               let(:attributes) { invalid_default_attributes }
               let(:expected_error) do
-                Cuprum::Collections::Errors::FailedValidation.new(
+                Bronze::Errors::FailedValidation.new(
                   entity_class: entity.class,
                   errors:       expected_errors
                 )
@@ -70,7 +70,7 @@ module Cuprum::Collections::RSpec::Deferred::Commands
           else
             let(:attributes) { valid_attributes }
             let(:expected_error) do
-              Cuprum::Collections::Errors::MissingDefaultContract.new(
+              Bronze::Errors::MissingDefaultContract.new(
                 entity_class: entity.class
               )
             end
@@ -88,7 +88,7 @@ module Cuprum::Collections::RSpec::Deferred::Commands
             let(:attributes) { invalid_attributes }
             let(:errors)     { contract.errors_for(entity) }
             let(:expected_error) do
-              Cuprum::Collections::Errors::FailedValidation.new(
+              Bronze::Errors::FailedValidation.new(
                 entity_class: entity.class,
                 errors:
               )

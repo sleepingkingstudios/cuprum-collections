@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/errors/abstract_find_error'
+require 'bronze/errors/abstract_find_error'
 
 require 'support/examples/find_error_examples'
 
-RSpec.describe Cuprum::Collections::Errors::AbstractFindError do
+RSpec.describe Bronze::Errors::AbstractFindError do
   include Spec::Support::Examples::FindErrorExamples
 
   subject(:error) { described_class.new(**constructor_options) }

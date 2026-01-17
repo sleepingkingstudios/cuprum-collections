@@ -2,13 +2,13 @@
 
 require 'cuprum/error'
 
-require 'cuprum/collections/errors'
+require 'bronze/errors'
 
-module Cuprum::Collections::Errors
+module Bronze::Errors
   # An error returned when a query is created with invalid filter parameters.
   class InvalidQuery < Cuprum::Error
     # Short string used to identify the type of error.
-    TYPE = 'cuprum.collections.errors.invalid_query'
+    TYPE = 'bronze.errors.invalid_query'
 
     # @param query [Object] the given filter parameters, if any.
     # @param message [String] the message to display.

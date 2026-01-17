@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/errors/invalid_parameters'
+require 'bronze/errors/invalid_parameters'
 
 require 'stannum/errors'
 
-RSpec.describe Cuprum::Collections::Errors::InvalidParameters do
+RSpec.describe Bronze::Errors::InvalidParameters do
   subject(:error) { described_class.new(command:, errors:) }
 
   let(:command) { Cuprum::Command.new }
@@ -13,7 +13,7 @@ RSpec.describe Cuprum::Collections::Errors::InvalidParameters do
   describe '::TYPE' do
     include_examples 'should define immutable constant',
       :TYPE,
-      'cuprum.collections.errors.invalid_parameters'
+      'bronze.errors.invalid_parameters'
   end
 
   describe '.new' do

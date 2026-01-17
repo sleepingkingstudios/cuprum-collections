@@ -1,26 +1,27 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/errors/extra_attributes'
+require 'stannum/errors'
 
-RSpec.describe Cuprum::Collections::Errors::ExtraAttributes do
-  subject(:error) { described_class.new(**keywords) }
+require 'bronze/errors/failed_validation'
 
-  let(:entity_class)     { nil }
-  let(:extra_attributes) { %w[isp thrust] }
-  let(:valid_attributes) { %w[cost mass type volume] }
-  let(:options)          { {} }
-  let(:keywords) do
-    {
-      extra_attributes:,
-      valid_attributes:,
-      **options
-    }
+RSpec.describe Bronze::Errors::FailedValidation do
+  subject(:error) { described_class.new(**options) }
+
+  let(:errors) do
+    errors = Stannum::Errors.new
+
+    errors.add('spec.failed_inspection', message: 'failed inspection')
+    errors[:liquid_fuel].add('spec.empty', message: 'is empty')
+    errors[:oxidizer].add('spec.leaking', message: 'is leaking')
+
+    errors
   end
+  let(:options) { { errors: } }
 
   describe '::TYPE' do
     include_examples 'should define immutable constant',
       :TYPE,
-      'cuprum.collections.errors.extra_attributes'
+      'bronze.errors.failed_validation'
   end
 
   describe '.new' do
@@ -28,17 +29,24 @@ RSpec.describe Cuprum::Collections::Errors::ExtraAttributes do
       expect(described_class)
         .to be_constructible
         .with(0).arguments
-        .and_keywords(:entity_class, :extra_attributes, :valid_attributes)
+        .and_keywords(:entity_class, :errors)
     end
   end
 
   describe '#as_json' do
+    let(:entity_class) { nil }
+    let(:expected_errors) do
+      {
+        ''            => ['failed inspection'],
+        'liquid_fuel' => ['is empty'],
+        'oxidizer'    => ['is leaking']
+      }
+    end
     let(:expected) do
       {
         'data'    => {
-          'entity_class'     => entity_class&.name,
-          'extra_attributes' => extra_attributes,
-          'valid_attributes' => valid_attributes
+          'entity_class' => entity_class&.name,
+          'errors'       => expected_errors
         },
         'message' => error.message,
         'type'    => error.type
@@ -64,7 +72,7 @@ RSpec.describe Cuprum::Collections::Errors::ExtraAttributes do
   end
 
   describe '#entity_class' do
-    include_examples 'should define reader', :entity_class, -> { entity_class }
+    include_examples 'should define reader', :entity_class, nil
 
     describe 'with entity_class: nil' do
       let(:options) { super().merge(entity_class: nil) }
@@ -82,15 +90,13 @@ RSpec.describe Cuprum::Collections::Errors::ExtraAttributes do
     end
   end
 
-  describe '#extra_attributes' do
-    include_examples 'should define reader',
-      :extra_attributes,
-      -> { extra_attributes }
+  describe '#errors' do
+    include_examples 'should define reader', :errors, -> { errors }
   end
 
   describe '#message' do
     let(:expected) do
-      'invalid attributes for an entity: isp, thrust'
+      'an entity failed validation'
     end
 
     include_examples 'should define reader', :message, -> { be == expected }
@@ -105,7 +111,7 @@ RSpec.describe Cuprum::Collections::Errors::ExtraAttributes do
       let(:entity_class) { Spec::FuelTank }
       let(:options)      { super().merge(entity_class:) }
       let(:expected) do
-        "invalid attributes for #{entity_class.name}: isp, thrust"
+        "#{entity_class.name} failed validation"
       end
 
       example_class 'Spec::FuelTank'
@@ -116,11 +122,5 @@ RSpec.describe Cuprum::Collections::Errors::ExtraAttributes do
 
   describe '#type' do
     include_examples 'should define reader', :type, described_class::TYPE
-  end
-
-  describe '#valid_attributes' do
-    include_examples 'should define reader',
-      :valid_attributes,
-      -> { valid_attributes }
   end
 end

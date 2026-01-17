@@ -29,7 +29,7 @@ RSpec.describe Spec::Support::Commands::Show do
     describe 'with an invalid primary key' do
       let(:primary_key) { 100 }
       let(:expected_error) do
-        Cuprum::Collections::Errors::NotFound.new(
+        Bronze::Errors::NotFound.new(
           attribute_name:  'id',
           attribute_value: primary_key,
           name:,

@@ -41,7 +41,7 @@ RSpec.describe Cuprum::Collections::Commands::Associations::RequireMany do
     shared_examples 'should require the association for one entity' do
       context 'when there is no matching entity' do
         let(:expected_error) do
-          Cuprum::Collections::Errors::NotFound.new(
+          Bronze::Errors::NotFound.new(
             attribute_name:  association.query_key_name,
             attribute_value: 0,
             name:            association.name,
@@ -70,7 +70,7 @@ RSpec.describe Cuprum::Collections::Commands::Associations::RequireMany do
     shared_examples 'should require the association for many entities' do
       context 'when there are no matching entities' do
         let(:expected_error) do
-          Cuprum::Collections::Errors::NotFound.new(
+          Bronze::Errors::NotFound.new(
             attribute_name:  association.query_key_name,
             attribute_value: [0, 1],
             name:            association.name,
@@ -88,7 +88,7 @@ RSpec.describe Cuprum::Collections::Commands::Associations::RequireMany do
       context 'when there are some matching entities' do
         let(:matching) { values[0..0] }
         let(:expected_error) do
-          Cuprum::Collections::Errors::NotFound.new(
+          Bronze::Errors::NotFound.new(
             attribute_name:  association.query_key_name,
             attribute_value: [1],
             name:            association.name,
