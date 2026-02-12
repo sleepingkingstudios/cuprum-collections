@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/constraints/order'
-require 'cuprum/collections/constraints/order/attributes_array'
-require 'cuprum/collections/constraints/order/attributes_hash'
+require 'bronze/constraints/order'
+require 'bronze/constraints/order/attributes_array'
+require 'bronze/constraints/order/attributes_hash'
 
-module Cuprum::Collections::Constraints::Order
+module Bronze::Constraints::Order
   # Asserts that the object is an attributes Array with an sort order Hash.
   class ComplexOrdering < Stannum::Constraints::Base
-    # @return [Cuprum::Collections::Constraints::Order::AttributesArray] a
-    #   cached instance of the constraint with default options.
+    # @return [Bronze::Constraints::Order::AttributesArray] a cached instance of
+    #   the constraint with default options.
     def self.instance
       @instance ||= new
     end
@@ -36,11 +36,11 @@ module Cuprum::Collections::Constraints::Order
     private
 
     def array_constraint
-      Cuprum::Collections::Constraints::Order::AttributesArray.instance
+      Bronze::Constraints::Order::AttributesArray.instance
     end
 
     def hash_constraint
-      Cuprum::Collections::Constraints::Order::AttributesHash.instance
+      Bronze::Constraints::Order::AttributesHash.instance
     end
   end
 end

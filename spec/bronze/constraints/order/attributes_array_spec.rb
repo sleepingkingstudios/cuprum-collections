@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/constraints/order/attributes_array'
+require 'bronze/constraints/order/attributes_array'
 
 require 'support/examples/constraint_examples'
 
-RSpec.describe Cuprum::Collections::Constraints::Order::AttributesArray do
+RSpec.describe Bronze::Constraints::Order::AttributesArray do
   include Spec::Support::Examples::ConstraintExamples
 
   subject(:constraint) { described_class.new(**constructor_options) }
@@ -14,7 +14,7 @@ RSpec.describe Cuprum::Collections::Constraints::Order::AttributesArray do
     {
       allow_empty:   true,
       expected_type: Array,
-      item_type:     Cuprum::Collections::Constraints::AttributeName.instance,
+      item_type:     Bronze::Constraints::AttributeName.instance,
       required:      true
     }
   end
@@ -104,7 +104,7 @@ RSpec.describe Cuprum::Collections::Constraints::Order::AttributesArray do
       let(:expected_errors) do
         {
           path: [0],
-          type: Cuprum::Collections::Constraints::AttributeName::TYPE
+          type: Bronze::Constraints::AttributeName::TYPE
         }
       end
 

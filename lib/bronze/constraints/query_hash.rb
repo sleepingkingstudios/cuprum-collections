@@ -2,10 +2,10 @@
 
 require 'stannum/constraints/types/hash_type'
 
-require 'cuprum/collections/constraints'
-require 'cuprum/collections/constraints/attribute_name'
+require 'bronze/constraints'
+require 'bronze/constraints/attribute_name'
 
-module Cuprum::Collections::Constraints
+module Bronze::Constraints
   # Asserts that the object is a Hash with valid attribute name keys.
   class QueryHash < Stannum::Constraints::Types::HashType
     def initialize(**)
@@ -19,7 +19,7 @@ module Cuprum::Collections::Constraints
     private
 
     def attribute_name_constraint
-      Cuprum::Collections::Constraints::AttributeName.instance
+      Bronze::Constraints::AttributeName.instance
     end
   end
 end

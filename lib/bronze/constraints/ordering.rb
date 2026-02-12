@@ -5,13 +5,13 @@ require 'stannum/constraints/types/hash_type'
 require 'stannum/constraints/union'
 require 'stannum/support/optional'
 
-require 'cuprum/collections/constraints'
-require 'cuprum/collections/constraints/attribute_name'
-require 'cuprum/collections/constraints/order/attributes_array'
-require 'cuprum/collections/constraints/order/attributes_hash'
-require 'cuprum/collections/constraints/order/complex_ordering'
+require 'bronze/constraints'
+require 'bronze/constraints/attribute_name'
+require 'bronze/constraints/order/attributes_array'
+require 'bronze/constraints/order/attributes_hash'
+require 'bronze/constraints/order/complex_ordering'
 
-module Cuprum::Collections::Constraints
+module Bronze::Constraints
   # Asserts that the object is a valid query ordering.
   #
   # A valid ordering can be any of the following:
@@ -30,13 +30,21 @@ module Cuprum::Collections::Constraints
     include Stannum::Support::Optional
 
     # The :type of the error generated for a matching object.
-    NEGATED_TYPE = 'cuprum.collections.constraints.is_valid_ordering'
+    NEGATED_TYPE = 'bronze.constraints.is_valid_ordering'
 
     # The :type of the error generated for a non-matching object.
-    TYPE = 'cuprum.collections.constraints.is_not_valid_ordering'
+    TYPE = 'bronze.constraints.is_not_valid_ordering'
 
-    # @return [Cuprum::Collections::Constraints::Order::AttributesArray] a
-    #   cached instance of the constraint with default options.
+    ORDERING_CONSTRAINTS = [
+      Bronze::Constraints::AttributeName.instance,
+      Bronze::Constraints::Order::AttributesArray.instance,
+      Bronze::Constraints::Order::AttributesHash.instance,
+      Bronze::Constraints::Order::ComplexOrdering.instance
+    ].freeze
+    private_constant :ORDERING_CONSTRAINTS
+
+    # @return [Bronze::Constraints::Order::AttributesArray] a cached instance of
+    #   the constraint with default options.
     def self.instance
       @instance ||= new
     end
@@ -46,7 +54,7 @@ module Cuprum::Collections::Constraints
     #     constraint. Defaults to an empty Hash.
     def initialize(optional: nil, required: nil, **)
       super(
-        *ordering_constraints,
+        *ORDERING_CONSTRAINTS,
         **resolve_required_option(
           optional:,
           required:,
@@ -100,17 +108,6 @@ module Cuprum::Collections::Constraints
     #   @return [Stannum::Constraints::Base] the copied constraint.
     def with_options(**)
       super(**resolve_required_option(**))
-    end
-
-    private
-
-    def ordering_constraints
-      [
-        Cuprum::Collections::Constraints::AttributeName.instance,
-        Cuprum::Collections::Constraints::Order::AttributesArray.instance,
-        Cuprum::Collections::Constraints::Order::AttributesHash.instance,
-        Cuprum::Collections::Constraints::Order::ComplexOrdering.instance
-      ]
     end
   end
 end

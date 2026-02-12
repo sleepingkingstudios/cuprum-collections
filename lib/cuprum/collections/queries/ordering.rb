@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/constraints/ordering'
+require 'bronze/constraints/ordering'
 require 'cuprum/collections/queries'
 
 module Cuprum::Collections::Queries
@@ -61,7 +61,7 @@ module Cuprum::Collections::Queries
       end
 
       def ordering_constraint
-        Cuprum::Collections::Constraints::Ordering.instance
+        Bronze::Constraints::Ordering.instance
       end
 
       def validate_ordering!(attributes)
