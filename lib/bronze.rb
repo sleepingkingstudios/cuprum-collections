@@ -8,6 +8,7 @@ module Bronze
   autoload :Associations, 'bronze/associations'
   autoload :Constraints,  'bronze/constraints'
   autoload :Errors,       'bronze/errors'
+  autoload :Queries,      'bronze/queries'
   autoload :Relation,     'bronze/relation'
   autoload :Relations,    'bronze/relations'
 

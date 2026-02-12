@@ -107,7 +107,7 @@ RSpec.describe Cuprum::Collections::Scope do
 
       describe 'with non-matching criteria' do
         let(:other_criteria) do
-          operators = Cuprum::Collections::Queries::Operators
+          operators = Bronze::Queries::Operators
 
           [
             [
@@ -134,7 +134,7 @@ RSpec.describe Cuprum::Collections::Scope do
 
         describe 'with non-matching criteria' do
           let(:other_criteria) do
-            operators = Cuprum::Collections::Queries::Operators
+            operators = Bronze::Queries::Operators
 
             [
               [

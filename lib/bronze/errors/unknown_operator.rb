@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'bronze/errors'
-require 'cuprum/collections/queries'
+require 'bronze/queries'
 
 module Bronze::Errors
   # An error returned when a query attempts to filter by an unknown operator.
@@ -26,7 +26,7 @@ module Bronze::Errors
     def corrections
       @corrections ||=
         DidYouMean::SpellChecker
-          .new(dictionary: Cuprum::Collections::Queries::VALID_OPERATORS.to_a)
+          .new(dictionary: Bronze::Queries::VALID_OPERATORS.to_a)
           .correct(operator)
     end
 

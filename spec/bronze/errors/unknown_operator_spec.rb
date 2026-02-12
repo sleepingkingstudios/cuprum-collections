@@ -60,7 +60,7 @@ RSpec.describe Bronze::Errors::UnknownOperator do
   describe '#corrections' do
     let(:expected) do
       DidYouMean::SpellChecker
-        .new(dictionary: Cuprum::Collections::Queries::VALID_OPERATORS)
+        .new(dictionary: Bronze::Queries::VALID_OPERATORS)
         .correct(operator)
     end
 

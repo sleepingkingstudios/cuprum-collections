@@ -2,11 +2,13 @@
 
 require 'sleeping_king_studios/tools/toolbox/constant_map'
 
-require 'cuprum/collections'
+require 'bronze'
 
-module Cuprum::Collections
+module Bronze
   # Namespace for internal functionality for implementing collection queries.
   module Queries
+    autoload :Ordering, 'bronze/queries/ordering'
+
     # Defines the supported operators for a Query.
     Operators = SleepingKingStudios::Tools::Toolbox::ConstantMap.new(
       EQUAL:                    :equal,

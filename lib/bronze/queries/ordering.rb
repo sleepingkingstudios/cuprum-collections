@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require 'bronze/constraints/ordering'
-require 'cuprum/collections/queries'
+require 'bronze/queries'
 
-module Cuprum::Collections::Queries
+module Bronze::Queries
   # Functionality around validating and normalizing query sort orderings.
   module Ordering
     # Exception class for handling invalid order keywords.

@@ -42,7 +42,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
       deferred_context 'with a non-empty conjunction scope' do
         let(:original) do
-          operators = Cuprum::Collections::Queries::Operators
+          operators = Bronze::Queries::Operators
           criteria  = [
             [
               'category',
@@ -59,7 +59,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
       deferred_context 'with a non-empty criteria scope' do
         let(:original) do
-          operators = Cuprum::Collections::Queries::Operators
+          operators = Bronze::Queries::Operators
           criteria  = [
             [
               'category',
@@ -74,7 +74,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
       deferred_context 'with a non-empty disjunction scope' do
         let(:original) do
-          operators = Cuprum::Collections::Queries::Operators
+          operators = Bronze::Queries::Operators
           criteria  = [
             [
               'category',

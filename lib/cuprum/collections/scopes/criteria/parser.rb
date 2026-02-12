@@ -16,7 +16,7 @@ module Cuprum::Collections::Scopes::Criteria
 
       def equals(value)
         OperatorExpression.new(
-          Cuprum::Collections::Queries::Operators::EQUAL,
+          Bronze::Queries::Operators::EQUAL,
           value
         )
       end
@@ -25,7 +25,7 @@ module Cuprum::Collections::Scopes::Criteria
 
       def greater_than(value)
         OperatorExpression.new(
-          Cuprum::Collections::Queries::Operators::GREATER_THAN,
+          Bronze::Queries::Operators::GREATER_THAN,
           value
         )
       end
@@ -33,7 +33,7 @@ module Cuprum::Collections::Scopes::Criteria
 
       def greater_than_or_equal_to(value)
         OperatorExpression.new(
-          Cuprum::Collections::Queries::Operators::GREATER_THAN_OR_EQUAL_TO,
+          Bronze::Queries::Operators::GREATER_THAN_OR_EQUAL_TO,
           value
         )
       end
@@ -41,7 +41,7 @@ module Cuprum::Collections::Scopes::Criteria
 
       def less_than(value)
         OperatorExpression.new(
-          Cuprum::Collections::Queries::Operators::LESS_THAN,
+          Bronze::Queries::Operators::LESS_THAN,
           value
         )
       end
@@ -49,7 +49,7 @@ module Cuprum::Collections::Scopes::Criteria
 
       def less_than_or_equal_to(value)
         OperatorExpression.new(
-          Cuprum::Collections::Queries::Operators::LESS_THAN_OR_EQUAL_TO,
+          Bronze::Queries::Operators::LESS_THAN_OR_EQUAL_TO,
           value
         )
       end
@@ -57,7 +57,7 @@ module Cuprum::Collections::Scopes::Criteria
 
       def not_equal(value)
         OperatorExpression.new(
-          Cuprum::Collections::Queries::Operators::NOT_EQUAL,
+          Bronze::Queries::Operators::NOT_EQUAL,
           value
         )
       end
@@ -65,28 +65,28 @@ module Cuprum::Collections::Scopes::Criteria
 
       def not_null
         OperatorExpression.new(
-          Cuprum::Collections::Queries::Operators::NOT_NULL,
+          Bronze::Queries::Operators::NOT_NULL,
           nil
         )
       end
 
       def not_one_of(*values)
         OperatorExpression.new(
-          Cuprum::Collections::Queries::Operators::NOT_ONE_OF,
+          Bronze::Queries::Operators::NOT_ONE_OF,
           flatten_values(values)
         )
       end
 
       def null
         OperatorExpression.new(
-          Cuprum::Collections::Queries::Operators::NULL,
+          Bronze::Queries::Operators::NULL,
           nil
         )
       end
 
       def one_of(*values)
         OperatorExpression.new(
-          Cuprum::Collections::Queries::Operators::ONE_OF,
+          Bronze::Queries::Operators::ONE_OF,
           flatten_values(values)
         )
       end
@@ -181,13 +181,13 @@ module Cuprum::Collections::Scopes::Criteria
         if filter.is_a?(OperatorExpression)
           [attribute.to_s, filter.operator, filter.value]
         else
-          operator = Cuprum::Collections::Queries::Operators::EQUAL
+          operator = Bronze::Queries::Operators::EQUAL
 
           [attribute.to_s, operator, filter]
         end
       end
     rescue NameError => exception
-      raise Cuprum::Collections::Queries::UnknownOperatorException,
+      raise Bronze::Queries::UnknownOperatorException,
         %(unknown operator "#{exception.name}")
     end
 
@@ -199,7 +199,7 @@ module Cuprum::Collections::Scopes::Criteria
     def parse_hash(value)
       Parser.validate_hash(value)
 
-      operator = Cuprum::Collections::Queries::Operators::EQUAL
+      operator = Bronze::Queries::Operators::EQUAL
 
       value.map do |attribute, filter|
         [attribute.to_s, operator, filter]

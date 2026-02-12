@@ -10,7 +10,7 @@ module Cuprum::Collections::RSpec::Deferred
     BOOKS_FIXTURES = Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES
     private_constant :BOOKS_FIXTURES
 
-    OPERATORS = Cuprum::Collections::Queries::Operators
+    OPERATORS = Bronze::Queries::Operators
     private_constant :OPERATORS
 
     deferred_examples 'should be a Query' do |**deferred_options|
@@ -669,7 +669,7 @@ module Cuprum::Collections::RSpec::Deferred
             Cuprum::Collections::Scope.new({ 'author' => 'Tamsyn Muir' })
           end
           let(:expected) do
-            operators = Cuprum::Collections::Queries::Operators
+            operators = Bronze::Queries::Operators
 
             [
               [
@@ -730,7 +730,7 @@ module Cuprum::Collections::RSpec::Deferred
             let(:scope) { subject.where(value).scope }
             let(:outer) { scope.scopes.last }
             let(:expected) do
-              operators = Cuprum::Collections::Queries::Operators
+              operators = Bronze::Queries::Operators
 
               [
                 [
@@ -741,7 +741,7 @@ module Cuprum::Collections::RSpec::Deferred
               ]
             end
             let(:expected_first) do
-              operators = Cuprum::Collections::Queries::Operators
+              operators = Bronze::Queries::Operators
 
               [
                 [
@@ -752,7 +752,7 @@ module Cuprum::Collections::RSpec::Deferred
               ]
             end
             let(:expected_second) do
-              operators = Cuprum::Collections::Queries::Operators
+              operators = Bronze::Queries::Operators
 
               [
                 [
