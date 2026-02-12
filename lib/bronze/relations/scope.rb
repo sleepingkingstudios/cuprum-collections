@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/relations'
+require 'bronze/relations'
 
-module Cuprum::Collections::Relations
+module Bronze::Relations
   # Methods for defining a scope for a relation.
   module Scope
     # @overload initialize(scope: nil, **)
@@ -25,8 +25,7 @@ module Cuprum::Collections::Relations
     #     to apply. The scope will be combined with the existing scope on the
     #     relation, if any.
     #
-    #   @return [Cuprum::Collections::Relations::Scope] the copy of the
-    #     relation.
+    #   @return [Bronze::Relations::Scope] the copy of the relation.
     #
     # @overload with_scope(&block)
     #   Copies the relation and applies the scope to the copy.
@@ -36,8 +35,7 @@ module Cuprum::Collections::Relations
     #     receiver for the scope block.
     #   @yieldreturn [Hash] the query hash for the scope.
     #
-    #   @return [Cuprum::Collections::Relations::Scope] the copy of the
-    #     relation.
+    #   @return [Bronze::Relations::Scope] the copy of the relation.
     def with_scope(value = nil, &block)
       dup.tap { |copy| copy.scope = apply_scope(scope, value || block) }
     end

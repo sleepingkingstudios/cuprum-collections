@@ -1,16 +1,15 @@
 # frozen_string_literal: true
 
+require 'bronze/resource'
 require 'cuprum/collections'
-require 'cuprum/collections/resource'
 
 module Cuprum::Collections
   # Class representing an association between resources.
-  class Association < Resource # rubocop:disable Metrics/ClassLength
+  class Association < Bronze::Resource # rubocop:disable Metrics/ClassLength
     # @overload initialize(entity_class: nil, name: nil, qualified_name: nil, singular_name: nil, **options)
     #   @param entity_class [Class, String] the class of entity represented by
     #     the resource.
-    #   @param inverse [Cuprum::Collections::Resource] the inverse association,
-    #     if any.
+    #   @param inverse [Bronez::Resource] the inverse association, if any.
     #   @param name [String] the name of the resource.
     #   @param qualified_name [String] a scoped name for the resource.
     #   @param singular_name [String] the name of an entity in the resource.
@@ -36,7 +35,7 @@ module Cuprum::Collections
       @inverse = params[:inverse]
     end
 
-    # @return [Cuprum::Collections::Resource] the inverse association, if any.
+    # @return [Bronze::Resource] the inverse association, if any.
     attr_reader :inverse
 
     # Generates a query for finding matching items.
@@ -168,7 +167,7 @@ module Cuprum::Collections
 
     # Creates a copy of the association with the specified inverse association.
     #
-    # @param inverse [Cuprum::Collections::Resource] the inverse association.
+    # @param inverse [Bronze::Resource] the inverse association.
     #
     # @return [Cuprum::Collections::Association] the copied association.
     def with_inverse(inverse)

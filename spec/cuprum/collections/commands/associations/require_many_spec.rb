@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
+require 'bronze/resource'
 require 'cuprum/collections/associations/belongs_to'
 require 'cuprum/collections/basic/repository'
 require 'cuprum/collections/commands/associations/require_many'
-require 'cuprum/collections/resource'
 
 RSpec.describe Cuprum::Collections::Commands::Associations::RequireMany do
   subject(:command) do
@@ -22,7 +22,7 @@ RSpec.describe Cuprum::Collections::Commands::Associations::RequireMany do
       repository.create(qualified_name: association.qualified_name)
     end
   end
-  let(:resource) { Cuprum::Collections::Resource.new(name: 'books') }
+  let(:resource) { Bronze::Resource.new(name: 'books') }
 
   describe '.new' do
     it 'should define the constructor' do
@@ -275,7 +275,7 @@ RSpec.describe Cuprum::Collections::Commands::Associations::RequireMany do
 
     context 'when initialized with a singular resource' do
       let(:resource) do
-        Cuprum::Collections::Resource.new(name: 'book', singular: true)
+        Bronze::Resource.new(name: 'book', singular: true)
       end
 
       describe 'with entity: an Object' do

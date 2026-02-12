@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
+require 'bronze/resource'
 require 'cuprum/collections/associations'
 require 'cuprum/collections/associations/belongs_to'
 require 'cuprum/collections/basic/repository'
 require 'cuprum/collections/commands/associations/find_many'
-require 'cuprum/collections/resource'
 
 RSpec.describe Cuprum::Collections::Commands::Associations::FindMany do
   subject(:command) do
@@ -21,7 +21,7 @@ RSpec.describe Cuprum::Collections::Commands::Associations::FindMany do
       repository.create(qualified_name: association.qualified_name)
     end
   end
-  let(:resource) { Cuprum::Collections::Resource.new(name: 'authors') }
+  let(:resource) { Bronze::Resource.new(name: 'authors') }
 
   describe '.new' do
     it 'should define the constructor' do
@@ -291,7 +291,7 @@ RSpec.describe Cuprum::Collections::Commands::Associations::FindMany do
       let(:association) do
         Cuprum::Collections::Associations::BelongsTo.new(name: 'author')
       end
-      let(:resource) { Cuprum::Collections::Resource.new(name: 'books') }
+      let(:resource) { Bronze::Resource.new(name: 'books') }
       let(:non_matching) do
         {
           'id'   => 3,
@@ -352,7 +352,7 @@ RSpec.describe Cuprum::Collections::Commands::Associations::FindMany do
 
       context 'when initialized with a singular resource' do
         let(:resource) do
-          Cuprum::Collections::Resource.new(name: 'book', singular: true)
+          Bronze::Resource.new(name: 'book', singular: true)
         end
 
         describe 'with entity: an Object' do
@@ -424,7 +424,7 @@ RSpec.describe Cuprum::Collections::Commands::Associations::FindMany do
 
       context 'when initialized with a singular resource' do
         let(:resource) do
-          Cuprum::Collections::Resource.new(name: 'author', singular: true)
+          Bronze::Resource.new(name: 'author', singular: true)
         end
 
         describe 'with key: an Integer' do
@@ -443,7 +443,7 @@ RSpec.describe Cuprum::Collections::Commands::Associations::FindMany do
 
     context 'when initialized with a singular resource' do
       let(:resource) do
-        Cuprum::Collections::Resource.new(name: 'author', singular: true)
+        Bronze::Resource.new(name: 'author', singular: true)
       end
 
       describe 'with entity: an Object' do

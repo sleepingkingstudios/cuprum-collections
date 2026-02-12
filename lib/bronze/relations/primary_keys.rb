@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/relations'
+require 'bronze/relations'
 
-module Cuprum::Collections::Relations
+module Bronze::Relations
   # Methods for specifying a relation's primary key.
   module PrimaryKeys
     # @return [String] the name of the primary key attribute. Defaults to

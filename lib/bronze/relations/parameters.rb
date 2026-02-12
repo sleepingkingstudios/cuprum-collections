@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/relations'
+require 'bronze/relations'
 
-module Cuprum::Collections::Relations
+module Bronze::Relations
   # Methods for resolving a relations's naming and entity class from options.
   module Parameters # rubocop:disable Metrics/ModuleLength
     IGNORED_PARAMETERS = %i[
@@ -261,7 +261,7 @@ module Cuprum::Collections::Relations
       @entity_class = Object.const_get(@entity_class)
     end
 
-    # (see Cuprum::Collections::Relations::Parameters.resolve_parameters)
+    # (see Bronze::Relations::Parameters.resolve_parameters)
     def resolve_parameters(parameters)
       Parameters.resolve_parameters(parameters)
     end

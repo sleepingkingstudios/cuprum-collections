@@ -2,8 +2,8 @@
 
 require 'forwardable'
 
+require 'bronze/relations/parameters'
 require 'cuprum/collections'
-require 'cuprum/collections/relations/parameters'
 
 module Cuprum::Collections
   # A repository represents a group of collections.
@@ -214,7 +214,7 @@ module Cuprum::Collections
     end
 
     def qualified_name_for(**parameters)
-      Cuprum::Collections::Relations::Parameters
+      Bronze::Relations::Parameters
         .resolve_parameters(parameters)
         .fetch(:qualified_name)
     end
