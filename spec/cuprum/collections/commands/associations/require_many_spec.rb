@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
+require 'bronze/associations/belongs_to'
 require 'bronze/resource'
-require 'cuprum/collections/associations/belongs_to'
 require 'cuprum/collections/basic/repository'
 require 'cuprum/collections/commands/associations/require_many'
 
@@ -15,7 +15,7 @@ RSpec.describe Cuprum::Collections::Commands::Associations::RequireMany do
   end
 
   let(:association) do
-    Cuprum::Collections::Associations::BelongsTo.new(name: 'author')
+    Bronze::Associations::BelongsTo.new(name: 'author')
   end
   let(:repository) do
     Cuprum::Collections::Basic::Repository.new.tap do |repository|

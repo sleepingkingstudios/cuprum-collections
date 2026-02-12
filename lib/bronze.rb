@@ -4,9 +4,11 @@ require 'cuprum'
 
 # A data abstraction layer based on the Cuprum library.
 module Bronze
-  autoload :Errors,    'bronze/errors'
-  autoload :Relation,  'bronze/relation'
-  autoload :Relations, 'bronze/relations'
+  autoload :Association,  'bronze/association'
+  autoload :Associations, 'bronze/associations'
+  autoload :Errors,       'bronze/errors'
+  autoload :Relation,     'bronze/relation'
+  autoload :Relations,    'bronze/relations'
 
   # @return [String] the absolute path to the gem directory.
   def self.gem_path

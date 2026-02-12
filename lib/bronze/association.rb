@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
+require 'bronze'
 require 'bronze/resource'
-require 'cuprum/collections'
 
-module Cuprum::Collections
+module Bronze
   # Class representing an association between resources.
   class Association < Bronze::Resource # rubocop:disable Metrics/ClassLength
     # @overload initialize(entity_class: nil, name: nil, qualified_name: nil, singular_name: nil, **options)
@@ -169,7 +169,7 @@ module Cuprum::Collections
     #
     # @param inverse [Bronze::Resource] the inverse association.
     #
-    # @return [Cuprum::Collections::Association] the copied association.
+    # @return [Bronze::Association] the copied association.
     def with_inverse(inverse)
       dup.assign_inverse(inverse)
     end

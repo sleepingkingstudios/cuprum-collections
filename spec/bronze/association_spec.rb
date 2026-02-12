@@ -1,14 +1,16 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/associations/has_many'
+require 'bronze/association'
 require 'cuprum/collections/rspec/deferred/association_examples'
+require 'cuprum/collections/rspec/deferred/relation_examples'
 
 require 'support/book'
 require 'support/grimoire'
 require 'support/scoped_book'
 
-RSpec.describe Cuprum::Collections::Associations::HasMany do
+RSpec.describe Bronze::Association do
   include Cuprum::Collections::RSpec::Deferred::AssociationExamples
+  include Cuprum::Collections::RSpec::Deferred::RelationExamples
 
   subject(:association) { described_class.new(**constructor_options) }
 
@@ -17,11 +19,5 @@ RSpec.describe Cuprum::Collections::Associations::HasMany do
 
   include_deferred 'should be a has Association'
 
-  describe '#plural?' do
-    it { expect(association.plural?).to be true }
-  end
-
-  describe '#singular?' do
-    it { expect(association.singular?).to be false }
-  end
+  include_deferred 'should define Relation cardinality'
 end
