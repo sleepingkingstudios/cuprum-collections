@@ -47,8 +47,7 @@ module Cuprum::Collections::Commands::Associations
     #
     #     @return [Array<Object>] the association values.
 
-    # @param association [Cuprum::Collections::Association] the association to
-    #   query.
+    # @param association [Bronze::Association] the association to query.
     # @param repository [Cuprum::Collections::Repository] the repository to
     #   query from.
     # @param resource [Bronze::Resource] the base resource for the association.
@@ -60,7 +59,7 @@ module Cuprum::Collections::Commands::Associations
       @resource    = resource
     end
 
-    # @return [Cuprum::Collections::Association] the association to query.
+    # @return [Bronze::Association] the association to query.
     attr_reader :association
 
     # @return [Cuprum::Collections::Repository] the repository to query from.

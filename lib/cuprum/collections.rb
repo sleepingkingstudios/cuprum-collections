@@ -13,8 +13,6 @@ module Cuprum
     autoload :Adaptable,         'cuprum/collections/adaptable'
     autoload :Adapter,           'cuprum/collections/adapter'
     autoload :Adapters,          'cuprum/collections/adapters'
-    autoload :Association,       'cuprum/collections/association'
-    autoload :Associations,      'cuprum/collections/associations'
     autoload :Basic,             'cuprum/collections/basic'
     autoload :Collection,        'cuprum/collections/collection'
     autoload :CollectionCommand, 'cuprum/collections/collection_command'

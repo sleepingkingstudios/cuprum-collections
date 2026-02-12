@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
+require 'bronze/associations'
+require 'bronze/associations/belongs_to'
 require 'bronze/resource'
-require 'cuprum/collections/associations'
-require 'cuprum/collections/associations/belongs_to'
 require 'cuprum/collections/basic/repository'
 require 'cuprum/collections/commands/associations/find_many'
 
@@ -15,7 +15,7 @@ RSpec.describe Cuprum::Collections::Commands::Associations::FindMany do
     )
   end
 
-  let(:association) { Cuprum::Collections::Association.new(name: 'books') }
+  let(:association) { Bronze::Association.new(name: 'books') }
   let(:repository) do
     Cuprum::Collections::Basic::Repository.new.tap do |repository|
       repository.create(qualified_name: association.qualified_name)
@@ -289,7 +289,7 @@ RSpec.describe Cuprum::Collections::Commands::Associations::FindMany do
 
     context 'when initialized with a belongs_to association' do
       let(:association) do
-        Cuprum::Collections::Associations::BelongsTo.new(name: 'author')
+        Bronze::Associations::BelongsTo.new(name: 'author')
       end
       let(:resource) { Bronze::Resource.new(name: 'books') }
       let(:non_matching) do
@@ -371,7 +371,7 @@ RSpec.describe Cuprum::Collections::Commands::Associations::FindMany do
 
     context 'when initialized with a singular association' do
       let(:association) do
-        Cuprum::Collections::Association.new(name: 'agent', singular: true)
+        Bronze::Association.new(name: 'agent', singular: true)
       end
       let(:non_matching) do
         {
