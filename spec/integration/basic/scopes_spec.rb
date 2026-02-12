@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
+require 'bronze/queries'
 require 'cuprum/collections/basic/scopes/conjunction_scope'
 require 'cuprum/collections/basic/scopes/criteria_scope'
 require 'cuprum/collections/basic/scopes/disjunction_scope'
 require 'cuprum/collections/rspec/fixtures'
-require 'cuprum/collections/queries'
 require 'cuprum/collections/scope'
 
 RSpec.describe Cuprum::Collections::Basic::Scopes do
@@ -805,7 +805,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
 
   describe 'with a criteria scope' do
     let(:criteria) do
-      operators = Cuprum::Collections::Queries::Operators
+      operators = Bronze::Queries::Operators
 
       [
         [
@@ -1141,7 +1141,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
 
   describe 'with an inverted criteria scope' do
     let(:criteria) do
-      operators = Cuprum::Collections::Queries::Operators
+      operators = Bronze::Queries::Operators
 
       [
         [

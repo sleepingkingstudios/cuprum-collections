@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
+require 'bronze/queries'
 require 'cuprum/collections/basic/scopes'
 require 'cuprum/collections/basic/scopes/base'
-require 'cuprum/collections/queries'
 require 'cuprum/collections/scopes/criteria'
 
 module Cuprum::Collections::Basic::Scopes
@@ -10,7 +10,7 @@ module Cuprum::Collections::Basic::Scopes
   class CriteriaScope < Cuprum::Collections::Basic::Scopes::Base
     include Cuprum::Collections::Scopes::Criteria
 
-    Operators = Cuprum::Collections::Queries::Operators
+    Operators = Bronze::Queries::Operators
     private_constant :Operators
 
     FILTERS = {
@@ -67,7 +67,7 @@ module Cuprum::Collections::Basic::Scopes
 
     def filter_for(operator)
       FILTERS.fetch(operator) do
-        error_class = Cuprum::Collections::Queries::UnknownOperatorException
+        error_class = Bronze::Queries::UnknownOperatorException
         message     = %(unknown operator "#{operator}")
 
         raise error_class.new(message, operator)

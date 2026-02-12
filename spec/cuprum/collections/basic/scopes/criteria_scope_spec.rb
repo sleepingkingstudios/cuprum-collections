@@ -352,7 +352,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes::CriteriaScope do
           .find { |book| book['title'] == 'The Two Towers' }
       end
       let(:error_class) do
-        Cuprum::Collections::Queries::UnknownOperatorException
+        Bronze::Queries::UnknownOperatorException
       end
       let(:error_message) do
         'unknown operator "random"'

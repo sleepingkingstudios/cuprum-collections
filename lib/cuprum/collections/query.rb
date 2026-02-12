@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
+require 'bronze/queries/ordering'
 require 'cuprum/collections'
-require 'cuprum/collections/queries/ordering'
 require 'cuprum/collections/scopes/all_scope'
 
 module Cuprum::Collections
@@ -128,7 +128,7 @@ module Cuprum::Collections
     def order(*attributes)
       return @order if attributes.empty?
 
-      normalized = Cuprum::Collections::Queries::Ordering.normalize(*attributes)
+      normalized = Bronze::Queries::Ordering.normalize(*attributes)
 
       dup.tap { |copy| copy.with_order(normalized) }
     end

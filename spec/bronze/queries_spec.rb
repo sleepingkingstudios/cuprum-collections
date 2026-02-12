@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/queries'
+require 'bronze/queries'
 
-RSpec.describe Cuprum::Collections::Queries do
+RSpec.describe Bronze::Queries do
   describe '::Operators' do
     let(:expected_operators) do
       {

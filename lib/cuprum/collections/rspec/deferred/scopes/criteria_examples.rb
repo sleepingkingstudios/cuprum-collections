@@ -24,7 +24,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
       deferred_context 'when the scope has multiple criteria' do
         let(:criteria) do
-          operators = Cuprum::Collections::Queries::Operators
+          operators = Bronze::Queries::Operators
 
           [
             [
@@ -43,7 +43,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
       deferred_context 'with criteria' do
         let(:criteria) do
-          operators = Cuprum::Collections::Queries::Operators
+          operators = Bronze::Queries::Operators
 
           [
             ['title',  operators::EQUAL, 'Gideon the Ninth'],
@@ -135,7 +135,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
           describe 'with non-matching criteria' do
             let(:other_criteria) do
-              operators = Cuprum::Collections::Queries::Operators
+              operators = Bronze::Queries::Operators
 
               [
                 [
@@ -170,7 +170,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
             describe 'with non-matching criteria' do
               let(:other_criteria) do
-                operators = Cuprum::Collections::Queries::Operators
+                operators = Bronze::Queries::Operators
 
                 [
                   [
@@ -218,7 +218,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
             describe 'with non-matching criteria' do
               let(:other_criteria) do
-                operators = Cuprum::Collections::Queries::Operators
+                operators = Bronze::Queries::Operators
 
                 [
                   [
@@ -253,7 +253,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
               describe 'with non-matching criteria' do
                 let(:other_criteria) do
-                  operators = Cuprum::Collections::Queries::Operators
+                  operators = Bronze::Queries::Operators
 
                   [
                     [
@@ -318,7 +318,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
           describe 'with non-matching criteria' do
             let(:other_criteria) do
-              operators = Cuprum::Collections::Queries::Operators
+              operators = Bronze::Queries::Operators
 
               [
                 [
@@ -353,7 +353,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
             describe 'with non-matching criteria' do
               let(:other_criteria) do
-                operators = Cuprum::Collections::Queries::Operators
+                operators = Bronze::Queries::Operators
 
                 [
                   [
@@ -401,7 +401,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
             describe 'with non-matching criteria' do
               let(:other_criteria) do
-                operators = Cuprum::Collections::Queries::Operators
+                operators = Bronze::Queries::Operators
 
                 [
                   [
@@ -436,7 +436,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
               describe 'with non-matching criteria' do
                 let(:other_criteria) do
-                  operators = Cuprum::Collections::Queries::Operators
+                  operators = Bronze::Queries::Operators
 
                   [
                     [
@@ -541,7 +541,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
               })
             end
             let(:expected) do
-              operators = Cuprum::Collections::Queries::Operators
+              operators = Bronze::Queries::Operators
 
               [
                 [
@@ -562,7 +562,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
               end
             end
             let(:expected) do
-              operators = Cuprum::Collections::Queries::Operators
+              operators = Bronze::Queries::Operators
 
               [
                 [
@@ -587,7 +587,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
               end
             end
             let(:expected) do
-              operators = Cuprum::Collections::Queries::Operators
+              operators = Bronze::Queries::Operators
 
               [
                 [
@@ -608,7 +608,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
               end
             end
             let(:expected) do
-              operators = Cuprum::Collections::Queries::Operators
+              operators = Bronze::Queries::Operators
 
               [
                 [
@@ -633,7 +633,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
               end
             end
             let(:expected) do
-              operators = Cuprum::Collections::Queries::Operators
+              operators = Bronze::Queries::Operators
 
               [
                 [
@@ -654,7 +654,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
               end
             end
             let(:expected) do
-              operators = Cuprum::Collections::Queries::Operators
+              operators = Bronze::Queries::Operators
 
               [
                 [
@@ -677,7 +677,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
               end
             end
             let(:expected) do
-              operators = Cuprum::Collections::Queries::Operators
+              operators = Bronze::Queries::Operators
 
               [
                 [
@@ -700,7 +700,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
               end
             end
             let(:expected) do
-              operators = Cuprum::Collections::Queries::Operators
+              operators = Bronze::Queries::Operators
 
               [
                 [
@@ -726,7 +726,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
               end
             end
             let(:expected) do
-              operators = Cuprum::Collections::Queries::Operators
+              operators = Bronze::Queries::Operators
 
               [
                 [
@@ -758,7 +758,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
               ]
             end
             let(:error_class) do
-              Cuprum::Collections::Queries::UninvertibleOperatorException
+              Bronze::Queries::UninvertibleOperatorException
             end
             let(:error_message) { 'uninvertible operator "random"' }
 
@@ -848,7 +848,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
         describe 'with a block' do
           let(:block) { ->(_) { { 'title' => 'A Wizard of Earthsea' } } }
           let(:expected) do
-            operators = Cuprum::Collections::Queries::Operators
+            operators = Bronze::Queries::Operators
             criteria  = [
               [
                 'title',
@@ -872,7 +872,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
         describe 'with a hash' do
           let(:value) { { 'title' => 'A Wizard of Earthsea' } }
           let(:expected) do
-            operators = Cuprum::Collections::Queries::Operators
+            operators = Bronze::Queries::Operators
             criteria  = [
               [
                 'title',
@@ -1902,7 +1902,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
         let(:criteria) { [['title', :random, nil]] }
         let(:error_class) do
-          Cuprum::Collections::Queries::UnknownOperatorException
+          Bronze::Queries::UnknownOperatorException
         end
         let(:error_message) do
           'unknown operator "random"'

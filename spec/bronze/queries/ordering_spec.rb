@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/queries/ordering'
+require 'bronze/queries/ordering'
 
-RSpec.describe Cuprum::Collections::Queries::Ordering do
+RSpec.describe Bronze::Queries::Ordering do
   describe '::InvalidOrderError' do
     include_examples 'should define constant', :InvalidOrderError
 

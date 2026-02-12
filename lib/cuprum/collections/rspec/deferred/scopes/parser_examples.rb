@@ -36,7 +36,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
       end
 
       describe 'with a hash and a block' do
-        let(:operators) { Cuprum::Collections::Queries::Operators }
+        let(:operators) { Bronze::Queries::Operators }
         let(:block) do
           lambda do |scope|
             { 'author' => scope.one_of('J.R.R. Tolkien', 'Ursula K. LeGuin') }
@@ -108,7 +108,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
       end
 
       describe 'with a Hash with one key' do
-        let(:operators) { Cuprum::Collections::Queries::Operators }
+        let(:operators) { Bronze::Queries::Operators }
         let(:value) do
           { 'title' => 'A Wizard of Earthsea' }
         end
@@ -120,7 +120,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
       end
 
       describe 'with a Hash with many String keys' do
-        let(:operators) { Cuprum::Collections::Queries::Operators }
+        let(:operators) { Bronze::Queries::Operators }
         let(:value) do
           {
             'title'  => 'A Wizard of Earthsea',
@@ -140,7 +140,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
       end
 
       describe 'with a Hash with many Symbol keys' do
-        let(:operators) { Cuprum::Collections::Queries::Operators }
+        let(:operators) { Bronze::Queries::Operators }
         let(:value) do
           {
             title:  'A Wizard of Earthsea',
@@ -202,7 +202,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
       end
 
       describe 'with a block returning a Hash with one key' do
-        let(:operators) { Cuprum::Collections::Queries::Operators }
+        let(:operators) { Bronze::Queries::Operators }
         let(:block) do
           -> { { 'title' => 'A Wizard of Earthsea' } }
         end
@@ -214,7 +214,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
       end
 
       describe 'with a Hash with many String keys' do
-        let(:operators) { Cuprum::Collections::Queries::Operators }
+        let(:operators) { Bronze::Queries::Operators }
         let(:block) do
           lambda do
             {
@@ -236,7 +236,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
       end
 
       describe 'with a Hash with many Symbol keys' do
-        let(:operators) { Cuprum::Collections::Queries::Operators }
+        let(:operators) { Bronze::Queries::Operators }
         let(:block) do
           lambda do
             {
@@ -258,7 +258,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
       end
 
       describe 'with a Hash with an "eq" operator' do
-        let(:operators) { Cuprum::Collections::Queries::Operators }
+        let(:operators) { Bronze::Queries::Operators }
         let(:block) do
           ->(scope) { { 'title' => scope.eq('A Wizard of Earthsea') } }
         end
@@ -272,7 +272,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
       end
 
       describe 'with a Hash with an "equal" operator' do
-        let(:operators) { Cuprum::Collections::Queries::Operators }
+        let(:operators) { Bronze::Queries::Operators }
         let(:block) do
           ->(scope) { { 'title' => scope.equal('A Wizard of Earthsea') } }
         end
@@ -286,7 +286,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
       end
 
       describe 'with a Hash with an "equals" operator' do
-        let(:operators) { Cuprum::Collections::Queries::Operators }
+        let(:operators) { Bronze::Queries::Operators }
         let(:block) do
           ->(scope) { { 'title' => scope.equals('A Wizard of Earthsea') } }
         end
@@ -300,7 +300,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
       end
 
       describe 'with a Hash with a "greater_than" operator' do
-        let(:operators) { Cuprum::Collections::Queries::Operators }
+        let(:operators) { Bronze::Queries::Operators }
         let(:block) do
           ->(scope) { { 'published_at' => scope.greater_than('1970-01-01') } }
         end
@@ -314,7 +314,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
       end
 
       describe 'with a Hash with a "greater_than_or_equal_to" operator' do
-        let(:operators) { Cuprum::Collections::Queries::Operators }
+        let(:operators) { Bronze::Queries::Operators }
         let(:block) do
           lambda do |scope|
             { 'published_at' => scope.greater_than_or_equal_to('1970-01-01') }
@@ -336,7 +336,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
       end
 
       describe 'with a Hash with a "gt" operator' do
-        let(:operators) { Cuprum::Collections::Queries::Operators }
+        let(:operators) { Bronze::Queries::Operators }
         let(:block) do
           ->(scope) { { 'published_at' => scope.gt('1970-01-01') } }
         end
@@ -350,7 +350,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
       end
 
       describe 'with a Hash with a "gte" operator' do
-        let(:operators) { Cuprum::Collections::Queries::Operators }
+        let(:operators) { Bronze::Queries::Operators }
         let(:block) do
           ->(scope) { { 'published_at' => scope.gte('1970-01-01') } }
         end
@@ -370,7 +370,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
       end
 
       describe 'with a Hash with a "less_than" operator' do
-        let(:operators) { Cuprum::Collections::Queries::Operators }
+        let(:operators) { Bronze::Queries::Operators }
         let(:block) do
           ->(scope) { { 'published_at' => scope.less_than('1970-01-01') } }
         end
@@ -384,7 +384,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
       end
 
       describe 'with a Hash with a "less_than_or_equal_to" operator' do
-        let(:operators) { Cuprum::Collections::Queries::Operators }
+        let(:operators) { Bronze::Queries::Operators }
         let(:block) do
           lambda do |scope|
             { 'published_at' => scope.less_than_or_equal_to('1970-01-01') }
@@ -400,7 +400,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
       end
 
       describe 'with a Hash with a "lt" operator' do
-        let(:operators) { Cuprum::Collections::Queries::Operators }
+        let(:operators) { Bronze::Queries::Operators }
         let(:block) do
           ->(scope) { { 'published_at' => scope.lt('1970-01-01') } }
         end
@@ -414,7 +414,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
       end
 
       describe 'with a Hash with a "lte" operator' do
-        let(:operators) { Cuprum::Collections::Queries::Operators }
+        let(:operators) { Bronze::Queries::Operators }
         let(:block) do
           ->(scope) { { 'published_at' => scope.lte('1970-01-01') } }
         end
@@ -428,7 +428,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
       end
 
       describe 'with a Hash with a "ne" operator' do
-        let(:operators) { Cuprum::Collections::Queries::Operators }
+        let(:operators) { Bronze::Queries::Operators }
         let(:block) do
           ->(scope) { { 'series' => scope.ne('Earthsea') } }
         end
@@ -442,7 +442,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
       end
 
       describe 'with a Hash with a "not_equal" operator' do
-        let(:operators) { Cuprum::Collections::Queries::Operators }
+        let(:operators) { Bronze::Queries::Operators }
         let(:block) do
           ->(scope) { { 'series' => scope.not_equal('Earthsea') } }
         end
@@ -456,7 +456,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
       end
 
       describe 'with a Hash with a "not_null" operator' do
-        let(:operators) { Cuprum::Collections::Queries::Operators }
+        let(:operators) { Bronze::Queries::Operators }
         let(:block) do
           ->(scope) { { 'series' => scope.not_null } }
         end
@@ -470,7 +470,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
       end
 
       describe 'with a Hash with a "not_one_of" operator and an Array' do
-        let(:operators) { Cuprum::Collections::Queries::Operators }
+        let(:operators) { Bronze::Queries::Operators }
         let(:block) do
           lambda do |scope|
             {
@@ -496,7 +496,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
       end
 
       describe 'with a Hash with a "not_one_of" operator and a Set' do
-        let(:operators) { Cuprum::Collections::Queries::Operators }
+        let(:operators) { Bronze::Queries::Operators }
         let(:block) do
           lambda do |scope|
             {
@@ -522,7 +522,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
       end
 
       describe 'with a Hash with a "not_one_of" operator and values' do
-        let(:operators) { Cuprum::Collections::Queries::Operators }
+        let(:operators) { Bronze::Queries::Operators }
         let(:block) do
           lambda do |scope|
             {
@@ -549,7 +549,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
       end
 
       describe 'with a Hash with a "null" operator' do
-        let(:operators) { Cuprum::Collections::Queries::Operators }
+        let(:operators) { Bronze::Queries::Operators }
         let(:block) do
           ->(scope) { { 'series' => scope.null } }
         end
@@ -563,7 +563,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
       end
 
       describe 'with a Hash with a "one_of" operator and an Array' do
-        let(:operators) { Cuprum::Collections::Queries::Operators }
+        let(:operators) { Bronze::Queries::Operators }
         let(:block) do
           lambda do |scope|
             {
@@ -589,7 +589,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
       end
 
       describe 'with a Hash with a "one_of" operator and a Set' do
-        let(:operators) { Cuprum::Collections::Queries::Operators }
+        let(:operators) { Bronze::Queries::Operators }
         let(:block) do
           lambda do |scope|
             {
@@ -615,7 +615,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
       end
 
       describe 'with a Hash with a "one_of" operator and values' do
-        let(:operators) { Cuprum::Collections::Queries::Operators }
+        let(:operators) { Bronze::Queries::Operators }
         let(:block) do
           lambda do |scope|
             {
@@ -643,7 +643,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
       describe 'with a Hash with an unknown operator' do
         let(:error_class) do
-          Cuprum::Collections::Queries::UnknownOperatorException
+          Bronze::Queries::UnknownOperatorException
         end
         let(:error_message) do
           'unknown operator "random"'
@@ -666,7 +666,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
       end
 
       describe 'with a Hash with multiple operators' do
-        let(:operators) { Cuprum::Collections::Queries::Operators }
+        let(:operators) { Bronze::Queries::Operators }
         let(:block) do
           lambda do |scope|
             {
@@ -704,7 +704,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
       end
 
       describe 'with a Hash with mixed keys and operators' do
-        let(:operators) { Cuprum::Collections::Queries::Operators }
+        let(:operators) { Bronze::Queries::Operators }
         let(:block) do
           lambda do |scope|
             {

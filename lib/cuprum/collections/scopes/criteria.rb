@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/queries'
+require 'bronze/queries'
 require 'cuprum/collections/scopes'
 
 module Cuprum::Collections::Scopes
@@ -184,8 +184,8 @@ module Cuprum::Collections::Scopes
     end
 
     def invert_operator(operator)
-      Cuprum::Collections::Queries::INVERTIBLE_OPERATORS.fetch(operator) do
-        raise Cuprum::Collections::Queries::UninvertibleOperatorException,
+      Bronze::Queries::INVERTIBLE_OPERATORS.fetch(operator) do
+        raise Bronze::Queries::UninvertibleOperatorException,
           "uninvertible operator #{operator.inspect}"
       end
     end

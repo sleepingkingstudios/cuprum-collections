@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/queries'
+require 'bronze/queries'
 require 'cuprum/collections/rspec/deferred/scopes/builder_examples'
 require 'cuprum/collections/scopes/building'
 require 'cuprum/collections/scopes/conjunction_scope'
@@ -172,7 +172,7 @@ RSpec.describe Cuprum::Collections::Scopes::Building do
 
     describe 'with criteria: an Array of criteria' do
       let(:criteria) do
-        operators = Cuprum::Collections::Queries::Operators
+        operators = Bronze::Queries::Operators
 
         [
           [
