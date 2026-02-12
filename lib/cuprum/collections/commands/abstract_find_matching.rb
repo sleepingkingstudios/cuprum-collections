@@ -2,9 +2,9 @@
 
 require 'cuprum/parameter_validation'
 
-require 'cuprum/collections/commands'
-require 'cuprum/collections/constraints/ordering'
+require 'bronze/constraints/ordering'
 require 'bronze/errors/invalid_query'
+require 'cuprum/collections/commands'
 
 module Cuprum::Collections::Commands
   # Abstract implementation of the FindMatching command.
@@ -158,8 +158,7 @@ module Cuprum::Collections::Commands
     def validate_order(value, as: 'order')
       return if value.nil?
 
-      match, errors =
-        Cuprum::Collections::Constraints::Ordering.new.match(value)
+      match, errors = Bronze::Constraints::Ordering.new.match(value)
 
       return if match
 

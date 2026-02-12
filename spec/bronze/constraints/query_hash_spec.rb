@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/constraints/query_hash'
+require 'bronze/constraints/query_hash'
 
 require 'support/examples/constraint_examples'
 
-RSpec.describe Cuprum::Collections::Constraints::QueryHash do
+RSpec.describe Bronze::Constraints::QueryHash do
   include Spec::Support::Examples::ConstraintExamples
 
   subject(:constraint) { described_class.new(**constructor_options) }
@@ -13,7 +13,7 @@ RSpec.describe Cuprum::Collections::Constraints::QueryHash do
   let(:expected_options) do
     {
       allow_empty:   true,
-      key_type:      be_a(Cuprum::Collections::Constraints::AttributeName),
+      key_type:      be_a(Bronze::Constraints::AttributeName),
       expected_type: Hash,
       required:      true,
       value_type:    nil

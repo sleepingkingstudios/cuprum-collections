@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/constraints/order/attributes_hash'
+require 'bronze/constraints/order/attributes_hash'
 
 require 'support/examples/constraint_examples'
 
-RSpec.describe Cuprum::Collections::Constraints::Order::AttributesHash do
+RSpec.describe Bronze::Constraints::Order::AttributesHash do
   include Spec::Support::Examples::ConstraintExamples
 
   subject(:constraint) { described_class.new(**constructor_options) }
@@ -14,9 +14,8 @@ RSpec.describe Cuprum::Collections::Constraints::Order::AttributesHash do
     {
       allow_empty:   true,
       expected_type: Hash,
-      key_type:      Cuprum::Collections::Constraints::AttributeName.instance,
-      value_type:    Cuprum::Collections::Constraints::Order::SortDirection
-        .instance,
+      key_type:      Bronze::Constraints::AttributeName.instance,
+      value_type:    Bronze::Constraints::Order::SortDirection.instance,
       required:      true
     }
   end
@@ -103,7 +102,7 @@ RSpec.describe Cuprum::Collections::Constraints::Order::AttributesHash do
       let(:expected_errors) do
         {
           path: [:keys, object.inspect],
-          type: Cuprum::Collections::Constraints::AttributeName::TYPE
+          type: Bronze::Constraints::AttributeName::TYPE
         }
       end
 
@@ -116,7 +115,7 @@ RSpec.describe Cuprum::Collections::Constraints::Order::AttributesHash do
         {
           data: { values: sort_directions },
           path: %w[title],
-          type: Cuprum::Collections::Constraints::Order::SortDirection::TYPE
+          type: Bronze::Constraints::Order::SortDirection::TYPE
         }
       end
 
@@ -129,7 +128,7 @@ RSpec.describe Cuprum::Collections::Constraints::Order::AttributesHash do
         {
           data: { values: sort_directions },
           path: %i[title],
-          type: Cuprum::Collections::Constraints::Order::SortDirection::TYPE
+          type: Bronze::Constraints::Order::SortDirection::TYPE
         }
       end
 

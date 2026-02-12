@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/constraints/ordering'
+require 'bronze/constraints/ordering'
 
 require 'support/examples/constraint_examples'
 require 'support/examples/optional_examples'
 
-RSpec.describe Cuprum::Collections::Constraints::Ordering do
+RSpec.describe Bronze::Constraints::Ordering do
   include Spec::Support::Examples::ConstraintExamples
   include Spec::Support::Examples::OptionalExamples
 
@@ -13,10 +13,10 @@ RSpec.describe Cuprum::Collections::Constraints::Ordering do
 
   let(:expected_constraints) do
     [
-      Cuprum::Collections::Constraints::AttributeName.instance,
-      Cuprum::Collections::Constraints::Order::AttributesArray.instance,
-      Cuprum::Collections::Constraints::Order::AttributesHash.instance,
-      Cuprum::Collections::Constraints::Order::ComplexOrdering.instance
+      Bronze::Constraints::AttributeName.instance,
+      Bronze::Constraints::Order::AttributesArray.instance,
+      Bronze::Constraints::Order::AttributesHash.instance,
+      Bronze::Constraints::Order::ComplexOrdering.instance
     ]
   end
   let(:constructor_options) { {} }
@@ -30,13 +30,13 @@ RSpec.describe Cuprum::Collections::Constraints::Ordering do
   describe '::NEGATED_TYPE' do
     include_examples 'should define frozen constant',
       :NEGATED_TYPE,
-      'cuprum.collections.constraints.is_valid_ordering'
+      'bronze.constraints.is_valid_ordering'
   end
 
   describe '::TYPE' do
     include_examples 'should define frozen constant',
       :TYPE,
-      'cuprum.collections.constraints.is_not_valid_ordering'
+      'bronze.constraints.is_not_valid_ordering'
   end
 
   describe '.new' do

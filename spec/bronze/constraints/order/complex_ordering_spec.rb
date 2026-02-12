@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/constraints/order/complex_ordering'
+require 'bronze/constraints/order/complex_ordering'
 
 require 'support/examples/constraint_examples'
 
-RSpec.describe Cuprum::Collections::Constraints::Order::ComplexOrdering do
+RSpec.describe Bronze::Constraints::Order::ComplexOrdering do
   include Spec::Support::Examples::ConstraintExamples
 
   subject(:constraint) { described_class.new(**constructor_options) }

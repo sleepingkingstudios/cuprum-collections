@@ -2,19 +2,19 @@
 
 require 'stannum/constraints/enum'
 
-require 'cuprum/collections/constraints/order'
+require 'bronze/constraints/order'
 
-module Cuprum::Collections::Constraints::Order
+module Bronze::Constraints::Order
   # Asserts that the object is a valid direction for a sort.
   class SortDirection < Stannum::Constraints::Enum
     # The :type of the error generated for a matching object.
-    NEGATED_TYPE = 'cuprum.collections.constraints.is_valid_sort_direction'
+    NEGATED_TYPE = 'bronze.constraints.is_valid_sort_direction'
 
     # The :type of the error generated for a non-matching object.
-    TYPE = 'cuprum.collections.constraints.is_not_valid_sort_direction'
+    TYPE = 'bronze.constraints.is_not_valid_sort_direction'
 
-    # @return [Cuprum::Collections::Constraints::AttributeName] a cached
-    #   instance of the constraint with default options.
+    # @return [Bronze::Constraints::AttributeName] a cached instance of the
+    #   constraint with default options.
     def self.instance
       @instance ||= new
     end

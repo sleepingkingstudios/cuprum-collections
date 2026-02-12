@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/constraints/order/sort_direction'
+require 'bronze/constraints/order/sort_direction'
 
 require 'support/examples/constraint_examples'
 
-RSpec.describe Cuprum::Collections::Constraints::Order::SortDirection do
+RSpec.describe Bronze::Constraints::Order::SortDirection do
   include Spec::Support::Examples::ConstraintExamples
 
   subject(:constraint) { described_class.new(**constructor_options) }
@@ -18,13 +18,13 @@ RSpec.describe Cuprum::Collections::Constraints::Order::SortDirection do
   describe '::NEGATED_TYPE' do
     include_examples 'should define frozen constant',
       :NEGATED_TYPE,
-      'cuprum.collections.constraints.is_valid_sort_direction'
+      'bronze.constraints.is_valid_sort_direction'
   end
 
   describe '::TYPE' do
     include_examples 'should define frozen constant',
       :TYPE,
-      'cuprum.collections.constraints.is_not_valid_sort_direction'
+      'bronze.constraints.is_not_valid_sort_direction'
   end
 
   describe '.new' do

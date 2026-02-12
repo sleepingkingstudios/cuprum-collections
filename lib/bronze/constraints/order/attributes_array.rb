@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/constraints/attribute_name'
-require 'cuprum/collections/constraints/order'
+require 'bronze/constraints/attribute_name'
+require 'bronze/constraints/order'
 
 require 'stannum/constraints/types/array_type'
 
-module Cuprum::Collections::Constraints::Order
+module Bronze::Constraints::Order
   # Asserts that the object is an Array of attribute names.
   class AttributesArray < Stannum::Constraints::Types::ArrayType
-    # @return [Cuprum::Collections::Constraints::Order::AttributesArray] a
-    #   cached instance of the constraint with default options.
+    # @return [Bronze::Constraints::Order::AttributesArray] a cached instance of
+    #   the constraint with default options.
     def self.instance
       @instance ||= new
     end
@@ -19,7 +19,7 @@ module Cuprum::Collections::Constraints::Order
     #     constraint. Defaults to an empty Hash.
     def initialize(**)
       super(
-        item_type: Cuprum::Collections::Constraints::AttributeName.instance,
+        item_type: Bronze::Constraints::AttributeName.instance,
         **
       )
     end
