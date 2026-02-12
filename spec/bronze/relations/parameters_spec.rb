@@ -1,22 +1,22 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/relations/parameters'
+require 'bronze/relations/parameters'
 require 'cuprum/collections/rspec/deferred/relation_examples'
 
 require 'support/book'
 require 'support/grimoire'
 require 'support/scoped_book'
 
-RSpec.describe Cuprum::Collections::Relations::Parameters do
+RSpec.describe Bronze::Relations::Parameters do
   include Cuprum::Collections::RSpec::Deferred::RelationExamples
 
   subject(:relation) { described_class.new }
 
-  let(:concern)         { Cuprum::Collections::Relations::Parameters } # rubocop:disable RSpec/DescribedClass
+  let(:concern)         { Bronze::Relations::Parameters } # rubocop:disable RSpec/DescribedClass
   let(:described_class) { Spec::ExampleRelation }
 
   example_class 'Spec::ExampleRelation' do |klass|
-    klass.include Cuprum::Collections::Relations::Parameters # rubocop:disable RSpec/DescribedClass
+    klass.include Bronze::Relations::Parameters # rubocop:disable RSpec/DescribedClass
   end
 
   describe '.resolve_parameters' do

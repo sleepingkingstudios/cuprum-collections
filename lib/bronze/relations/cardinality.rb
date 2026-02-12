@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/relations'
+require 'bronze/relations'
 
-module Cuprum::Collections::Relations
+module Bronze::Relations
   # Methods for resolving a singular or plural relation.
   module Cardinality
     IGNORED_PARAMETERS = %i[

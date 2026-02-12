@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/resource'
+require 'bronze/resource'
 require 'cuprum/collections/rspec/deferred/resource_examples'
 
 require 'support/book'
 require 'support/grimoire'
 require 'support/scoped_book'
 
-RSpec.describe Cuprum::Collections::Resource do
+RSpec.describe Bronze::Resource do
   include Cuprum::Collections::RSpec::Deferred::ResourceExamples
 
   subject(:resource) { described_class.new(**constructor_options) }

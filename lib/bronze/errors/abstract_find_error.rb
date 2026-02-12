@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'bronze/errors'
-require 'cuprum/collections/relations/parameters'
+require 'bronze/relations/parameters'
 
 module Bronze::Errors
   # Abstract base class for failed query errors.
@@ -39,7 +39,7 @@ module Bronze::Errors
         elsif collection_name?(params[:collection])
           return { 'name' => params[:collection].to_s }
         elsif VALID_PARAMETERS.any? { |key| params.key?(key) }
-          return Cuprum::Collections::Relations::Parameters
+          return Bronze::Relations::Parameters
               .resolve_parameters(params)
               .slice(*VALID_PARAMETERS)
               .to_h { |key, value| [key.to_s, value.to_s] }

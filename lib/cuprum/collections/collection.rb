@@ -2,21 +2,20 @@
 
 require 'cuprum/command_factory'
 
+require 'bronze/relations/options'
+require 'bronze/relations/parameters'
+require 'bronze/relations/primary_keys'
+require 'bronze/relations/scope'
 require 'cuprum/collections'
-require 'cuprum/collections/relation'
-require 'cuprum/collections/relations/options'
-require 'cuprum/collections/relations/parameters'
-require 'cuprum/collections/relations/primary_keys'
-require 'cuprum/collections/relations/scope'
 require 'cuprum/collections/scopes/all_scope'
 
 module Cuprum::Collections
   # Provides a base implementation for collections.
   class Collection < Cuprum::CommandFactory
-    include Cuprum::Collections::Relations::Options
-    include Cuprum::Collections::Relations::Parameters
-    include Cuprum::Collections::Relations::PrimaryKeys
-    include Cuprum::Collections::Relations::Scope
+    include Bronze::Relations::Options
+    include Bronze::Relations::Parameters
+    include Bronze::Relations::PrimaryKeys
+    include Bronze::Relations::Scope
 
     # Error raised when trying to call an abstract collection method.
     class AbstractCollectionError < StandardError; end

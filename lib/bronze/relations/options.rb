@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/relations'
+require 'bronze/relations'
 
-module Cuprum::Collections::Relations
+module Bronze::Relations
   # Methods for storing arbitrary options for a relation.
   module Options
     # @param options [Hash] additional options for the relation.

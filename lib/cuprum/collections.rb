@@ -21,10 +21,7 @@ module Cuprum
     autoload :Commands,          'cuprum/collections/commands'
     autoload :Queries,           'cuprum/collections/queries'
     autoload :Query,             'cuprum/collections/query'
-    autoload :Relation,          'cuprum/collections/relation'
-    autoload :Relations,         'cuprum/collections/relations'
     autoload :Repository,        'cuprum/collections/repository'
-    autoload :Resource,          'cuprum/collections/resource'
     autoload :Scope,             'cuprum/collections/scope'
     autoload :Scopes,            'cuprum/collections/scopes'
 

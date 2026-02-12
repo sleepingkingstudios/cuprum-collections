@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/relations/options'
-require 'cuprum/collections/relations/primary_keys'
+require 'bronze/relations/options'
 require 'cuprum/collections/rspec/deferred/relation_examples'
 
-RSpec.describe Cuprum::Collections::Relations::PrimaryKeys do
+RSpec.describe Bronze::Relations::Options do
   include Cuprum::Collections::RSpec::Deferred::RelationExamples
 
   subject(:relation) { described_class.new(**constructor_options) }
@@ -13,9 +12,8 @@ RSpec.describe Cuprum::Collections::Relations::PrimaryKeys do
   let(:constructor_options) { {} }
 
   example_class 'Spec::ExampleRelation' do |klass|
-    klass.include Cuprum::Collections::Relations::Options
-    klass.include Cuprum::Collections::Relations::PrimaryKeys # rubocop:disable RSpec/DescribedClass
+    klass.include Bronze::Relations::Options # rubocop:disable RSpec/DescribedClass
   end
 
-  include_deferred 'should define Relation primary key'
+  include_deferred 'should define Relation options'
 end
