@@ -82,8 +82,7 @@ module Cuprum::Collections::RSpec::Deferred
         include_examples 'should define reader',
           :attribute_names,
           lambda {
-            be_a(Set)
-              .and(satisfy { |set| set.all? { |item| item.is_a?(String) } })
+            be_a(Set).and(satisfy { |set| set.all?(String) })
           }
       end
 

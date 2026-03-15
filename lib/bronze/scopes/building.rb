@@ -211,7 +211,7 @@ module Bronze::Scopes
         raise ArgumentError, 'scopes must be an Array', caller(1..-1)
       end
 
-      return if scopes.all? { |scope| scope.is_a?(Bronze::Scopes::Base) }
+      return if scopes.all?(Bronze::Scopes::Base)
 
       raise ArgumentError, 'scope must be a Scope instance', caller(1..-1)
     end
