@@ -22,7 +22,7 @@ RSpec.describe Bronze::Relations::Scope do
   describe '#scope' do
     context 'when the relation defines a default scope' do
       let(:default_scope) do
-        Cuprum::Collections::Scope.new do |query|
+        Bronze::Scope.new do |query|
           { series: query.not_equal(nil) }
         end
       end

@@ -1,0 +1,66 @@
+# frozen_string_literal: true
+
+require 'bronze/scopes'
+
+module Bronze::Scopes
+  # Functionality for implementing a scope container.
+  module Container
+    # @overload initialize(scopes:, **options)
+    #   @param scopes [Array<Scope>] the scopes wrapped by the scope.
+    #   @param options [Hash] additional options for the scope.
+    def initialize(scopes:, **)
+      super(**)
+
+      @scopes = scopes
+    end
+
+    # @return [Array<Scope>] the scopes wrapped by the scope.
+    attr_reader :scopes
+
+    # @param other [Object] the object to compare.
+    #
+    # @return [Boolean] true if the other object is a scope with matching type
+    #   and child scopes; otherwise false.
+    def ==(other)
+      return false unless super
+
+      other.scopes == scopes
+    end
+
+    # (see Bronze::Scopes::Base#as_json)
+    def as_json
+      super.merge({ 'scopes' => scopes.map(&:as_json) })
+    end
+
+    # @private
+    def debug
+      # :nocov:
+      message = "#{super} (#{scopes.count})"
+
+      return message if empty?
+
+      scopes.reduce("#{message}:") do |str, scope|
+        str + "\n- #{scope.debug.gsub("\n", "\n  ")}"
+      end
+      # :nocov:
+    end
+
+    # @return [Boolean] true if the scope has no child scopes; otherwise false.
+    def empty?
+      @scopes.empty?
+    end
+
+    # Creates a copy of the scope with the given child scopes.
+    #
+    # @param scopes [Array] the child scopes.
+    #
+    # @return [Scope] the copied scope.
+    def with_scopes(scopes)
+      dup.tap { |copy| copy.scopes = scopes }
+    end
+
+    protected
+
+    attr_writer :scopes
+  end
+end

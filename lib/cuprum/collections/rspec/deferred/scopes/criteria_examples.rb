@@ -298,10 +298,8 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
             )
           end
 
-          example_class 'Spec::CustomScope',
-            Cuprum::Collections::Scopes::Base \
-          do |klass|
-            klass.include Cuprum::Collections::Scopes::Criteria
+          example_class 'Spec::CustomScope', Bronze::Scopes::Base do |klass|
+            klass.include Bronze::Scopes::Criteria
           end
 
           describe 'with empty criteria' do
@@ -857,7 +855,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
               ]
             ]
 
-            Cuprum::Collections::Scopes::CriteriaScope.new(
+            Bronze::Scopes::CriteriaScope.new(
               criteria: [*self.criteria, *criteria]
             )
           end
@@ -881,7 +879,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
               ]
             ]
 
-            Cuprum::Collections::Scopes::CriteriaScope.new(
+            Bronze::Scopes::CriteriaScope.new(
               criteria: [*self.criteria, *criteria]
             )
           end
@@ -950,7 +948,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
           wrap_deferred 'when the scope has multiple criteria' do
             let(:expected) do
-              Cuprum::Collections::Scopes::ConjunctionScope.new(
+              Bronze::Scopes::ConjunctionScope.new(
                 scopes: [subject, *original.scopes]
               )
             end
@@ -961,7 +959,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
         wrap_deferred 'with a non-empty criteria scope' do
           let(:expected) do
-            Cuprum::Collections::Scopes::CriteriaScope.new(
+            Bronze::Scopes::CriteriaScope.new(
               criteria: [*subject.criteria, *original.criteria]
             )
           end
@@ -982,7 +980,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
           wrap_deferred 'when the scope has multiple criteria' do
             let(:expected) do
-              Cuprum::Collections::Scopes::ConjunctionScope.new(
+              Bronze::Scopes::ConjunctionScope.new(
                 scopes: [subject, inverted]
               )
             end
@@ -996,7 +994,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
           wrap_deferred 'when the scope has multiple criteria' do
             let(:expected) do
-              Cuprum::Collections::Scopes::ConjunctionScope.new(
+              Bronze::Scopes::ConjunctionScope.new(
                 scopes: [subject, original]
               )
             end
@@ -1009,16 +1007,16 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
           describe 'with a block' do
             let(:block) { -> { { 'title' => 'A Wizard of Earthsea' } } }
             let(:expected) do
-              Cuprum::Collections::Scope.new(&block)
+              Bronze::Scope.new(&block)
             end
 
             it { expect(subject.and(&block)).to be == expected }
 
             wrap_deferred 'when the scope has multiple criteria' do
               let(:expected) do
-                wrapped = Cuprum::Collections::Scope.new(&block)
+                wrapped = Bronze::Scope.new(&block)
 
-                Cuprum::Collections::Scopes::ConjunctionScope.new(
+                Bronze::Scopes::ConjunctionScope.new(
                   scopes: [subject, wrapped]
                 )
               end
@@ -1030,16 +1028,16 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
           describe 'with a hash' do
             let(:value) { { 'title' => 'A Wizard of Earthsea' } }
             let(:expected) do
-              Cuprum::Collections::Scope.new(value)
+              Bronze::Scope.new(value)
             end
 
             it { expect(subject.and(value)).to be == expected }
 
             wrap_deferred 'when the scope has multiple criteria' do
               let(:expected) do
-                wrapped = Cuprum::Collections::Scope.new(value)
+                wrapped = Bronze::Scope.new(value)
 
-                Cuprum::Collections::Scopes::ConjunctionScope.new(
+                Bronze::Scopes::ConjunctionScope.new(
                   scopes: [subject, wrapped]
                 )
               end
@@ -1073,7 +1071,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
             wrap_deferred 'when the scope has multiple criteria' do
               let(:expected) do
-                Cuprum::Collections::Scopes::ConjunctionScope.new(
+                Bronze::Scopes::ConjunctionScope.new(
                   scopes: [subject, original]
                 )
               end
@@ -1091,7 +1089,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
             wrap_deferred 'when the scope has multiple criteria' do
               let(:expected) do
-                Cuprum::Collections::Scopes::ConjunctionScope.new(
+                Bronze::Scopes::ConjunctionScope.new(
                   scopes: [subject, inverted]
                 )
               end
@@ -1108,16 +1106,16 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
         describe 'with a block' do
           let(:block) { -> { { 'title' => 'A Wizard of Earthsea' } } }
           let(:expected) do
-            Cuprum::Collections::Scope.new(&block).invert
+            Bronze::Scope.new(&block).invert
           end
 
           it { expect(subject.not(&block)).to be == expected }
 
           wrap_deferred 'when the scope has multiple criteria' do
             let(:expected) do
-              wrapped = Cuprum::Collections::Scope.new(&block)
+              wrapped = Bronze::Scope.new(&block)
 
-              Cuprum::Collections::Scopes::ConjunctionScope.new(
+              Bronze::Scopes::ConjunctionScope.new(
                 scopes: [subject, wrapped.invert]
               )
             end
@@ -1129,16 +1127,16 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
         describe 'with a hash' do
           let(:value) { { 'title' => 'A Wizard of Earthsea' } }
           let(:expected) do
-            Cuprum::Collections::Scope.new(value).invert
+            Bronze::Scope.new(value).invert
           end
 
           it { expect(subject.not(value)).to be == expected }
 
           wrap_deferred 'when the scope has multiple criteria' do
             let(:expected) do
-              wrapped = Cuprum::Collections::Scope.new(value)
+              wrapped = Bronze::Scope.new(value)
 
-              Cuprum::Collections::Scopes::ConjunctionScope.new(
+              Bronze::Scopes::ConjunctionScope.new(
                 scopes: [subject, wrapped.invert]
               )
             end
@@ -1204,7 +1202,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
           wrap_deferred 'when the scope has multiple criteria' do
             let(:expected) do
-              Cuprum::Collections::Scopes::ConjunctionScope.new(
+              Bronze::Scopes::ConjunctionScope.new(
                 scopes: [subject, original.invert]
               )
             end
@@ -1218,7 +1216,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
           wrap_deferred 'when the scope has multiple criteria' do
             let(:expected) do
-              Cuprum::Collections::Scopes::ConjunctionScope.new(
+              Bronze::Scopes::ConjunctionScope.new(
                 scopes: [subject, original.invert]
               )
             end
@@ -1236,7 +1234,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
           wrap_deferred 'when the scope has multiple criteria' do
             let(:expected) do
-              Cuprum::Collections::Scopes::CriteriaScope.new(
+              Bronze::Scopes::CriteriaScope.new(
                 criteria: [*subject.criteria, *original.criteria]
               )
             end
@@ -1250,7 +1248,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
           wrap_deferred 'when the scope has multiple criteria' do
             let(:expected) do
-              Cuprum::Collections::Scopes::ConjunctionScope.new(
+              Bronze::Scopes::ConjunctionScope.new(
                 scopes: [subject, *original.invert.scopes]
               )
             end
@@ -1263,16 +1261,16 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
           describe 'with a block' do
             let(:block) { -> { { 'title' => 'A Wizard of Earthsea' } } }
             let(:expected) do
-              Cuprum::Collections::Scope.new(&block).invert
+              Bronze::Scope.new(&block).invert
             end
 
             it { expect(subject.not(&block)).to be == expected }
 
             wrap_deferred 'when the scope has multiple criteria' do
               let(:expected) do
-                wrapped = Cuprum::Collections::Scope.new(&block)
+                wrapped = Bronze::Scope.new(&block)
 
-                Cuprum::Collections::Scopes::ConjunctionScope.new(
+                Bronze::Scopes::ConjunctionScope.new(
                   scopes: [subject, wrapped.invert]
                 )
               end
@@ -1284,16 +1282,16 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
           describe 'with a hash' do
             let(:value) { { 'title' => 'A Wizard of Earthsea' } }
             let(:expected) do
-              Cuprum::Collections::Scope.new(value).invert
+              Bronze::Scope.new(value).invert
             end
 
             it { expect(subject.not(value)).to be == expected }
 
             wrap_deferred 'when the scope has multiple criteria' do
               let(:expected) do
-                wrapped = Cuprum::Collections::Scope.new(value)
+                wrapped = Bronze::Scope.new(value)
 
-                Cuprum::Collections::Scopes::ConjunctionScope.new(
+                Bronze::Scopes::ConjunctionScope.new(
                   scopes: [subject, wrapped.invert]
                 )
               end
@@ -1359,7 +1357,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
             wrap_deferred 'when the scope has multiple criteria' do
               let(:expected) do
-                Cuprum::Collections::Scopes::ConjunctionScope.new(
+                Bronze::Scopes::ConjunctionScope.new(
                   scopes: [subject, original.invert]
                 )
               end
@@ -1373,7 +1371,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
             wrap_deferred 'when the scope has multiple criteria' do
               let(:expected) do
-                Cuprum::Collections::Scopes::ConjunctionScope.new(
+                Bronze::Scopes::ConjunctionScope.new(
                   scopes: [subject, original.invert]
                 )
               end
@@ -1391,7 +1389,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
             wrap_deferred 'when the scope has multiple criteria' do
               let(:expected) do
-                Cuprum::Collections::Scopes::ConjunctionScope.new(
+                Bronze::Scopes::ConjunctionScope.new(
                   scopes: [subject, original]
                 )
               end
@@ -1405,7 +1403,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
             wrap_deferred 'when the scope has multiple criteria' do
               let(:expected) do
-                Cuprum::Collections::Scopes::ConjunctionScope.new(
+                Bronze::Scopes::ConjunctionScope.new(
                   scopes: [subject, *original.invert.scopes]
                 )
               end
@@ -1422,14 +1420,14 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
         describe 'with a block' do
           let(:block) { -> { { 'title' => 'A Wizard of Earthsea' } } }
           let(:expected) do
-            Cuprum::Collections::Scope.new(&block)
+            Bronze::Scope.new(&block)
           end
 
           it { expect(subject.or(&block)).to be == expected }
 
           wrap_deferred 'when the scope has multiple criteria' do
             let(:expected) do
-              Cuprum::Collections::Scopes::DisjunctionScope.new(
+              Bronze::Scopes::DisjunctionScope.new(
                 scopes: [subject, super()]
               )
             end
@@ -1441,14 +1439,14 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
         describe 'with a hash' do
           let(:value) { { 'title' => 'A Wizard of Earthsea' } }
           let(:expected) do
-            Cuprum::Collections::Scope.new(value)
+            Bronze::Scope.new(value)
           end
 
           it { expect(subject.or(value)).to be == expected }
 
           wrap_deferred 'when the scope has multiple criteria' do
             let(:expected) do
-              Cuprum::Collections::Scopes::DisjunctionScope.new(
+              Bronze::Scopes::DisjunctionScope.new(
                 scopes: [subject, super()]
               )
             end
@@ -1502,7 +1500,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
           wrap_deferred 'when the scope has multiple criteria' do
             let(:expected) do
-              Cuprum::Collections::Scopes::DisjunctionScope.new(
+              Bronze::Scopes::DisjunctionScope.new(
                 scopes: [subject, original]
               )
             end
@@ -1516,7 +1514,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
           wrap_deferred 'when the scope has multiple criteria' do
             let(:expected) do
-              Cuprum::Collections::Scopes::DisjunctionScope.new(
+              Bronze::Scopes::DisjunctionScope.new(
                 scopes: [subject, original]
               )
             end
@@ -1530,7 +1528,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
           wrap_deferred 'when the scope has multiple criteria' do
             let(:expected) do
-              Cuprum::Collections::Scopes::DisjunctionScope.new(
+              Bronze::Scopes::DisjunctionScope.new(
                 scopes: [subject, *original.scopes]
               )
             end

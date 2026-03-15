@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 require 'bronze/queries/ordering'
+require 'bronze/scopes/all_scope'
 require 'cuprum/collections'
-require 'cuprum/collections/scopes/all_scope'
 
 module Cuprum::Collections
   # Abstract base class for collection Query implementations.
@@ -12,8 +12,8 @@ module Cuprum::Collections
     UNDEFINED = Object.new.freeze
     private_constant :UNDEFINED
 
-    # @param scope [Cuprum::Collections::Scopes::Base] the base scope for the
-    #   query. Defaults to nil.
+    # @param scope [Bronze::Scopes::Base] the base scope for the query. Defaults
+    #   to nil.
     def initialize(scope: nil)
       @limit  = nil
       @offset = nil
@@ -28,8 +28,7 @@ module Cuprum::Collections
     # corresponding methods on the query itself, i.e. call query.where() instead
     # of query.scope.where().
     #
-    # @return [Cuprum::Collections::Scopes::Base] the current scope for the
-    #   query.
+    # @return [Bronze::Scopes::Base] the current scope for the query.
     def scope
       @scope ||= default_scope
     end
@@ -215,7 +214,7 @@ module Cuprum::Collections
     private
 
     def default_scope
-      Cuprum::Collections::Scopes::AllScope.new
+      Bronze::Scopes::AllScope.new
     end
 
     def validate_limit(count)

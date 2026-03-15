@@ -12,31 +12,31 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
     deferred_context 'with contexts for composable scopes' do
       deferred_context 'with an all scope' do
         let(:original) do
-          Cuprum::Collections::Scopes::AllScope.new
+          Bronze::Scopes::AllScope.new
         end
       end
 
       deferred_context 'with a none scope' do
         let(:original) do
-          Cuprum::Collections::Scopes::NoneScope.new
+          Bronze::Scopes::NoneScope.new
         end
       end
 
       deferred_context 'with an empty conjunction scope' do
         let(:original) do
-          Cuprum::Collections::Scopes::ConjunctionScope.new(scopes: [])
+          Bronze::Scopes::ConjunctionScope.new(scopes: [])
         end
       end
 
       deferred_context 'with an empty criteria scope' do
         let(:original) do
-          Cuprum::Collections::Scopes::CriteriaScope.new(criteria: [])
+          Bronze::Scopes::CriteriaScope.new(criteria: [])
         end
       end
 
       deferred_context 'with an empty disjunction scope' do
         let(:original) do
-          Cuprum::Collections::Scopes::DisjunctionScope.new(scopes: [])
+          Bronze::Scopes::DisjunctionScope.new(scopes: [])
         end
       end
 
@@ -51,9 +51,9 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
             ]
           ]
           wrapped =
-            Cuprum::Collections::Scopes::CriteriaScope.new(criteria:)
+            Bronze::Scopes::CriteriaScope.new(criteria:)
 
-          Cuprum::Collections::Scopes::ConjunctionScope.new(scopes: [wrapped])
+          Bronze::Scopes::ConjunctionScope.new(scopes: [wrapped])
         end
       end
 
@@ -68,7 +68,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
             ]
           ]
 
-          Cuprum::Collections::Scopes::CriteriaScope.new(criteria:)
+          Bronze::Scopes::CriteriaScope.new(criteria:)
         end
       end
 
@@ -83,9 +83,9 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
             ]
           ]
           wrapped =
-            Cuprum::Collections::Scopes::CriteriaScope.new(criteria:)
+            Bronze::Scopes::CriteriaScope.new(criteria:)
 
-          Cuprum::Collections::Scopes::DisjunctionScope.new(scopes: [wrapped])
+          Bronze::Scopes::DisjunctionScope.new(scopes: [wrapped])
         end
       end
     end

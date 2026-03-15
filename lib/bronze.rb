@@ -11,6 +11,8 @@ module Bronze
   autoload :Queries,      'bronze/queries'
   autoload :Relation,     'bronze/relation'
   autoload :Relations,    'bronze/relations'
+  autoload :Scope,        'bronze/scope'
+  autoload :Scopes,       'bronze/scopes'
 
   # @return [String] the absolute path to the gem directory.
   def self.gem_path

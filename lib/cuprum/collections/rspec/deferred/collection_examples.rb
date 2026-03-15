@@ -343,7 +343,7 @@ module Cuprum::Collections::RSpec::Deferred
 
           context 'when initialized with a scope' do
             let(:initial_scope) do
-              Cuprum::Collections::Scope.new({ 'ok' => true })
+              Bronze::Scope.new({ 'ok' => true })
             end
             let(:constructor_options) do
               super().merge(scope: initial_scope)

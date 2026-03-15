@@ -27,8 +27,7 @@ module Bronze
     #     attribute. Defaults to 'id'.
     #   @option primary_key_type [Class, Stannum::Constraint] the type of
     #     the primary key attribute. Defaults to Integer.
-    #   @option options scope
-    #     [Cuprum::Collections::Scopes::Base, Hash, Proc, nil] the configured
-    #     scope for the relation.
+    #   @option options scope [Bronze::Scopes::Base, Hash, Proc, nil] the
+    #     configured scope for the relation.
   end
 end

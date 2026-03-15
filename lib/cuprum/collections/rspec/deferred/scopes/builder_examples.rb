@@ -291,7 +291,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
         describe 'with an invalid scope' do
           let(:original) { build_scope }
           let(:error_class) do
-            Cuprum::Collections::Scopes::Building::UnknownScopeTypeError
+            Bronze::Scopes::Building::UnknownScopeTypeError
           end
           let(:error_message) do
             "#{described_class.name} cannot transform scopes of " \
@@ -368,7 +368,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
         describe 'with an all scope' do
           def build_all
-            original = Cuprum::Collections::Scopes::AllScope.new
+            original = Bronze::Scopes::AllScope.new
 
             subject.build(original)
           end
@@ -379,7 +379,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
         describe 'with a conjunction scope' do
           def build_container(scopes:)
             original =
-              Cuprum::Collections::Scopes::ConjunctionScope
+              Bronze::Scopes::ConjunctionScope
                 .new(scopes:)
 
             subject.build(original)
@@ -390,9 +390,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
         describe 'with a criteria scope' do
           def build_criteria(criteria:)
-            original =
-              Cuprum::Collections::Scopes::CriteriaScope
-                .new(criteria:)
+            original = Bronze::Scopes::CriteriaScope.new(criteria:)
 
             subject.build(original)
           end
@@ -402,9 +400,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
         describe 'with a disjunction scope' do
           def build_container(scopes:)
-            original =
-              Cuprum::Collections::Scopes::DisjunctionScope
-                .new(scopes:)
+            original = Bronze::Scopes::DisjunctionScope.new(scopes:)
 
             subject.build(original)
           end
@@ -414,7 +410,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
         describe 'with a none scope' do
           def build_none
-            original = Cuprum::Collections::Scopes::NoneScope.new
+            original = Bronze::Scopes::NoneScope.new
 
             subject.build(original)
           end
@@ -679,7 +675,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
         describe 'with an invalid scope' do
           let(:original) { build_scope }
           let(:error_class) do
-            Cuprum::Collections::Scopes::Building::UnknownScopeTypeError
+            Bronze::Scopes::Building::UnknownScopeTypeError
           end
           let(:error_message) do
             "#{described_class.name} cannot transform scopes of " \
@@ -700,7 +696,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
         describe 'with an all scope' do
           define_method :build_all do
-            original = Cuprum::Collections::Scopes::AllScope.new
+            original = Bronze::Scopes::AllScope.new
 
             subject.transform_scope(scope: original)
           end
@@ -711,7 +707,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
         describe 'with a conjunction scope' do
           define_method :build_container do |scopes:|
             original =
-              Cuprum::Collections::Scopes::ConjunctionScope
+              Bronze::Scopes::ConjunctionScope
                 .new(scopes:)
 
             subject.transform_scope(scope: original)
@@ -724,9 +720,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
           let(:inverted) { false }
 
           define_method :build_criteria do |criteria:|
-            original =
-              Cuprum::Collections::Scopes::CriteriaScope
-                .new(criteria:, inverted:)
+            original = Bronze::Scopes::CriteriaScope.new(criteria:, inverted:)
 
             subject.transform_scope(scope: original)
           end
@@ -742,9 +736,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
         describe 'with a disjunction scope' do
           define_method :build_container do |scopes:|
-            original =
-              Cuprum::Collections::Scopes::DisjunctionScope
-                .new(scopes:)
+            original = Bronze::Scopes::DisjunctionScope.new(scopes:)
 
             subject.transform_scope(scope: original)
           end
@@ -754,7 +746,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
         describe 'with a none scope' do
           define_method :build_none do
-            original = Cuprum::Collections::Scopes::NoneScope.new
+            original = Bronze::Scopes::NoneScope.new
 
             subject.transform_scope(scope: original)
           end

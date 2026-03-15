@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 require 'bronze/queries'
+require 'bronze/scopes/criteria'
 require 'cuprum/collections/basic/scopes'
 require 'cuprum/collections/basic/scopes/base'
-require 'cuprum/collections/scopes/criteria'
 
 module Cuprum::Collections::Basic::Scopes
   # Scope for filtering on basic collection data based on criteria.
   class CriteriaScope < Cuprum::Collections::Basic::Scopes::Base
-    include Cuprum::Collections::Scopes::Criteria
+    include Bronze::Scopes::Criteria
 
     Operators = Bronze::Queries::Operators
     private_constant :Operators
