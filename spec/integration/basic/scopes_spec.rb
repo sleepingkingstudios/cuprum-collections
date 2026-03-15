@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 require 'bronze/queries'
+require 'bronze/scope'
 require 'cuprum/collections/basic/scopes/conjunction_scope'
 require 'cuprum/collections/basic/scopes/criteria_scope'
 require 'cuprum/collections/basic/scopes/disjunction_scope'
 require 'cuprum/collections/rspec/fixtures'
-require 'cuprum/collections/scope'
 
 RSpec.describe Cuprum::Collections::Basic::Scopes do
   shared_examples 'should filter the data' do
@@ -22,7 +22,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
 
   let(:data) { Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES }
   let(:complex_scope) do
-    Cuprum::Collections::Scope
+    Bronze::Scope
       .new { |scope| { 'published_at' => scope.greater_than('1973-01-01') } }
       .not({ 'series' => nil })
   end
@@ -73,7 +73,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
     end
 
     describe '#and a basic scope' do
-      let(:value) { Cuprum::Collections::Scope.new({ 'series' => 'Earthsea' }) }
+      let(:value) { Bronze::Scope.new({ 'series' => 'Earthsea' }) }
       let(:scope) { super().and(value) }
       let(:inspected) do
         <<~TEXT.strip
@@ -91,7 +91,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
     end
 
     describe '#and an inverted scope' do
-      let(:value) { Cuprum::Collections::Scope.new({ 'series' => 'Earthsea' }) }
+      let(:value) { Bronze::Scope.new({ 'series' => 'Earthsea' }) }
       let(:scope) { super().and(value.invert) }
       let(:inspected) do
         <<~TEXT.strip
@@ -167,7 +167,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
     end
 
     describe '#or a basic scope' do
-      let(:value) { Cuprum::Collections::Scope.new({ 'series' => 'Earthsea' }) }
+      let(:value) { Bronze::Scope.new({ 'series' => 'Earthsea' }) }
       let(:scope) { super().or(value) }
       let(:inspected) do
         <<~TEXT.strip
@@ -185,7 +185,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
     end
 
     describe '#or an inverted scope' do
-      let(:value) { Cuprum::Collections::Scope.new({ 'series' => 'Earthsea' }) }
+      let(:value) { Bronze::Scope.new({ 'series' => 'Earthsea' }) }
       let(:scope) { super().or(value.invert) }
       let(:inspected) do
         <<~TEXT.strip
@@ -261,7 +261,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
     end
 
     describe '#not a basic scope' do
-      let(:value) { Cuprum::Collections::Scope.new({ 'series' => 'Earthsea' }) }
+      let(:value) { Bronze::Scope.new({ 'series' => 'Earthsea' }) }
       let(:scope) { super().not(value) }
       let(:inspected) do
         <<~TEXT.strip
@@ -279,7 +279,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
     end
 
     describe '#not an inverted scope' do
-      let(:value) { Cuprum::Collections::Scope.new({ 'series' => 'Earthsea' }) }
+      let(:value) { Bronze::Scope.new({ 'series' => 'Earthsea' }) }
       let(:scope) { super().not(value.invert) }
       let(:inspected) do
         <<~TEXT.strip
@@ -365,7 +365,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
     end
 
     describe '#and a basic scope' do
-      let(:value) { Cuprum::Collections::Scope.new({ 'series' => 'Earthsea' }) }
+      let(:value) { Bronze::Scope.new({ 'series' => 'Earthsea' }) }
       let(:scope) { super().and(value) }
       let(:inspected) do
         <<~TEXT.strip
@@ -383,7 +383,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
     end
 
     describe '#and an inverted scope' do
-      let(:value) { Cuprum::Collections::Scope.new({ 'series' => 'Earthsea' }) }
+      let(:value) { Bronze::Scope.new({ 'series' => 'Earthsea' }) }
       let(:scope) { super().and(value.invert) }
       let(:inspected) do
         <<~TEXT.strip
@@ -459,7 +459,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
     end
 
     describe '#or a basic scope' do
-      let(:value) { Cuprum::Collections::Scope.new({ 'series' => 'Earthsea' }) }
+      let(:value) { Bronze::Scope.new({ 'series' => 'Earthsea' }) }
       let(:scope) { super().or(value) }
       let(:inspected) do
         <<~TEXT.strip
@@ -477,7 +477,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
     end
 
     describe '#or an inverted scope' do
-      let(:value) { Cuprum::Collections::Scope.new({ 'series' => 'Earthsea' }) }
+      let(:value) { Bronze::Scope.new({ 'series' => 'Earthsea' }) }
       let(:scope) { super().or(value.invert) }
       let(:inspected) do
         <<~TEXT.strip
@@ -553,7 +553,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
     end
 
     describe '#not a basic scope' do
-      let(:value) { Cuprum::Collections::Scope.new({ 'series' => 'Earthsea' }) }
+      let(:value) { Bronze::Scope.new({ 'series' => 'Earthsea' }) }
       let(:scope) { super().not(value) }
       let(:inspected) do
         <<~TEXT.strip
@@ -571,7 +571,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
     end
 
     describe '#not an inverted scope' do
-      let(:value) { Cuprum::Collections::Scope.new({ 'series' => 'Earthsea' }) }
+      let(:value) { Bronze::Scope.new({ 'series' => 'Earthsea' }) }
       let(:scope) { super().not(value.invert) }
       let(:inspected) do
         <<~TEXT.strip
@@ -639,7 +639,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
     end
 
     describe '#and a basic scope' do
-      let(:value) { Cuprum::Collections::Scope.new({ 'series' => 'Earthsea' }) }
+      let(:value) { Bronze::Scope.new({ 'series' => 'Earthsea' }) }
       let(:scope) { super().and(value) }
 
       it { expect(scope.debug).to be == inspected }
@@ -648,7 +648,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
     end
 
     describe '#and an inverted scope' do
-      let(:value) { Cuprum::Collections::Scope.new({ 'series' => 'Earthsea' }) }
+      let(:value) { Bronze::Scope.new({ 'series' => 'Earthsea' }) }
       let(:scope) { super().and(value.invert) }
 
       it { expect(scope.debug).to be == inspected }
@@ -701,7 +701,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
     end
 
     describe '#or a basic scope' do
-      let(:value) { Cuprum::Collections::Scope.new({ 'series' => 'Earthsea' }) }
+      let(:value) { Bronze::Scope.new({ 'series' => 'Earthsea' }) }
       let(:scope) { super().or(value) }
       let(:inspected) do
         <<~TEXT.strip
@@ -719,7 +719,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
     end
 
     describe '#or an inverted scope' do
-      let(:value) { Cuprum::Collections::Scope.new({ 'series' => 'Earthsea' }) }
+      let(:value) { Bronze::Scope.new({ 'series' => 'Earthsea' }) }
       let(:scope) { super().or(value.invert) }
       let(:inspected) do
         <<~TEXT.strip
@@ -777,7 +777,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
     end
 
     describe '#not a basic scope' do
-      let(:value) { Cuprum::Collections::Scope.new({ 'series' => 'Earthsea' }) }
+      let(:value) { Bronze::Scope.new({ 'series' => 'Earthsea' }) }
       let(:scope) { super().not(value) }
 
       it { expect(scope.debug).to be == inspected }
@@ -786,7 +786,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
     end
 
     describe '#not an inverted scope' do
-      let(:value) { Cuprum::Collections::Scope.new({ 'series' => 'Earthsea' }) }
+      let(:value) { Bronze::Scope.new({ 'series' => 'Earthsea' }) }
       let(:scope) { super().not(value.invert) }
 
       it { expect(scope.debug).to be == inspected }
@@ -870,7 +870,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
 
     describe '#and a basic scope' do
       let(:value) do
-        Cuprum::Collections::Scope.new({ 'series' => 'Earthsea' })
+        Bronze::Scope.new({ 'series' => 'Earthsea' })
       end
       let(:scope) { super().and(value) }
       let(:inspected) do
@@ -891,7 +891,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
 
     describe '#and an inverted scope' do
       let(:value) do
-        Cuprum::Collections::Scope.new({ 'series' => 'Earthsea' })
+        Bronze::Scope.new({ 'series' => 'Earthsea' })
       end
       let(:scope) { super().and(value.invert) }
       let(:inspected) do
@@ -973,7 +973,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
     end
 
     describe '#or a basic scope' do
-      let(:value) { Cuprum::Collections::Scope.new({ 'series' => 'Earthsea' }) }
+      let(:value) { Bronze::Scope.new({ 'series' => 'Earthsea' }) }
       let(:scope) { super().or(value) }
       let(:inspected) do
         <<~TEXT.strip
@@ -991,7 +991,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
     end
 
     describe '#or an inverted scope' do
-      let(:value) { Cuprum::Collections::Scope.new({ 'series' => 'Earthsea' }) }
+      let(:value) { Bronze::Scope.new({ 'series' => 'Earthsea' }) }
       let(:scope) { super().or(value.invert) }
       let(:inspected) do
         <<~TEXT.strip
@@ -1074,7 +1074,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
     end
 
     describe '#not a basic scope' do
-      let(:value) { Cuprum::Collections::Scope.new({ 'series' => 'Earthsea' }) }
+      let(:value) { Bronze::Scope.new({ 'series' => 'Earthsea' }) }
       let(:scope) { super().not(value) }
       let(:inspected) do
         <<~TEXT.strip
@@ -1095,7 +1095,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
     end
 
     describe '#not an inverted scope' do
-      let(:value) { Cuprum::Collections::Scope.new({ 'series' => 'Earthsea' }) }
+      let(:value) { Bronze::Scope.new({ 'series' => 'Earthsea' }) }
       let(:scope) { super().not(value.invert) }
       let(:inspected) do
         <<~TEXT.strip
@@ -1212,7 +1212,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
 
     describe '#and a basic scope' do
       let(:value) do
-        Cuprum::Collections::Scope.new({ 'series' => 'Earthsea' })
+        Bronze::Scope.new({ 'series' => 'Earthsea' })
       end
       let(:scope) { super().and(value) }
       let(:inspected) do
@@ -1235,7 +1235,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
 
     describe '#and an inverted scope' do
       let(:value) do
-        Cuprum::Collections::Scope.new({ 'series' => 'Earthsea' })
+        Bronze::Scope.new({ 'series' => 'Earthsea' })
       end
       let(:scope) { super().and(value.invert) }
       let(:inspected) do
@@ -1323,7 +1323,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
     end
 
     describe '#or a basic scope' do
-      let(:value) { Cuprum::Collections::Scope.new({ 'series' => 'Earthsea' }) }
+      let(:value) { Bronze::Scope.new({ 'series' => 'Earthsea' }) }
       let(:scope) { super().or(value) }
       let(:inspected) do
         <<~TEXT.strip
@@ -1344,7 +1344,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
     end
 
     describe '#or an inverted scope' do
-      let(:value) { Cuprum::Collections::Scope.new({ 'series' => 'Earthsea' }) }
+      let(:value) { Bronze::Scope.new({ 'series' => 'Earthsea' }) }
       let(:scope) { super().or(value.invert) }
       let(:inspected) do
         <<~TEXT.strip
@@ -1435,7 +1435,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
     end
 
     describe '#not a basic scope' do
-      let(:value) { Cuprum::Collections::Scope.new({ 'series' => 'Earthsea' }) }
+      let(:value) { Bronze::Scope.new({ 'series' => 'Earthsea' }) }
       let(:scope) { super().not(value) }
       let(:inspected) do
         <<~TEXT.strip
@@ -1456,7 +1456,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
     end
 
     describe '#not an inverted scope' do
-      let(:value) { Cuprum::Collections::Scope.new({ 'series' => 'Earthsea' }) }
+      let(:value) { Bronze::Scope.new({ 'series' => 'Earthsea' }) }
       let(:scope) { super().not(value.invert) }
       let(:inspected) do
         <<~TEXT.strip
@@ -1575,7 +1575,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
     end
 
     describe '#and a basic scope' do
-      let(:value) { Cuprum::Collections::Scope.new({ 'series' => 'Earthsea' }) }
+      let(:value) { Bronze::Scope.new({ 'series' => 'Earthsea' }) }
       let(:scope) { super().and(value) }
       let(:inspected) do
         <<~TEXT.strip
@@ -1598,7 +1598,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
     end
 
     describe '#and an inverted scope' do
-      let(:value) { Cuprum::Collections::Scope.new({ 'series' => 'Earthsea' }) }
+      let(:value) { Bronze::Scope.new({ 'series' => 'Earthsea' }) }
       let(:scope) { super().and(value.invert) }
       let(:inspected) do
         <<~TEXT.strip
@@ -1697,7 +1697,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
     end
 
     describe '#or a basic scope' do
-      let(:value) { Cuprum::Collections::Scope.new({ 'series' => 'Earthsea' }) }
+      let(:value) { Bronze::Scope.new({ 'series' => 'Earthsea' }) }
       let(:scope) { super().or(value) }
       let(:inspected) do
         <<~TEXT.strip
@@ -1721,7 +1721,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
     end
 
     describe '#or an inverted scope' do
-      let(:value) { Cuprum::Collections::Scope.new({ 'series' => 'Earthsea' }) }
+      let(:value) { Bronze::Scope.new({ 'series' => 'Earthsea' }) }
       let(:scope) { super().or(value.invert) }
       let(:inspected) do
         <<~TEXT.strip
@@ -1745,7 +1745,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
     end
 
     describe '#or a complex scope' do
-      let(:value) { Cuprum::Collections::Scope.new({ 'series' => 'Earthsea' }) }
+      let(:value) { Bronze::Scope.new({ 'series' => 'Earthsea' }) }
       let(:scope) { super().or(complex_scope) }
       let(:inspected) do
         <<~TEXT.strip
@@ -1823,7 +1823,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
     end
 
     describe '#not a basic scope' do
-      let(:value) { Cuprum::Collections::Scope.new({ 'series' => 'Earthsea' }) }
+      let(:value) { Bronze::Scope.new({ 'series' => 'Earthsea' }) }
       let(:scope) { super().not(value) }
       let(:inspected) do
         <<~TEXT.strip
@@ -1846,7 +1846,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
     end
 
     describe '#not an inverted scope' do
-      let(:value) { Cuprum::Collections::Scope.new({ 'series' => 'Earthsea' }) }
+      let(:value) { Bronze::Scope.new({ 'series' => 'Earthsea' }) }
       let(:scope) { super().not(value.invert) }
       let(:inspected) do
         <<~TEXT.strip
@@ -1973,7 +1973,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
     end
 
     describe '#and a basic scope' do
-      let(:value) { Cuprum::Collections::Scope.new({ 'series' => 'Earthsea' }) }
+      let(:value) { Bronze::Scope.new({ 'series' => 'Earthsea' }) }
       let(:scope) { super().and(value) }
       let(:inspected) do
         <<~TEXT.strip
@@ -1997,7 +1997,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
     end
 
     describe '#and an inverted scope' do
-      let(:value) { Cuprum::Collections::Scope.new({ 'series' => 'Earthsea' }) }
+      let(:value) { Bronze::Scope.new({ 'series' => 'Earthsea' }) }
       let(:scope) { super().and(value.invert) }
       let(:inspected) do
         <<~TEXT.strip
@@ -2088,7 +2088,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
     end
 
     describe '#or a basic scope' do
-      let(:value) { Cuprum::Collections::Scope.new({ 'series' => 'Earthsea' }) }
+      let(:value) { Bronze::Scope.new({ 'series' => 'Earthsea' }) }
       let(:scope) { super().or(value) }
       let(:inspected) do
         <<~TEXT.strip
@@ -2186,7 +2186,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
     end
 
     describe '#not a basic scope' do
-      let(:value) { Cuprum::Collections::Scope.new({ 'series' => 'Earthsea' }) }
+      let(:value) { Bronze::Scope.new({ 'series' => 'Earthsea' }) }
       let(:scope) { super().not(value) }
       let(:inspected) do
         <<~TEXT.strip
@@ -2210,7 +2210,7 @@ RSpec.describe Cuprum::Collections::Basic::Scopes do
     end
 
     describe '#not an inverted scope' do
-      let(:value) { Cuprum::Collections::Scope.new({ 'series' => 'Earthsea' }) }
+      let(:value) { Bronze::Scope.new({ 'series' => 'Earthsea' }) }
       let(:scope) { super().not(value.invert) }
       let(:inspected) do
         <<~TEXT.strip

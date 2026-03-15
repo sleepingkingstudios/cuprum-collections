@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
+require 'bronze/scopes/none'
 require 'cuprum/collections/basic/scopes'
 require 'cuprum/collections/basic/scopes/base'
-require 'cuprum/collections/scopes/none'
 
 module Cuprum::Collections::Basic::Scopes
   # Scope for returning an empty data set.
   class NoneScope < Cuprum::Collections::Basic::Scopes::Base
-    include Cuprum::Collections::Scopes::None
+    include Bronze::Scopes::None
 
     # @return [Cuprum::Collections::Basic::Scopes::NoneScope] a cached instance
     #   of the none scope.

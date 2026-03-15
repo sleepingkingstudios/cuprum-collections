@@ -23,9 +23,8 @@ module Cuprum::Collections::Basic
     #     attribute. Defaults to 'id'.
     #   @option options primary_key_type [Class, Stannum::Constraint] the type
     #     of the primary key attribute. Defaults to Integer.
-    #   @option options scope
-    #     [Cuprum::Collections::Scopes::Base, Hash, Proc, nil] the configured
-    #     scope for the relation.
+    #   @option options scope [Bronze::Scopes::Base, Hash, Proc, nil] the
+    #     configured scope for the relation.
     def initialize(data: [], **parameters)
       super(default_entity_class: Hash, **parameters)
 

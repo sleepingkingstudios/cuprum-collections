@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
+require 'bronze/scopes/building'
 require 'cuprum/collections/basic/scopes'
-require 'cuprum/collections/scopes/building'
 
 module Cuprum::Collections::Basic::Scopes
   # Builder for generating Basic collection scopes.
   class Builder
-    include Cuprum::Collections::Scopes::Building
+    include Bronze::Scopes::Building
 
     private
 

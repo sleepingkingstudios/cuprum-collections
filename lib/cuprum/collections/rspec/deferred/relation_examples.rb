@@ -1018,7 +1018,7 @@ module Cuprum::Collections::RSpec::Deferred
 
       deferred_context 'when initialized with scope: a Scope' do
         let(:scope) do
-          Cuprum::Collections::Scope.new({ author: 'Ursula K. LeGuin' })
+          Bronze::Scope.new({ author: 'Ursula K. LeGuin' })
         end
         let(:constructor_options) do
           super().merge(scope:)
@@ -1031,7 +1031,7 @@ module Cuprum::Collections::RSpec::Deferred
 
       describe '#scope' do
         let(:expected) do
-          (options[:default_scope] || Cuprum::Collections::Scopes::AllScope)
+          (options[:default_scope] || Bronze::Scopes::AllScope)
             .new
         end
 
@@ -1066,7 +1066,7 @@ module Cuprum::Collections::RSpec::Deferred
         end
 
         let(:expected) do
-          (options[:default_scope] || Cuprum::Collections::Scopes::AllScope)
+          (options[:default_scope] || Bronze::Scopes::AllScope)
             .new
         end
 
@@ -1123,7 +1123,7 @@ module Cuprum::Collections::RSpec::Deferred
 
         describe 'with a Scope' do
           let(:scope) do
-            Cuprum::Collections::Scope.new({ author: 'Ursula K. LeGuin' })
+            Bronze::Scope.new({ author: 'Ursula K. LeGuin' })
           end
           let(:copy)     { subject.with_scope(scope) }
           let(:expected) { super().and(scope) }
@@ -1137,7 +1137,7 @@ module Cuprum::Collections::RSpec::Deferred
 
         context 'when the relation has a custom scope' do
           let(:custom_scope) do
-            Cuprum::Collections::Scope.new do |query|
+            Bronze::Scope.new do |query|
               { series: query.not_equal(nil) }
             end
           end
@@ -1180,7 +1180,7 @@ module Cuprum::Collections::RSpec::Deferred
 
           describe 'with a Scope' do
             let(:scope) do
-              Cuprum::Collections::Scope.new({ author: 'Ursula K. LeGuin' })
+              Bronze::Scope.new({ author: 'Ursula K. LeGuin' })
             end
             let(:copy)     { subject.with_scope(scope) }
             let(:expected) { super().and(scope) }

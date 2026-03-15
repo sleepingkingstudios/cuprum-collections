@@ -34,7 +34,7 @@ module Cuprum::Collections::RSpec::Deferred
 
       shared_context 'when initialized with a scope' do
         let(:initial_scope) do
-          Cuprum::Collections::Scope.new do |scope|
+          Bronze::Scope.new do |scope|
             { 'published_at' => scope.less_than('1973-01-01') }
           end
         end
@@ -502,13 +502,13 @@ module Cuprum::Collections::RSpec::Deferred
       describe '#scope' do
         include_examples 'should define reader', :scope
 
-        it { expect(query.scope).to be_a Cuprum::Collections::Scopes::Base }
+        it { expect(query.scope).to be_a Bronze::Scopes::Base }
 
         it { expect(query.scope.type).to be :all }
 
         wrap_context 'when initialized with a scope' do
           let(:expected) do
-            Cuprum::Collections::Scope.new do |scope|
+            Bronze::Scope.new do |scope|
               {
                 'published_at' => scope.less_than('1973-01-01')
               }
@@ -519,7 +519,7 @@ module Cuprum::Collections::RSpec::Deferred
 
           wrap_context 'when the query has composed filters' do
             let(:expected) do
-              Cuprum::Collections::Scope.new do |scope|
+              Bronze::Scope.new do |scope|
                 {
                   'published_at' => scope.less_than('1973-01-01'),
                   'author'       => 'Ursula K. LeGuin',
@@ -534,7 +534,7 @@ module Cuprum::Collections::RSpec::Deferred
 
         wrap_context 'when the query has composed filters' do
           let(:expected) do
-            Cuprum::Collections::Scope.new do |scope|
+            Bronze::Scope.new do |scope|
               {
                 'author' => 'Ursula K. LeGuin',
                 'series' => scope.not_equal('Earthsea')
@@ -618,8 +618,7 @@ module Cuprum::Collections::RSpec::Deferred
         it { expect(subject.where(&block)).not_to be subject }
 
         it 'should set the scope' do
-          expect(subject.where(&block).scope)
-            .to be_a Cuprum::Collections::Scopes::Base
+          expect(subject.where(&block).scope).to be_a Bronze::Scopes::Base
         end
 
         it 'should not change the original query scope' do
@@ -629,7 +628,7 @@ module Cuprum::Collections::RSpec::Deferred
 
         context 'when the query does not have a scope' do
           let(:expected) do
-            Cuprum::Collections::Scope.new({ 'title' => 'Gideon the Ninth' })
+            Bronze::Scope.new({ 'title' => 'Gideon the Ninth' })
           end
 
           describe 'with a block' do
@@ -646,7 +645,7 @@ module Cuprum::Collections::RSpec::Deferred
 
           describe 'with a basic scope' do
             let(:value) do
-              Cuprum::Collections::Scope
+              Bronze::Scope
                 .new({ 'title' => 'Gideon the Ninth' })
             end
 
@@ -655,7 +654,7 @@ module Cuprum::Collections::RSpec::Deferred
 
           describe 'with a complex scope' do
             let(:value) do
-              Cuprum::Collections::Scope
+              Bronze::Scope
                 .new({ 'title' => 'Gideon the Ninth' })
                 .or({ 'title' => 'Harrow the Ninth' })
             end
@@ -666,7 +665,7 @@ module Cuprum::Collections::RSpec::Deferred
 
         context 'when the query has a scope' do
           let(:initial_scope) do
-            Cuprum::Collections::Scope.new({ 'author' => 'Tamsyn Muir' })
+            Bronze::Scope.new({ 'author' => 'Tamsyn Muir' })
           end
           let(:expected) do
             operators = Bronze::Queries::Operators
@@ -689,7 +688,7 @@ module Cuprum::Collections::RSpec::Deferred
             let(:block) { -> { { 'title' => 'Gideon the Ninth' } } }
             let(:scope) { subject.where(&block).scope }
 
-            it { expect(scope).to be_a Cuprum::Collections::Scopes::Base }
+            it { expect(scope).to be_a Bronze::Scopes::Base }
 
             it { expect(scope.type).to be :criteria }
 
@@ -700,7 +699,7 @@ module Cuprum::Collections::RSpec::Deferred
             let(:value) { { 'title' => 'Gideon the Ninth' } }
             let(:scope) { subject.where(value).scope }
 
-            it { expect(scope).to be_a Cuprum::Collections::Scopes::Base }
+            it { expect(scope).to be_a Bronze::Scopes::Base }
 
             it { expect(scope.type).to be :criteria }
 
@@ -709,12 +708,12 @@ module Cuprum::Collections::RSpec::Deferred
 
           describe 'with a basic scope' do
             let(:value) do
-              Cuprum::Collections::Scope
+              Bronze::Scope
                 .new({ 'title' => 'Gideon the Ninth' })
             end
             let(:scope) { subject.where(value).scope }
 
-            it { expect(scope).to be_a Cuprum::Collections::Scopes::Base }
+            it { expect(scope).to be_a Bronze::Scopes::Base }
 
             it { expect(scope.type).to be :criteria }
 
@@ -723,7 +722,7 @@ module Cuprum::Collections::RSpec::Deferred
 
           describe 'with a complex scope' do
             let(:value) do
-              Cuprum::Collections::Scope
+              Bronze::Scope
                 .new({ 'title' => 'Gideon the Ninth' })
                 .or({ 'title' => 'Harrow the Ninth' })
             end
@@ -763,7 +762,7 @@ module Cuprum::Collections::RSpec::Deferred
               ]
             end
 
-            it { expect(scope).to be_a Cuprum::Collections::Scopes::Base }
+            it { expect(scope).to be_a Bronze::Scopes::Base }
 
             it { expect(scope.type).to be :conjunction }
 
@@ -773,7 +772,7 @@ module Cuprum::Collections::RSpec::Deferred
 
             it { expect(scope.scopes.first.criteria).to be == expected }
 
-            it { expect(outer).to be_a Cuprum::Collections::Scopes::Base }
+            it { expect(outer).to be_a Bronze::Scopes::Base }
 
             it { expect(outer.type).to be :disjunction }
 
@@ -902,7 +901,7 @@ module Cuprum::Collections::RSpec::Deferred
 
       describe 'with a basic scope filter' do
         let(:filter) do
-          Cuprum::Collections::Scope.new({ 'author' => 'Ursula K. LeGuin' })
+          Bronze::Scope.new({ 'author' => 'Ursula K. LeGuin' })
         end
         let(:filtered_data) do
           super().select { |item| item['author'] == 'Ursula K. LeGuin' }
@@ -913,7 +912,7 @@ module Cuprum::Collections::RSpec::Deferred
 
       describe 'with a complex scope filter' do
         let(:filter) do
-          Cuprum::Collections::Scope
+          Bronze::Scope
             .new({ 'author' => 'Ursula K. LeGuin' })
             .or({ 'series' => nil })
         end

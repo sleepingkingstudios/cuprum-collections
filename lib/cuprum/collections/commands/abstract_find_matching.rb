@@ -118,13 +118,13 @@ module Cuprum::Collections::Commands
     end
 
     def build_scope(value, &)
-      return Cuprum::Collections::Scope.build(&) if block_given?
+      return Bronze::Scope.build(&) if block_given?
 
-      return Cuprum::Collections::Scope.build(&value) if value.is_a?(Proc)
+      return Bronze::Scope.build(&value) if value.is_a?(Proc)
 
-      return value if value.is_a?(Cuprum::Collections::Scopes::Base)
+      return value if value.is_a?(Bronze::Scopes::Base)
 
-      Cuprum::Collections::Scope.build(value) if value
+      Bronze::Scope.build(value) if value
     rescue ArgumentError => exception
       error = Bronze::Errors::InvalidQuery.new(
         message: exception.message,
@@ -170,7 +170,7 @@ module Cuprum::Collections::Commands
 
       return if value.is_a?(Proc) && (-1..1).cover?(value.arity)
 
-      return if value.is_a?(Cuprum::Collections::Scopes::Base)
+      return if value.is_a?(Bronze::Scopes::Base)
 
       return if validate_attributes(value, as:).empty?
 

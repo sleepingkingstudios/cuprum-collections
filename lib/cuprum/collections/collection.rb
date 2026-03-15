@@ -6,8 +6,8 @@ require 'bronze/relations/options'
 require 'bronze/relations/parameters'
 require 'bronze/relations/primary_keys'
 require 'bronze/relations/scope'
+require 'bronze/scopes/all_scope'
 require 'cuprum/collections'
-require 'cuprum/collections/scopes/all_scope'
 
 module Cuprum::Collections
   # Provides a base implementation for collections.
@@ -32,9 +32,8 @@ module Cuprum::Collections
     #     attribute. Defaults to 'id'.
     #   @option options primary_key_type [Class, Stannum::Constraint] the type
     #     of the primary key attribute. Defaults to Integer.
-    #   @option options scope
-    #     [Cuprum::Collections::Scopes::Base, Hash, Proc, nil] the configured
-    #     scope for the relation.
+    #   @option options scope [Bronze::Scopes::Base, Hash, Proc, nil] the
+    #     configured scope for the relation.
 
     # @param other [Object] The object to compare.
     #

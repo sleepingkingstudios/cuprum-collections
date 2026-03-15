@@ -110,7 +110,7 @@ module Bronze::Errors
     # @return [Hash] the resolved collection details.
     attr_reader :collection
 
-    # @return [Cuprum::Collections::Scopes::Base] the query scope, if any.
+    # @return [Bronze::Scopes::Base] the query scope, if any.
     attr_reader :scope
 
     # @return [Array<Array>] the details of the query, in scope format.

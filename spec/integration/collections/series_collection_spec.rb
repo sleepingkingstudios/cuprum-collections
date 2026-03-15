@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/scope'
+require 'bronze/scope'
 require 'cuprum/collections/rspec/fixtures'
 
 # @note: Integration spec for a collection
@@ -14,7 +14,7 @@ RSpec.describe Cuprum::Collections::Basic do
   end
 
   let(:series_scope) do
-    Cuprum::Collections::Scope.new do |scope|
+    Bronze::Scope.new do |scope|
       { series: scope.not_equal(nil) }
     end
   end

@@ -19,9 +19,7 @@ module Cuprum::Collections::RSpec::Deferred
         describe 'with a scope of different type' do
           let(:other) { Spec::OtherScope.new }
 
-          example_class 'Spec::OtherScope',
-            Cuprum::Collections::Scopes::Base \
-          do |klass|
+          example_class 'Spec::OtherScope', Bronze::Scopes::Base do |klass|
             klass.define_method(:type) { :invalid }
           end
 
@@ -43,7 +41,7 @@ module Cuprum::Collections::RSpec::Deferred
 
       describe '#invert' do
         let(:error_class) do
-          Cuprum::Collections::Scopes::Base::UninvertibleScopeException
+          Bronze::Scopes::Base::UninvertibleScopeException
         end
         let(:error_message) do
           "Scope class #{described_class} does not implement #invert"
@@ -97,7 +95,7 @@ module Cuprum::Collections::RSpec::Deferred
           describe 'with non-matching scopes' do
             let(:other_scopes) do
               Array.new(3) do
-                Cuprum::Collections::Scope.new({ 'ok' => true })
+                Bronze::Scope.new({ 'ok' => true })
               end
             end
 
@@ -114,7 +112,7 @@ module Cuprum::Collections::RSpec::Deferred
             describe 'with non-matching scopes' do
               let(:other_scopes) do
                 Array.new(3) do
-                  Cuprum::Collections::Scope.new({ 'ok' => true })
+                  Bronze::Scope.new({ 'ok' => true })
                 end
               end
 
@@ -132,10 +130,8 @@ module Cuprum::Collections::RSpec::Deferred
         describe 'with a scope with the same type' do
           let(:other) { Spec::CustomScope.new(scopes: other_scopes) }
 
-          example_class 'Spec::CustomScope',
-            Cuprum::Collections::Scopes::Base \
-          do |klass|
-            klass.include Cuprum::Collections::Scopes::Container
+          example_class 'Spec::CustomScope', Bronze::Scopes::Base do |klass|
+            klass.include Bronze::Scopes::Container
           end
 
           before(:example) do
@@ -151,7 +147,7 @@ module Cuprum::Collections::RSpec::Deferred
           describe 'with non-matching scopes' do
             let(:other_scopes) do
               Array.new(3) do
-                Cuprum::Collections::Scope.new({ 'ok' => true })
+                Bronze::Scope.new({ 'ok' => true })
               end
             end
 
@@ -168,7 +164,7 @@ module Cuprum::Collections::RSpec::Deferred
             describe 'with non-matching scopes' do
               let(:other_scopes) do
                 Array.new(3) do
-                  Cuprum::Collections::Scope.new({ 'ok' => true })
+                  Bronze::Scope.new({ 'ok' => true })
                 end
               end
 
@@ -251,31 +247,31 @@ module Cuprum::Collections::RSpec::Deferred
     deferred_examples 'should compose scopes' do |**deferred_options|
       deferred_context 'with an all scope' do
         let(:original) do
-          Cuprum::Collections::Scopes::AllScope.new
+          Bronze::Scopes::AllScope.new
         end
       end
 
       deferred_context 'with a none scope' do
         let(:original) do
-          Cuprum::Collections::Scopes::NoneScope.new
+          Bronze::Scopes::NoneScope.new
         end
       end
 
       deferred_context 'with an empty conjunction scope' do
         let(:original) do
-          Cuprum::Collections::Scopes::ConjunctionScope.new(scopes: [])
+          Bronze::Scopes::ConjunctionScope.new(scopes: [])
         end
       end
 
       deferred_context 'with an empty criteria scope' do
         let(:original) do
-          Cuprum::Collections::Scopes::CriteriaScope.new(criteria: [])
+          Bronze::Scopes::CriteriaScope.new(criteria: [])
         end
       end
 
       deferred_context 'with an empty disjunction scope' do
         let(:original) do
-          Cuprum::Collections::Scopes::DisjunctionScope.new(scopes: [])
+          Bronze::Scopes::DisjunctionScope.new(scopes: [])
         end
       end
 
@@ -290,9 +286,9 @@ module Cuprum::Collections::RSpec::Deferred
             ]
           ]
           wrapped =
-            Cuprum::Collections::Scopes::CriteriaScope.new(criteria:)
+            Bronze::Scopes::CriteriaScope.new(criteria:)
 
-          Cuprum::Collections::Scopes::ConjunctionScope.new(scopes: [wrapped])
+          Bronze::Scopes::ConjunctionScope.new(scopes: [wrapped])
         end
       end
 
@@ -307,7 +303,7 @@ module Cuprum::Collections::RSpec::Deferred
             ]
           ]
 
-          Cuprum::Collections::Scopes::CriteriaScope.new(criteria:)
+          Bronze::Scopes::CriteriaScope.new(criteria:)
         end
       end
 
@@ -322,9 +318,9 @@ module Cuprum::Collections::RSpec::Deferred
             ]
           ]
           wrapped =
-            Cuprum::Collections::Scopes::CriteriaScope.new(criteria:)
+            Bronze::Scopes::CriteriaScope.new(criteria:)
 
-          Cuprum::Collections::Scopes::DisjunctionScope.new(scopes: [wrapped])
+          Bronze::Scopes::DisjunctionScope.new(scopes: [wrapped])
         end
       end
 
@@ -343,9 +339,9 @@ module Cuprum::Collections::RSpec::Deferred
         describe 'with a block' do
           let(:block) { -> { { 'title' => 'A Wizard of Earthsea' } } }
           let(:expected) do
-            wrapped = Cuprum::Collections::Scope.new(&block)
+            wrapped = Bronze::Scope.new(&block)
 
-            Cuprum::Collections::Scopes::ConjunctionScope.new(
+            Bronze::Scopes::ConjunctionScope.new(
               scopes: [subject, wrapped]
             )
           end
@@ -356,9 +352,9 @@ module Cuprum::Collections::RSpec::Deferred
         describe 'with a hash' do
           let(:value) { { 'title' => 'A Wizard of Earthsea' } }
           let(:expected) do
-            wrapped = Cuprum::Collections::Scope.new(value)
+            wrapped = Bronze::Scope.new(value)
 
-            Cuprum::Collections::Scopes::ConjunctionScope.new(
+            Bronze::Scopes::ConjunctionScope.new(
               scopes: [subject, wrapped]
             )
           end
@@ -388,7 +384,7 @@ module Cuprum::Collections::RSpec::Deferred
 
         wrap_deferred 'with a non-empty conjunction scope' do
           let(:expected) do
-            Cuprum::Collections::Scopes::ConjunctionScope.new(
+            Bronze::Scopes::ConjunctionScope.new(
               scopes: [subject, *original.scopes]
             )
           end
@@ -398,7 +394,7 @@ module Cuprum::Collections::RSpec::Deferred
 
         wrap_deferred 'with a non-empty criteria scope' do
           let(:expected) do
-            Cuprum::Collections::Scopes::ConjunctionScope.new(
+            Bronze::Scopes::ConjunctionScope.new(
               scopes: [subject, original]
             )
           end
@@ -408,7 +404,7 @@ module Cuprum::Collections::RSpec::Deferred
 
         wrap_deferred 'with a non-empty disjunction scope' do
           let(:expected) do
-            Cuprum::Collections::Scopes::ConjunctionScope.new(
+            Bronze::Scopes::ConjunctionScope.new(
               scopes: [subject, original]
             )
           end
@@ -431,9 +427,9 @@ module Cuprum::Collections::RSpec::Deferred
           let(:block) { -> { { 'title' => 'A Wizard of Earthsea' } } }
           let(:block) { -> { { 'title' => 'A Wizard of Earthsea' } } }
           let(:expected) do
-            wrapped = Cuprum::Collections::Scope.new(&block)
+            wrapped = Bronze::Scope.new(&block)
 
-            Cuprum::Collections::Scopes::ConjunctionScope.new(
+            Bronze::Scopes::ConjunctionScope.new(
               scopes: [subject, wrapped.invert]
             )
           end
@@ -444,9 +440,9 @@ module Cuprum::Collections::RSpec::Deferred
         describe 'with a hash' do
           let(:value)  { { 'title' => 'A Wizard of Earthsea' } }
           let(:expected) do
-            wrapped = Cuprum::Collections::Scope.new(value)
+            wrapped = Bronze::Scope.new(value)
 
-            Cuprum::Collections::Scopes::ConjunctionScope.new(
+            Bronze::Scopes::ConjunctionScope.new(
               scopes: [subject, wrapped.invert]
             )
           end
@@ -455,7 +451,7 @@ module Cuprum::Collections::RSpec::Deferred
         end
 
         wrap_deferred 'with an all scope' do
-          let(:expected) { Cuprum::Collections::Scopes::NoneScope.new }
+          let(:expected) { Bronze::Scopes::NoneScope.new }
 
           it { expect(subject.not(original)).to be == expected }
         end
@@ -478,7 +474,7 @@ module Cuprum::Collections::RSpec::Deferred
 
         wrap_deferred 'with a non-empty conjunction scope' do
           let(:expected) do
-            Cuprum::Collections::Scopes::ConjunctionScope.new(
+            Bronze::Scopes::ConjunctionScope.new(
               scopes: [subject, original.invert]
             )
           end
@@ -488,7 +484,7 @@ module Cuprum::Collections::RSpec::Deferred
 
         wrap_deferred 'with a non-empty criteria scope' do
           let(:expected) do
-            Cuprum::Collections::Scopes::ConjunctionScope.new(
+            Bronze::Scopes::ConjunctionScope.new(
               scopes: [subject, original.invert]
             )
           end
@@ -498,7 +494,7 @@ module Cuprum::Collections::RSpec::Deferred
 
         wrap_deferred 'with a non-empty disjunction scope' do
           let(:expected) do
-            Cuprum::Collections::Scopes::ConjunctionScope.new(
+            Bronze::Scopes::ConjunctionScope.new(
               scopes: [subject, *original.invert.scopes]
             )
           end
@@ -520,9 +516,9 @@ module Cuprum::Collections::RSpec::Deferred
         describe 'with a block' do
           let(:block) { -> { { 'title' => 'A Wizard of Earthsea' } } }
           let(:expected) do
-            wrapped = Cuprum::Collections::Scope.new(&block)
+            wrapped = Bronze::Scope.new(&block)
 
-            Cuprum::Collections::Scopes::DisjunctionScope.new(
+            Bronze::Scopes::DisjunctionScope.new(
               scopes: [subject, wrapped]
             )
           end
@@ -533,9 +529,9 @@ module Cuprum::Collections::RSpec::Deferred
         describe 'with a hash' do
           let(:value) { { 'title' => 'A Wizard of Earthsea' } }
           let(:expected) do
-            wrapped = Cuprum::Collections::Scope.new(value)
+            wrapped = Bronze::Scope.new(value)
 
-            Cuprum::Collections::Scopes::DisjunctionScope.new(
+            Bronze::Scopes::DisjunctionScope.new(
               scopes: [subject, wrapped]
             )
           end
@@ -565,7 +561,7 @@ module Cuprum::Collections::RSpec::Deferred
 
         wrap_deferred 'with a non-empty conjunction scope' do
           let(:expected) do
-            Cuprum::Collections::Scopes::DisjunctionScope.new(
+            Bronze::Scopes::DisjunctionScope.new(
               scopes: [subject, original]
             )
           end
@@ -575,7 +571,7 @@ module Cuprum::Collections::RSpec::Deferred
 
         wrap_deferred 'with a non-empty criteria scope' do
           let(:expected) do
-            Cuprum::Collections::Scopes::DisjunctionScope.new(
+            Bronze::Scopes::DisjunctionScope.new(
               scopes: [subject, original]
             )
           end
@@ -585,7 +581,7 @@ module Cuprum::Collections::RSpec::Deferred
 
         wrap_deferred 'with a non-empty disjunction scope' do
           let(:expected) do
-            Cuprum::Collections::Scopes::DisjunctionScope.new(
+            Bronze::Scopes::DisjunctionScope.new(
               scopes: [subject, *original.scopes]
             )
           end

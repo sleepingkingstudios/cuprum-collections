@@ -31,8 +31,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
         describe 'with a scope with the same type' do
           let(:other) { Spec::CustomScope.new }
 
-          example_class 'Spec::CustomScope', Cuprum::Collections::Scopes::Base \
-          do |klass|
+          example_class 'Spec::CustomScope', Bronze::Scopes::Base do |klass|
             klass.define_method(:type) { :all }
           end
 
@@ -51,7 +50,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
       end
 
       describe '#invert' do
-        let(:expected) { Cuprum::Collections::Scopes::NoneScope.new }
+        let(:expected) { Bronze::Scopes::NoneScope.new }
 
         it { expect(subject.invert).to be == expected }
       end
@@ -75,7 +74,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
         describe 'with a block' do
           let(:block) { -> { { 'title' => 'A Wizard of Earthsea' } } }
           let(:expected) do
-            Cuprum::Collections::Scope.new(&block)
+            Bronze::Scope.new(&block)
           end
 
           it { expect(subject.and(&block)).to be == expected }
@@ -84,7 +83,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
         describe 'with a hash' do
           let(:value) { { 'title' => 'A Wizard of Earthsea' } }
           let(:expected) do
-            Cuprum::Collections::Scope.new(value)
+            Bronze::Scope.new(value)
           end
 
           it { expect(subject.and(value)).to be == expected }
@@ -92,7 +91,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
         describe 'with an all scope' do
           let(:original) do
-            Cuprum::Collections::Scopes::AllScope.new
+            Bronze::Scopes::AllScope.new
           end
 
           it { expect(subject.and(original)).to be == original }
@@ -100,7 +99,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
         describe 'with a none scope' do
           let(:original) do
-            Cuprum::Collections::Scopes::NoneScope.new
+            Bronze::Scopes::NoneScope.new
           end
 
           it { expect(subject.and(original)).to be == original }
@@ -108,7 +107,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
         describe 'with an empty conjunction scope' do
           let(:original) do
-            Cuprum::Collections::Scopes::ConjunctionScope.new(scopes: [])
+            Bronze::Scopes::ConjunctionScope.new(scopes: [])
           end
 
           it { expect(subject.and(original)).to be subject }
@@ -116,7 +115,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
         describe 'with an empty criteria scope' do
           let(:original) do
-            Cuprum::Collections::Scopes::CriteriaScope.new(criteria: [])
+            Bronze::Scopes::CriteriaScope.new(criteria: [])
           end
 
           it { expect(subject.and(original)).to be subject }
@@ -124,7 +123,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
         describe 'with an empty disjunction scope' do
           let(:original) do
-            Cuprum::Collections::Scopes::DisjunctionScope.new(scopes: [])
+            Bronze::Scopes::DisjunctionScope.new(scopes: [])
           end
 
           it { expect(subject.and(original)).to be subject }
@@ -133,10 +132,10 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
         describe 'with a non-empty conjunction scope' do
           let(:original) do
             wrapped =
-              Cuprum::Collections::Scope
+              Bronze::Scope
                 .new({ 'title' => 'A Wizard of Earthsea' })
 
-            Cuprum::Collections::Scopes::ConjunctionScope
+            Bronze::Scopes::ConjunctionScope
               .new(scopes: [wrapped])
           end
 
@@ -145,7 +144,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
         describe 'with a non-empty criteria scope' do
           let(:original) do
-            Cuprum::Collections::Scope
+            Bronze::Scope
               .new({ 'title' => 'A Wizard of Earthsea' })
           end
 
@@ -155,10 +154,10 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
         describe 'with a non-empty disjunction scope' do
           let(:original) do
             wrapped =
-              Cuprum::Collections::Scope
+              Bronze::Scope
                 .new({ 'title' => 'A Wizard of Earthsea' })
 
-            Cuprum::Collections::Scopes::DisjunctionScope
+            Bronze::Scopes::DisjunctionScope
               .new(scopes: [wrapped])
           end
 
@@ -177,7 +176,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
         describe 'with a block' do
           let(:block) { -> { { 'title' => 'A Wizard of Earthsea' } } }
           let(:expected) do
-            Cuprum::Collections::Scope.new(&block).invert
+            Bronze::Scope.new(&block).invert
           end
 
           it { expect(subject.not(&block)).to be == expected }
@@ -186,7 +185,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
         describe 'with a hash' do
           let(:value) { { 'title' => 'A Wizard of Earthsea' } }
           let(:expected) do
-            Cuprum::Collections::Scope.new(value).invert
+            Bronze::Scope.new(value).invert
           end
 
           it { expect(subject.not(value)).to be == expected }
@@ -194,10 +193,10 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
         describe 'with an all scope' do
           let(:original) do
-            Cuprum::Collections::Scopes::AllScope.new
+            Bronze::Scopes::AllScope.new
           end
           let(:expected) do
-            Cuprum::Collections::Scopes::NoneScope.new
+            Bronze::Scopes::NoneScope.new
           end
 
           it { expect(subject.not(original)).to be == expected }
@@ -205,7 +204,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
         describe 'with a none scope' do
           let(:original) do
-            Cuprum::Collections::Scopes::NoneScope.new
+            Bronze::Scopes::NoneScope.new
           end
 
           it { expect(subject.not(original)).to be == subject }
@@ -213,7 +212,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
         describe 'with an empty conjunction scope' do
           let(:original) do
-            Cuprum::Collections::Scopes::ConjunctionScope.new(scopes: [])
+            Bronze::Scopes::ConjunctionScope.new(scopes: [])
           end
 
           it { expect(subject.not(original)).to be subject }
@@ -221,7 +220,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
         describe 'with an empty criteria scope' do
           let(:original) do
-            Cuprum::Collections::Scopes::CriteriaScope.new(criteria: [])
+            Bronze::Scopes::CriteriaScope.new(criteria: [])
           end
 
           it { expect(subject.not(original)).to be subject }
@@ -229,7 +228,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
         describe 'with an empty disjunction scope' do
           let(:original) do
-            Cuprum::Collections::Scopes::DisjunctionScope.new(scopes: [])
+            Bronze::Scopes::DisjunctionScope.new(scopes: [])
           end
 
           it { expect(subject.not(original)).to be subject }
@@ -238,10 +237,10 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
         describe 'with a non-empty conjunction scope' do
           let(:original) do
             wrapped =
-              Cuprum::Collections::Scope
+              Bronze::Scope
                 .new({ 'title' => 'A Wizard of Earthsea' })
 
-            Cuprum::Collections::Scopes::ConjunctionScope
+            Bronze::Scopes::ConjunctionScope
               .new(scopes: [wrapped])
           end
 
@@ -250,7 +249,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
         describe 'with a non-empty criteria scope' do
           let(:original) do
-            Cuprum::Collections::Scope
+            Bronze::Scope
               .new({ 'title' => 'A Wizard of Earthsea' })
           end
 
@@ -260,10 +259,10 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
         describe 'with a non-empty disjunction scope' do
           let(:original) do
             wrapped =
-              Cuprum::Collections::Scope
+              Bronze::Scope
                 .new({ 'title' => 'A Wizard of Earthsea' })
 
-            Cuprum::Collections::Scopes::DisjunctionScope
+            Bronze::Scopes::DisjunctionScope
               .new(scopes: [wrapped])
           end
 
@@ -282,7 +281,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
         describe 'with a block' do
           let(:block) { -> { { 'title' => 'A Wizard of Earthsea' } } }
           let(:expected) do
-            Cuprum::Collections::Scope.new(&block)
+            Bronze::Scope.new(&block)
           end
 
           it { expect(subject.or(&block)).to be == expected }
@@ -291,7 +290,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
         describe 'with a hash' do
           let(:value) { { 'title' => 'A Wizard of Earthsea' } }
           let(:expected) do
-            Cuprum::Collections::Scope.new(value)
+            Bronze::Scope.new(value)
           end
 
           it { expect(subject.or(value)).to be == expected }
@@ -299,7 +298,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
         describe 'with an all scope' do
           let(:original) do
-            Cuprum::Collections::Scopes::AllScope.new
+            Bronze::Scopes::AllScope.new
           end
 
           it { expect(subject.and(original)).to be == original }
@@ -307,7 +306,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
         describe 'with an empty conjunction scope' do
           let(:original) do
-            Cuprum::Collections::Scopes::ConjunctionScope.new(scopes: [])
+            Bronze::Scopes::ConjunctionScope.new(scopes: [])
           end
 
           it { expect(subject.or(original)).to be subject }
@@ -315,7 +314,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
         describe 'with an empty criteria scope' do
           let(:original) do
-            Cuprum::Collections::Scopes::CriteriaScope.new(criteria: [])
+            Bronze::Scopes::CriteriaScope.new(criteria: [])
           end
 
           it { expect(subject.or(original)).to be subject }
@@ -323,7 +322,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
         describe 'with an empty disjunction scope' do
           let(:original) do
-            Cuprum::Collections::Scopes::DisjunctionScope.new(scopes: [])
+            Bronze::Scopes::DisjunctionScope.new(scopes: [])
           end
 
           it { expect(subject.or(original)).to be subject }
@@ -332,10 +331,10 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
         describe 'with a non-empty conjunction scope' do
           let(:original) do
             wrapped =
-              Cuprum::Collections::Scope
+              Bronze::Scope
                 .new({ 'title' => 'A Wizard of Earthsea' })
 
-            Cuprum::Collections::Scopes::ConjunctionScope
+            Bronze::Scopes::ConjunctionScope
               .new(scopes: [wrapped])
           end
 
@@ -344,7 +343,7 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
 
         describe 'with a non-empty criteria scope' do
           let(:original) do
-            Cuprum::Collections::Scope
+            Bronze::Scope
               .new({ 'title' => 'A Wizard of Earthsea' })
           end
 
@@ -354,10 +353,10 @@ module Cuprum::Collections::RSpec::Deferred::Scopes
         describe 'with a non-empty disjunction scope' do
           let(:original) do
             wrapped =
-              Cuprum::Collections::Scope
+              Bronze::Scope
                 .new({ 'title' => 'A Wizard of Earthsea' })
 
-            Cuprum::Collections::Scopes::DisjunctionScope
+            Bronze::Scopes::DisjunctionScope
               .new(scopes: [wrapped])
           end
 

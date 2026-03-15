@@ -9,8 +9,8 @@ module Cuprum::Collections::Basic
   class Query < Cuprum::Collections::Query
     # @param data [Array<Hash>] The current data in the collection. Should be an
     #   Array of Hashes, each of which represents one item in the collection.
-    # @param scope [Cuprum::Collections::Scopes::Base] the base scope for the
-    #   query. Defaults to nil.
+    # @param scope [Bronze::Scopes::Base] the base scope for the query. Defaults
+    #   to nil.
     def initialize(data, scope: nil)
       super(scope:)
 
