@@ -13,6 +13,7 @@ module Bronze
   autoload :Query,        'bronze/query'
   autoload :Relation,     'bronze/relation'
   autoload :Relations,    'bronze/relations'
+  autoload :Repository,   'bronze/repository'
   autoload :Scope,        'bronze/scope'
   autoload :Scopes,       'bronze/scopes'
 

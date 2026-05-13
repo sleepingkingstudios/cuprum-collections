@@ -48,8 +48,7 @@ module Cuprum::Collections::Commands::Associations
     #     @return [Array<Object>] the association values.
 
     # @param association [Bronze::Association] the association to query.
-    # @param repository [Cuprum::Collections::Repository] the repository to
-    #   query from.
+    # @param repository [Bronze::Repository] the repository to query from.
     # @param resource [Bronze::Resource] the base resource for the association.
     def initialize(association:, repository:, resource:)
       super()
@@ -62,7 +61,7 @@ module Cuprum::Collections::Commands::Associations
     # @return [Bronze::Association] the association to query.
     attr_reader :association
 
-    # @return [Cuprum::Collections::Repository] the repository to query from.
+    # @return [Bronze::Repository] the repository to query from.
     attr_reader :repository
 
     # @return [Bronze::Resource] the base resource for the association.

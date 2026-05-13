@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
+require 'bronze/repository'
 require 'cuprum/collections/basic/collection'
-require 'cuprum/collections/repository'
 require 'cuprum/collections/rspec/deferred/repository_examples'
 
 require 'support/book'
 
-RSpec.describe Cuprum::Collections::Repository do
+RSpec.describe Bronze::Repository do
   include Cuprum::Collections::RSpec::Deferred::RepositoryExamples
 
   subject(:repository) { described_class.new }
