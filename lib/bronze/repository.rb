@@ -2,10 +2,10 @@
 
 require 'forwardable'
 
+require 'bronze'
 require 'bronze/relations/parameters'
-require 'cuprum/collections'
 
-module Cuprum::Collections
+module Bronze
   # A repository represents a group of collections.
   #
   # Conceptually, a repository represents one or more underlying data stores. An
@@ -29,7 +29,7 @@ module Cuprum::Collections
     # Error raised when trying to access a collection that is not defined.
     class UndefinedCollectionError < StandardError; end
 
-    # @yieldparam [Cuprum::Collections::Repository] the created repository.
+    # @yieldparam [Bronze::Repository] the created repository.
     def initialize
       @collections = {}
 
@@ -69,7 +69,7 @@ module Cuprum::Collections
     # @param force [true, false] if true, override an existing collection with
     #   the same name.
     #
-    # @return [Cuprum::Collections::Repository] the repository.
+    # @return [Bronze::Repository] the repository.
     #
     # @raise [DuplicateCollectionError] if a collection with the same name
     #   already exists in the repository.

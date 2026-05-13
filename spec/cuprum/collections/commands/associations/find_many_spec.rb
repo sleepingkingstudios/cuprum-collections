@@ -471,7 +471,7 @@ RSpec.describe Cuprum::Collections::Commands::Associations::FindMany do
 
       it 'should raise an exception' do
         expect { command.call(**params) }.to raise_error(
-          Cuprum::Collections::Repository::UndefinedCollectionError,
+          Bronze::Repository::UndefinedCollectionError,
           error_message
         )
       end

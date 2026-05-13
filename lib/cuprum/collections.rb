@@ -16,7 +16,6 @@ module Cuprum
     autoload :Basic,             'cuprum/collections/basic'
     autoload :CollectionCommand, 'cuprum/collections/collection_command'
     autoload :Commands,          'cuprum/collections/commands'
-    autoload :Repository,        'cuprum/collections/repository'
 
     # @return [String] the absolute path to the gem directory.
     def self.gem_path

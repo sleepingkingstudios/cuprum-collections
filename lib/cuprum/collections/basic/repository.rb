@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 require 'bronze/relations/parameters'
+require 'bronze/repository'
 require 'cuprum/collections/basic'
 require 'cuprum/collections/basic/collection'
-require 'cuprum/collections/repository'
 
 module Cuprum::Collections::Basic
   # A repository represents a group of Basic collections.
-  class Repository < Cuprum::Collections::Repository
+  class Repository < Bronze::Repository
     # @param data [Hash<String, Object>] Seed data to use when building
     #   collections.
     def initialize(data: {})
