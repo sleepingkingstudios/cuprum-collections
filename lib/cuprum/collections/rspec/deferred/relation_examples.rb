@@ -1192,6 +1192,10 @@ module Cuprum::Collections::RSpec::Deferred
     end
 
     deferred_examples 'should validate the Relation parameters' do
+      define_method :tools do
+        SleepingKingStudios::Tools::Toolbelt.instance
+      end
+
       describe 'with no parameters' do
         let(:error_message) { "name or entity class can't be blank" }
 
@@ -1224,7 +1228,9 @@ module Cuprum::Collections::RSpec::Deferred
       end
 
       describe 'with entity_class: an empty String' do
-        let(:error_message) { "entity class can't be blank" }
+        let(:error_message) do
+          tools.assertions.error_message_for(:presence, as: 'entity class')
+        end
 
         it 'should raise an exception' do
           expect { call_method(entity_class: '') }
@@ -1233,7 +1239,9 @@ module Cuprum::Collections::RSpec::Deferred
       end
 
       describe 'with entity_class: an empty Symbol' do
-        let(:error_message) { "entity class can't be blank" }
+        let(:error_message) do
+          tools.assertions.error_message_for(:presence, as: 'entity class')
+        end
 
         it 'should raise an exception' do
           expect { call_method(entity_class: :'') }
@@ -1260,7 +1268,9 @@ module Cuprum::Collections::RSpec::Deferred
       end
 
       describe 'with name: an Object' do
-        let(:error_message) { 'name is not a String or a Symbol' }
+        let(:error_message) do
+          tools.assertions.error_message_for(:name, as: 'name')
+        end
 
         it 'should raise an exception' do
           expect { call_method(name: Object.new.freeze) }
@@ -1269,7 +1279,9 @@ module Cuprum::Collections::RSpec::Deferred
       end
 
       describe 'with name: an empty String' do
-        let(:error_message) { "name can't be blank" }
+        let(:error_message) do
+          tools.assertions.error_message_for(:presence, as: 'name')
+        end
 
         it 'should raise an exception' do
           expect { call_method(name: '') }
@@ -1278,7 +1290,9 @@ module Cuprum::Collections::RSpec::Deferred
       end
 
       describe 'with name: an empty Symbol' do
-        let(:error_message) { "name can't be blank" }
+        let(:error_message) do
+          tools.assertions.error_message_for(:presence, as: 'name')
+        end
 
         it 'should raise an exception' do
           expect { call_method(name: '') }
@@ -1312,7 +1326,9 @@ module Cuprum::Collections::RSpec::Deferred
       end
 
       describe 'with name: value and entity_class: an empty String' do
-        let(:error_message) { "entity class can't be blank" }
+        let(:error_message) do
+          tools.assertions.error_message_for(:presence, as: 'entity class')
+        end
 
         it 'should raise an exception' do
           expect { call_method(entity_class: '', name: 'books') }
@@ -1321,7 +1337,9 @@ module Cuprum::Collections::RSpec::Deferred
       end
 
       describe 'with name: value and entity_class: an empty Symbol' do
-        let(:error_message) { "entity class can't be blank" }
+        let(:error_message) do
+          tools.assertions.error_message_for(:presence, as: 'entity class')
+        end
 
         it 'should raise an exception' do
           expect { call_method(entity_class: :'', name: 'books') }
@@ -1330,7 +1348,9 @@ module Cuprum::Collections::RSpec::Deferred
       end
 
       describe 'with plural_name: an Object' do
-        let(:error_message) { 'plural name is not a String or a Symbol' }
+        let(:error_message) do
+          tools.assertions.error_message_for(:name, as: 'plural name')
+        end
 
         it 'should raise an exception' do
           expect do
@@ -1344,7 +1364,9 @@ module Cuprum::Collections::RSpec::Deferred
       end
 
       describe 'with plural_name: an empty String' do
-        let(:error_message) { "plural name can't be blank" }
+        let(:error_message) do
+          tools.assertions.error_message_for(:presence, as: 'plural name')
+        end
 
         it 'should raise an exception' do
           expect do
@@ -1358,7 +1380,9 @@ module Cuprum::Collections::RSpec::Deferred
       end
 
       describe 'with plural_name: an empty Symbol' do
-        let(:error_message) { "plural name can't be blank" }
+        let(:error_message) do
+          tools.assertions.error_message_for(:presence, as: 'plural name')
+        end
 
         it 'should raise an exception' do
           expect do
@@ -1372,7 +1396,9 @@ module Cuprum::Collections::RSpec::Deferred
       end
 
       describe 'with qualified_name: an Object' do
-        let(:error_message) { 'qualified name is not a String or a Symbol' }
+        let(:error_message) do
+          tools.assertions.error_message_for(:name, as: 'qualified name')
+        end
 
         it 'should raise an exception' do
           expect do
@@ -1386,7 +1412,9 @@ module Cuprum::Collections::RSpec::Deferred
       end
 
       describe 'with qualified_name: an empty String' do
-        let(:error_message) { "qualified name can't be blank" }
+        let(:error_message) do
+          tools.assertions.error_message_for(:presence, as: 'qualified name')
+        end
 
         it 'should raise an exception' do
           expect do
@@ -1400,7 +1428,9 @@ module Cuprum::Collections::RSpec::Deferred
       end
 
       describe 'with qualified_name: an empty Symbol' do
-        let(:error_message) { "qualified name can't be blank" }
+        let(:error_message) do
+          tools.assertions.error_message_for(:presence, as: 'qualified name')
+        end
 
         it 'should raise an exception' do
           expect do
@@ -1423,7 +1453,9 @@ module Cuprum::Collections::RSpec::Deferred
       end
 
       describe 'with singular_name: an Object' do
-        let(:error_message) { 'singular name is not a String or a Symbol' }
+        let(:error_message) do
+          tools.assertions.error_message_for(:name, as: 'singular name')
+        end
 
         it 'should raise an exception' do
           expect do
@@ -1437,7 +1469,9 @@ module Cuprum::Collections::RSpec::Deferred
       end
 
       describe 'with singular_name: an empty String' do
-        let(:error_message) { "singular name can't be blank" }
+        let(:error_message) do
+          tools.assertions.error_message_for(:presence, as: 'singular name')
+        end
 
         it 'should raise an exception' do
           expect do
@@ -1451,7 +1485,9 @@ module Cuprum::Collections::RSpec::Deferred
       end
 
       describe 'with singular_name: an empty Symbol' do
-        let(:error_message) { "singular name can't be blank" }
+        let(:error_message) do
+          tools.assertions.error_message_for(:presence, as: 'singular name')
+        end
 
         it 'should raise an exception' do
           expect do

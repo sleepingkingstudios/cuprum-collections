@@ -18,6 +18,10 @@ RSpec.describe Cuprum::Collections::CollectionCommand do
   end
   let(:collection_options) { {} }
 
+  define_method :tools do
+    SleepingKingStudios::Tools::Toolbelt.instance
+  end
+
   describe '.new' do
     it 'should define the constructor' do
       expect(described_class)
@@ -78,7 +82,11 @@ RSpec.describe Cuprum::Collections::CollectionCommand do
   end
 
   describe '#validate_attributes' do
-    let(:expected_message) { 'attributes is not an instance of Hash' }
+    let(:expected_message) do
+      tools
+        .assertions
+        .error_message_for(:instance_of, as: 'attributes', expected: Hash)
+    end
 
     it 'should define the private method' do
       expect(command)
@@ -117,9 +125,15 @@ RSpec.describe Cuprum::Collections::CollectionCommand do
       end
       let(:expected_messages) do
         [
-          "attributes[nil] key can't be blank",
-          'attributes[0] key is not a String or a Symbol',
-          "attributes[\"\"] key can't be blank"
+          tools
+            .assertions
+            .error_message_for(:presence, as: 'attributes[nil] key'),
+          tools
+            .assertions
+            .error_message_for(:name, as: 'attributes[0] key'),
+          tools
+            .assertions
+            .error_message_for(:presence, as: 'attributes[""] key')
         ]
       end
 
@@ -138,7 +152,11 @@ RSpec.describe Cuprum::Collections::CollectionCommand do
         }
       end
       let(:expected_messages) do
-        ["attributes[nil] key can't be blank"]
+        [
+          tools
+            .assertions
+            .error_message_for(:presence, as: 'attributes[nil] key')
+        ]
       end
 
       it 'should return the error messages' do
@@ -186,9 +204,15 @@ RSpec.describe Cuprum::Collections::CollectionCommand do
         end
         let(:expected_messages) do
           [
-            "properties[nil] key can't be blank",
-            'properties[0] key is not a String or a Symbol',
-            "properties[\"\"] key can't be blank"
+            tools
+              .assertions
+              .error_message_for(:presence, as: 'properties[nil] key'),
+            tools
+              .assertions
+              .error_message_for(:name, as: 'properties[0] key'),
+            tools
+              .assertions
+              .error_message_for(:presence, as: 'properties[""] key')
           ]
         end
 
@@ -203,7 +227,9 @@ RSpec.describe Cuprum::Collections::CollectionCommand do
   describe '#validate_primary_key' do
     let(:primary_key_type) { Integer }
     let(:expected_message) do
-      'id is not an instance of Integer'
+      tools
+        .assertions
+        .error_message_for(:instance_of, as: 'id', expected: Integer)
     end
 
     it 'should define the private method' do
@@ -242,7 +268,9 @@ RSpec.describe Cuprum::Collections::CollectionCommand do
 
     describe 'with as: value' do
       let(:expected_message) do
-        'key is not an instance of Integer'
+        tools
+          .assertions
+          .error_message_for(:instance_of, as: 'key', expected: Integer)
       end
 
       describe 'with a String' do
@@ -266,7 +294,9 @@ RSpec.describe Cuprum::Collections::CollectionCommand do
         super().merge({ primary_key_name: })
       end
       let(:expected_message) do
-        'uuid is not an instance of Integer'
+        tools
+          .assertions
+          .error_message_for(:instance_of, as: 'uuid', expected: Integer)
       end
 
       describe 'with a String' do
@@ -284,7 +314,9 @@ RSpec.describe Cuprum::Collections::CollectionCommand do
 
       describe 'with as: value' do
         let(:expected_message) do
-          'key is not an instance of Integer'
+          tools
+            .assertions
+            .error_message_for(:instance_of, as: 'key', expected: Integer)
         end
 
         describe 'with a String' do
@@ -309,7 +341,9 @@ RSpec.describe Cuprum::Collections::CollectionCommand do
         super().merge({ primary_key_type: })
       end
       let(:expected_message) do
-        'id is not an instance of String'
+        tools
+          .assertions
+          .error_message_for(:instance_of, as: 'id', expected: String)
       end
 
       describe 'with an Integer' do
@@ -356,7 +390,9 @@ RSpec.describe Cuprum::Collections::CollectionCommand do
     let(:primary_keys)     { nil }
     let(:primary_key_type) { Integer }
     let(:expected_message) do
-      'value is not an instance of Array'
+      tools
+        .assertions
+        .error_message_for(:instance_of, expected: Array)
     end
 
     it 'should define the private method' do
@@ -403,9 +439,15 @@ RSpec.describe Cuprum::Collections::CollectionCommand do
       let(:value) { [nil, nil, '12345'] }
       let(:expected_messages) do
         [
-          'value[0] is not an instance of Integer',
-          'value[1] is not an instance of Integer',
-          'value[2] is not an instance of Integer'
+          tools
+            .assertions
+            .error_message_for(:instance_of, as: 'value[0]', expected: Integer),
+          tools
+            .assertions
+            .error_message_for(:instance_of, as: 'value[1]', expected: Integer),
+          tools
+            .assertions
+            .error_message_for(:instance_of, as: 'value[2]', expected: Integer)
         ]
       end
 
@@ -418,7 +460,11 @@ RSpec.describe Cuprum::Collections::CollectionCommand do
     describe 'with an Array with mixed valid and invalid values' do
       let(:value) { [12_345, nil, 67_890] }
       let(:expected_messages) do
-        ['value[1] is not an instance of Integer']
+        [
+          tools
+            .assertions
+            .error_message_for(:instance_of, as: 'value[1]', expected: Integer)
+        ]
       end
 
       it 'should return the error messages' do
@@ -439,9 +485,15 @@ RSpec.describe Cuprum::Collections::CollectionCommand do
       let(:value) { [nil, nil, '12345'] }
       let(:expected_messages) do
         [
-          'keys[0] is not an instance of Integer',
-          'keys[1] is not an instance of Integer',
-          'keys[2] is not an instance of Integer'
+          tools
+            .assertions
+            .error_message_for(:instance_of, as: 'keys[0]', expected: Integer),
+          tools
+            .assertions
+            .error_message_for(:instance_of, as: 'keys[1]', expected: Integer),
+          tools
+            .assertions
+            .error_message_for(:instance_of, as: 'keys[2]', expected: Integer)
         ]
       end
 
@@ -461,9 +513,27 @@ RSpec.describe Cuprum::Collections::CollectionCommand do
         let(:value) { [nil, nil, 12_345] }
         let(:expected_messages) do
           [
-            'value[0] is not an instance of String',
-            'value[1] is not an instance of String',
-            'value[2] is not an instance of String'
+            tools
+              .assertions
+              .error_message_for(
+                :instance_of,
+                as:       'value[0]',
+                expected: String
+              ),
+            tools
+              .assertions
+              .error_message_for(
+                :instance_of,
+                as:       'value[1]',
+                expected: String
+              ),
+            tools
+              .assertions
+              .error_message_for(
+                :instance_of,
+                as:       'value[2]',
+                expected: String
+              )
           ]
         end
 

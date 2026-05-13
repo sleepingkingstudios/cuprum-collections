@@ -26,9 +26,7 @@ Stannum::RSpec::ValidateParameterMatcher.add_parameter_mapping(
 # Isolated namespace for defining spec-only or transient objects.
 module Spec; end
 
-if SleepingKingStudios::Tools.respond_to?(:initializer)
-  SleepingKingStudios::Tools.initializer.call
-end
+SleepingKingStudios::Tools.initializer.call
 
 require 'support/error_messages'
 

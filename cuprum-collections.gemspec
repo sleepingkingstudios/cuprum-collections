@@ -31,6 +31,6 @@ Gem::Specification.new do |gem|
   ]
 
   gem.add_dependency 'cuprum', '~> 1.3', '>= 1.3.1'
-  gem.add_dependency 'sleeping_king_studios-tools', '~> 1.2', '>= 1.2.1'
+  gem.add_dependency 'sleeping_king_studios-tools', '~> 1.3'
   gem.add_dependency 'stannum', '~> 0.4', '>= 0.4.1'
 end
