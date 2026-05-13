@@ -23,8 +23,7 @@ RSpec.describe Cuprum::Collections::Adaptable::Collection do
   let(:other_options)       { { adapter:, name: } }
   let(:expected_options)    { { default_entity_class: adapter.entity_class } }
 
-  example_class 'Spec::AdaptableCollection', Cuprum::Collections::Collection \
-  do |klass|
+  example_class 'Spec::AdaptableCollection', Bronze::Collection do |klass|
     klass.include Cuprum::Collections::Adaptable::Collection # rubocop:disable RSpec/DescribedClass
   end
 

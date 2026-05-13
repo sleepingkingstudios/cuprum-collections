@@ -34,7 +34,7 @@ module Bronze::Errors
       #
       # @return [Hash] the collection details.
       def resolve_collection(**params) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-        if params[:collection].is_a?(Cuprum::Collections::Collection)
+        if params[:collection].is_a?(Bronze::Collection)
           return collection_details(params[:collection])
         elsif collection_name?(params[:collection])
           return { 'name' => params[:collection].to_s }

@@ -2,14 +2,14 @@
 
 require 'cuprum/command_factory'
 
+require 'bronze/collection'
 require 'cuprum/collections/basic'
 require 'cuprum/collections/basic/commands'
 require 'cuprum/collections/basic/scopes/all_scope'
-require 'cuprum/collections/collection'
 
 module Cuprum::Collections::Basic
   # Wraps an in-memory array of hashes data store as a Cuprum collection.
-  class Collection < Cuprum::Collections::Collection
+  class Collection < Bronze::Collection
     # @overload initialize(data: [], entity_class: nil, name: nil, qualified_name: nil, singular_name: nil, **options)
     #   @param data [Array<Hash>] the current data in the collection.
     #   @param entity_class [Class, String] the class of entity represented by

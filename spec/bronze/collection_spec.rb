@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/collection'
+require 'bronze/collection'
 require 'cuprum/collections/rspec/deferred/collection_examples'
 
 require 'support/book'
 require 'support/grimoire'
 require 'support/scoped_book'
 
-RSpec.describe Cuprum::Collections::Collection do
+RSpec.describe Bronze::Collection do
   include Cuprum::Collections::RSpec::Deferred::CollectionExamples
 
   subject(:collection) do

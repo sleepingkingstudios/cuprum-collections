@@ -14,7 +14,6 @@ module Cuprum
     autoload :Adapter,           'cuprum/collections/adapter'
     autoload :Adapters,          'cuprum/collections/adapters'
     autoload :Basic,             'cuprum/collections/basic'
-    autoload :Collection,        'cuprum/collections/collection'
     autoload :CollectionCommand, 'cuprum/collections/collection_command'
     autoload :Commands,          'cuprum/collections/commands'
     autoload :Repository,        'cuprum/collections/repository'

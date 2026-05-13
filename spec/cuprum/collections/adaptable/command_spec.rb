@@ -32,9 +32,7 @@ RSpec.describe Cuprum::Collections::Adaptable::Command do
     SleepingKingStudios::Tools::Toolbelt.instance
   end
 
-  example_class 'Spec::AdaptableCollection',
-    Cuprum::Collections::Collection \
-  do |klass|
+  example_class 'Spec::AdaptableCollection', Bronze::Collection do |klass|
     klass.define_method :initialize do |adapter:, **options|
       super(**options)
 

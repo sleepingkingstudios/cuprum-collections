@@ -6,6 +6,7 @@ require 'cuprum'
 module Bronze
   autoload :Association,  'bronze/association'
   autoload :Associations, 'bronze/associations'
+  autoload :Collection,   'bronze/collection'
   autoload :Constraints,  'bronze/constraints'
   autoload :Errors,       'bronze/errors'
   autoload :Queries,      'bronze/queries'
