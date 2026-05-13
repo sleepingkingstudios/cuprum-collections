@@ -64,8 +64,8 @@ module Cuprum::Collections
     # The collection must implement the #collection_name property. Repository
     # subclasses may enforce additional requirements.
     #
-    # @param collection [Cuprum::Collections::Collection] the collection to add
-    #   to the repository.
+    # @param collection [Bronze::Collection] the collection to add to the
+    #   repository.
     # @param force [true, false] if true, override an existing collection with
     #   the same name.
     #
@@ -99,7 +99,7 @@ module Cuprum::Collections
     #     the same name.
     #   @param options [Hash] additional options to pass to Collection.new.
     #
-    #   @return [Cuprum::Collections::Collection] the created collection.
+    #   @return [Bronze::Collection] the created collection.
     #
     #   @raise [DuplicateCollectionError] if a collection with the same name
     #     already exists in the repository.
@@ -136,7 +136,7 @@ module Cuprum::Collections
     #     the collection.
     #   @param options [Hash] additional options to pass to Collection.new.
     #
-    #   @return [Cuprum::Collections::Collection] the created collection.
+    #   @return [Bronze::Collection] the created collection.
     #
     #   @raise [DuplicateCollectionError] if a collection with the same name
     #     but different parameters already exists in the repository.
@@ -176,7 +176,7 @@ module Cuprum::Collections
     # @param qualified_name [String, Symbol] the name of the collection to
     #   remove.
     #
-    # @return [Cuprum::Collections::Collection] the removed collection.
+    # @return [Bronze::Collection] the removed collection.
     def remove(qualified_name:)
       raise FrozenError, frozen_error_message if frozen?
 

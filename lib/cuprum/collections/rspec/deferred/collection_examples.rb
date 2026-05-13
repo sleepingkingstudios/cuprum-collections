@@ -107,8 +107,7 @@ module Cuprum::Collections::RSpec::Deferred
             Spec::OtherCollection.new(**other_options)
           end
 
-          example_class 'Spec::OtherCollection',
-            Cuprum::Collections::Collection
+          example_class 'Spec::OtherCollection', Bronze::Collection
 
           it { expect(collection == other_collection).to be false }
         end

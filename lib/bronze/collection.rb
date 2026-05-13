@@ -2,14 +2,14 @@
 
 require 'cuprum/command_factory'
 
+require 'bronze'
 require 'bronze/relations/options'
 require 'bronze/relations/parameters'
 require 'bronze/relations/primary_keys'
 require 'bronze/relations/scope'
 require 'bronze/scopes/all_scope'
-require 'cuprum/collections'
 
-module Cuprum::Collections
+module Bronze
   # Provides a base implementation for collections.
   class Collection < Cuprum::CommandFactory
     include Bronze::Relations::Options

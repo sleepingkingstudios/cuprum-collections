@@ -10,16 +10,15 @@ module Cuprum::Collections
   class CollectionCommand < Cuprum::Command
     include Cuprum::ParameterValidation
 
-    # @param collection [Cuprum::Collections::Collection] the collection to
-    #   which the command belongs.
+    # @param collection [Bronze::Collection] the collection to which the command
+    #   belongs.
     def initialize(collection:)
       super()
 
       @collection = collection
     end
 
-    # @return [Cuprum::Collections::Collection] the collection to which the
-    #   command belongs.
+    # @return [Bronze] the collection to which the command belongs.
     attr_reader :collection
 
     # @return [String] the name of the relation.
