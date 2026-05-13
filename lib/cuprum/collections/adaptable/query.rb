@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
+require 'bronze/query'
 require 'cuprum/collections/adaptable'
-require 'cuprum/collections/query'
 
 module Cuprum::Collections::Adaptable
   # Mixin for adaptable collection Query implementations.
