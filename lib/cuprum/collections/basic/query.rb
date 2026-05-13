@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
+require 'bronze/query'
 require 'cuprum/collections/basic'
 require 'cuprum/collections/basic/scopes/all_scope'
-require 'cuprum/collections/query'
 
 module Cuprum::Collections::Basic
   # Concrete implementation of a Query for an in-memory collection.
-  class Query < Cuprum::Collections::Query
+  class Query < Bronze::Query
     # @param data [Array<Hash>] The current data in the collection. Should be an
     #   Array of Hashes, each of which represents one item in the collection.
     # @param scope [Bronze::Scopes::Base] the base scope for the query. Defaults

@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/query'
+require 'bronze/query'
 require 'cuprum/collections/rspec/deferred/query_examples'
 
-RSpec.describe Cuprum::Collections::Query do
+RSpec.describe Bronze::Query do
   include Cuprum::Collections::RSpec::Deferred::QueryExamples
 
   subject(:query) { described_class.new(scope: initial_scope) }

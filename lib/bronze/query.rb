@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
+require 'bronze'
 require 'bronze/queries/ordering'
 require 'bronze/scopes/all_scope'
-require 'cuprum/collections'
 
-module Cuprum::Collections
+module Bronze
   # Abstract base class for collection Query implementations.
   class Query
     include Enumerable
@@ -142,8 +142,7 @@ module Cuprum::Collections
     # Calling #reset clears the cached results. The next time the query is
     # called, the results will be drawn from the current collection state.
     #
-    # @return [Cuprum::Collections::Query] a copy of the query with a cleared
-    #   results cache.
+    # @return [Bronze::Query] a copy of the query with a cleared results cache.
     def reset
       dup.reset!
     end

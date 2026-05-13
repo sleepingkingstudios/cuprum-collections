@@ -12,7 +12,7 @@ RSpec.describe Cuprum::Collections::Adaptable::Query do
   let(:adapter)         { Cuprum::Collections::Adapter.new }
   let(:initial_scope)   { nil }
 
-  example_class 'Spec::ExampleQuery', Cuprum::Collections::Query do |klass|
+  example_class 'Spec::ExampleQuery', Bronze::Query do |klass|
     klass.include Cuprum::Collections::Adaptable::Query # rubocop:disable RSpec/DescribedClass
   end
 

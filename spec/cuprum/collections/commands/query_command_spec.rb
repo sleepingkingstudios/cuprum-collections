@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
+require 'bronze/query'
 require 'cuprum/collections/commands/query_command'
-require 'cuprum/collections/query'
 
 RSpec.describe Cuprum::Collections::Commands::QueryCommand do
   subject(:command) { described_class.new(query:, **options) }

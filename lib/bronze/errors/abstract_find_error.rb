@@ -81,7 +81,7 @@ module Bronze::Errors
     #
     # @overload initialize(query:, name:)
     #   @param name [String] the name of the collection.
-    #   @param query [Cuprum::Collections::Query] The performed query.
+    #   @param query [Bronze::Query] The performed query.
     def initialize(**params) # rubocop:disable Metrics/MethodLength
       @collection      = self.class.resolve_collection(**params)
       @collection_name = @collection['name']

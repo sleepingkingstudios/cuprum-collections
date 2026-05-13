@@ -37,7 +37,7 @@ module Cuprum::Collections::RSpec::Deferred
       end
 
       describe '#query' do
-        let(:mock_query) { instance_double(Cuprum::Collections::Query) }
+        let(:mock_query) { instance_double(Bronze::Query) }
 
         before(:example) do
           allow(collection).to receive(:query).and_return(mock_query)
