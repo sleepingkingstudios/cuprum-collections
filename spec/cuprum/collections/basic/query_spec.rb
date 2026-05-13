@@ -20,16 +20,16 @@ RSpec.describe Cuprum::Collections::Basic::Query do
   let(:expected_data) { stringify_data(matching_data) }
   let(:initial_scope) { nil }
 
-  def add_item_to_collection(item)
-    tools = SleepingKingStudios::Tools::HashTools.instance
-
-    query.send(:data) << tools.convert_keys_to_strings(item)
+  define_method :add_item_to_collection do |item|
+    query.send(:data) << tools.hash_tools.convert_keys_to_strings(item)
   end
 
-  def stringify_data(data)
-    tools = SleepingKingStudios::Tools::HashTools.instance
+  define_method :stringify_data do |data|
+    data.map { |hsh| tools.hash_tools.convert_keys_to_strings(hsh) }
+  end
 
-    data.map { |hsh| tools.convert_keys_to_strings(hsh) }
+  define_method :tools do
+    SleepingKingStudios::Tools::Toolbelt.instance
   end
 
   describe '.new' do

@@ -74,6 +74,10 @@ module Cuprum::Collections::RSpec::Deferred
     end
 
     deferred_examples 'should implement the Adapter interface' do
+      define_method :tools do
+        SleepingKingStudios::Tools::Toolbelt.instance
+      end
+
       describe '#allow_extra_attributes?' do
         include_examples 'should define predicate', :allow_extra_attributes?
       end
@@ -128,9 +132,15 @@ module Cuprum::Collections::RSpec::Deferred
           end
           let(:expected_failures) do
             [
-              "attributes[nil] key can't be blank",
-              "attributes[\"\"] key can't be blank",
-              'attributes[10000] key is not a String or a Symbol'
+              tools
+                .assertions
+                .error_message_for(:presence, as: 'attributes[nil] key'),
+              tools
+                .assertions
+                .error_message_for(:presence, as: 'attributes[""] key'),
+              tools
+                .assertions
+                .error_message_for(:name, as: 'attributes[10000] key')
             ]
           end
 
@@ -189,9 +199,15 @@ module Cuprum::Collections::RSpec::Deferred
           end
           let(:expected_failures) do
             [
-              "attributes[nil] key can't be blank",
-              "attributes[\"\"] key can't be blank",
-              'attributes[10000] key is not a String or a Symbol'
+              tools
+                .assertions
+                .error_message_for(:presence, as: 'attributes[nil] key'),
+              tools
+                .assertions
+                .error_message_for(:presence, as: 'attributes[""] key'),
+              tools
+                .assertions
+                .error_message_for(:name, as: 'attributes[10000] key')
             ]
           end
 
@@ -412,9 +428,15 @@ module Cuprum::Collections::RSpec::Deferred
           end
           let(:error_messages) do
             [
-              "attributes[nil] key can't be blank",
-              "attributes[\"\"] key can't be blank",
-              'attributes[10000] key is not a String or a Symbol'
+              tools
+                .assertions
+                .error_message_for(:presence, as: 'attributes[nil] key'),
+              tools
+                .assertions
+                .error_message_for(:presence, as: 'attributes[""] key'),
+              tools
+                .assertions
+                .error_message_for(:name, as: 'attributes[10000] key')
             ]
           end
 

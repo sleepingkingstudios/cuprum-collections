@@ -46,15 +46,22 @@ module Spec::Support::Examples::Adaptable
       end
 
       define_method :stringify_data do |data|
-        tools = SleepingKingStudios::Tools::HashTools.instance
+        # :nocov:
+        unless data.is_a?(Array)
+          return tools.hash_tools.convert_keys_to_strings(data)
+        end
 
-        return tools.convert_keys_to_strings(data) unless data.is_a?(Array)
+        # :nocov:
 
         data.map do |maybe_hash|
           next if maybe_hash.nil?
 
-          tools.convert_keys_to_strings(maybe_hash)
+          tools.hash_tools.convert_keys_to_strings(maybe_hash)
         end
+      end
+
+      define_method :tools do
+        SleepingKingStudios::Tools::Toolbelt.instance
       end
 
       example_class 'Spec::AdaptableCollection',

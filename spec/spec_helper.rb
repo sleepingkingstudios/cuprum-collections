@@ -26,6 +26,8 @@ Stannum::RSpec::ValidateParameterMatcher.add_parameter_mapping(
 # Isolated namespace for defining spec-only or transient objects.
 module Spec; end
 
+SleepingKingStudios::Tools.initializer.call
+
 require 'support/error_messages'
 
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration

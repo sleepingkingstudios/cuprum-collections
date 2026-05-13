@@ -28,6 +28,10 @@ RSpec.describe Cuprum::Collections::Adaptable::Command do
   end
   let(:collection_options) { {} }
 
+  define_method :tools do
+    SleepingKingStudios::Tools::Toolbelt.instance
+  end
+
   example_class 'Spec::AdaptableCollection',
     Cuprum::Collections::Collection \
   do |klass|
@@ -77,7 +81,13 @@ RSpec.describe Cuprum::Collections::Adaptable::Command do
   end
 
   describe '#validate_attributes' do
-    let(:expected_message) { 'attributes is not an instance of Hash' }
+    let(:expected_message) do
+      tools.assertions.error_message_for(
+        :instance_of,
+        as:       'attributes',
+        expected: Hash
+      )
+    end
 
     it 'should define the private method' do
       expect(command)
@@ -116,9 +126,15 @@ RSpec.describe Cuprum::Collections::Adaptable::Command do
       end
       let(:expected_messages) do
         [
-          "attributes[nil] key can't be blank",
-          'attributes[0] key is not a String or a Symbol',
-          "attributes[\"\"] key can't be blank"
+          tools
+            .assertions
+            .error_message_for(:presence, as: 'attributes[nil] key'),
+          tools
+            .assertions
+            .error_message_for(:name, as: 'attributes[0] key'),
+          tools
+            .assertions
+            .error_message_for(:presence, as: 'attributes[""] key')
         ]
       end
 
@@ -137,7 +153,11 @@ RSpec.describe Cuprum::Collections::Adaptable::Command do
         }
       end
       let(:expected_messages) do
-        ["attributes[nil] key can't be blank"]
+        [
+          tools
+            .assertions
+            .error_message_for(:presence, as: 'attributes[nil] key')
+        ]
       end
 
       it 'should return the error messages' do
@@ -185,9 +205,15 @@ RSpec.describe Cuprum::Collections::Adaptable::Command do
         end
         let(:expected_messages) do
           [
-            "properties[nil] key can't be blank",
-            'properties[0] key is not a String or a Symbol',
-            "properties[\"\"] key can't be blank"
+            tools
+              .assertions
+              .error_message_for(:presence, as: 'properties[nil] key'),
+            tools
+              .assertions
+              .error_message_for(:name, as: 'properties[0] key'),
+            tools
+              .assertions
+              .error_message_for(:presence, as: 'properties[""] key')
           ]
         end
 
@@ -218,7 +244,13 @@ RSpec.describe Cuprum::Collections::Adaptable::Command do
     context 'when the adapter has an entity class' do
       let(:entity_class)    { Spec::BookEntity }
       let(:adapter_options) { super().merge(entity_class:) }
-      let(:error_message)   { 'entity is not an instance of Spec::BookEntity' }
+      let(:error_message) do
+        tools.assertions.error_message_for(
+          :instance_of,
+          as:       'entity',
+          expected: entity_class
+        )
+      end
 
       example_constant 'Spec::BookEntity' do
         Data.define(:title, :author, :series)

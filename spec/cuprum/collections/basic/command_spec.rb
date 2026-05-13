@@ -9,6 +9,10 @@ RSpec.describe Cuprum::Collections::Basic::Command do
 
   subject(:command) { described_class.new(collection:) }
 
+  define_method :tools do
+    SleepingKingStudios::Tools::Toolbelt.instance
+  end
+
   include_deferred 'with parameters for a basic command'
 
   include_deferred 'should implement the Basic::Command methods'
@@ -29,7 +33,13 @@ RSpec.describe Cuprum::Collections::Basic::Command do
   end
 
   describe '#validate_entity' do
-    let(:expected_message) { 'entity is not an instance of Hash' }
+    let(:expected_message) do
+      tools.assertions.error_message_for(
+        :instance_of,
+        as:       'entity',
+        expected: Hash
+      )
+    end
 
     it 'should define the private method' do
       expect(command)
@@ -68,9 +78,19 @@ RSpec.describe Cuprum::Collections::Basic::Command do
       end
       let(:expected_messages) do
         [
-          "entity[nil] key can't be blank",
-          'entity[0] key is not an instance of String',
-          "entity[\"\"] key can't be blank"
+          tools
+            .assertions
+            .error_message_for(:presence, as: 'entity[nil] key'),
+          tools
+            .assertions
+            .error_message_for(
+              :instance_of,
+              as:       'entity[0] key',
+              expected: String
+            ),
+          tools
+            .assertions
+            .error_message_for(:presence, as: 'entity[""] key')
         ]
       end
 
@@ -90,8 +110,16 @@ RSpec.describe Cuprum::Collections::Basic::Command do
       end
       let(:expected_messages) do
         [
-          "entity[nil] key can't be blank",
-          'entity[:symbol] key is not an instance of String'
+          tools
+            .assertions
+            .error_message_for(:presence, as: 'entity[nil] key'),
+          tools
+            .assertions
+            .error_message_for(
+              :instance_of,
+              as:       'entity[:symbol] key',
+              expected: String
+            )
         ]
       end
 
@@ -125,9 +153,27 @@ RSpec.describe Cuprum::Collections::Basic::Command do
       end
       let(:expected_messages) do
         [
-          'entity[:name] key is not an instance of String',
-          'entity[:quantity] key is not an instance of String',
-          'entity[:purpose] key is not an instance of String'
+          tools
+            .assertions
+            .error_message_for(
+              :instance_of,
+              as:       'entity[:name] key',
+              expected: String
+            ),
+          tools
+            .assertions
+            .error_message_for(
+              :instance_of,
+              as:       'entity[:quantity] key',
+              expected: String
+            ),
+          tools
+            .assertions
+            .error_message_for(
+              :instance_of,
+              as:       'entity[:purpose] key',
+              expected: String
+            )
         ]
       end
 
@@ -148,9 +194,19 @@ RSpec.describe Cuprum::Collections::Basic::Command do
         end
         let(:expected_messages) do
           [
-            "properties[nil] key can't be blank",
-            'properties[0] key is not an instance of String',
-            "properties[\"\"] key can't be blank"
+            tools
+              .assertions
+              .error_message_for(:presence, as: 'properties[nil] key'),
+            tools
+              .assertions
+              .error_message_for(
+                :instance_of,
+                as:       'properties[0] key',
+                expected: String
+              ),
+            tools
+              .assertions
+              .error_message_for(:presence, as: 'properties[""] key')
           ]
         end
 
