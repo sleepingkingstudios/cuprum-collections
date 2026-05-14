@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
+require 'bronze/commands/abstract_find_matching'
+require 'bronze/commands/base'
 require 'cuprum/collections'
-require 'cuprum/collections/commands/abstract_find_matching'
 
 require 'support/adaptable/commands'
 
 module Spec::Support::Adaptable::Commands
-  class FindMatching < Cuprum::Collections::CollectionCommand
+  class FindMatching < Bronze::Commands::Base
+    include Bronze::Commands::AbstractFindMatching
     include Cuprum::Collections::Adaptable::Command
-    include Cuprum::Collections::Commands::AbstractFindMatching
   end
 end

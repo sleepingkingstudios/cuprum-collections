@@ -3,10 +3,10 @@
 require 'stannum/constraints/presence'
 require 'stannum/contracts/hash_contract'
 
+require 'bronze/commands/upsert'
 require 'cuprum/collections/basic/collection'
-require 'cuprum/collections/commands/upsert'
 
-RSpec.describe Cuprum::Collections::Commands::Upsert do
+RSpec.describe Bronze::Commands::Upsert do
   subject(:command) { described_class.new(**constructor_options) }
 
   shared_context 'when initialized with a contract' do

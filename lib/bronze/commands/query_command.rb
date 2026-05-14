@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/commands'
+require 'bronze/commands'
 
-module Cuprum::Collections::Commands
+module Bronze::Commands
   # Shared functionality for defining commands that query the collection.
+  #
+  # @deprecated [0.6.0]
   module QueryCommand
     # @overload initialize(query:, **options)
     #   @param query [#call] the query object used to access the collection
@@ -11,6 +13,11 @@ module Cuprum::Collections::Commands
     #   @param options [Hash] additional options for the collection.
     def initialize(query:, **)
       super(**)
+
+      SleepingKingStudios::Tools::Toolbelt
+        .instance
+        .core_tools
+        .deprecate('Bronze::Commands::QueryCommand')
 
       @query = query
     end

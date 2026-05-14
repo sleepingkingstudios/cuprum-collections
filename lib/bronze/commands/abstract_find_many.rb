@@ -3,10 +3,10 @@
 require 'cuprum/parameter_validation'
 require 'stannum/constraints/boolean'
 
-require 'cuprum/collections/commands'
+require 'bronze/commands'
 require 'bronze/errors/not_found'
 
-module Cuprum::Collections::Commands
+module Bronze::Commands
   # Abstract implementation of the FindMany command.
   module AbstractFindMany
     include Cuprum::ParameterValidation

@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 require 'bronze/associations/belongs_to'
+require 'bronze/commands/associations/require_many'
 require 'bronze/resource'
 require 'cuprum/collections/basic/repository'
-require 'cuprum/collections/commands/associations/require_many'
 
-RSpec.describe Cuprum::Collections::Commands::Associations::RequireMany do
+RSpec.describe Bronze::Commands::Associations::RequireMany do
   subject(:command) do
     described_class.new(
       association:,

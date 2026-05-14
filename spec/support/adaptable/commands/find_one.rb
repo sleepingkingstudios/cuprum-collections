@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
+require 'bronze/commands/abstract_find_one'
+require 'bronze/commands/base'
 require 'cuprum/collections'
-require 'cuprum/collections/commands/abstract_find_one'
 
 require 'support/adaptable/commands'
 
 module Spec::Support::Adaptable::Commands
-  class FindOne < Cuprum::Collections::CollectionCommand
+  class FindOne < Bronze::Commands::Base
+    include Bronze::Commands::AbstractFindOne
     include Cuprum::Collections::Adaptable::Command
-    include Cuprum::Collections::Commands::AbstractFindOne
   end
 end

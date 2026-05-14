@@ -2,12 +2,12 @@
 
 require 'cuprum/parameter_validation'
 
-require 'cuprum/collections'
+require 'bronze/commands'
 require 'bronze/errors/invalid_parameters'
 
-module Cuprum::Collections
+module Bronze::Commands
   # Abstract base class for commands implementing collection actions.
-  class CollectionCommand < Cuprum::Command
+  class Base < Cuprum::Command
     include Cuprum::ParameterValidation
 
     # @param collection [Bronze::Collection] the collection to which the command

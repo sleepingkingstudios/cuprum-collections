@@ -2,8 +2,8 @@
 
 require 'cuprum/rspec/deferred/parameter_validation_examples'
 
+require 'bronze/commands/base'
 require 'cuprum/collections/adaptable/command'
-require 'cuprum/collections/collection_command'
 require 'cuprum/collections/rspec/deferred/command_examples'
 
 require 'support/book'
@@ -42,9 +42,7 @@ RSpec.describe Cuprum::Collections::Adaptable::Command do
     klass.attr_reader :adapter
   end
 
-  example_class 'Spec::AdaptableCommand',
-    Cuprum::Collections::CollectionCommand \
-  do |klass|
+  example_class 'Spec::AdaptableCommand', Bronze::Commands::Base do |klass|
     klass.include Cuprum::Collections::Adaptable::Command # rubocop:disable RSpec/DescribedClass
   end
 
