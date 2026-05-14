@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/commands/associations'
-require 'cuprum/collections/commands/associations/require_many'
+require 'bronze/commands/associations'
+require 'bronze/commands/associations/find_many'
 require 'bronze/errors/not_found'
 
-module Cuprum::Collections::Commands::Associations
+module Bronze::Commands::Associations
   # Command for querying required entities by association.
-  class RequireMany < Cuprum::Collections::Commands::Associations::FindMany
+  class RequireMany < Bronze::Commands::Associations::FindMany
     private
 
     def find_missing_keys(entities:, expected_keys:)

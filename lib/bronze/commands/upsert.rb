@@ -1,16 +1,16 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/commands'
-require 'cuprum/collections/commands/create'
-require 'cuprum/collections/commands/find_one_matching'
-require 'cuprum/collections/commands/update'
+require 'bronze/commands/create'
+require 'bronze/commands/find_one_matching'
+require 'bronze/commands/update'
+require 'bronze/commands'
 
-module Cuprum::Collections::Commands
+module Bronze::Commands
   # Command for creating or updating an entity from an attributes Hash.
   #
   # @example Creating Or Updating An Entity By Primary Key
   #   command    =
-  #     Cuprum::Collections::Commands::Upsert
+  #     Bronze::Commands::Upsert
   #     .new(collection: books_collection)
   #
   #   # Creating A New Entity
@@ -41,7 +41,7 @@ module Cuprum::Collections::Commands
   #
   # @example Creating Or Updating An Entity By Attributes
   #   command    =
-  #     Cuprum::Collections::Commands::Upsert
+  #     Bronze::Commands::Upsert
   #     .new(attribute_names: %w[title], collection: books_collection)
   #
   #   # Creating A New Entity
@@ -97,7 +97,7 @@ module Cuprum::Collections::Commands
     private
 
     def create_entity(attributes:)
-      Cuprum::Collections::Commands::Create
+      Bronze::Commands::Create
         .new(collection:, contract:)
         .call(attributes:)
     end
@@ -112,7 +112,7 @@ module Cuprum::Collections::Commands
     def find_entity(attributes:)
       filtered = filter_attributes(attributes:)
       result   =
-        Cuprum::Collections::Commands::FindOneMatching
+        Bronze::Commands::FindOneMatching
           .new(collection:)
           .call(attributes: filtered)
 
@@ -152,7 +152,7 @@ module Cuprum::Collections::Commands
     end
 
     def update_entity(attributes:, entity:)
-      Cuprum::Collections::Commands::Update
+      Bronze::Commands::Update
         .new(collection:, contract:)
         .call(attributes:, entity:)
     end

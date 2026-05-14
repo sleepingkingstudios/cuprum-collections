@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/commands'
+require 'bronze/commands'
 require 'bronze/errors/not_found'
 require 'bronze/errors/not_unique'
 
-module Cuprum::Collections::Commands
+module Bronze::Commands
   # Command for finding a unique entity by a query or set of attributes.
   #
   # @example Finding An Entity By Attributes
   #   command =
-  #     Cuprum::Collections::Commands::FindOneMatching
+  #     Bronze::Commands::FindOneMatching
   #     .new(collection: books_collection)
   #
   #   # With an attributes Hash that matches one entity.
@@ -40,7 +40,7 @@ module Cuprum::Collections::Commands
   #
   # @example Finding An Entity By Query
   #   command =
-  #     Cuprum::Collections::Commands::FindOneMatching
+  #     Bronze::Commands::FindOneMatching
   #     .new(collection: collection)
   #
   #   # With a query that matches one entity.

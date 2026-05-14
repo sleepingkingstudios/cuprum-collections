@@ -2,10 +2,10 @@
 
 require 'cuprum/parameter_validation'
 
-require 'cuprum/collections/commands'
+require 'bronze/commands'
 require 'bronze/errors/not_found'
 
-module Cuprum::Collections::Commands
+module Bronze::Commands
   # Abstract implementation of the FindOne command.
   module AbstractFindOne
     include Cuprum::ParameterValidation

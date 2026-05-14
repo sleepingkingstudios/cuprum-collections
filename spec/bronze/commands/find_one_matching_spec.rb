@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
+require 'bronze/commands/find_one_matching'
 require 'cuprum/collections/basic/collection'
-require 'cuprum/collections/commands/find_one_matching'
 require 'cuprum/collections/rspec/fixtures'
 
-RSpec.describe Cuprum::Collections::Commands::FindOneMatching do
+RSpec.describe Bronze::Commands::FindOneMatching do
   subject(:command) { described_class.new(collection:) }
 
   let(:data) { [] }

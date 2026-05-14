@@ -17,6 +17,9 @@ module Bronze
   autoload :Scope,        'bronze/scope'
   autoload :Scopes,       'bronze/scopes'
 
+  # @deprecated [0.6.0] Use Bronze::Commands::Base instead.
+  autoload :CollectionCommand, 'bronze/collection_command'
+
   # @return [String] the absolute path to the gem directory.
   def self.gem_path
     sep     = File::SEPARATOR

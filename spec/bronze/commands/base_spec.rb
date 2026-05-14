@@ -2,12 +2,12 @@
 
 require 'cuprum/rspec/deferred/parameter_validation_examples'
 
-require 'cuprum/collections/collection_command'
+require 'bronze/commands/base'
 require 'cuprum/collections/rspec/deferred/command_examples'
 
 require 'support/book'
 
-RSpec.describe Cuprum::Collections::CollectionCommand do
+RSpec.describe Bronze::Commands::Base do
   include Cuprum::Collections::RSpec::Deferred::CommandExamples
   include Cuprum::RSpec::Deferred::ParameterValidationExamples
 
@@ -51,9 +51,7 @@ RSpec.describe Cuprum::Collections::CollectionCommand do
       let(:described_class) { Spec::ValidatedCommand }
 
       # rubocop:disable RSpec/DescribedClass
-      example_class 'Spec::ValidatedCommand',
-        Cuprum::Collections::CollectionCommand \
-      do |klass|
+      example_class 'Spec::ValidatedCommand', Bronze::Commands::Base do |klass|
         klass.validate(:name, String)
 
         klass.define_method(:process) { |name = nil| "Greetings, #{name}!" }

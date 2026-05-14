@@ -3,16 +3,16 @@
 require 'stannum/constraints/presence'
 require 'stannum/contracts/hash_contract'
 
+require 'bronze/commands/create'
 require 'cuprum/collections/basic/collection'
-require 'cuprum/collections/commands/update'
 
-RSpec.describe Cuprum::Collections::Commands::Update do
+RSpec.describe Bronze::Commands::Create do
   subject(:command) { described_class.new(**constructor_options) }
 
   shared_context 'when initialized with a contract' do
     let(:contract) do
       Stannum::Contracts::HashContract.new(allow_extra_keys: true) do
-        key 'series', Stannum::Constraints::Presence.new
+        key 'title', Stannum::Constraints::Presence.new
       end
     end
     let(:constructor_options) { super().merge(contract:) }
@@ -51,47 +51,23 @@ RSpec.describe Cuprum::Collections::Commands::Update do
       Bronze::Errors::MissingDefaultContract
         .new(entity_class: Hash)
     end
-    let(:entity) do
-      collection
-        .build_one
-        .call(
-          attributes: {
-            'title'  => 'Gideon the Ninth',
-            'author' => 'Tamsyn Muir',
-            'series' => 'The Locked Tomb'
-          }
-        )
-        .value
-    end
-
-    def reload_attributes
-      collection
-        .find_matching
-        .call { { 'title' => 'Gideon the Ninth' } }
-        .value
-        .first
-    end
-
-    before(:example) do
-      collection.insert_one.call(entity:)
-    end
 
     it 'should define the method' do
       expect(command)
         .to be_callable
         .with(0).arguments
-        .and_keywords(:attributes, :entity)
+        .and_keywords(:attributes)
     end
 
     it 'should return a failing result' do
-      expect(command.call(attributes: {}, entity:))
+      expect(command.call(attributes: {}))
         .to be_a_failing_result
         .with_error(expected_error)
     end
 
     wrap_context 'when initialized with a contract' do
       describe 'with an invalid attributes Hash' do
-        let(:attributes) { { 'series' => '' } }
+        let(:attributes) { { 'title' => '' } }
         let(:expected_error) do
           errors = contract.errors_for(attributes)
 
@@ -102,40 +78,51 @@ RSpec.describe Cuprum::Collections::Commands::Update do
         end
 
         it 'should return a failing result' do
-          expect(command.call(attributes:, entity:))
+          expect(command.call(attributes:))
             .to be_a_failing_result
             .with_error(expected_error)
         end
 
-        it 'should not update the attributes' do
-          expect { command.call(attributes:, entity:) }
-            .not_to(change { reload_attributes })
+        it 'should not add an entity to the collection' do
+          expect { command.call(attributes:) }
+            .not_to(change { collection.query.count })
         end
       end
 
       describe 'with a valid attributes Hash' do
-        let(:attributes)     { { 'author' => '' } }
-        let(:expected_value) { entity.merge(attributes) }
+        let(:attributes)     { { 'title' => 'Gideon the Ninth' } }
+        let(:expected_value) { attributes }
 
         it 'should return a passing result' do
-          expect(command.call(attributes:, entity:))
+          expect(command.call(attributes:))
             .to be_a_passing_result
             .with_value(expected_value)
         end
 
-        it 'should update the attributes' do
-          expect { command.call(attributes:, entity:) }
+        it 'should add an entity to the collection' do
+          expect { command.call(attributes:) }
             .to(
-              change { reload_attributes }
-              .to be == expected_value
+              change { collection.query.count }
+              .by(1)
             )
+        end
+
+        it 'should create the entity' do # rubocop:disable RSpec/ExampleLength
+          command.call(attributes:)
+
+          expect(
+            collection
+            .query
+            .where { { 'title' => 'Gideon the Ninth' } }
+            .exists?
+          ).to be true
         end
       end
     end
 
     wrap_context 'when the collection defines a default contract' do
       describe 'with an invalid attributes Hash' do
-        let(:attributes) { { 'author' => '' } }
+        let(:attributes) { { 'title' => '' } }
         let(:expected_error) do
           errors = contract.errors_for(attributes)
 
@@ -146,33 +133,44 @@ RSpec.describe Cuprum::Collections::Commands::Update do
         end
 
         it 'should return a failing result' do
-          expect(command.call(attributes:, entity:))
+          expect(command.call(attributes:))
             .to be_a_failing_result
             .with_error(expected_error)
         end
 
-        it 'should not update the attributes' do
-          expect { command.call(attributes:, entity:) }
-            .not_to(change { reload_attributes })
+        it 'should not add an entity to the collection' do
+          expect { command.call(attributes:) }
+            .not_to(change { collection.query.count })
         end
       end
 
       describe 'with a valid attributes Hash' do
-        let(:attributes)     { { 'series' => '' } }
-        let(:expected_value) { entity.merge(attributes) }
+        let(:attributes)     { { 'author' => 'Tamsyn Muir' } }
+        let(:expected_value) { attributes }
 
         it 'should return a passing result' do
-          expect(command.call(attributes:, entity:))
+          expect(command.call(attributes:))
             .to be_a_passing_result
             .with_value(expected_value)
         end
 
-        it 'should update the attributes' do
-          expect { command.call(attributes:, entity:) }
+        it 'should add an entity to the collection' do
+          expect { command.call(attributes:) }
             .to(
-              change { reload_attributes }
-              .to be == expected_value
+              change { collection.query.count }
+              .by(1)
             )
+        end
+
+        it 'should create the entity' do # rubocop:disable RSpec/ExampleLength
+          command.call(attributes:)
+
+          expect(
+            collection
+            .query
+            .where { { 'author' => 'Tamsyn Muir' } }
+            .exists?
+          ).to be true
         end
       end
     end

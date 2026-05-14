@@ -1,17 +1,24 @@
 # frozen_string_literal: true
 
+require 'bronze/commands/query_command'
 require 'bronze/query'
-require 'cuprum/collections/commands/query_command'
 
-RSpec.describe Cuprum::Collections::Commands::QueryCommand do
+RSpec.describe Bronze::Commands::QueryCommand do
   subject(:command) { described_class.new(query:, **options) }
 
   let(:described_class) { Spec::ExampleCommand }
   let(:query)           { Struct.new(:call).new([]) }
   let(:options)         { {} }
+  let(:tools) do
+    SleepingKingStudios::Tools::Toolbelt.instance
+  end
+
+  before(:example) do
+    allow(tools.core_tools).to receive(:deprecate)
+  end
 
   example_class 'Spec::ExampleCommand', Cuprum::Command do |klass|
-    klass.include Cuprum::Collections::Commands::QueryCommand # rubocop:disable RSpec/DescribedClass
+    klass.include Bronze::Commands::QueryCommand # rubocop:disable RSpec/DescribedClass
   end
 
   describe '.new' do
@@ -21,6 +28,14 @@ RSpec.describe Cuprum::Collections::Commands::QueryCommand do
         .with(0).arguments
         .and_keywords(:query)
         .and_any_keywords
+    end
+
+    it 'should print a deprecation warning' do
+      described_class.new(query:, **options)
+
+      expect(tools.core_tools)
+        .to have_received(:deprecate)
+        .with('Bronze::Commands::QueryCommand')
     end
   end
 

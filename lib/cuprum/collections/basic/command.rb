@@ -6,7 +6,7 @@ require 'cuprum/collections/basic'
 
 module Cuprum::Collections::Basic
   # Abstract base class for basic collection commands.
-  class Command < Cuprum::Collections::CollectionCommand
+  class Command < Bronze::Commands::Base
     # @return [Array<Hash>] the current data in the collection.
     def data
       collection.data

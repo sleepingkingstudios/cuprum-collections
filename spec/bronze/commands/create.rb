@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/commands'
+require 'bronze/commands'
 
-module Cuprum::Collections::Commands
+module Bronze::Commands
   # Command for building, validating and inserting an entity into a collection.
   #
   # @example Creating An Entity
   #   command =
-  #     Cuprum::Collections::Commands::Create.new(collection:)
+  #     Bronze::Commands::Create.new(collection:)
   #     .new(collection: books_collection)
   #
   #   # With Invalid Attributes

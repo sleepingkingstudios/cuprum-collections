@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/commands'
+require 'bronze/commands'
 
-module Cuprum::Collections::Commands
+module Bronze::Commands
   # Command for assigning, validating and updating an entity in a collection.
   #
   # @example Updating An Entity
   #   command =
-  #     Cuprum::Collections::Commands::Create.new(collection:)
+  #     Bronze::Commands::Update.new(collection:)
   #     .new(collection: books_collection)
   #   entity  =
   #     books_collection

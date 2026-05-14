@@ -2,11 +2,11 @@
 
 require 'cuprum/parameter_validation'
 
+require 'bronze/commands'
 require 'bronze/constraints/ordering'
 require 'bronze/errors/invalid_query'
-require 'cuprum/collections/commands'
 
-module Cuprum::Collections::Commands
+module Bronze::Commands
   # Abstract implementation of the FindMatching command.
   module AbstractFindMatching
     include Cuprum::ParameterValidation

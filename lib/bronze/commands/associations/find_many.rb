@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/commands/associations'
+require 'bronze/commands/associations'
 
-module Cuprum::Collections::Commands::Associations
+module Bronze::Commands::Associations
   # Command for querying entities by association.
   class FindMany < Cuprum::Command
     PERMITTED_KEYWORDS = Set.new(%i[entities entity key keys]).freeze

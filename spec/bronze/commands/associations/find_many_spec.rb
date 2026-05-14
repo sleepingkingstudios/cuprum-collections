@@ -2,11 +2,11 @@
 
 require 'bronze/associations'
 require 'bronze/associations/belongs_to'
+require 'bronze/commands/associations/find_many'
 require 'bronze/resource'
 require 'cuprum/collections/basic/repository'
-require 'cuprum/collections/commands/associations/find_many'
 
-RSpec.describe Cuprum::Collections::Commands::Associations::FindMany do
+RSpec.describe Bronze::Commands::Associations::FindMany do
   subject(:command) do
     described_class.new(
       association:,
