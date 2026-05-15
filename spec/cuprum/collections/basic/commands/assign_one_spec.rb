@@ -14,8 +14,9 @@ RSpec.describe Cuprum::Collections::Basic::Commands::AssignOne do
   let(:initial_attributes) { {} }
   let(:entity)             { initial_attributes }
   let(:expected_value) do
-    SleepingKingStudios::Tools::HashTools
+    SleepingKingStudios::Tools::Toolbelt
       .instance
+      .hash_tools
       .convert_keys_to_strings(expected_attributes)
   end
 

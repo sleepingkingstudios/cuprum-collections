@@ -47,7 +47,7 @@ module Cuprum::Collections::Errors
       errors
         .with_messages
         .group_by_path { |err| err[:message] }
-        .transform_keys { |path| path.map(&:to_s).join('.') }
+        .transform_keys { |path| path.join('.') }
     end
   end
 end
