@@ -12,8 +12,9 @@ RSpec.describe Cuprum::Collections::Basic::Commands::BuildOne do
   subject(:command) { described_class.new(collection:) }
 
   let(:expected_value) do
-    SleepingKingStudios::Tools::HashTools
+    SleepingKingStudios::Tools::Toolbelt
       .instance
+      .hash_tools
       .convert_keys_to_strings(expected_attributes)
   end
 

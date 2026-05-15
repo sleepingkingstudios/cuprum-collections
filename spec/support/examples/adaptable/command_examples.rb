@@ -46,7 +46,7 @@ module Spec::Support::Examples::Adaptable
       end
 
       define_method :stringify_data do |data|
-        tools = SleepingKingStudios::Tools::HashTools.instance
+        tools = SleepingKingStudios::Tools::Toolbelt.instance.hash_tools
 
         return tools.convert_keys_to_strings(data) unless data.is_a?(Array)
 

@@ -21,13 +21,13 @@ RSpec.describe Cuprum::Collections::Basic::Query do
   let(:initial_scope) { nil }
 
   def add_item_to_collection(item)
-    tools = SleepingKingStudios::Tools::HashTools.instance
+    tools = SleepingKingStudios::Tools::Toolbelt.instance.hash_tools
 
     query.send(:data) << tools.convert_keys_to_strings(item)
   end
 
   def stringify_data(data)
-    tools = SleepingKingStudios::Tools::HashTools.instance
+    tools = SleepingKingStudios::Tools::Toolbelt.instance.hash_tools
 
     data.map { |hsh| tools.convert_keys_to_strings(hsh) }
   end

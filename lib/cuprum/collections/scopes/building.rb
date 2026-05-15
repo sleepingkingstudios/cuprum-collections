@@ -211,9 +211,7 @@ module Cuprum::Collections::Scopes
         raise ArgumentError, 'scopes must be an Array', caller(1..-1)
       end
 
-      return if scopes.all? do |scope|
-        scope.is_a?(Cuprum::Collections::Scopes::Base)
-      end
+      return if scopes.all?(Cuprum::Collections::Scopes::Base)
 
       raise ArgumentError, 'scope must be a Scope instance', caller(1..-1)
     end

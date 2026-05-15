@@ -17,7 +17,7 @@ RSpec.describe Spec::Support::Adaptable::Query do
   let(:initial_scope) { nil }
 
   define_method :add_item_to_collection do |item|
-    tools = SleepingKingStudios::Tools::HashTools.instance
+    tools = SleepingKingStudios::Tools::Toolbelt.instance.hash_tools
 
     query.send(:data) << tools.convert_keys_to_strings(item)
   end
