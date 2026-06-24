@@ -2,10 +2,10 @@
 
 require 'bronze/scopes/all'
 require 'bronze/scopes/base'
-require 'cuprum/collections/rspec/deferred/scopes/all_examples'
+require 'bronze/rspec/deferred/scopes/all_examples'
 
 RSpec.describe Bronze::Scopes::All do
-  include Cuprum::Collections::RSpec::Deferred::Scopes::AllExamples
+  include Bronze::RSpec::Deferred::Scopes::AllExamples
 
   let(:described_class) { Spec::ExampleScope }
 

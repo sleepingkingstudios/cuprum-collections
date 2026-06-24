@@ -3,10 +3,10 @@
 require 'sleeping_king_studios/tools/string_tools'
 
 require 'bronze/basic/query'
-require 'cuprum/collections/rspec/deferred/query_examples'
+require 'bronze/rspec/deferred/query_examples'
 
 RSpec.describe Bronze::Basic::Query do
-  include Cuprum::Collections::RSpec::Deferred::QueryExamples
+  include Bronze::RSpec::Deferred::QueryExamples
 
   subject(:query) do
     described_class.new(

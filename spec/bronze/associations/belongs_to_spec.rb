@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 require 'bronze/associations/belongs_to'
-require 'cuprum/collections/rspec/deferred/association_examples'
+require 'bronze/rspec/deferred/association_examples'
 
 require 'support/book'
 require 'support/grimoire'
 require 'support/scoped_book'
 
 RSpec.describe Bronze::Associations::BelongsTo do
-  include Cuprum::Collections::RSpec::Deferred::AssociationExamples
+  include Bronze::RSpec::Deferred::AssociationExamples
 
   subject(:association) { described_class.new(**constructor_options) }
 

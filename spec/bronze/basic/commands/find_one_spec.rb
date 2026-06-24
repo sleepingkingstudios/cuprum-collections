@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 require 'bronze/basic/commands/find_one'
-require 'cuprum/collections/rspec/deferred/commands/find_one_examples'
+require 'bronze/rspec/deferred/commands/find_one_examples'
 
 require 'support/examples/basic/command_examples'
 
 RSpec.describe Bronze::Basic::Commands::FindOne do
-  include Cuprum::Collections::RSpec::Deferred::Commands::FindOneExamples
+  include Bronze::RSpec::Deferred::Commands::FindOneExamples
   include Spec::Support::Examples::Basic::CommandExamples
 
   subject(:command) { described_class.new(collection:) }

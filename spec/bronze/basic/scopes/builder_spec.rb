@@ -2,10 +2,10 @@
 
 require 'bronze/basic/scopes/builder'
 require 'bronze/scopes/criteria_scope'
-require 'cuprum/collections/rspec/deferred/scopes/builder_examples'
+require 'bronze/rspec/deferred/scopes/builder_examples'
 
 RSpec.describe Bronze::Basic::Scopes::Builder do
-  include Cuprum::Collections::RSpec::Deferred::Scopes::BuilderExamples
+  include Bronze::RSpec::Deferred::Scopes::BuilderExamples
 
   subject(:builder) { described_class.instance }
 

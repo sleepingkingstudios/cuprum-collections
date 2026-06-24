@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 require 'bronze/relations/options'
-require 'cuprum/collections/rspec/deferred/relation_examples'
+require 'bronze/rspec/deferred/relation_examples'
 
 RSpec.describe Bronze::Relations::Options do
-  include Cuprum::Collections::RSpec::Deferred::RelationExamples
+  include Bronze::RSpec::Deferred::RelationExamples
 
   subject(:relation) { described_class.new(**constructor_options) }
 

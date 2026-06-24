@@ -2,12 +2,12 @@
 
 require 'bronze/basic/collection'
 require 'bronze/repository'
-require 'cuprum/collections/rspec/deferred/repository_examples'
+require 'bronze/rspec/deferred/repository_examples'
 
 require 'support/book'
 
 RSpec.describe Bronze::Repository do
-  include Cuprum::Collections::RSpec::Deferred::RepositoryExamples
+  include Bronze::RSpec::Deferred::RepositoryExamples
 
   subject(:repository) { described_class.new }
 

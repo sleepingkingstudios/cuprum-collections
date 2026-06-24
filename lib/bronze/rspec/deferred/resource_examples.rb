@@ -1,0 +1,26 @@
+# frozen_string_literal: true
+
+require 'rspec/sleeping_king_studios/deferred'
+
+require 'bronze/rspec/deferred'
+require 'bronze/rspec/deferred/relation_examples'
+
+module Bronze::RSpec::Deferred
+  # Deferred examples for testing resources.
+  module ResourceExamples
+    include RSpec::SleepingKingStudios::Deferred::Provider
+
+    deferred_examples 'should be a Resource' do
+      include Bronze::RSpec::Deferred::RelationExamples
+
+      include_deferred 'should be a Relation',
+        cardinality: true
+
+      include_deferred 'should define Relation cardinality'
+
+      include_deferred 'should define Relation primary key'
+
+      include_deferred 'should define Relation scope'
+    end
+  end
+end

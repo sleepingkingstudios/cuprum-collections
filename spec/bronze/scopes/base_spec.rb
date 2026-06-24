@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 require 'bronze/scopes/base'
-require 'cuprum/collections/rspec/deferred/scope_examples'
+require 'bronze/rspec/deferred/scope_examples'
 
 RSpec.describe Bronze::Scopes::Base do
-  include Cuprum::Collections::RSpec::Deferred::ScopeExamples
+  include Bronze::RSpec::Deferred::ScopeExamples
 
   let(:scope) { described_class.new }
 

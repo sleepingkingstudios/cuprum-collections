@@ -2,10 +2,10 @@
 
 require 'bronze/basic/scopes/conjunction_scope'
 require 'bronze/basic/scopes/criteria_scope'
-require 'cuprum/collections/rspec/deferred/scopes/conjunction_examples'
+require 'bronze/rspec/deferred/scopes/conjunction_examples'
 
 RSpec.describe Bronze::Basic::Scopes::ConjunctionScope do
-  include Cuprum::Collections::RSpec::Deferred::Scopes::ConjunctionExamples
+  include Bronze::RSpec::Deferred::Scopes::ConjunctionExamples
 
   subject(:scope) { described_class.new(scopes:) }
 
@@ -86,7 +86,7 @@ RSpec.describe Bronze::Basic::Scopes::ConjunctionScope do
 
       describe 'with an item' do
         let(:item) do
-          Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES
+          Bronze::RSpec::Fixtures::BOOKS_FIXTURES
             .find { |book| book['title'] == 'The Silmarillion' }
         end
 
@@ -103,7 +103,7 @@ RSpec.describe Bronze::Basic::Scopes::ConjunctionScope do
 
       describe 'with an item that does not match the scope' do
         let(:item) do
-          Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES
+          Bronze::RSpec::Fixtures::BOOKS_FIXTURES
             .find { |book| book['title'] == 'A Wizard of Earthsea' }
         end
 
@@ -112,7 +112,7 @@ RSpec.describe Bronze::Basic::Scopes::ConjunctionScope do
 
       describe 'with an item that matches the scope' do
         let(:item) do
-          Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES
+          Bronze::RSpec::Fixtures::BOOKS_FIXTURES
             .find { |book| book['title'] == 'The Silmarillion' }
         end
 
@@ -133,7 +133,7 @@ RSpec.describe Bronze::Basic::Scopes::ConjunctionScope do
 
       describe 'with an item that does not match any of the scopes' do
         let(:item) do
-          Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES
+          Bronze::RSpec::Fixtures::BOOKS_FIXTURES
             .find { |book| book['title'] == 'A Wizard of Earthsea' }
         end
 
@@ -142,7 +142,7 @@ RSpec.describe Bronze::Basic::Scopes::ConjunctionScope do
 
       describe 'with an item that matches some of the scopes' do
         let(:item) do
-          Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES
+          Bronze::RSpec::Fixtures::BOOKS_FIXTURES
             .find { |book| book['title'] == 'The Hobbit' }
         end
 
@@ -151,7 +151,7 @@ RSpec.describe Bronze::Basic::Scopes::ConjunctionScope do
 
       describe 'with an item that matches all of the scopes' do
         let(:item) do
-          Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES
+          Bronze::RSpec::Fixtures::BOOKS_FIXTURES
             .find { |book| book['title'] == 'The Fellowship of the Ring' }
         end
 

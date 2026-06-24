@@ -3,10 +3,10 @@
 require 'bronze/scopes/base'
 require 'bronze/scopes/conjunction'
 require 'bronze/scopes/criteria_scope'
-require 'cuprum/collections/rspec/deferred/scopes/conjunction_examples'
+require 'bronze/rspec/deferred/scopes/conjunction_examples'
 
 RSpec.describe Bronze::Scopes::Conjunction do
-  include Cuprum::Collections::RSpec::Deferred::Scopes::ConjunctionExamples
+  include Bronze::RSpec::Deferred::Scopes::ConjunctionExamples
 
   subject(:scope) { described_class.new(scopes:) }
 

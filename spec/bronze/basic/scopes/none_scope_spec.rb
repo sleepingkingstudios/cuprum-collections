@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 require 'bronze/basic/scopes/none_scope'
-require 'cuprum/collections/rspec/deferred/scopes/none_examples'
+require 'bronze/rspec/deferred/scopes/none_examples'
 
 RSpec.describe Bronze::Basic::Scopes::NoneScope do
-  include Cuprum::Collections::RSpec::Deferred::Scopes::NoneExamples
+  include Bronze::RSpec::Deferred::Scopes::NoneExamples
 
   subject(:scope) { described_class.new }
 
@@ -66,7 +66,7 @@ RSpec.describe Bronze::Basic::Scopes::NoneScope do
 
     describe 'with an item' do
       let(:item) do
-        Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES
+        Bronze::RSpec::Fixtures::BOOKS_FIXTURES
           .find { |book| book['title'] == 'The Silmarillion' }
       end
 

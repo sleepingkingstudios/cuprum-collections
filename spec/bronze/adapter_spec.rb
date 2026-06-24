@@ -3,10 +3,10 @@
 require 'stannum/constraint'
 
 require 'bronze/adapter'
-require 'cuprum/collections/rspec/deferred/adapter_examples'
+require 'bronze/rspec/deferred/adapter_examples'
 
 RSpec.describe Bronze::Adapter do
-  include Cuprum::Collections::RSpec::Deferred::AdapterExamples
+  include Bronze::RSpec::Deferred::AdapterExamples
 
   subject(:adapter) { described_class.new(**constructor_options) }
 

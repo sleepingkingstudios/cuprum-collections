@@ -2,10 +2,10 @@
 
 require 'bronze/relations/options'
 require 'bronze/relations/primary_keys'
-require 'cuprum/collections/rspec/deferred/relation_examples'
+require 'bronze/rspec/deferred/relation_examples'
 
 RSpec.describe Bronze::Relations::PrimaryKeys do
-  include Cuprum::Collections::RSpec::Deferred::RelationExamples
+  include Bronze::RSpec::Deferred::RelationExamples
 
   subject(:relation) { described_class.new(**constructor_options) }
 

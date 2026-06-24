@@ -1,13 +1,12 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/rspec/deferred/query_examples'
-require 'cuprum/collections/rspec/fixtures'
+require 'bronze/rspec/deferred/query_examples'
 
 require 'support/adaptable/query'
 require 'support/examples/adaptable/command_examples'
 
 RSpec.describe Spec::Support::Adaptable::Query do
-  include Cuprum::Collections::RSpec::Deferred::QueryExamples
+  include Bronze::RSpec::Deferred::QueryExamples
   include Spec::Support::Examples::Adaptable::CommandExamples
 
   subject(:query) do

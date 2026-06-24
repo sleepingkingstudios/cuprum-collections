@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 require 'bronze/basic/commands/find_matching'
-require 'cuprum/collections/rspec/deferred/commands/find_matching_examples'
+require 'bronze/rspec/deferred/commands/find_matching_examples'
 
 require 'support/examples/basic/command_examples'
 
 RSpec.describe Bronze::Basic::Commands::FindMatching do
-  include Cuprum::Collections::RSpec::Deferred::Commands::FindMatchingExamples
+  include Bronze::RSpec::Deferred::Commands::FindMatchingExamples
   include Spec::Support::Examples::Basic::CommandExamples
 
   subject(:command) { described_class.new(collection:) }

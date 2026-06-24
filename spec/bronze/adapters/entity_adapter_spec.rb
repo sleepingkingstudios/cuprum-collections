@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 require 'bronze/adapters/entity_adapter'
-require 'cuprum/collections/rspec/deferred/adapter_examples'
+require 'bronze/rspec/deferred/adapter_examples'
 
 RSpec.describe Bronze::Adapters::EntityAdapter do
-  include Cuprum::Collections::RSpec::Deferred::AdapterExamples
+  include Bronze::RSpec::Deferred::AdapterExamples
 
   subject(:adapter) { described_class.new(**constructor_options) }
 

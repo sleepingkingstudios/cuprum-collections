@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
+require 'bronze/rspec/fixtures'
 require 'cuprum/collections'
-require 'cuprum/collections/rspec/deferred/command_examples'
-require 'cuprum/collections/rspec/fixtures'
 
 require 'support/adaptable/query'
 require 'support/examples/adaptable'
@@ -29,7 +28,7 @@ module Spec::Support::Examples::Adaptable
       let(:matching_data)      { data }
       let(:expected_data)      { convert_data_to_entities(matching_data) }
       let(:fixtures_data) do
-        Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES.dup
+        Bronze::RSpec::Fixtures::BOOKS_FIXTURES.dup
       end
 
       define_method :convert_data_to_entities do |data|

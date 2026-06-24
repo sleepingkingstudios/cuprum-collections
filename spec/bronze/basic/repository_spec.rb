@@ -2,15 +2,15 @@
 
 require 'bronze/basic/collection'
 require 'bronze/basic/repository'
-require 'cuprum/collections/rspec/fixtures'
-require 'cuprum/collections/rspec/deferred/repository_examples'
+require 'bronze/rspec/fixtures'
+require 'bronze/rspec/deferred/repository_examples'
 
 require 'support/book'
 require 'support/grimoire'
 require 'support/scoped_book'
 
 RSpec.describe Bronze::Basic::Repository do
-  include Cuprum::Collections::RSpec::Deferred::RepositoryExamples
+  include Bronze::RSpec::Deferred::RepositoryExamples
 
   subject(:repository) { described_class.new(**constructor_options) }
 
@@ -58,7 +58,7 @@ RSpec.describe Bronze::Basic::Repository do
 
     describe 'with data: an Array' do
       let(:data) do
-        Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES.dup
+        Bronze::RSpec::Fixtures::BOOKS_FIXTURES.dup
       end
       let(:collection_options) { super().merge(data:) }
 
@@ -67,7 +67,7 @@ RSpec.describe Bronze::Basic::Repository do
 
     context 'when initialized with data: value' do
       let(:data) do
-        { 'books' => Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES.dup }
+        { 'books' => Bronze::RSpec::Fixtures::BOOKS_FIXTURES.dup }
       end
       let(:constructor_options) { super().merge(data:) }
 
@@ -110,7 +110,7 @@ RSpec.describe Bronze::Basic::Repository do
 
     describe 'with data: an Array' do
       let(:data) do
-        Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES.dup
+        Bronze::RSpec::Fixtures::BOOKS_FIXTURES.dup
       end
       let(:collection_options) { super().merge(data:) }
 
@@ -119,7 +119,7 @@ RSpec.describe Bronze::Basic::Repository do
 
     context 'when initialized with data: value' do
       let(:data) do
-        { 'books' => Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES.dup }
+        { 'books' => Bronze::RSpec::Fixtures::BOOKS_FIXTURES.dup }
       end
       let(:constructor_options) { super().merge(data:) }
 

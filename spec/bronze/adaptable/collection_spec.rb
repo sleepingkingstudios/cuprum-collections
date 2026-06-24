@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 require 'bronze/adaptable/collection'
-require 'cuprum/collections/rspec/deferred/collection_examples'
+require 'bronze/rspec/deferred/collection_examples'
 
 require 'support/book'
 require 'support/grimoire'
 require 'support/scoped_book'
 
 RSpec.describe Bronze::Adaptable::Collection do
-  include Cuprum::Collections::RSpec::Deferred::CollectionExamples
+  include Bronze::RSpec::Deferred::CollectionExamples
 
   subject(:collection) do
     described_class.new(**constructor_options)

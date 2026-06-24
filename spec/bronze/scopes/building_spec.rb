@@ -4,10 +4,10 @@ require 'bronze/queries'
 require 'bronze/scopes/building'
 require 'bronze/scopes/criteria_scope'
 require 'bronze/scopes/conjunction_scope'
-require 'cuprum/collections/rspec/deferred/scopes/builder_examples'
+require 'bronze/rspec/deferred/scopes/builder_examples'
 
 RSpec.describe Bronze::Scopes::Building do
-  include Cuprum::Collections::RSpec::Deferred::Scopes::BuilderExamples
+  include Bronze::RSpec::Deferred::Scopes::BuilderExamples
 
   subject(:builder) { described_class.instance }
 

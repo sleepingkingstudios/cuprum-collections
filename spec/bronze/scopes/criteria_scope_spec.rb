@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 require 'bronze/scopes/criteria_scope'
-require 'cuprum/collections/rspec/deferred/scopes/criteria_examples'
+require 'bronze/rspec/deferred/scopes/criteria_examples'
 
 RSpec.describe Bronze::Scopes::CriteriaScope do
-  include Cuprum::Collections::RSpec::Deferred::Scopes::CriteriaExamples
+  include Bronze::RSpec::Deferred::Scopes::CriteriaExamples
 
   subject(:scope) do
     described_class.new(criteria:, **constructor_options)

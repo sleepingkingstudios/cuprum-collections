@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 require 'bronze/basic/commands/find_many'
-require 'cuprum/collections/rspec/deferred/commands/find_many_examples'
+require 'bronze/rspec/deferred/commands/find_many_examples'
 
 require 'support/examples/basic/command_examples'
 
 RSpec.describe Bronze::Basic::Commands::FindMany do
-  include Cuprum::Collections::RSpec::Deferred::Commands::FindManyExamples
+  include Bronze::RSpec::Deferred::Commands::FindManyExamples
   include Spec::Support::Examples::Basic::CommandExamples
 
   subject(:command) { described_class.new(collection:) }

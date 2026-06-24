@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 require 'bronze/basic/commands/build_one'
-require 'cuprum/collections/rspec/deferred/commands/build_one_examples'
+require 'bronze/rspec/deferred/commands/build_one_examples'
 
 require 'support/examples/basic/command_examples'
 
 RSpec.describe Bronze::Basic::Commands::BuildOne do
-  include Cuprum::Collections::RSpec::Deferred::Commands::BuildOneExamples
+  include Bronze::RSpec::Deferred::Commands::BuildOneExamples
   include Spec::Support::Examples::Basic::CommandExamples
 
   subject(:command) { described_class.new(collection:) }

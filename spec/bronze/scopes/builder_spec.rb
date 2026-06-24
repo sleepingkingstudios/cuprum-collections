@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 require 'bronze/scopes/builder'
-require 'cuprum/collections/rspec/deferred/scopes/builder_examples'
+require 'bronze/rspec/deferred/scopes/builder_examples'
 
 RSpec.describe Bronze::Scopes::Builder do
-  include Cuprum::Collections::RSpec::Deferred::Scopes::BuilderExamples
+  include Bronze::RSpec::Deferred::Scopes::BuilderExamples
 
   subject(:builder) { described_class.instance }
 

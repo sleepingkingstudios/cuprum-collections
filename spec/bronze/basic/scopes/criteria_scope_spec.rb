@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 require 'bronze/basic/scopes/criteria_scope'
-require 'cuprum/collections/rspec/deferred/scopes/criteria_examples'
+require 'bronze/rspec/deferred/scopes/criteria_examples'
 
 RSpec.describe Bronze::Basic::Scopes::CriteriaScope do
-  include Cuprum::Collections::RSpec::Deferred::Scopes::CriteriaExamples
+  include Bronze::RSpec::Deferred::Scopes::CriteriaExamples
 
   subject(:scope) do
     described_class.new(criteria:, **constructor_options)
@@ -78,7 +78,7 @@ RSpec.describe Bronze::Basic::Scopes::CriteriaScope do
 
       describe 'with an item' do
         let(:item) do
-          Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES
+          Bronze::RSpec::Fixtures::BOOKS_FIXTURES
             .find { |book| book['title'] == 'The Silmarillion' }
         end
 
@@ -93,7 +93,7 @@ RSpec.describe Bronze::Basic::Scopes::CriteriaScope do
 
       describe 'with a non-matching item' do
         let(:item) do
-          Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES
+          Bronze::RSpec::Fixtures::BOOKS_FIXTURES
             .find { |book| book['title'] == 'The Silmarillion' }
         end
 
@@ -102,7 +102,7 @@ RSpec.describe Bronze::Basic::Scopes::CriteriaScope do
 
       describe 'with a matching item' do
         let(:item) do
-          Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES
+          Bronze::RSpec::Fixtures::BOOKS_FIXTURES
             .find do |book|
               book['title'] == 'The Word for World is Forest'
             end
@@ -121,7 +121,7 @@ RSpec.describe Bronze::Basic::Scopes::CriteriaScope do
 
       describe 'with a non-matching item' do
         let(:item) do
-          Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES
+          Bronze::RSpec::Fixtures::BOOKS_FIXTURES
             .find do |book|
               book['title'] == 'The Word for World is Forest'
             end
@@ -132,7 +132,7 @@ RSpec.describe Bronze::Basic::Scopes::CriteriaScope do
 
       describe 'with a matching item' do
         let(:item) do
-          Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES
+          Bronze::RSpec::Fixtures::BOOKS_FIXTURES
             .find do |book|
               book['title'] == 'The Ones Who Walk Away From Omelas'
             end
@@ -151,7 +151,7 @@ RSpec.describe Bronze::Basic::Scopes::CriteriaScope do
 
       describe 'with a non-matching item' do
         let(:item) do
-          Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES
+          Bronze::RSpec::Fixtures::BOOKS_FIXTURES
             .find do |book|
               book['title'] == 'A Wizard of Earthsea'
             end
@@ -162,7 +162,7 @@ RSpec.describe Bronze::Basic::Scopes::CriteriaScope do
 
       describe 'with a matching item' do
         let(:item) do
-          Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES
+          Bronze::RSpec::Fixtures::BOOKS_FIXTURES
             .find do |book|
               book['title'] == 'The Word for World is Forest'
             end
@@ -181,7 +181,7 @@ RSpec.describe Bronze::Basic::Scopes::CriteriaScope do
 
       describe 'with a non-matching item' do
         let(:item) do
-          Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES
+          Bronze::RSpec::Fixtures::BOOKS_FIXTURES
             .find do |book|
               book['title'] == 'The Word for World is Forest'
             end
@@ -192,7 +192,7 @@ RSpec.describe Bronze::Basic::Scopes::CriteriaScope do
 
       describe 'with a matching item' do
         let(:item) do
-          Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES
+          Bronze::RSpec::Fixtures::BOOKS_FIXTURES
             .find do |book|
               book['title'] == 'A Wizard of Earthsea'
             end
@@ -211,7 +211,7 @@ RSpec.describe Bronze::Basic::Scopes::CriteriaScope do
 
       describe 'with a non-matching item' do
         let(:item) do
-          Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES
+          Bronze::RSpec::Fixtures::BOOKS_FIXTURES
             .find do |book|
               book['title'] == 'The Ones Who Walk Away From Omelas'
             end
@@ -222,7 +222,7 @@ RSpec.describe Bronze::Basic::Scopes::CriteriaScope do
 
       describe 'with a matching item' do
         let(:item) do
-          Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES
+          Bronze::RSpec::Fixtures::BOOKS_FIXTURES
             .find do |book|
               book['title'] == 'The Word for World is Forest'
             end
@@ -241,7 +241,7 @@ RSpec.describe Bronze::Basic::Scopes::CriteriaScope do
 
       describe 'with a non-matching item' do
         let(:item) do
-          Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES
+          Bronze::RSpec::Fixtures::BOOKS_FIXTURES
             .find { |book| book['title'] == 'The Silmarillion' }
         end
 
@@ -250,7 +250,7 @@ RSpec.describe Bronze::Basic::Scopes::CriteriaScope do
 
       describe 'with a matching item' do
         let(:item) do
-          Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES
+          Bronze::RSpec::Fixtures::BOOKS_FIXTURES
             .find { |book| book['title'] == 'A Wizard of Earthsea' }
         end
 
@@ -269,7 +269,7 @@ RSpec.describe Bronze::Basic::Scopes::CriteriaScope do
 
       describe 'with a non-matching item' do
         let(:item) do
-          Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES
+          Bronze::RSpec::Fixtures::BOOKS_FIXTURES
             .find { |book| book['title'] == 'The Two Towers' }
         end
 
@@ -278,7 +278,7 @@ RSpec.describe Bronze::Basic::Scopes::CriteriaScope do
 
       describe 'with a matching item' do
         let(:item) do
-          Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES
+          Bronze::RSpec::Fixtures::BOOKS_FIXTURES
             .find { |book| book['title'] == 'The Return of the King' }
         end
 
@@ -297,7 +297,7 @@ RSpec.describe Bronze::Basic::Scopes::CriteriaScope do
 
       describe 'with a non-matching item' do
         let(:item) do
-          Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES
+          Bronze::RSpec::Fixtures::BOOKS_FIXTURES
             .find { |book| book['title'] == 'The Return of the King' }
         end
 
@@ -306,7 +306,7 @@ RSpec.describe Bronze::Basic::Scopes::CriteriaScope do
 
       describe 'with a matching item' do
         let(:item) do
-          Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES
+          Bronze::RSpec::Fixtures::BOOKS_FIXTURES
             .find { |book| book['title'] == 'The Two Towers' }
         end
 
@@ -328,7 +328,7 @@ RSpec.describe Bronze::Basic::Scopes::CriteriaScope do
 
       describe 'with a non-matching item' do
         let(:item) do
-          Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES
+          Bronze::RSpec::Fixtures::BOOKS_FIXTURES
             .find { |book| book['title'] == 'The Two Towers' }
         end
 
@@ -337,7 +337,7 @@ RSpec.describe Bronze::Basic::Scopes::CriteriaScope do
 
       describe 'with a matching item' do
         let(:item) do
-          Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES
+          Bronze::RSpec::Fixtures::BOOKS_FIXTURES
             .find { |book| book['title'] == 'The Return of the King' }
         end
 
@@ -348,7 +348,7 @@ RSpec.describe Bronze::Basic::Scopes::CriteriaScope do
     context 'when the scope has invalid criteria' do
       let(:criteria) { [['title', :random, nil]] }
       let(:item) do
-        Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES
+        Bronze::RSpec::Fixtures::BOOKS_FIXTURES
           .find { |book| book['title'] == 'The Two Towers' }
       end
       let(:error_class) do

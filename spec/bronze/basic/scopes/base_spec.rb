@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'bronze/basic/scopes/base'
-require 'cuprum/collections/rspec/fixtures'
+require 'bronze/rspec/fixtures'
 
 RSpec.describe Bronze::Basic::Scopes::Base do
   subject(:scope) { described_class.new }
@@ -54,7 +54,7 @@ RSpec.describe Bronze::Basic::Scopes::Base do
 
     describe 'with data' do
       let(:data) do
-        Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES
+        Bronze::RSpec::Fixtures::BOOKS_FIXTURES
       end
 
       it { expect(scope.call(data:)).to be == data }
@@ -92,7 +92,7 @@ RSpec.describe Bronze::Basic::Scopes::Base do
 
     describe 'with an item' do
       let(:item) do
-        Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES
+        Bronze::RSpec::Fixtures::BOOKS_FIXTURES
           .find { |book| book['title'] == 'The Silmarillion' }
       end
 
@@ -120,7 +120,7 @@ RSpec.describe Bronze::Basic::Scopes::Base do
 
       describe 'with data' do
         let(:data) do
-          Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES
+          Bronze::RSpec::Fixtures::BOOKS_FIXTURES
         end
         let(:expected) do
           data.reject do |item|

@@ -2,9 +2,10 @@
 
 require 'stannum'
 
-require 'cuprum/collections'
-require 'cuprum/collections/rspec/deferred/collection_examples'
-require 'cuprum/collections/rspec/fixtures'
+require 'bronze'
+require 'bronze/rspec/fixtures'
+require 'bronze/rspec/deferred/collection_examples'
+require 'bronze/rspec/deferred/relation_examples'
 
 require 'support/adaptable/collection'
 require 'support/book'
@@ -12,7 +13,8 @@ require 'support/grimoire'
 require 'support/scoped_book'
 
 RSpec.describe Spec::Support::Adaptable::Collection do
-  include Cuprum::Collections::RSpec::Deferred::CollectionExamples
+  include Bronze::RSpec::Deferred::CollectionExamples
+  include Bronze::RSpec::Deferred::RelationExamples
 
   subject(:collection) do
     described_class.new(
@@ -23,7 +25,7 @@ RSpec.describe Spec::Support::Adaptable::Collection do
   end
 
   shared_context 'when the collection has many items' do
-    let(:data)  { Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES.dup }
+    let(:data)  { Bronze::RSpec::Fixtures::BOOKS_FIXTURES.dup }
     let(:items) { data }
   end
 

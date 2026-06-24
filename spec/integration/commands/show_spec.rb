@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'bronze/basic/collection'
-require 'cuprum/collections/rspec/fixtures'
+require 'bronze/rspec/fixtures'
 
 require 'support/commands/show'
 
@@ -9,7 +9,7 @@ RSpec.describe Spec::Support::Commands::Show do
   subject(:command) { described_class.new(collection) }
 
   let(:data) do
-    Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES.dup
+    Bronze::RSpec::Fixtures::BOOKS_FIXTURES.dup
   end
   let(:name) { 'books' }
   let(:collection_options) do

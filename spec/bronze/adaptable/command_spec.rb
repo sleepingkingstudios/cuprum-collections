@@ -4,12 +4,12 @@ require 'cuprum/rspec/deferred/parameter_validation_examples'
 
 require 'bronze/adaptable/command'
 require 'bronze/commands/base'
-require 'cuprum/collections/rspec/deferred/command_examples'
+require 'bronze/rspec/deferred/command_examples'
 
 require 'support/book'
 
 RSpec.describe Bronze::Adaptable::Command do
-  include Cuprum::Collections::RSpec::Deferred::CommandExamples
+  include Bronze::RSpec::Deferred::CommandExamples
   include Cuprum::RSpec::Deferred::ParameterValidationExamples
 
   subject(:command) { described_class.new(collection:) }
@@ -57,7 +57,7 @@ RSpec.describe Bronze::Adaptable::Command do
     end
   end
 
-  include_deferred 'should implement the CollectionCommand methods'
+  include_deferred 'should implement the Bronze::Commands::Base methods'
 
   describe '#call' do
     it 'should define the method' do

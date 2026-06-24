@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 require 'bronze/scope'
-require 'cuprum/collections/rspec/fixtures'
+require 'bronze/rspec/fixtures'
 
 # @note: Integration spec for a collection
 RSpec.describe Bronze::Basic::Collection do
   subject(:collection) do
     described_class.new(
-      data:  Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES,
+      data:  Bronze::RSpec::Fixtures::BOOKS_FIXTURES,
       name:  'books',
       scope: series_scope
     )
@@ -36,7 +36,7 @@ RSpec.describe Bronze::Basic::Collection do
       let(:primary_keys) { [2, 3, 4] }
       let(:expected_value) do
         primary_keys.map do |id|
-          Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES.find do |book|
+          Bronze::RSpec::Fixtures::BOOKS_FIXTURES.find do |book|
             book['id'] == id
           end
         end
@@ -53,7 +53,7 @@ RSpec.describe Bronze::Basic::Collection do
   describe '#find_matching' do
     let(:command) { collection.find_matching }
     let(:matching_data) do
-      Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES.reject do |book|
+      Bronze::RSpec::Fixtures::BOOKS_FIXTURES.reject do |book|
         book['series'].nil?
       end
     end
@@ -97,7 +97,7 @@ RSpec.describe Bronze::Basic::Collection do
     describe 'with a primary key that matches the scope' do
       let(:primary_key) { 2 }
       let(:expected_value) do
-        Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES.find do |book|
+        Bronze::RSpec::Fixtures::BOOKS_FIXTURES.find do |book|
           book['id'] == primary_key
         end
       end
@@ -112,7 +112,7 @@ RSpec.describe Bronze::Basic::Collection do
 
   describe '#query' do
     let(:matching_data) do
-      Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES.reject do |book|
+      Bronze::RSpec::Fixtures::BOOKS_FIXTURES.reject do |book|
         book['series'].nil?
       end
     end

@@ -2,8 +2,8 @@
 
 require 'stannum/constraints/types/hash_with_string_keys'
 
-require 'cuprum/collections/rspec/deferred/command_examples'
-require 'cuprum/collections/rspec/fixtures'
+require 'bronze/rspec/fixtures'
+require 'bronze/rspec/deferred/command_examples'
 
 require 'support/book'
 require 'support/examples/basic'
@@ -64,14 +64,14 @@ module Spec::Support::Examples::Basic
       let(:data)                { [] }
       let(:mapped_data)         { data }
       let(:fixtures_data) do
-        Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES.dup
+        Bronze::RSpec::Fixtures::BOOKS_FIXTURES.dup
       end
     end
 
     deferred_examples 'should implement the Basic::Command methods' do
-      include Cuprum::Collections::RSpec::Deferred::CommandExamples
+      include Bronze::RSpec::Deferred::CommandExamples
 
-      include_deferred 'should implement the CollectionCommand methods'
+      include_deferred 'should implement the Bronze::Commands::Base methods'
 
       describe '.new' do
         it 'should define the constructor' do

@@ -2,7 +2,7 @@
 
 require 'bronze/commands/find_one_matching'
 require 'bronze/basic/collection'
-require 'cuprum/collections/rspec/fixtures'
+require 'bronze/rspec/fixtures'
 
 RSpec.describe Bronze::Commands::FindOneMatching do
   subject(:command) { described_class.new(collection:) }
@@ -71,7 +71,7 @@ RSpec.describe Bronze::Commands::FindOneMatching do
     end
 
     context 'when there are many entities' do
-      let(:data) { Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES.dup }
+      let(:data) { Bronze::RSpec::Fixtures::BOOKS_FIXTURES.dup }
 
       describe 'with attributes: a Hash that does not match any entities' do
         let(:attributes) { { 'author' => 'Jules Verne' } }

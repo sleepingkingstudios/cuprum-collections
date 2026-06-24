@@ -5,7 +5,7 @@ require 'bronze/scope'
 require 'bronze/basic/scopes/conjunction_scope'
 require 'bronze/basic/scopes/criteria_scope'
 require 'bronze/basic/scopes/disjunction_scope'
-require 'cuprum/collections/rspec/fixtures'
+require 'bronze/rspec/fixtures'
 
 RSpec.describe Bronze::Basic::Scopes do
   shared_examples 'should filter the data' do
@@ -20,7 +20,7 @@ RSpec.describe Bronze::Basic::Scopes do
     end
   end
 
-  let(:data) { Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES }
+  let(:data) { Bronze::RSpec::Fixtures::BOOKS_FIXTURES }
   let(:complex_scope) do
     Bronze::Scope
       .new { |scope| { 'published_at' => scope.greater_than('1973-01-01') } }

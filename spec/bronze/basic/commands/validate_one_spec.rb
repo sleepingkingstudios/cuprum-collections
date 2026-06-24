@@ -4,12 +4,12 @@ require 'stannum/constraints/presence'
 require 'stannum/contracts/hash_contract'
 
 require 'bronze/basic/commands/validate_one'
-require 'cuprum/collections/rspec/deferred/commands/validate_one_examples'
+require 'bronze/rspec/deferred/commands/validate_one_examples'
 
 require 'support/examples/basic/command_examples'
 
 RSpec.describe Bronze::Basic::Commands::ValidateOne do
-  include Cuprum::Collections::RSpec::Deferred::Commands::ValidateOneExamples
+  include Bronze::RSpec::Deferred::Commands::ValidateOneExamples
   include Spec::Support::Examples::Basic::CommandExamples
 
   subject(:command) { described_class.new(collection:) }

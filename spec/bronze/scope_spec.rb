@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 require 'bronze/scope'
-require 'cuprum/collections/rspec/deferred/scopes/criteria_examples'
-require 'cuprum/collections/rspec/deferred/scopes/parser_examples'
+require 'bronze/rspec/deferred/scopes/criteria_examples'
+require 'bronze/rspec/deferred/scopes/parser_examples'
 
 RSpec.describe Bronze::Scope do
-  include Cuprum::Collections::RSpec::Deferred::Scopes::CriteriaExamples
-  include Cuprum::Collections::RSpec::Deferred::Scopes::ParserExamples
+  include Bronze::RSpec::Deferred::Scopes::CriteriaExamples
+  include Bronze::RSpec::Deferred::Scopes::ParserExamples
 
   subject(:scope) do
     described_class.new(
