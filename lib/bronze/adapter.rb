@@ -3,9 +3,9 @@
 require 'cuprum'
 require 'cuprum/result_helpers'
 
-require 'cuprum/collections'
+require 'bronze'
 
-module Cuprum::Collections
+module Bronze
   # Utility class for converting between raw attributes and a data format.
   class Adapter # rubocop:disable Metrics/ClassLength
     include Cuprum::ResultHelpers

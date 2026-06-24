@@ -5,7 +5,7 @@ require 'cuprum/collections/adaptable'
 module Cuprum::Collections::Adaptable
   # Mixin for defining commands for adaptable collections.
   module Command
-    # @return [Cuprum::Collections::Adapter] the adapter defined for the
+    # @return [Bronze::Adapter] the adapter defined for the
     #   collection.
     def adapter = collection.adapter
 

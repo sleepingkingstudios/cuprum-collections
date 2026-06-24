@@ -11,8 +11,6 @@ module Cuprum
     include Bronze
 
     autoload :Adaptable,         'cuprum/collections/adaptable'
-    autoload :Adapter,           'cuprum/collections/adapter'
-    autoload :Adapters,          'cuprum/collections/adapters'
     autoload :Basic,             'cuprum/collections/basic'
     autoload :CollectionCommand, 'cuprum/collections/collection_command'
 

@@ -13,8 +13,7 @@ module Spec::Support::Examples::Adaptable
 
     deferred_context 'with parameters for an adaptable collection' do
       let(:adapter) do
-        Cuprum::Collections::Adapters::EntityAdapter
-          .new(entity_class: Spec::BookEntity)
+        Bronze::Adapters::EntityAdapter.new(entity_class: Spec::BookEntity)
       end
       let(:collection) do
         Spec::AdaptableCollection.new(

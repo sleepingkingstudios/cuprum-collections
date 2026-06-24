@@ -12,14 +12,14 @@ module Cuprum::Collections::Adaptable
     # Exception raised when converting attributes returns a failing result.
     class InvalidDataError < StandardError; end
 
-    # @param adapter [Cuprum::Collections::Adapter] the collection adapter.
+    # @param adapter [Bronze::Adapter] the collection adapter.
     def initialize(*, adapter:, **)
       super(*, **)
 
       @adapter = adapter
     end
 
-    # @return [Cuprum::Collections::Adapter] the collection adapter.
+    # @return [Bronze::Adapter] the collection adapter.
     attr_reader :adapter
 
     # Converts a native data representation to the adapter entity format.

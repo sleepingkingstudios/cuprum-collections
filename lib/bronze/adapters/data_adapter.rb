@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/adapter'
-require 'cuprum/collections/adapters'
+require 'bronze/adapter'
+require 'bronze/adapters'
 
-module Cuprum::Collections::Adapters
+module Bronze::Adapters
   # Utility class for converting between raw attributes and a Data class.
-  class DataAdapter < Cuprum::Collections::Adapter
+  class DataAdapter < Bronze::Adapter
     # @param options [Hash] options for initializing the adapter.
     #
     # @option options attributes_names [Array<String, Symbol>] the valid

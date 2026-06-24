@@ -15,9 +15,7 @@ RSpec.describe Cuprum::Collections::Adaptable::Command do
   subject(:command) { described_class.new(collection:) }
 
   let(:described_class) { Spec::AdaptableCommand }
-  let(:adapter) do
-    Cuprum::Collections::Adapter.new(**adapter_options)
-  end
+  let(:adapter)         { Bronze::Adapter.new(**adapter_options) }
   let(:adapter_options) { {} }
   let(:collection) do
     Spec::AdaptableCollection.new(

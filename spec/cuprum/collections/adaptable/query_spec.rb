@@ -9,7 +9,7 @@ RSpec.describe Cuprum::Collections::Adaptable::Query do
   subject(:query) { described_class.new(adapter:, scope: initial_scope) }
 
   let(:described_class) { Spec::ExampleQuery }
-  let(:adapter)         { Cuprum::Collections::Adapter.new }
+  let(:adapter)         { Bronze::Adapter.new }
   let(:initial_scope)   { nil }
 
   example_class 'Spec::ExampleQuery', Bronze::Query do |klass|
@@ -66,8 +66,7 @@ RSpec.describe Cuprum::Collections::Adaptable::Query do
         }
       end
       let(:adapter) do
-        Cuprum::Collections::Adapters::EntityAdapter
-          .new(entity_class: Spec::BookEntity)
+        Bronze::Adapters::EntityAdapter.new(entity_class: Spec::BookEntity)
       end
       let(:native) do
         Spec::BookData.new(**attributes)
@@ -124,8 +123,7 @@ RSpec.describe Cuprum::Collections::Adaptable::Query do
           TEXT
         end
 
-        example_class 'Spec::ErrorAdapter', Cuprum::Collections::Adapter \
-        do |klass|
+        example_class 'Spec::ErrorAdapter', Bronze::Adapter do |klass|
           klass.define_method(:build_entity) do |**|
             error = Cuprum::Error.new(message: 'something went wrong')
 

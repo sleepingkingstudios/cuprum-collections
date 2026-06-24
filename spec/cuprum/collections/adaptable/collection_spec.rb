@@ -14,10 +14,8 @@ RSpec.describe Cuprum::Collections::Adaptable::Collection do
     described_class.new(**constructor_options)
   end
 
-  let(:described_class) { Spec::AdaptableCollection }
-  let(:adapter) do
-    Cuprum::Collections::Adapters::HashAdapter.new
-  end
+  let(:described_class)     { Spec::AdaptableCollection }
+  let(:adapter)             { Bronze::Adapters::HashAdapter.new }
   let(:name)                { 'books' }
   let(:constructor_options) { { adapter:, name: } }
   let(:other_options)       { { adapter:, name: } }

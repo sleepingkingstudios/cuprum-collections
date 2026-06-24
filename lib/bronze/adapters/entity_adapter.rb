@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/adapter'
-require 'cuprum/collections/adapters'
+require 'bronze/adapter'
+require 'bronze/adapters'
 
-module Cuprum::Collections::Adapters
+module Bronze::Adapters
   # Utility class for converting between attributes and a Stannum::Entity class.
-  class EntityAdapter < Cuprum::Collections::Adapter
+  class EntityAdapter < Bronze::Adapter
     # @param options [Hash] options for initializing the adapter.
     #
     # @option options attributes_names [Array<String, Symbol>] the valid

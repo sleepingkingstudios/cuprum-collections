@@ -4,6 +4,8 @@ require 'cuprum'
 
 # A data abstraction layer based on the Cuprum library.
 module Bronze
+  autoload :Adapter,      'bronze/adapter'
+  autoload :Adapters,     'bronze/adapters'
   autoload :Association,  'bronze/association'
   autoload :Associations, 'bronze/associations'
   autoload :Collection,   'bronze/collection'

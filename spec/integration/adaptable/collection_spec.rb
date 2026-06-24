@@ -28,8 +28,7 @@ RSpec.describe Spec::Support::Adaptable::Collection do
   end
 
   let(:adapter) do
-    Cuprum::Collections::Adapters::EntityAdapter
-      .new(entity_class: Spec::BookEntity)
+    Bronze::Adapters::EntityAdapter.new(entity_class: Spec::BookEntity)
   end
   let(:name)                { 'books' }
   let(:data)                { [] }

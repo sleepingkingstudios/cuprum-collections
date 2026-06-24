@@ -2,10 +2,10 @@
 
 require 'stannum/constraint'
 
-require 'cuprum/collections/adapter'
+require 'bronze/adapter'
 require 'cuprum/collections/rspec/deferred/adapter_examples'
 
-RSpec.describe Cuprum::Collections::Adapter do
+RSpec.describe Bronze::Adapter do
   include Cuprum::Collections::RSpec::Deferred::AdapterExamples
 
   subject(:adapter) { described_class.new(**constructor_options) }
@@ -39,8 +39,7 @@ RSpec.describe Cuprum::Collections::Adapter do
     let(:described_class) { Spec::ValidatedAdapter }
 
     # rubocop:disable RSpec/DescribedClass
-    example_class 'Spec::ValidatedAdapter', Cuprum::Collections::Adapter \
-    do |klass|
+    example_class 'Spec::ValidatedAdapter', Bronze::Adapter do |klass|
       klass.define_method :validate_entity_parameter do |entity, as: 'entity'|
         return if entity.respond_to?(:title)
 
@@ -334,8 +333,7 @@ RSpec.describe Cuprum::Collections::Adapter do
       let(:described_class) { Spec::NativeAdapter }
 
       # rubocop:disable RSpec/DescribedClass
-      example_class 'Spec::NativeAdapter', Cuprum::Collections::Adapter \
-      do |klass|
+      example_class 'Spec::NativeAdapter', Bronze::Adapter do |klass|
         klass.define_method :match_native_validation do |entity:|
           entity_class.contract.match(entity)
         end
