@@ -8,6 +8,10 @@ Removed support for Ruby 3.1.
 
 Removed all deprecated functionality.
 
+### Basic Collection
+
+Deprecated `Bronze::Basic.new`. Use `Bronze::Basic::Collection.new` instead.
+
 ### Collections
 
 Added support for adaptable collections.

@@ -2,12 +2,12 @@
 
 require 'bronze/queries'
 require 'bronze/scope'
-require 'cuprum/collections/basic/scopes/conjunction_scope'
-require 'cuprum/collections/basic/scopes/criteria_scope'
-require 'cuprum/collections/basic/scopes/disjunction_scope'
+require 'bronze/basic/scopes/conjunction_scope'
+require 'bronze/basic/scopes/criteria_scope'
+require 'bronze/basic/scopes/disjunction_scope'
 require 'cuprum/collections/rspec/fixtures'
 
-RSpec.describe Cuprum::Collections::Basic::Scopes do
+RSpec.describe Bronze::Basic::Scopes do
   shared_examples 'should filter the data' do
     it { expect(scope.call(data:)).to match_array matching }
 

@@ -62,8 +62,7 @@ module Spec::Support::Examples::Adaptable
         SleepingKingStudios::Tools::Toolbelt.instance
       end
 
-      example_class 'Spec::AdaptableCollection',
-        Cuprum::Collections::Basic::Collection \
+      example_class 'Spec::AdaptableCollection', Bronze::Basic::Collection \
       do |klass|
         klass.define_method :initialize do |adapter:, data: [], **options|
           super(data:, **options)

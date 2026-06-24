@@ -4,7 +4,7 @@ require 'bronze/associations'
 require 'bronze/associations/belongs_to'
 require 'bronze/commands/associations/find_many'
 require 'bronze/resource'
-require 'cuprum/collections/basic/repository'
+require 'bronze/basic/repository'
 
 RSpec.describe Bronze::Commands::Associations::FindMany do
   subject(:command) do
@@ -17,7 +17,7 @@ RSpec.describe Bronze::Commands::Associations::FindMany do
 
   let(:association) { Bronze::Association.new(name: 'books') }
   let(:repository) do
-    Cuprum::Collections::Basic::Repository.new.tap do |repository|
+    Bronze::Basic::Repository.new.tap do |repository|
       repository.create(qualified_name: association.qualified_name)
     end
   end

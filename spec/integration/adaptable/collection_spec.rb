@@ -66,7 +66,7 @@ RSpec.describe Spec::Support::Adaptable::Collection do
   end
 
   include_deferred 'should be a Collection',
-    commands_namespace:   'Cuprum::Collections::Basic::Commands',
+    commands_namespace:   'Bronze::Basic::Commands',
     default_entity_class: -> { Spec::BookEntity },
-    default_scope:        Cuprum::Collections::Basic::Scopes::AllScope
+    default_scope:        Bronze::Basic::Scopes::AllScope
 end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/basic/collection'
+require 'bronze/basic/collection'
 require 'cuprum/collections/rspec/fixtures'
 
 require 'support/commands/show'
@@ -19,7 +19,7 @@ RSpec.describe Spec::Support::Commands::Show do
     }
   end
   let(:collection) do
-    Cuprum::Collections::Basic::Collection.new(**collection_options)
+    Bronze::Basic::Collection.new(**collection_options)
   end
 
   describe '#call' do

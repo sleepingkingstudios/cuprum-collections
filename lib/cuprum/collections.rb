@@ -10,8 +10,6 @@ module Cuprum
   module Collections
     include Bronze
 
-    autoload :Basic, 'cuprum/collections/basic'
-
     # @return [String] the absolute path to the gem directory.
     def self.gem_path
       sep     = File::SEPARATOR

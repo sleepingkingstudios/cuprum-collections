@@ -6,7 +6,7 @@ require 'cuprum/collections'
 require 'support/adaptable/commands'
 
 module Spec::Support::Adaptable::Commands
-  class InsertOne < Cuprum::Collections::Basic::Commands::InsertOne
+  class InsertOne < Bronze::Basic::Commands::InsertOne
     include Bronze::Adaptable::Command
 
     private

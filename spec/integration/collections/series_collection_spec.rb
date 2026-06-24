@@ -4,7 +4,7 @@ require 'bronze/scope'
 require 'cuprum/collections/rspec/fixtures'
 
 # @note: Integration spec for a collection
-RSpec.describe Cuprum::Collections::Basic do
+RSpec.describe Bronze::Basic::Collection do
   subject(:collection) do
     described_class.new(
       data:  Cuprum::Collections::RSpec::Fixtures::BOOKS_FIXTURES,

@@ -30,13 +30,13 @@ RSpec.describe Spec::Support::Adaptable::Query do
 
   describe '#scope' do
     it 'should define the default scope' do
-      expect(query.scope).to be_a Cuprum::Collections::Basic::Scopes::AllScope
+      expect(query.scope).to be_a Bronze::Basic::Scopes::AllScope
     end
 
     wrap_context 'when initialized with a scope' do
       it 'should transform the scope' do
         expect(query.scope)
-          .to be_a Cuprum::Collections::Basic::Scopes::CriteriaScope
+          .to be_a Bronze::Basic::Scopes::CriteriaScope
       end
     end
   end

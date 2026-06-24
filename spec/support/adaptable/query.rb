@@ -3,7 +3,7 @@
 require 'support/adaptable'
 
 module Spec::Support::Adaptable
-  class Query < Cuprum::Collections::Basic::Query
+  class Query < Bronze::Basic::Query
     include Bronze::Adaptable::Query
 
     private

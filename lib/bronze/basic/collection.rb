@@ -1,0 +1,101 @@
+# frozen_string_literal: true
+
+require 'cuprum/command_factory'
+
+require 'bronze/basic'
+require 'bronze/basic/commands'
+require 'bronze/basic/scopes/all_scope'
+require 'bronze/collection'
+
+module Bronze::Basic
+  # Wraps an in-memory array of hashes data store as a Cuprum collection.
+  class Collection < Bronze::Collection
+    # @overload initialize(data: [], entity_class: nil, name: nil, qualified_name: nil, singular_name: nil, **options)
+    #   @param data [Array<Hash>] the current data in the collection.
+    #   @param entity_class [Class, String] the class of entity represented by
+    #     the relation.
+    #   @param name [String] the name of the relation.
+    #   @param qualified_name [String] a scoped name for the relation.
+    #   @param singular_name [String] the name of an entity in the relation.
+    #   @param options [Hash] additional options for the relation.
+    #
+    #   @option options primary_key_name [String] the name of the primary key
+    #     attribute. Defaults to 'id'.
+    #   @option options primary_key_type [Class, Stannum::Constraint] the type
+    #     of the primary key attribute. Defaults to Integer.
+    #   @option options scope [Bronze::Scopes::Base, Hash, Proc, nil] the
+    #     configured scope for the relation.
+    def initialize(data: [], **parameters)
+      super(default_entity_class: Hash, **parameters)
+
+      @data = data
+    end
+
+    # @return [Array<Hash>] the current data in the collection.
+    attr_reader :data
+
+    command :assign_one do
+      Bronze::Basic::Commands::AssignOne.new(collection: self)
+    end
+
+    command :build_one do
+      Bronze::Basic::Commands::BuildOne.new(collection: self)
+    end
+
+    command :destroy_one do
+      Bronze::Basic::Commands::DestroyOne.new(collection: self)
+    end
+
+    command :find_many do
+      Bronze::Basic::Commands::FindMany.new(collection: self)
+    end
+
+    command :find_matching do
+      Bronze::Basic::Commands::FindMatching.new(collection: self)
+    end
+
+    command :find_one do
+      Bronze::Basic::Commands::FindOne.new(collection: self)
+    end
+
+    command :insert_one do
+      Bronze::Basic::Commands::InsertOne.new(collection: self)
+    end
+
+    command :update_one do
+      Bronze::Basic::Commands::UpdateOne.new(collection: self)
+    end
+
+    command :validate_one do
+      Bronze::Basic::Commands::ValidateOne.new(collection: self)
+    end
+
+    # @return [Stannum::Constraints::Base, nil] the default contract for
+    #   validating items in the collection.
+    def default_contract
+      @options[:default_contract]
+    end
+
+    # A new Query instance, used for querying against the collection data.
+    #
+    # @return [Bronze::Basic::Query] the query.
+    def query
+      Bronze::Basic::Query.new(data, scope:)
+    end
+
+    protected
+
+    def comparable_options
+      @comparable_options ||= super.merge(
+        data:,
+        default_contract:
+      )
+    end
+
+    private
+
+    def default_scope
+      Bronze::Basic::Scopes::AllScope.new
+    end
+  end
+end

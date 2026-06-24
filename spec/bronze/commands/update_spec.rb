@@ -4,7 +4,7 @@ require 'stannum/constraints/presence'
 require 'stannum/contracts/hash_contract'
 
 require 'bronze/commands/update'
-require 'cuprum/collections/basic/collection'
+require 'bronze/basic/collection'
 
 RSpec.describe Bronze::Commands::Update do
   subject(:command) { described_class.new(**constructor_options) }
@@ -28,7 +28,7 @@ RSpec.describe Bronze::Commands::Update do
   end
 
   let(:collection) do
-    Cuprum::Collections::Basic::Collection.new(
+    Bronze::Basic::Collection.new(
       name: 'books',
       data: [],
       **collection_options

@@ -67,7 +67,7 @@ Each collection provides three features:
 - A `#query` method to directly perform queries on the data.
 
 ```ruby
-collection = Cuprum::Collections::Basic.new(
+collection = Bronze::Basic::Collection.new(
   name: 'books',
   data: book_data,
 )
@@ -433,7 +433,7 @@ require 'cuprum/collections/basic'
 The `Cuprum::Basic::Collection` provides a reference implementation of a collection. It uses an in-memory `Array` to store `Hash`es with `String` keys. All of the command examples above use a basic collection as an example.
 
 ```ruby
-collection = Cuprum::Collections::Basic.new(
+collection = Bronze::Basic::Collection.new(
   name: 'books',
   data: book_data,
 )
@@ -455,7 +455,7 @@ You can also specify some optional keywords:
 ##### Basic Repositories
 
 ```ruby
-require 'cuprum/collections/basic/repository'
+require 'bronze/basic/repository'
 ```
 
 A `Basic::Repository` is a collection of `Basic::Collection`s. In addition to implementing the Repository methods (see [Repositories](#repositories), above), a basic repository can be initialized with a data set and used to build new collections directly.
@@ -469,12 +469,12 @@ data = {
     }
   ]
 }
-repository = Cuprum::Collections::Basic::Repository.new(data: data)
+repository = Bronze::Basic::Repository.new(data: data)
 repository.keys
 #=> []
 
 repository.build(name: 'books')
-#=> an instance of Cuprum::Collections::Basic::Collection
+#=> an instance of Bronze::Basic::Collection
 repository.keys
 #=> ['books']
 repository['books'].query.to_a
@@ -594,14 +594,14 @@ It has the following properties:
 A `Cuprum::Collections::Query` provides a low-level interface for performing query operations on a collection's data.
 
 ```ruby
-collection = Cuprum::Collections::Basic.new(
+collection = Bronze::Basic::Collection.new(
   name: 'books',
   data: book_data,
 )
 query      = collection.query
 
 query.class
-#=> Cuprum::Collections::Basic::Query
+#=> Bronze::Basic::Collection::Query
 query.count
 #=> 10
 query.limit(3).to_a

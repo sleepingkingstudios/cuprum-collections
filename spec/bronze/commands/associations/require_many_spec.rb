@@ -3,7 +3,7 @@
 require 'bronze/associations/belongs_to'
 require 'bronze/commands/associations/require_many'
 require 'bronze/resource'
-require 'cuprum/collections/basic/repository'
+require 'bronze/basic/repository'
 
 RSpec.describe Bronze::Commands::Associations::RequireMany do
   subject(:command) do
@@ -18,7 +18,7 @@ RSpec.describe Bronze::Commands::Associations::RequireMany do
     Bronze::Associations::BelongsTo.new(name: 'author')
   end
   let(:repository) do
-    Cuprum::Collections::Basic::Repository.new.tap do |repository|
+    Bronze::Basic::Repository.new.tap do |repository|
       repository.create(qualified_name: association.qualified_name)
     end
   end

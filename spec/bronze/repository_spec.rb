@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
+require 'bronze/basic/collection'
 require 'bronze/repository'
-require 'cuprum/collections/basic/collection'
 require 'cuprum/collections/rspec/deferred/repository_examples'
 
 require 'support/book'
@@ -16,7 +16,7 @@ RSpec.describe Bronze::Repository do
     qualified_name = options.fetch(:qualified_name, name)
 
     instance_double(
-      Cuprum::Collections::Basic::Collection,
+      Bronze::Basic::Collection,
       name:,
       qualified_name:
     )

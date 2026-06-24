@@ -54,7 +54,7 @@ module Spec::Support::Examples::Basic
 
     deferred_context 'with parameters for a basic command' do
       let(:collection) do
-        Cuprum::Collections::Basic::Collection.new(
+        Bronze::Basic::Collection.new(
           data: mapped_data,
           name: 'books',
           **collection_options

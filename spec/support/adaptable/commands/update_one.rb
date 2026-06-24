@@ -6,7 +6,7 @@ require 'cuprum/collections'
 require 'support/adaptable/commands'
 
 module Spec::Support::Adaptable::Commands
-  class UpdateOne < Cuprum::Collections::Basic::Commands::UpdateOne
+  class UpdateOne < Bronze::Basic::Commands::UpdateOne
     include Bronze::Adaptable::Command
 
     private

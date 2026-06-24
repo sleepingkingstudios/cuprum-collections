@@ -66,7 +66,7 @@ module Bronze::Scopes
 
     # :nocov:
     def debug_class_name(scope)
-      name     = scope.class.name.sub(/\ACuprum::Collections::/, '')
+      name     = scope.class.name.sub(/\ABronze::/, '')
       segments =
         name.split(/(::)?Scopes(::)?/).reject { |s| s.empty? || s == '::' }
 

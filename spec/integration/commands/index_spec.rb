@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/basic/collection'
+require 'bronze/basic/collection'
 require 'cuprum/collections/rspec/fixtures'
 
 require 'support/commands/index'
@@ -19,7 +19,7 @@ RSpec.describe Spec::Support::Commands::Index do
     }
   end
   let(:collection) do
-    Cuprum::Collections::Basic::Collection.new(**collection_options)
+    Bronze::Basic::Collection.new(**collection_options)
   end
 
   describe '#call' do
@@ -59,7 +59,7 @@ RSpec.describe Spec::Support::Commands::Index do
         }
       end
       let(:expected) do
-        Cuprum::Collections::Basic::Query
+        Bronze::Basic::Query
           .new(data)
           .where(filter)
           .order(order)

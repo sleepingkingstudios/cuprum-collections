@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'bronze/commands/find_one_matching'
-require 'cuprum/collections/basic/collection'
+require 'bronze/basic/collection'
 require 'cuprum/collections/rspec/fixtures'
 
 RSpec.describe Bronze::Commands::FindOneMatching do
@@ -10,7 +10,7 @@ RSpec.describe Bronze::Commands::FindOneMatching do
   let(:data) { [] }
   let(:name) { 'books' }
   let(:collection) do
-    Cuprum::Collections::Basic::Collection.new(
+    Bronze::Basic::Collection.new(
       name:,
       data:
     )
@@ -52,7 +52,7 @@ RSpec.describe Bronze::Commands::FindOneMatching do
 
     describe 'with a block that does not match any entities' do
       let(:query) do
-        Cuprum::Collections::Basic::Query
+        Bronze::Basic::Query
           .new(data)
           .where { { 'author' => 'Jules Verne' } }
       end
@@ -125,7 +125,7 @@ RSpec.describe Bronze::Commands::FindOneMatching do
       describe 'with a block that does not match any entities' do
         let(:block) { -> { { 'author' => 'Jules Verne' } } }
         let(:query) do
-          Cuprum::Collections::Basic::Query
+          Bronze::Basic::Query
             .new(data)
             .where { { 'author' => 'Jules Verne' } }
         end
@@ -181,7 +181,7 @@ RSpec.describe Bronze::Commands::FindOneMatching do
         let(:query) do
           block = self.block
 
-          Cuprum::Collections::Basic::Query.new(data).where(&block)
+          Bronze::Basic::Query.new(data).where(&block)
         end
         let(:expected_error) do
           Bronze::Errors::NotUnique.new(

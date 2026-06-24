@@ -1,0 +1,52 @@
+# frozen_string_literal: true
+
+require 'sleeping_king_studios/tools/string_tools'
+
+require 'bronze/basic/query'
+require 'cuprum/collections/rspec/deferred/query_examples'
+
+RSpec.describe Bronze::Basic::Query do
+  include Cuprum::Collections::RSpec::Deferred::QueryExamples
+
+  subject(:query) do
+    described_class.new(
+      stringify_data(data),
+      scope: initial_scope
+    )
+  end
+
+  let(:data)          { [] }
+  let(:matching_data) { data }
+  let(:expected_data) { stringify_data(matching_data) }
+  let(:initial_scope) { nil }
+
+  define_method :add_item_to_collection do |item|
+    query.send(:data) << tools.hash_tools.convert_keys_to_strings(item)
+  end
+
+  define_method :stringify_data do |data|
+    data.map { |hsh| tools.hash_tools.convert_keys_to_strings(hsh) }
+  end
+
+  define_method :tools do
+    SleepingKingStudios::Tools::Toolbelt.instance
+  end
+
+  describe '.new' do
+    it { expect(described_class).to respond_to(:new).with(1).argument }
+  end
+
+  include_deferred 'should be a Query'
+
+  describe '#scope' do
+    it 'should define the default scope' do
+      expect(query.scope).to be_a Bronze::Basic::Scopes::AllScope
+    end
+
+    wrap_context 'when initialized with a scope' do
+      it 'should transform the scope' do
+        expect(query.scope).to be_a Bronze::Basic::Scopes::CriteriaScope
+      end
+    end
+  end
+end

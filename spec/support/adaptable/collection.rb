@@ -6,7 +6,7 @@ require 'support/adaptable'
 require 'support/adaptable/query'
 
 module Spec::Support::Adaptable
-  class Collection < Cuprum::Collections::Basic::Collection
+  class Collection < Bronze::Basic::Collection
     include Bronze::Adaptable::Collection
 
     def query

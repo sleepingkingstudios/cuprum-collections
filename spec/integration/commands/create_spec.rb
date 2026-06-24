@@ -3,7 +3,7 @@
 require 'stannum/constraints/presence'
 require 'stannum/contracts/hash_contract'
 
-require 'cuprum/collections/basic/collection'
+require 'bronze/basic/collection'
 require 'cuprum/collections/rspec/fixtures'
 
 require 'support/commands/create'
@@ -22,10 +22,10 @@ RSpec.describe Spec::Support::Commands::Create do
     }
   end
   let(:collection) do
-    Cuprum::Collections::Basic::Collection.new(**collection_options)
+    Bronze::Basic::Collection.new(**collection_options)
   end
   let(:query) do
-    Cuprum::Collections::Basic::Query.new(collection.data)
+    Bronze::Basic::Query.new(collection.data)
   end
 
   describe '#call' do
