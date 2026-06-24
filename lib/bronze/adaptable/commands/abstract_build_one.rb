@@ -2,9 +2,9 @@
 
 require 'cuprum/parameter_validation'
 
-require 'cuprum/collections/adaptable/commands'
+require 'bronze/adaptable/commands'
 
-module Cuprum::Collections::Adaptable::Commands
+module Bronze::Adaptable::Commands
   # Abstract implementation of the BuildOne command for adaptable collections.
   module AbstractBuildOne
     include Cuprum::ParameterValidation

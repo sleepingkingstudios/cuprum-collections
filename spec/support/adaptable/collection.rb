@@ -7,7 +7,7 @@ require 'support/adaptable/query'
 
 module Spec::Support::Adaptable
   class Collection < Cuprum::Collections::Basic::Collection
-    include Cuprum::Collections::Adaptable::Collection
+    include Bronze::Adaptable::Collection
 
     def query
       Spec::Support::Adaptable::Query.new(data, adapter:, scope:)

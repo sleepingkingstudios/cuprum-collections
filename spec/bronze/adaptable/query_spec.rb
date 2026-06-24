@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/adaptable/query'
+require 'bronze/adaptable/query'
 require 'cuprum/collections/rspec/deferred/query_examples'
 
-RSpec.describe Cuprum::Collections::Adaptable::Query do
+RSpec.describe Bronze::Adaptable::Query do
   include Cuprum::Collections::RSpec::Deferred::QueryExamples
 
   subject(:query) { described_class.new(adapter:, scope: initial_scope) }
@@ -13,7 +13,7 @@ RSpec.describe Cuprum::Collections::Adaptable::Query do
   let(:initial_scope)   { nil }
 
   example_class 'Spec::ExampleQuery', Bronze::Query do |klass|
-    klass.include Cuprum::Collections::Adaptable::Query # rubocop:disable RSpec/DescribedClass
+    klass.include Bronze::Adaptable::Query # rubocop:disable RSpec/DescribedClass
   end
 
   describe '::AbstractQueryError' do

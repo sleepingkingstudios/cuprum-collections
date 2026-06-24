@@ -8,7 +8,7 @@ require 'support/adaptable/commands'
 
 module Spec::Support::Adaptable::Commands
   class FindMatching < Bronze::Commands::Base
+    include Bronze::Adaptable::Command
     include Bronze::Commands::AbstractFindMatching
-    include Cuprum::Collections::Adaptable::Command
   end
 end

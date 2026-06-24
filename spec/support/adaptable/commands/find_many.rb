@@ -8,7 +8,7 @@ require 'support/adaptable/commands'
 
 module Spec::Support::Adaptable::Commands
   class FindMany < Bronze::Commands::Base
+    include Bronze::Adaptable::Command
     include Bronze::Commands::AbstractFindMany
-    include Cuprum::Collections::Adaptable::Command
   end
 end

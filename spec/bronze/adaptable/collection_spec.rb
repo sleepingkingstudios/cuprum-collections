@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/adaptable/collection'
+require 'bronze/adaptable/collection'
 require 'cuprum/collections/rspec/deferred/collection_examples'
 
 require 'support/book'
 require 'support/grimoire'
 require 'support/scoped_book'
 
-RSpec.describe Cuprum::Collections::Adaptable::Collection do
+RSpec.describe Bronze::Adaptable::Collection do
   include Cuprum::Collections::RSpec::Deferred::CollectionExamples
 
   subject(:collection) do
@@ -22,7 +22,7 @@ RSpec.describe Cuprum::Collections::Adaptable::Collection do
   let(:expected_options)    { { default_entity_class: adapter.entity_class } }
 
   example_class 'Spec::AdaptableCollection', Bronze::Collection do |klass|
-    klass.include Cuprum::Collections::Adaptable::Collection # rubocop:disable RSpec/DescribedClass
+    klass.include Bronze::Adaptable::Collection # rubocop:disable RSpec/DescribedClass
   end
 
   include_deferred 'should be a Collection',

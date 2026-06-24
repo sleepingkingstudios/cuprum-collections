@@ -10,9 +10,7 @@ module Cuprum
   module Collections
     include Bronze
 
-    autoload :Adaptable,         'cuprum/collections/adaptable'
-    autoload :Basic,             'cuprum/collections/basic'
-    autoload :CollectionCommand, 'cuprum/collections/collection_command'
+    autoload :Basic, 'cuprum/collections/basic'
 
     # @return [String] the absolute path to the gem directory.
     def self.gem_path

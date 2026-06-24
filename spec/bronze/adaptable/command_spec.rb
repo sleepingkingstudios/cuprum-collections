@@ -2,13 +2,13 @@
 
 require 'cuprum/rspec/deferred/parameter_validation_examples'
 
+require 'bronze/adaptable/command'
 require 'bronze/commands/base'
-require 'cuprum/collections/adaptable/command'
 require 'cuprum/collections/rspec/deferred/command_examples'
 
 require 'support/book'
 
-RSpec.describe Cuprum::Collections::Adaptable::Command do
+RSpec.describe Bronze::Adaptable::Command do
   include Cuprum::Collections::RSpec::Deferred::CommandExamples
   include Cuprum::RSpec::Deferred::ParameterValidationExamples
 
@@ -41,7 +41,7 @@ RSpec.describe Cuprum::Collections::Adaptable::Command do
   end
 
   example_class 'Spec::AdaptableCommand', Bronze::Commands::Base do |klass|
-    klass.include Cuprum::Collections::Adaptable::Command # rubocop:disable RSpec/DescribedClass
+    klass.include Bronze::Adaptable::Command # rubocop:disable RSpec/DescribedClass
   end
 
   describe '#adapter' do

@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require 'bronze/query'
-require 'cuprum/collections/adaptable'
+require 'bronze/adaptable'
 
-module Cuprum::Collections::Adaptable
+module Bronze::Adaptable
   # Mixin for adaptable collection Query implementations.
   module Query
     # Exception raised when the query cannot convert native data.

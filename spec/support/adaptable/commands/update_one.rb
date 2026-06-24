@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
+require 'bronze/adaptable/command'
 require 'cuprum/collections'
-require 'cuprum/collections/adaptable/command'
 
 require 'support/adaptable/commands'
 
 module Spec::Support::Adaptable::Commands
   class UpdateOne < Cuprum::Collections::Basic::Commands::UpdateOne
-    include Cuprum::Collections::Adaptable::Command
+    include Bronze::Adaptable::Command
 
     private
 

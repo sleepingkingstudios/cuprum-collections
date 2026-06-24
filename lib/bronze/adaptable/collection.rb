@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections/adaptable'
+require 'bronze/adaptable'
 
-module Cuprum::Collections::Adaptable
+module Bronze::Adaptable
   # Mixin for defining adaptable collections.
   module Collection
     # @param adapter [Bronze::Adapter] the collection adapter.
