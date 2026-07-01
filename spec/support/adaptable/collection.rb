@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'cuprum/collections'
+require 'bronze'
 
 require 'support/adaptable'
 require 'support/adaptable/query'

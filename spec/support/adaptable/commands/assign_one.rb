@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
-require 'bronze/adaptable/command'
-require 'bronze/adaptable/commands/abstract_assign_one'
-require 'bronze/commands/base'
-require 'cuprum/collections'
+require 'bronze'
 
 require 'support/adaptable/commands'
 

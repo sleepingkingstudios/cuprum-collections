@@ -73,7 +73,7 @@ module Bronze::RSpec::Deferred
           'Use "should implement the Bronze::Commands::Base methods" instead.'
         )
 
-      include_examples 'should implement the Bronze::Commands::Base methods'
+      include_deferred 'should implement the Bronze::Commands::Base methods'
       # :nocov:
     end
 

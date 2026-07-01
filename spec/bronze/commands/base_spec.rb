@@ -14,7 +14,7 @@ RSpec.describe Bronze::Commands::Base do
   subject(:command) { described_class.new(collection:) }
 
   let(:collection) do
-    Cuprum::Collections::Collection.new(name: 'books', **collection_options)
+    Bronze::Collection.new(name: 'books', **collection_options)
   end
   let(:collection_options) { {} }
 

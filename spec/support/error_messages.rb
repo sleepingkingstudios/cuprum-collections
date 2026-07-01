@@ -2,11 +2,11 @@
 
 require 'stannum/messages/default_strategy'
 
-require 'cuprum/collections'
+require 'bronze'
 
 RSpec.configure do |config|
   config.before(:suite) do
     Stannum::Messages::DefaultStrategy.load_paths <<
-      File.join(Cuprum::Collections.gem_path, 'config', 'locales')
+      File.join(Bronze.gem_path, 'config', 'locales')
   end
 end

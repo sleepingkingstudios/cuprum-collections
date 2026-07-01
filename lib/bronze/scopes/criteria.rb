@@ -106,8 +106,8 @@ module Bronze::Scopes
       @criteria.empty?
     end
 
-    # @return [Cuprum::Collections::Criteria] a copy of the scope with the
-    #   #inverted? predicate flipped and the individual criteria negated.
+    # @return [Bronze::Scopes::Criteria] a copy of the scope with the #inverted?
+    #   predicate flipped and the individual criteria negated.
     def invert
       with_criteria(invert_criteria).tap { |copy| copy.inverted = !inverted? }
     end

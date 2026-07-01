@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
+require 'bronze'
 require 'bronze/rspec/fixtures'
-require 'cuprum/collections'
 
 require 'support/adaptable/query'
 require 'support/examples/adaptable'

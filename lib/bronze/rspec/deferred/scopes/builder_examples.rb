@@ -131,7 +131,7 @@ module Bronze::RSpec::Deferred::Scopes
 
         describe 'with criteria: an Array of criteria' do
           let(:criteria) do
-            operators = Cuprum::Collections::Queries::Operators
+            operators = Bronze::Queries::Operators
 
             [
               [

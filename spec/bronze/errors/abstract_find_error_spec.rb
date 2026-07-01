@@ -54,7 +54,7 @@ RSpec.describe Bronze::Errors::AbstractFindError do
 
     describe 'with collection: a Collection' do
       let(:collection) do
-        Cuprum::Collections::Collection.new(
+        Bronze::Collection.new(
           entity_class:   Spec::BookEntity,
           name:           'books',
           qualified_name: 'spec/book_entities'

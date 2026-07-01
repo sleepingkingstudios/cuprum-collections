@@ -8,7 +8,7 @@ module Bronze::Scopes
   module Disjunction
     include Bronze::Scopes::Container
 
-    # @return [Cuprum::Collections::Disjunction] a logical AND scope with the
+    # @return [Bronze::Scopes::Disjunction] a logical AND scope with the
     #   constituent scopes inverted.
     def invert
       builder.build_conjunction_scope(scopes: scopes.map(&:invert))

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-require 'bronze/commands/abstract_find_one'
-require 'bronze/commands/base'
-require 'cuprum/collections'
+require 'bronze'
 
 require 'support/adaptable/commands'
 

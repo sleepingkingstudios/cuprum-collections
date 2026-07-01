@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-require 'bronze/adaptable/command'
-require 'cuprum/collections'
+require 'bronze'
 
 require 'support/adaptable/commands'
 

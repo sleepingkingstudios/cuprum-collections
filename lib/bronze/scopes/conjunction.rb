@@ -16,7 +16,7 @@ module Bronze::Scopes
     end
     alias where and
 
-    # @return [Cuprum::Collections::Disjunction] a logical OR scope with the
+    # @return [Bronze::Scopes::Disjunction] a logical OR scope with the
     #   constituent scopes inverted.
     def invert
       builder.build_disjunction_scope(scopes: scopes.map(&:invert))

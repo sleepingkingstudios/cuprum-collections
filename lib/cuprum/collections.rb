@@ -1,26 +1,30 @@
 # frozen_string_literal: true
 
 require 'cuprum'
+require 'sleeping_king_studios/tools'
 
 require 'bronze'
 
 # A Ruby implementation of the command pattern.
 module Cuprum
   # A data abstraction layer based on the Cuprum library.
+  #
+  # @deprecated [0.6.0] Use Bronze::Commands::Base instead.
   module Collections
     include Bronze
 
-    # @return [String] the absolute path to the gem directory.
-    def self.gem_path
-      sep     = File::SEPARATOR
-      pattern = /#{sep}lib#{sep}cuprum#{sep}?\z/
+    SleepingKingStudios::Tools::Toolbelt
+      .instance
+      .core_tools
+      .deprecate(
+        'Cuprum::Collections',
+        'Use Bronze instead'
+      )
 
-      __dir__.sub(pattern, '')
-    end
+    # @return [String] the absolute path to the gem directory.
+    def self.gem_path = Bronze.gem_path
 
     # @return [String] the current version of the gem.
-    def self.version
-      Bronze::VERSION
-    end
+    def self.version = Bronze.version
   end
 end
