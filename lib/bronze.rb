@@ -9,6 +9,7 @@ module Bronze
   autoload :Adapters,     'bronze/adapters'
   autoload :Association,  'bronze/association'
   autoload :Associations, 'bronze/associations'
+  autoload :Basic,        'bronze/basic'
   autoload :Collection,   'bronze/collection'
   autoload :Constraints,  'bronze/constraints'
   autoload :Errors,       'bronze/errors'
