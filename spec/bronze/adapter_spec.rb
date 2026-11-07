@@ -38,7 +38,7 @@ RSpec.describe Bronze::Adapter do
   deferred_context 'with an adapter class that validates entities' do
     let(:described_class) { Spec::ValidatedAdapter }
 
-    # rubocop:disable RSpec/DescribedClass
+    # rubocop:disable-next RSpec/DescribedClass
     example_class 'Spec::ValidatedAdapter', Bronze::Adapter do |klass|
       klass.define_method :validate_entity_parameter do |entity, as: 'entity'|
         return if entity.respond_to?(:title)
@@ -46,7 +46,6 @@ RSpec.describe Bronze::Adapter do
         "#{as} does not respond to :title"
       end
     end
-    # rubocop:enable RSpec/DescribedClass
   end
 
   describe '.new' do
@@ -332,13 +331,12 @@ RSpec.describe Bronze::Adapter do
     describe 'with an adapter class that delegates to native validation' do
       let(:described_class) { Spec::NativeAdapter }
 
-      # rubocop:disable RSpec/DescribedClass
+      # rubocop:disable-next RSpec/DescribedClass
       example_class 'Spec::NativeAdapter', Bronze::Adapter do |klass|
         klass.define_method :match_native_validation do |entity:|
           entity_class.contract.match(entity)
         end
       end
-      # rubocop:enable RSpec/DescribedClass
 
       include_deferred 'when initialized with an entity class'
 

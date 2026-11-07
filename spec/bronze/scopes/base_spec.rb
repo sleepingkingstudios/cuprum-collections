@@ -42,11 +42,10 @@ RSpec.describe Bronze::Scopes::Base do
     describe 'with a scope with the same type' do
       let(:other) { Spec::CustomScope.new }
 
-      # rubocop:disable RSpec/DescribedClass
+      # rubocop:disable-next RSpec/DescribedClass
       example_class 'Spec::CustomScope', Bronze::Scopes::Base do |klass|
         klass.define_method(:type) { :abstract }
       end
-      # rubocop:enable RSpec/DescribedClass
 
       it { expect(scope == other).to be true }
     end

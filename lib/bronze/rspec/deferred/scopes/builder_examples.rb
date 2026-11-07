@@ -44,7 +44,7 @@ module Bronze::RSpec::Deferred::Scopes
           end
         end
 
-        # rubocop:disable Metrics/AbcSize
+        # rubocop:disable-next Metrics/AbcSize
         define_method :should_recursively_convert_scopes \
         do |original_scopes, converted|
           original_scopes.zip(converted).each do |original, scope|
@@ -57,7 +57,6 @@ module Bronze::RSpec::Deferred::Scopes
             end
           end
         end
-        # rubocop:enable Metrics/AbcSize
 
         # :nocov:
       end

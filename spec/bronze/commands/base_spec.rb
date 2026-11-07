@@ -50,13 +50,12 @@ RSpec.describe Bronze::Commands::Base do
     context 'when the command defines parameter validation' do
       let(:described_class) { Spec::ValidatedCommand }
 
-      # rubocop:disable RSpec/DescribedClass
+      # rubocop:disable-next RSpec/DescribedClass
       example_class 'Spec::ValidatedCommand', Bronze::Commands::Base do |klass|
         klass.validate(:name, String)
 
         klass.define_method(:process) { |name = nil| "Greetings, #{name}!" }
       end
-      # rubocop:enable RSpec/DescribedClass
 
       describe 'with non-matching parameters' do
         def call_command

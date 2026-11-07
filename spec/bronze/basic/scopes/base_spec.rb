@@ -103,13 +103,12 @@ RSpec.describe Bronze::Basic::Scopes::Base do
   context 'with a scope subclass' do
     let(:described_class) { Spec::HasSeriesScope }
 
-    # rubocop:disable RSpec/DescribedClass
+    # rubocop:disable-next RSpec/DescribedClass
     example_class 'Spec::HasSeriesScope', Bronze::Basic::Scopes::Base do |klass|
       klass.define_method :match? do |item:|
         !(item['series'].nil? || item['series'].empty?)
       end
     end
-    # rubocop:enable RSpec/DescribedClass
 
     describe '#call' do
       describe 'with an empty Array' do
